@@ -22,6 +22,8 @@ So, let's move at the last `describe` section of `issue_helpers_spec.ts`, and
 make it looks like the following:
 
 ```typescript
+// src/formatter/helpers/issue_helpers_spec.ts
+
     describe('step with attachment text', () => {
       it('prints the scenario', async () => {
         // here's the content of the "prints the scenario" test
@@ -30,26 +32,29 @@ make it looks like the following:
       describe('when it is requested to not print attachments', () => {
         it('does not output attachment', async () => {
           // Arrange
-          const sourceData = reindent`
+          const sourceData = reindent(`
             Feature: my feature
               Scenario: my scenario
                 Given attachment step1
                 When attachment step2
                 Then a passing step
-            `
+          `)
 
           // Act
           const output = await testFormatIssue(sourceData)
 
           // Assert
-          expect(output).to.eql(reindent`
-            1) Scenario: my scenario # a.feature:2
-               ${figures.tick} Given attachment step1 # steps.ts:35
-               ${figures.cross} When attachment step2 # steps.ts:41
-                   error
-               - Then a passing step # steps.ts:29
+          expect(output).to.eql(
+            reindent(`
+              1) Scenario: my scenario # a.feature:2
+                 ${figures.tick} Given attachment step1 # steps.ts:35
+                 ${figures.cross} When attachment step2 # steps.ts:41
+                     error
+                 - Then a passing step # steps.ts:29
+
 
             `)
+          )
         })
       })
     })
@@ -78,32 +83,37 @@ In our new test, we can call `testFormatIssue` with `printAttachments` parameter
 set to `false`:
 
 ```typescript
+// src/formatter/helpers/issue_helpers_spec.ts
+
         it('does not output attachment', async () => {
           // Arrange
-          const sourceData = reindent`
+          const sourceData = reindent(`
             Feature: my feature
               Scenario: my scenario
                 Given attachment step1
                 When attachment step2
                 Then a passing step
-            `
+          `)
 
           // Act
           const output = await testFormatIssue(sourceData, false)
 
           // Assert
-          expect(output).to.eql(reindent`
-            1) Scenario: my scenario # a.feature:2
-               ${figures.tick} Given attachment step1 # steps.ts:35
-               ${figures.cross} When attachment step2 # steps.ts:41
-                   error
-               - Then a passing step # steps.ts:29
+          expect(output).to.eql(
+            reindent(`
+              1) Scenario: my scenario # a.feature:2
+                 ${figures.tick} Given attachment step1 # steps.ts:35
+                 ${figures.cross} When attachment step2 # steps.ts:41
+                     error
+                 - Then a passing step # steps.ts:29
+
 
             `)
+          )
         })
 ```
 
-Our test is still failing - that is expected - but we have now some tests now.
+Our test is still failing - that is expected - but we have some tests now.
 
 # Fixing the code
 
@@ -118,6 +128,8 @@ actually adding the attachments to the output. So, let's give it a try: change
 the `formatStep` method like the following:
 
 ```typescript
+// src/formatter/helpers/test_case_attempt_formatter.ts
+
 interface IFormatStepRequest {
   colorFns: IColorFns
   testStep: IParsedTestStep
@@ -137,6 +149,8 @@ attachments, and make sure to execute it only if `printAttachments` is not
 explicitly false:
 
 ```typescript
+// src/formatter/helpers/test_case_attempt_formatter.ts#formatStep
+
   if (valueOrDefault(printAttachments, true)) {
     attachments.forEach(({ body, mediaType }) => {
       const message = mediaType === 'text/plain' ? `: ${body}` : ''
@@ -148,6 +162,8 @@ explicitly false:
 Now we have to make sure that the value we pass to `testFormatIssue` is
 transmitted to `formatStep`. That means updating `formatTestCaseAttempt`:
 ```typescript
+// src/formatter/helpers/test_case_attempt_formatter.ts
+
 export interface IFormatTestCaseAttemptRequest {
   colorFns: IColorFns
   cwd: string
@@ -174,6 +190,8 @@ export function formatTestCaseAttempt({
 and `formatIssue` in `issue_helpers.ts`:
 
 ```typescript
+// src/formatter/helpers/issue_helpers.ts
+
 export interface IFormatIssueRequest {
   colorFns: IColorFns
   cwd: string
@@ -209,6 +227,8 @@ export function formatIssue({
 
 And, finally, in `issue_helpers_spec.ts`, within `testFormatIssue`:
 ```typescript
+// src/formatter/helpers/issue_helpers_spec.ts
+
   return formatIssue({
     cwd: 'project/',
     colorFns: getColorFns(false),
@@ -225,10 +245,164 @@ And, finally, in `issue_helpers_spec.ts`, within `testFormatIssue`:
 
 Now, all unit tests should pass:
 
-    npm run unit-test
+    yarn run unit-test
 
 But, as expected, our acceptance test is still failing because we did not yet
 managed the cli options:
 
-    npm run feature-test
+    yarn run feature-test
 
+# Make the feature test to pass
+
+Our formatter has been fixed. Now it is time to add the option to the CLI.
+
+If we look for `formatOptions` in the code base, we find `src/cli/argv_parser.ts`
+which looks like a good candidate. It describes the interfaces for the CLI options.
+
+We can easily spot the `IParsedArgvFormatOptions` interface which describe the options
+available for `--format-options`. Let's add our `printAttachments` here:
+
+```typescript
+// src/cli/argv_parser.ts
+
+export interface IParsedArgvFormatOptions {
+  colorsEnabled?: boolean
+  rerun?: IParsedArgvFormatRerunOptions
+  snippetInterface?: SnippetInterface
+  snippetSyntax?: string
+  printAttachments?: boolean
+  [customKey: string]: any
+}
+```
+
+Next step: adding this option to our formatters.
+
+All formatters extends the `Formatter` base class, so let's add the option there:
+
+```typescript
+// src/formatter/index.ts
+
+// some imports
+import { valueOrDefault } from '../value_checker'
+
+// ...
+
+export default class Formatter {
+  protected colorFns: IColorFns
+  protected cwd: string
+  protected eventDataCollector: EventDataCollector
+  protected log: IFormatterLogFn
+  protected snippetBuilder: StepDefinitionSnippetBuilder
+  protected stream: WritableStream
+  protected supportCodeLibrary: ISupportCodeLibrary
+  protected printAttachments: boolean
+  private readonly cleanup: IFormatterCleanupFn
+
+  constructor(options: IFormatterOptions) {
+    this.colorFns = options.colorFns
+    this.cwd = options.cwd
+    this.eventDataCollector = options.eventDataCollector
+    this.log = options.log
+    this.snippetBuilder = options.snippetBuilder
+    this.stream = options.stream
+    this.supportCodeLibrary = options.supportCodeLibrary
+    this.cleanup = options.cleanup
+    this.printAttachments = valueOrDefault(
+      options.parsedArgvOptions.printAttachments,
+      true
+    )
+  }
+```
+
+We have added the option `printAttachments` to the formatter members. We make sure
+it is `true` per default using the `valueOrDefault` function. Otherwise, if the option
+is not specified, it would have been falsy per default.
+
+Finally, we have to make sure we call the `formatIssue` method with the value of
+`printAttachments`.
+
+A global search for `formatIssue` find two usage for it: in `progress_bar_formatter.ts`
+and in `summary_formatter.ts`. Let's update those two files:
+
+```typescript
+// src/formatter/progress_bar_formatter.ts
+
+// Locate the call to formatIssue
+
+      this.progressBar.interrupt(
+        formatIssue({
+          colorFns: this.colorFns,
+          cwd: this.cwd,
+          number: this.issueCount,
+          snippetBuilder: this.snippetBuilder,
+          supportCodeLibrary: this.supportCodeLibrary,
+          testCaseAttempt,
+          printAttachments: this.printAttachments,
+        })
+      )
+```
+
+```typescript
+// src/formatter/summary_formatter.ts
+
+// Locate the call to formatIssue
+
+  logIssues({ issues, title }: ILogIssuesRequest): void {
+    this.log(`${title}:\n\n`)
+    issues.forEach((testCaseAttempt, index) => {
+      this.log(
+        formatIssue({
+          colorFns: this.colorFns,
+          cwd: this.cwd,
+          number: index + 1,
+          snippetBuilder: this.snippetBuilder,
+          supportCodeLibrary: this.supportCodeLibrary,
+          testCaseAttempt,
+          printAttachments: this.printAttachments,
+        })
+      )
+    })
+  }
+```
+
+So, it should be working now
+
+    yarn run feature-test
+
+# Finalizing the Pull Request
+
+Last but not least, let's make sure the PR is valid.
+
+First, execute all the tests:
+
+    yarn test
+
+You may have some linting issues here. Fix those and retry until everything pass.
+
+We also need to add some documentation in `docs/cli.md`. Add the following between
+the `## Parallel` and the `## Profiles` sections:
+
+```markdown
+
+## Printing Attachments Details
+
+Printing attachments details can be disabled with
+`--fomat-options '{"printAttachmants": false}'`.
+
+This option applies to the progress formatter and the summary formatter.
+
+```
+
+Now we should add an entry in the CHANGELOG.md. Open it, locate the `### Added` section
+for the unreleased changes, and add somethig about the changes we just did:
+
+```markdown
+
+* Add a new option to `--format-option`: `printAttachments`.
+  See [./docs/cli.md#printing-attachments-details](https://github.com/cucumber/cucumber-js/blob/main/docs/cli.md#printing-attachments-details) for more info.
+  ([#1136](https://github.com/cucumber/cucumber-js/issues/1136)
+  [#1721](https://github.com/cucumber/cucumber-js/pull/1721))
+
+```
+
+That's it! You can now set your PR as ready for review!
