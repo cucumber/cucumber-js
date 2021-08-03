@@ -1,5 +1,4 @@
 import { EventDataCollector, formatLocation } from '../formatter/helpers'
-import bluebird from 'bluebird'
 import StackTraceFilter from '../stack_trace_filter'
 import UserCodeRunner from '../user_code_runner'
 import VError from 'verror'
@@ -77,27 +76,24 @@ export default class Runtime {
     if (this.options.dryRun) {
       return
     }
-    await bluebird.each(
-      definitions,
-      async (hookDefinition: TestRunHookDefinition) => {
-        const { error } = await UserCodeRunner.run({
-          argsArray: [],
-          fn: hookDefinition.code,
-          thisArg: null,
-          timeoutInMilliseconds: valueOrDefault(
-            hookDefinition.options.timeout,
-            this.supportCodeLibrary.defaultTimeout
-          ),
-        })
-        if (doesHaveValue(error)) {
-          const location = formatLocation(hookDefinition)
-          throw new VError(
-            error,
-            `${name} hook errored, process exiting: ${location}`
-          )
-        }
+    for (const hookDefinition of definitions) {
+      const { error } = await UserCodeRunner.run({
+        argsArray: [],
+        fn: hookDefinition.code,
+        thisArg: null,
+        timeoutInMilliseconds: valueOrDefault(
+          hookDefinition.options.timeout,
+          this.supportCodeLibrary.defaultTimeout
+        ),
+      })
+      if (doesHaveValue(error)) {
+        const location = formatLocation(hookDefinition)
+        throw new VError(
+          error,
+          `${name} hook errored, process exiting: ${location}`
+        )
       }
-    )
+    }
   }
 
   async runTestCase(
@@ -148,9 +144,9 @@ export default class Runtime {
       ),
       supportCodeLibrary: this.supportCodeLibrary,
     })
-    await bluebird.each(this.pickleIds, async (pickleId) => {
+    for (const pickleId of this.pickleIds) {
       await this.runTestCase(pickleId, assembledTestCases[pickleId])
-    })
+    }
     await this.runTestRunHooks(
       this.supportCodeLibrary.afterTestRunHookDefinitions.slice(0).reverse(),
       'an AfterAll'

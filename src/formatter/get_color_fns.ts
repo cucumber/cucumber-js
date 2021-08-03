@@ -9,6 +9,10 @@ export interface IColorFns {
   forStatus: (status: TestStepResultStatus) => IColorFn
   location: IColorFn
   tag: IColorFn
+  diffAdded: IColorFn
+  diffRemoved: IColorFn
+  errorMessage: IColorFn
+  errorStack: IColorFn
 }
 
 export default function getColorFns(enabled: boolean): IColorFns {
@@ -27,6 +31,10 @@ export default function getColorFns(enabled: boolean): IColorFns {
       },
       location: colors.gray.bind(colors),
       tag: colors.cyan.bind(colors),
+      diffAdded: colors.green.bind(colors),
+      diffRemoved: colors.red.bind(colors),
+      errorMessage: colors.red.bind(colors),
+      errorStack: colors.grey.bind(colors),
     }
   } else {
     return {
@@ -35,6 +43,10 @@ export default function getColorFns(enabled: boolean): IColorFns {
       },
       location: (x) => x,
       tag: (x) => x,
+      diffAdded: (x) => x,
+      diffRemoved: (x) => x,
+      errorMessage: (x) => x,
+      errorStack: (x) => x,
     }
   }
 }

@@ -38,7 +38,6 @@ export const defineParameterType = methods.defineParameterType
 export const defineStep = methods.defineStep
 export const Given = methods.Given
 export const setDefaultTimeout = methods.setDefaultTimeout
-export const setDefinitionFunctionWrapper = methods.setDefinitionFunctionWrapper
 export const setWorldConstructor = methods.setWorldConstructor
 export const Then = methods.Then
 export const When = methods.When
@@ -47,8 +46,12 @@ export {
   IWorld,
   IWorldOptions,
 } from './support_code_library_builder/world'
+
 export {
   ITestCaseHookParameter,
   ITestStepHookParameter,
 } from './support_code_library_builder/types'
 export const Status = messages.TestStepResultStatus
+
+// Time helpers
+export { wrapPromiseWithTimeout } from './time'

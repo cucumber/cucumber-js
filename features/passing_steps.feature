@@ -34,7 +34,6 @@ Feature: Passing steps
     Given a file named "features/step_definitions/passing_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
-      const Promise = require('bluebird')
 
       Given(/^a passing step$/, function() {
         return Promise.resolve()
