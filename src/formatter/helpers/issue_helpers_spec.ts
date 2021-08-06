@@ -8,7 +8,10 @@ import { reindent } from 'reindent-template-literals'
 import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
 import FormatterBuilder from '../builder'
 
-async function testFormatIssue(sourceData: string): Promise<string> {
+async function testFormatIssue(
+  sourceData: string,
+  printAttachments: Boolean = true
+): Promise<string> {
   const sources = [
     {
       data: sourceData,
@@ -279,7 +282,7 @@ describe('IssueHelpers', () => {
           `)
 
           // Act
-          const output = await testFormatIssue(sourceData)
+          const output = await testFormatIssue(sourceData, false)
 
           // Assert
           expect(output).to.eql(
