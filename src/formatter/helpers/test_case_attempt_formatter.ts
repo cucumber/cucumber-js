@@ -40,9 +40,14 @@ function getStepMessage(testStep: IParsedTestStep): string {
 interface IFormatStepRequest {
   colorFns: IColorFns
   testStep: IParsedTestStep
+  printAttachments: Boolean
 }
 
-function formatStep({ colorFns, testStep }: IFormatStepRequest): string {
+function formatStep({
+  colorFns,
+  testStep,
+  printAttachments,
+}: IFormatStepRequest): string {
   const {
     result: { status },
     actionLocation,
@@ -59,10 +64,12 @@ function formatStep({ colorFns, testStep }: IFormatStepRequest): string {
     const argumentsText = formatStepArgument(testStep.argument)
     text += indentString(`${colorFn(argumentsText)}\n`, 4)
   }
-  attachments.forEach(({ body, mediaType }) => {
-    const message = mediaType === 'text/plain' ? `: ${body}` : ''
-    text += indentString(`Attachment (${mediaType})${message}\n`, 4)
-  })
+  if (valueOrDefault(printAttachments, true)) {
+    attachments.forEach(({ body, mediaType }) => {
+      const message = mediaType === 'text/plain' ? `: ${body}` : ''
+      text += indentString(`Attachment (${mediaType})${message}\n`, 4)
+    })
+  }
   const message = getStepMessage(testStep)
   if (message !== '') {
     text += `${indentString(colorFn(message), 4)}\n`
@@ -76,7 +83,7 @@ export interface IFormatTestCaseAttemptRequest {
   testCaseAttempt: ITestCaseAttempt
   snippetBuilder: StepDefinitionSnippetBuilder
   supportCodeLibrary: ISupportCodeLibrary
-  printAttachments?: Boolean
+  printAttachments: Boolean
 }
 
 export function formatTestCaseAttempt({
@@ -85,7 +92,7 @@ export function formatTestCaseAttempt({
   snippetBuilder,
   supportCodeLibrary,
   testCaseAttempt,
-  printAttachments = true,
+  printAttachments,
 }: IFormatTestCaseAttemptRequest): string {
   const parsed = parseTestCaseAttempt({
     cwd,
@@ -102,7 +109,7 @@ export function formatTestCaseAttempt({
     formatLocation(parsed.testCase.sourceLocation)
   )}\n`
   parsed.testSteps.forEach((testStep) => {
-    text += formatStep({ colorFns, testStep })
+    text += formatStep({ colorFns, testStep, printAttachments })
   })
   return `${text}\n`
 }
