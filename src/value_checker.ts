@@ -1,8 +1,8 @@
-export function doesHaveValue(value: any): boolean {
+export function doesHaveValue<T>(value: T): boolean {
   return !doesNotHaveValue(value)
 }
 
-export function doesNotHaveValue(value: any): boolean {
+export function doesNotHaveValue<T>(value: T): boolean {
   return value === null || value === undefined
 }
 
