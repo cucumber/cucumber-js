@@ -33,6 +33,7 @@ async function testFormatIssue(
     }),
     supportCodeLibrary,
     testCaseAttempt,
+    printAttachments,
   })
 }
 

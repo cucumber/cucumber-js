@@ -76,6 +76,7 @@ export interface IFormatTestCaseAttemptRequest {
   testCaseAttempt: ITestCaseAttempt
   snippetBuilder: StepDefinitionSnippetBuilder
   supportCodeLibrary: ISupportCodeLibrary
+  printAttachments?: Boolean
 }
 
 export function formatTestCaseAttempt({
@@ -84,6 +85,7 @@ export function formatTestCaseAttempt({
   snippetBuilder,
   supportCodeLibrary,
   testCaseAttempt,
+  printAttachments = true,
 }: IFormatTestCaseAttemptRequest): string {
   const parsed = parseTestCaseAttempt({
     cwd,
