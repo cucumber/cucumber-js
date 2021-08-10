@@ -183,7 +183,7 @@
     "create-require": "^1.1.1",
     "duration": "^0.2.2",
     "durations": "^3.4.2",
-    "figures": "^3.2.0",
+    "figures": "^4.0.0",
     "glob": "^7.1.6",
     "indent-string": "^4.0.0",
     "is-stream": "^2.0.0",
