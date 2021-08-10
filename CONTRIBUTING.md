@@ -1,6 +1,13 @@
-# Thank you!
+# Welcome 💖
 
-Before anything else, thank you. Thank you for taking some of your precious time helping this project move forward.
+Before anything else, thank you for taking some of your precious time to help this project move forward. ❤️
+
+If you're new to open source and feeling a bit nervous 😳, we understand! We recommend watching [this excellent guide](https://egghead.io/talks/git-how-to-make-your-first-open-source-contribution)
+to give you a grounding in some of the basic concepts. We want you to feel safe to make mistakes, and ask questions.
+
+If anything in this guide or anywhere else in the codebase doesn't make sense to you, please let us know! It's through your feedback that we can make this codebase more welcoming, so we'll be glad to hear thoughts.
+
+You can chat with us in the [#committers-js](https://cucumberbdd.slack.com/archives/C612KCP1P) channel in our [Community Slack], or feel free to [raise an issue] if you're experiencing any friction trying make your contribution.
 
 ## Setup
 
@@ -137,3 +144,6 @@ Push to git:
 * Update [docs.cucumber.io](https://github.com/cucumber/docs.cucumber.io)
   * Update the cucumber-js version `data/versions.yaml`
   * Ensure the javascript examples are up to date
+
+[Community Slack]: https://cucumber.io/community#slack
+[raise an issue]: https://github.com/cucumber/cucumber-js/issues/new/choose
