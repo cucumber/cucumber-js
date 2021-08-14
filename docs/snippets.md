@@ -22,7 +22,11 @@ Then('I remove the todo {string}', function (string) {
 });
 ```
 
+By default, the snippet uses the "synchronous" style. You can use the `snippetInterface` [format option](./formatters.md#options) to specify one of the styles that supports asynchronous steps:
 
+- "async-await" - Outputs an async function where you can use `await` - probably the best choice if you aren't sure.
+- "callback" - Outputs a plain function with a callback function as the final argument.
+- "promise" - Outputs a plain function from which you should return a `Promise`.
 
 ## Options
 
