@@ -1,8 +1,9 @@
 import path from 'path'
-import StackTrace from 'stacktrace-js'
+import stackChain from 'stack-chain'
 import { isFileNameInCucumber } from '../stack_trace_filter'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import { ILineAndUri } from '../types'
+import CallSite = NodeJS.CallSite
 
 export function getDefinitionLineAndUri(
   cwd: string,
@@ -11,9 +12,18 @@ export function getDefinitionLineAndUri(
   let line: number
   let uri: string
   try {
-    const stackframes = StackTrace.getSync()
+    console.log(new Error().stack.split("\n").slice(1).map(
+      (line: String) => line.match(/(\/.*):(\d+):\d+/).slice(1,3)
+    ))
+    const stackframes = stackChain.callSite()
+    /*console.log(
+      stackframes.map((frame: CallSite) => [
+        frame.getLineNumber(),
+        frame.getFileName(),
+      ])
+    )*/
     const stackframe = stackframes.find(
-      (frame) =>
+      (frame: CallSite) =>
         frame.getFileName() !== __filename && !isExcluded(frame.getFileName())
     )
     if (stackframe != null) {
