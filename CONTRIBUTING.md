@@ -11,28 +11,28 @@ You can chat with us in the [#committers-js](https://cucumberbdd.slack.com/archi
 
 ## Setup
 
-* install [Node.Js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/)
-* `yarn install` - Install dependencies
-* `yarn test` - Compile typescript and run the tests
+- install [Node.Js](https://nodejs.org/en/)
+- `npm install` - Install dependencies
+- `npm test` - Compile typescript and run the tests
 
 ## Tests
 
-Now type `yarn run` or see the `package.json` scripts section for how to run each category of tests.
+Now type `npm run` or see the `package.json` scripts section for how to run each category of tests.
 
-* lint - `yarn lint`
-  * [prettier](https://github.com/prettier/prettier)
-  * [eslint](https://eslint.org/)
-  * [dependency-lint](https://github.com/charlierudolph/dependency-lint)
-* typescript tests - `yarn types-test`
-  * [tsd](https://github.com/SamVerschueren/tsd)
-* unit tests - `yarn unit-test`
-  * [mocha](https://mochajs.org/)
-  * [chai](https://www.chaijs.com/)
-  * [sinon](https://sinonjs.org/)
-* compatibility kit - `yarn cck-test`
-  * checking that cucumber-js emits the [correct messages](https://github.com/cucumber/cucumber/tree/master/compatibility-kit) 
-* feature tests - `yarn feature-test`
-  * cucumber-js tests itself
+- lint - `npm run lint`
+  - [prettier](https://github.com/prettier/prettier)
+  - [eslint](https://eslint.org/)
+  - [dependency-lint](https://github.com/charlierudolph/dependency-lint)
+- typescript tests - `npm run types-test`
+  - [tsd](https://github.com/SamVerschueren/tsd)
+- unit tests - `npm run unit-test`
+  - [mocha](https://mochajs.org/)
+  - [chai](https://www.chaijs.com/)
+  - [sinon](https://sinonjs.org/)
+- compatibility kit - `npm run cck-test`
+  - checking that cucumber-js emits the [correct messages](https://github.com/cucumber/cucumber/tree/master/compatibility-kit)
+- feature tests - `npm run feature-test`
+  - cucumber-js tests itself
 
 ## Internals
 
@@ -56,14 +56,14 @@ The runtime emits events with an [EventEmitter](https://nodejs.org/api/events.ht
 
 ### Coding style
 
-* Promises and ES7 async/await
-* Try to make things as unit testable as possible. If it's hard to unit test, the class/function may be doing too much.
+- Promises and ES7 async/await
+- Try to make things as unit testable as possible. If it's hard to unit test, the class/function may be doing too much.
 
 ## Changelog
 
-* Every PR should have a changelog entry
-* The contributor should update the changelog
-* Each entry in the changelog should include a link to the relevant issues/PRs
+- Every PR should have a changelog entry
+- The contributor should update the changelog
+- Each entry in the changelog should include a link to the relevant issues/PRs
 
 ## Release process
 
@@ -85,26 +85,25 @@ Start the container:
 
     make docker-run
 
-Inside the container, install the correct versions of Node and Yarn:
+Inside the container, install the correct version of Node:
 
     nvm install --lts
-    npm install -g yarn
 
 Then update the dependencies and test:
 
-    yarn update-dependencies
-    yarn
-    yarn test
+    npm run update-dependencies
+    npm install
+    npm test
 
 If the tests fail, update your code to be compatible with the new libraries, or revert the library upgrades that break the build.
 
-* Add missing entries to `CHANGELOG.md`
-  * Ideally the CHANGELOG should be up-to-date, but sometimes there will be accidental omissions when merging PRs. Missing PRs should be added.
-  * Describe the major changes introduced. API changes must be documented. In particular, backward-incompatible changes must be well explained, with examples when possible.
-  * `git log --format=format:"* %s (%an)" --reverse <last-version-tag>..HEAD` might be handy.
-* Update the contributors list in `package.json`
-  * `git log --format=format:"%an <%ae>" --reverse <last-version-tag>..HEAD  | grep -vEi "(renovate|dependabot|Snyk)" | sort| uniq -i`
-  * Manually add contributors (in alphabetical order)
+- Add missing entries to `CHANGELOG.md`
+  - Ideally the CHANGELOG should be up-to-date, but sometimes there will be accidental omissions when merging PRs. Missing PRs should be added.
+  - Describe the major changes introduced. API changes must be documented. In particular, backward-incompatible changes must be well explained, with examples when possible.
+  - `git log --format=format:"* %s (%an)" --reverse <last-version-tag>..HEAD` might be handy.
+- Update the contributors list in `package.json`
+  - `git log --format=format:"%an <%ae>" --reverse <last-version-tag>..HEAD | grep -vEi "(renovate|dependabot|Snyk)" | sort| uniq -i`
+  - Manually add contributors (in alphabetical order)
 
 [Decide what the next version should be](https://github.com/cucumber/cucumber/blob/master/RELEASE_PROCESS.md#decide-what-the-next-version-should-be).
 
@@ -117,7 +116,7 @@ Verify changes to the CHANGELOG are correct. Stage uncommitted changes:
     git add .
     git commit -am "Release <major.minor.patch(-rc.X)>"
 
-Then bump the version number and create a git tag. Run *one* of the following:
+Then bump the version number and create a git tag. Run _one_ of the following:
 
     # Major prelease
     npm version premajor --preid=rc
@@ -140,10 +139,10 @@ Push to git:
     git push
     git push --tags
 
-* Edit and publish the [release entry on GitHub](https://github.com/cucumber/cucumber-js/releases)
-* Update [docs.cucumber.io](https://github.com/cucumber/docs.cucumber.io)
-  * Update the cucumber-js version `data/versions.yaml`
-  * Ensure the javascript examples are up to date
+- Edit and publish the [release entry on GitHub](https://github.com/cucumber/cucumber-js/releases)
+- Update [docs.cucumber.io](https://github.com/cucumber/docs.cucumber.io)
+  - Update the cucumber-js version `data/versions.yaml`
+  - Ensure the javascript examples are up to date
 
-[Community Slack]: https://cucumber.io/community#slack
+[community slack]: https://cucumber.io/community#slack
 [raise an issue]: https://github.com/cucumber/cucumber-js/issues/new/choose
