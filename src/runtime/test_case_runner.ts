@@ -257,12 +257,14 @@ export default class TestCaseRunner {
 
   async runStepHooks(
     stepHooks: TestStepHookDefinition[],
+    pickleStep: messages.PickleStep,
     stepResult?: messages.TestStepResult
   ): Promise<messages.TestStepResult[]> {
     const stepHooksResult = []
     const hookParameter: ITestStepHookParameter = {
       gherkinDocument: this.gherkinDocument,
       pickle: this.pickle,
+      pickleStep,
       testCaseStartedId: this.currentTestCaseStartedId,
       testStepId: this.currentTestStepId,
       result: stepResult,
@@ -307,7 +309,8 @@ export default class TestCaseRunner {
 
     let stepResult
     let stepResults = await this.runStepHooks(
-      this.getBeforeStepHookDefinitions()
+      this.getBeforeStepHookDefinitions(),
+      pickleStep
     )
     if (
       getWorstTestStepResult(stepResults).status !==
@@ -318,6 +321,7 @@ export default class TestCaseRunner {
     }
     const afterStepHookResults = await this.runStepHooks(
       this.getAfterStepHookDefinitions(),
+      pickleStep,
       stepResult
     )
     stepResults = stepResults.concat(afterStepHookResults)
