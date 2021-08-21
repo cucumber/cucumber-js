@@ -132,13 +132,13 @@ export default class JsonFormatter extends Formatter {
     this.eventDataCollector
       .getTestCaseAttempts()
       .forEach((testCaseAttempt: ITestCaseAttempt) => {
-        // if (!testCaseAttempt.worstTestStepResult.willBeRetried) {
-        const uri = testCaseAttempt.pickle.uri
-        if (doesNotHaveValue(groupedTestCaseAttempts[uri])) {
-          groupedTestCaseAttempts[uri] = []
+        if (!testCaseAttempt.willBeRetried) {
+          const uri = testCaseAttempt.pickle.uri
+          if (doesNotHaveValue(groupedTestCaseAttempts[uri])) {
+            groupedTestCaseAttempts[uri] = []
+          }
+          groupedTestCaseAttempts[uri].push(testCaseAttempt)
         }
-        groupedTestCaseAttempts[uri].push(testCaseAttempt)
-        // }
       })
     const features = Object.keys(groupedTestCaseAttempts).map((uri) => {
       const group = groupedTestCaseAttempts[uri]
