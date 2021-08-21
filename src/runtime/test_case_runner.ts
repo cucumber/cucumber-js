@@ -116,7 +116,6 @@ export default class TestCaseRunner {
         status: this.skip
           ? messages.TestStepResultStatus.SKIPPED
           : messages.TestStepResultStatus.PASSED,
-        willBeRetried: false,
         duration: messages.TimeConversion.millisecondsToDuration(0),
       }
     }
@@ -172,7 +171,7 @@ export default class TestCaseRunner {
       TODO dont rely on `testStepResult.willBeRetried`, it will be moved or removed
       see https://github.com/cucumber/cucumber/issues/902
        */
-      testStepResult.willBeRetried = true
+      // testStepResult.willBeRetried = true
     }
     const testStepFinished: messages.Envelope = {
       testStepFinished: {
@@ -229,12 +228,13 @@ export default class TestCaseRunner {
         testCaseFinished: {
           testCaseStartedId: this.currentTestCaseStartedId,
           timestamp: this.stopwatch.timestamp(),
+          willBeRetried: false, // TODO implement properly
         },
       }
       this.eventBroadcaster.emit('envelope', testCaseFinished)
-      if (!this.getWorstStepResult().willBeRetried) {
-        break
-      }
+      // if (!this.getWorstStepResult().willBeRetried) {
+      //   break
+      // }
       this.resetTestProgressData()
     }
     return this.getWorstStepResult().status
@@ -249,7 +249,6 @@ export default class TestCaseRunner {
       return {
         status: messages.TestStepResultStatus.SKIPPED,
         duration: messages.TimeConversion.millisecondsToDuration(0),
-        willBeRetried: false,
       }
     }
     return await this.invokeStep(null, hookDefinition, hookParameter)
@@ -288,20 +287,17 @@ export default class TestCaseRunner {
       return {
         status: messages.TestStepResultStatus.UNDEFINED,
         duration: messages.TimeConversion.millisecondsToDuration(0),
-        willBeRetried: false,
       }
     } else if (stepDefinitions.length > 1) {
       return {
         message: getAmbiguousStepException(stepDefinitions),
         status: messages.TestStepResultStatus.AMBIGUOUS,
         duration: messages.TimeConversion.millisecondsToDuration(0),
-        willBeRetried: false,
       }
     } else if (this.isSkippingSteps()) {
       return {
         status: messages.TestStepResultStatus.SKIPPED,
         duration: messages.TimeConversion.millisecondsToDuration(0),
-        willBeRetried: false,
       }
     }
 

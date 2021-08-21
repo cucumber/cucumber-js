@@ -10,15 +10,12 @@ export function isFailure(result: messages.TestStepResult): boolean {
   return (
     result.status === 'AMBIGUOUS' ||
     result.status === 'UNDEFINED' ||
-    (result.status === 'FAILED' && !result.willBeRetried)
+    result.status === 'FAILED'
   )
 }
 
 export function isWarning(result: messages.TestStepResult): boolean {
-  return (
-    result.status === 'PENDING' ||
-    (result.status === 'FAILED' && result.willBeRetried)
-  )
+  return result.status === 'PENDING'
 }
 
 export function isIssue(result: messages.TestStepResult): boolean {

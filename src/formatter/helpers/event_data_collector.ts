@@ -88,7 +88,6 @@ export default class EventDataCollector {
       stepAttachments: {},
       stepResults: {},
       worstTestStepResult: {
-        willBeRetried: false,
         duration: { seconds: 0, nanos: 0 },
         status: messages.TestStepResultStatus.UNKNOWN,
       },

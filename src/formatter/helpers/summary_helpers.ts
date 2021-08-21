@@ -34,14 +34,14 @@ export function formatSummary({
         stepResult.duration
       )
     })
-    if (!worstTestStepResult.willBeRetried) {
-      testCaseResults.push(worstTestStepResult)
-      testCase.testSteps.forEach((testStep) => {
-        if (doesHaveValue(testStep.pickleStepId)) {
-          testStepResults.push(stepResults[testStep.id])
-        }
-      })
-    }
+    // if (!worstTestStepResult.willBeRetried) {
+    testCaseResults.push(worstTestStepResult)
+    testCase.testSteps.forEach((testStep) => {
+      if (doesHaveValue(testStep.pickleStepId)) {
+        testStepResults.push(stepResults[testStep.id])
+      }
+    })
+    // }
   })
   const scenarioSummary = getCountSummary({
     colorFns,
