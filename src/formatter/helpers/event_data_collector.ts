@@ -119,7 +119,10 @@ export default class EventDataCollector {
       testStepResult
   }
 
-  storeTestCaseResult({ testCaseStartedId, willBeRetried }: messages.TestCaseFinished): void {
+  storeTestCaseResult({
+    testCaseStartedId,
+    willBeRetried,
+  }: messages.TestCaseFinished): void {
     const stepResults = Object.values(
       this.testCaseAttemptDataMap[testCaseStartedId].stepResults
     )
