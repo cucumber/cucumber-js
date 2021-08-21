@@ -1,8 +1,8 @@
 import { getAmbiguousStepException } from './helpers'
 import AttachmentManager from './attachment_manager'
 import StepRunner from './step_runner'
-import { IdGenerator, getWorstTestStepResult } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
+import { getWorstTestStepResult, IdGenerator } from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import {
   ISupportCodeLibrary,
@@ -148,7 +148,6 @@ export default class TestCaseRunner {
 
   async aroundTestStep(
     testStepId: string,
-    attempt: number,
     runStepFn: () => Promise<messages.TestStepResult>
   ): Promise<void> {
     const testStepStarted: messages.Envelope = {
@@ -163,16 +162,6 @@ export default class TestCaseRunner {
     const testStepResult = await runStepFn()
     this.currentTestStepId = null
     this.testStepResults.push(testStepResult)
-    if (
-      testStepResult.status === messages.TestStepResultStatus.FAILED &&
-      attempt + 1 < this.maxAttempts
-    ) {
-      /*
-      TODO dont rely on `testStepResult.willBeRetried`, it will be moved or removed
-      see https://github.com/cucumber/cucumber/issues/902
-       */
-      // testStepResult.willBeRetried = true
-    }
     const testStepFinished: messages.Envelope = {
       testStepFinished: {
         testCaseStartedId: this.currentTestCaseStartedId,
@@ -199,7 +188,7 @@ export default class TestCaseRunner {
       // used to determine whether a hook is a Before or After
       let didWeRunStepsYet = false
       for (const testStep of this.testCase.testSteps) {
-        await this.aroundTestStep(testStep.id, attempt, async () => {
+        await this.aroundTestStep(testStep.id, async () => {
           if (doesHaveValue(testStep.hookId)) {
             const hookParameter: ITestCaseHookParameter = {
               gherkinDocument: this.gherkinDocument,
@@ -224,17 +213,20 @@ export default class TestCaseRunner {
           }
         })
       }
+      const willBeRetried =
+        this.getWorstStepResult().status ===
+          messages.TestStepResultStatus.FAILED && attempt + 1 < this.maxAttempts
       const testCaseFinished: messages.Envelope = {
         testCaseFinished: {
           testCaseStartedId: this.currentTestCaseStartedId,
           timestamp: this.stopwatch.timestamp(),
-          willBeRetried: false, // TODO implement properly
+          willBeRetried,
         },
       }
       this.eventBroadcaster.emit('envelope', testCaseFinished)
-      // if (!this.getWorstStepResult().willBeRetried) {
-      //   break
-      // }
+      if (!willBeRetried) {
+        break
+      }
       this.resetTestProgressData()
     }
     return this.getWorstStepResult().status
