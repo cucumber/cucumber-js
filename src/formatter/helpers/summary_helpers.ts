@@ -27,22 +27,24 @@ export function formatSummary({
   const testCaseResults: messages.TestStepResult[] = []
   const testStepResults: messages.TestStepResult[] = []
   let totalStepDuration = messages.TimeConversion.millisecondsToDuration(0)
-  testCaseAttempts.forEach(({ testCase, worstTestStepResult, stepResults }) => {
-    Object.values(stepResults).forEach((stepResult) => {
-      totalStepDuration = messages.TimeConversion.addDurations(
-        totalStepDuration,
-        stepResult.duration
-      )
-    })
-    // if (!worstTestStepResult.willBeRetried) {
-    testCaseResults.push(worstTestStepResult)
-    testCase.testSteps.forEach((testStep) => {
-      if (doesHaveValue(testStep.pickleStepId)) {
-        testStepResults.push(stepResults[testStep.id])
+  testCaseAttempts.forEach(
+    ({ testCase, willBeRetried, worstTestStepResult, stepResults }) => {
+      Object.values(stepResults).forEach((stepResult) => {
+        totalStepDuration = messages.TimeConversion.addDurations(
+          totalStepDuration,
+          stepResult.duration
+        )
+      })
+      if (!willBeRetried) {
+        testCaseResults.push(worstTestStepResult)
+        testCase.testSteps.forEach((testStep) => {
+          if (doesHaveValue(testStep.pickleStepId)) {
+            testStepResults.push(stepResults[testStep.id])
+          }
+        })
       }
-    })
-    // }
-  })
+    }
+  )
   const scenarioSummary = getCountSummary({
     colorFns,
     objects: testCaseResults,
