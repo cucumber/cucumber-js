@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
+import sinon from 'sinon'
 import TestCaseRunner from './test_case_runner'
 import { EventEmitter } from 'events'
 import { IdGenerator } from '@cucumber/messages'
@@ -438,14 +439,17 @@ describe('TestCaseRunner', () => {
 
     describe('with step hooks', () => {
       it('emits the expected envelopes and returns a skipped result', async () => {
+        const beforeStep = sinon.stub()
+        const afterStep = sinon.stub()
+
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(
           ({ Given, BeforeStep, AfterStep }) => {
             Given('a step', function () {
               clock.tick(1)
             })
-            BeforeStep(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            AfterStep(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            BeforeStep(beforeStep) // eslint-disable-line @typescript-eslint/no-empty-function
+            AfterStep(afterStep) // eslint-disable-line @typescript-eslint/no-empty-function
           }
         )
         const {
@@ -468,6 +472,22 @@ describe('TestCaseRunner', () => {
         expect(result).to.eql(
           envelopes[2].testStepFinished.testStepResult.status
         )
+        expect(beforeStep).to.have.been.calledOnceWith({
+          gherkinDocument,
+          pickle,
+          pickleStep: pickle.steps[0],
+          testCaseStartedId: envelopes[1].testStepStarted.testCaseStartedId,
+          testStepId: envelopes[1].testStepStarted.testStepId,
+          result: undefined,
+        })
+        expect(afterStep).to.have.been.calledOnceWith({
+          gherkinDocument,
+          pickle,
+          pickleStep: pickle.steps[0],
+          testCaseStartedId: envelopes[2].testStepFinished.testCaseStartedId,
+          testStepId: envelopes[2].testStepFinished.testStepId,
+          result: envelopes[2].testStepFinished.testStepResult,
+        })
       })
     })
   })
