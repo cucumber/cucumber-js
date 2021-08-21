@@ -271,7 +271,7 @@
     "test": "npm run lint && npm run types-test && npm run unit-test && npm run cck-test && npm run feature-test",
     "types-test": "tsd",
     "unit-test": "mocha 'src/**/*_spec.ts'",
-    "update-dependencies": "npx npm run-check-updates --upgrade"
+    "update-dependencies": "npx npm-check-updates --upgrade"
   },
   "bin": {
     "cucumber-js": "./bin/cucumber-js"
