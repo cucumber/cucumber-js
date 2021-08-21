@@ -19,6 +19,8 @@ See the [migration guide](./docs/migration.md) for details of how to migrate fro
 
 ### Added
 
+* `BeforeStep` and `AfterStep` hook functions now have access to the `pickleStep` in their argument object.
+
 ### Changed
 
 ### Deprecated
