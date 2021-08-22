@@ -11,27 +11,27 @@ You can chat with us in the [#committers-js](https://cucumberbdd.slack.com/archi
 
 ## Setup
 
-* install [Node.Js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/)
-* `yarn install` - Install dependencies
-* `yarn test` - Compile typescript and run the tests
+* install [Node.Js](https://nodejs.org/en/)
+* `npm install` - Install dependencies
+* `npm test` - Compile typescript and run the tests
 
 ## Tests
 
-Now type `yarn run` or see the `package.json` scripts section for how to run each category of tests.
+Now type `npm run` or see the `package.json` scripts section for how to run each category of tests.
 
-* lint - `yarn lint`
+* lint - `npm run lint`
   * [prettier](https://github.com/prettier/prettier)
   * [eslint](https://eslint.org/)
   * [dependency-lint](https://github.com/charlierudolph/dependency-lint)
-* typescript tests - `yarn types-test`
+* typescript tests - `npm run types-test`
   * [tsd](https://github.com/SamVerschueren/tsd)
-* unit tests - `yarn unit-test`
+* unit tests - `npm run unit-test`
   * [mocha](https://mochajs.org/)
   * [chai](https://www.chaijs.com/)
   * [sinon](https://sinonjs.org/)
-* compatibility kit - `yarn cck-test`
+* compatibility kit - `npm run cck-test`
   * checking that cucumber-js emits the [correct messages](https://github.com/cucumber/cucumber/tree/master/compatibility-kit) 
-* feature tests - `yarn feature-test`
+* feature tests - `npm run feature-test`
   * cucumber-js tests itself
 
 ## Internals
@@ -85,16 +85,15 @@ Start the container:
 
     make docker-run
 
-Inside the container, install the correct versions of Node and Yarn:
+Inside the container, install the correct version of Node:
 
     nvm install --lts
-    npm install -g yarn
 
 Then update the dependencies and test:
 
-    yarn update-dependencies
-    yarn
-    yarn test
+    npm run update-dependencies
+    npm run
+    npm run test
 
 If the tests fail, update your code to be compatible with the new libraries, or revert the library upgrades that break the build.
 
