@@ -16,7 +16,6 @@ export interface IGetInvocationDataResponse {
 
 export interface IDefinitionOptions {
   timeout?: number
-  wrapperOptions?: any
 }
 
 export interface IHookDefinitionOptions extends IDefinitionOptions {
@@ -28,7 +27,6 @@ export interface IDefinitionParameters<T extends IDefinitionOptions> {
   id: string
   line: number
   options: T
-  unwrappedCode?: Function
   uri: string
 }
 
@@ -43,7 +41,6 @@ export interface IDefinition {
   readonly id: string
   readonly line: number
   readonly options: IDefinitionOptions
-  readonly unwrappedCode: Function
   readonly uri: string
 
   getInvocationParameters: (
@@ -56,7 +53,6 @@ export default abstract class Definition {
   public readonly id: string
   public readonly line: number
   public readonly options: IDefinitionOptions
-  public readonly unwrappedCode: Function
   public readonly uri: string
 
   constructor({
@@ -64,14 +60,12 @@ export default abstract class Definition {
     id,
     line,
     options,
-    unwrappedCode,
     uri,
   }: IDefinitionParameters<IDefinitionOptions>) {
     this.code = code
     this.id = id
     this.line = line
     this.options = options
-    this.unwrappedCode = unwrappedCode
     this.uri = uri
   }
 
