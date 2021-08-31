@@ -54,6 +54,7 @@ describe('JsonFormatter', () => {
 
         const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
 
+        const previousTime = Date.now()
         // Act
         const output = await testFormatter({
           sources,
@@ -61,8 +62,13 @@ describe('JsonFormatter', () => {
           type: 'json',
         })
 
+        const outputJSON = JSON.parse(output)
+
         // Assert
-        expect(JSON.parse(output)).to.eql([
+        expect(outputJSON[0].time).to.greaterThan(previousTime)
+        delete outputJSON[0].time
+
+        expect(outputJSON).to.eql([
           {
             description: '  my feature description',
             elements: [
@@ -461,6 +467,7 @@ describe('JsonFormatter', () => {
 
         const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
 
+        const previousTime = Date.now()
         // Act
         const output = await testFormatter({
           sources,
@@ -468,8 +475,12 @@ describe('JsonFormatter', () => {
           type: 'json',
         })
 
+        const outputJSON = JSON.parse(output)
+
         // Assert
-        expect(JSON.parse(output)).to.eql([
+        expect(outputJSON[0].time).to.greaterThan(previousTime)
+        delete outputJSON[0].time
+        expect(outputJSON).to.eql([
           {
             description: '  my feature description',
             elements: [

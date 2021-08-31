@@ -23,6 +23,7 @@ export interface IJsonFeature {
   name: string
   tags: IJsonTag[]
   uri: string
+  time: number
 }
 
 export interface IJsonScenario {
@@ -195,6 +196,7 @@ export default class JsonFormatter extends Formatter {
       name: feature.name,
       tags: this.getFeatureTags(feature),
       uri,
+      time: Date.now(),
     }
   }
 
