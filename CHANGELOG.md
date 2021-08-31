@@ -1848,6 +1848,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 * Modularize the project and use browserify.js to serve a single JS file to browsers. ([#3](https://github.com/cucumber/cucumber-js/issues/3), Julien Biezemans)
 * Rename Cucumber.Types to Cucumber.Type (Julien Biezemans)
 * Use progress formatter in cucumber-features ([#17](https://github.com/cucumber/cucumber-js/issues/17), Julien Biezemans)
+* Add time run test into json formatter ([#1784](https://github.com/cucumber/cucumber-js/pull/1784))
 
 
 
