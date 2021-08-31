@@ -36,12 +36,23 @@ Then(
 Then(
   'the json formatter output matches the fixture {string}',
   async function (this: World, filePath: string) {
+    const now = Date.now()
     const actualPath = path.join(this.tmpDir, `json.out`)
     const actualJson = await fs.readFile(actualPath, 'utf8')
     const actual = normalizeJsonOutput(actualJson, this.tmpDir)
     const fixturePath = path.join(__dirname, '..', 'fixtures', filePath)
     const expected = require(fixturePath) // eslint-disable-line @typescript-eslint/no-var-requires
     try {
+      // because time is generate in running step in json.out will less than time now
+      if (actual.length || expected.length) {
+        ;(actual.length > expected.length ? actual : expected).forEach(
+          (_: any, index: number) => {
+            expect(actual[index].time || 0).to.lessThan(now)
+            delete actual[index].time
+            delete expected[index]?.time
+          }
+        )
+      }
       expect(actual).to.eql(expected)
     } catch (e) {
       if (process.env.GOLDEN) {

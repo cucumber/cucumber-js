@@ -62,11 +62,13 @@ describe('JsonFormatter', () => {
           type: 'json',
         })
 
-        const outputJSON = JSON.parse(output)
+        const outputJSON = JSON.parse(output) || []
 
         // Assert
-        expect(outputJSON[0].time).to.greaterThan(previousTime)
-        delete outputJSON[0].time
+        outputJSON.forEach((_: any, index: number) => {
+          expect(outputJSON[index].time).to.greaterThan(previousTime)
+          delete outputJSON[index].time
+        })
 
         expect(outputJSON).to.eql([
           {
@@ -475,11 +477,14 @@ describe('JsonFormatter', () => {
           type: 'json',
         })
 
-        const outputJSON = JSON.parse(output)
+        const outputJSON = JSON.parse(output) || []
 
         // Assert
-        expect(outputJSON[0].time).to.greaterThan(previousTime)
-        delete outputJSON[0].time
+        outputJSON.forEach((_: any, index: number) => {
+          expect(outputJSON[index].time).to.greaterThan(previousTime)
+          delete outputJSON[index].time
+        })
+
         expect(outputJSON).to.eql([
           {
             description: '  my feature description',
