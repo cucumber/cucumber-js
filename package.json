@@ -168,12 +168,12 @@
     "node": ">=12"
   },
   "dependencies": {
-    "@cucumber/create-meta": "^5.0.0",
+    "@cucumber/create-meta": "^6.0.0",
     "@cucumber/cucumber-expressions": "^12.1.1",
-    "@cucumber/gherkin": "^19.0.3",
-    "@cucumber/gherkin-streams": "^2.0.2",
-    "@cucumber/html-formatter": "^15.0.2",
-    "@cucumber/messages": "^16.0.1",
+    "@cucumber/gherkin": "^20.0.0",
+    "@cucumber/gherkin-streams": "^3.0.0",
+    "@cucumber/html-formatter": "^16.0.0",
+    "@cucumber/messages": "^17.0.0",
     "@cucumber/tag-expressions": "^3.0.1",
     "assertion-error-formatter": "^3.0.0",
     "capital-case": "^1.0.4",
@@ -200,8 +200,8 @@
   },
   "devDependencies": {
     "@cucumber/compatibility-kit": "7.0.0",
-    "@cucumber/message-streams": "2.1.0",
-    "@cucumber/query": "10.1.0",
+    "@cucumber/message-streams": "3.0.0",
+    "@cucumber/query": "11.0.0",
     "@sinonjs/fake-timers": "7.1.2",
     "@types/chai": "4.2.21",
     "@types/dirty-chai": "2.0.2",
