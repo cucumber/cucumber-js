@@ -186,7 +186,7 @@
     "figures": "^3.2.0",
     "glob": "^7.1.6",
     "indent-string": "^4.0.0",
-    "is-stream": "^2.0.0",
+    "is-stream": "^3.0.0",
     "knuth-shuffle-seeded": "^1.0.6",
     "mz": "^2.7.0",
     "progress": "^2.0.3",
