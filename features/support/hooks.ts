@@ -1,5 +1,5 @@
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
-import timeMethods from '../time'
+import timeMethods from '../../src/time'
 
 import { After, Before, formatterHelpers } from '../../'
 import fs from 'fs'
@@ -116,10 +116,10 @@ After(async function (this: World) {
 
 let clock: InstalledClock
 
-Before(async function () {
+Before('@fake-timers', function () {
   clock = FakeTimers.withGlobal(timeMethods).install()
 })
 
-After(async function () {
+After('@fake-timers', function () {
   clock.uninstall()
 })
