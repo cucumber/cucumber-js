@@ -33,21 +33,21 @@ Feature: usage formatter
     When I run cucumber-js with `--format usage`
     Then it outputs the text:
       """
-      ┌────────────────────┬──────────┬───────────────────────────────────────┐
-      │ Pattern / Text     │ Duration │ Location                              │
-      ├────────────────────┼──────────┼───────────────────────────────────────┤
-      │ step A             │ <d>ms    │ features/step_definitions/steps.js:3  │
-      │   step A           │ <d>ms    │ features/a.feature:3                  │
-      ├────────────────────┼──────────┼───────────────────────────────────────┤
-      │ /^(slow )?step B$/ │ <d>ms    │ features/step_definitions/steps.js:4  │
-      │   slow step B      │ <d>ms    │ features/a.feature:5                  │
-      │   step B           │ <d>ms    │ features/a.feature:4                  │
-      ├────────────────────┼──────────┼───────────────────────────────────────┤
-      │ step C             │ <d>ms    │ features/step_definitions/steps.js:11 │
-      │   step C           │ <d>ms    │ features/a.feature:6                  │
-      ├────────────────────┼──────────┼───────────────────────────────────────┤
-      │ step D             │ UNUSED   │ features/step_definitions/steps.js:12 │
-      └────────────────────┴──────────┴───────────────────────────────────────┘
+      ┌────────────────────┬──────────────┬───────────────────────────────────────┐
+      │ Pattern / Text     │ Duration     │ Location                              │
+      ├────────────────────┼──────────────┼───────────────────────────────────────┤
+      │ step A             │ <d>ms        │ features/step_definitions/steps.js:3  │
+      │   step A           │ <d>ms        │ features/a.feature:3                  │
+      ├────────────────────┼──────────────┼───────────────────────────────────────┤
+      │ /^(slow )?step B$/ │ <d>ms        │ features/step_definitions/steps.js:4  │
+      │   slow step B      │ <d>ms        │ features/a.feature:5                  │
+      │   step B           │ <d>ms        │ features/a.feature:4                  │
+      ├────────────────────┼──────────────┼───────────────────────────────────────┤
+      │ step C             │ <d>ms        │ features/step_definitions/steps.js:11 │
+      │   step C           │ <d>ms        │ features/a.feature:6                  │
+      ├────────────────────┼──────────────┼───────────────────────────────────────┤
+      │ step D             │ UNUSED       │ features/step_definitions/steps.js:12 │
+      └────────────────────┴──────────────┴───────────────────────────────────────┘
       """
 
   Scenario: only list 5 slowest matches
@@ -81,15 +81,15 @@ Feature: usage formatter
     When I run cucumber-js with `--format usage`
     Then it outputs the text:
       """
-      ┌──────────────────┬──────────┬──────────────────────────────────────┐
-      │ Pattern / Text   │ Duration │ Location                             │
-      ├──────────────────┼──────────┼──────────────────────────────────────┤
-      │ /^(slow )?step$/ │ <d>ms    │ features/step_definitions/steps.js:3 │
-      │   slow step      │ <d>ms    │ features/a.feature:3                 │
-      │   slow step      │ <d>ms    │ features/a.feature:3                 │
-      │   slow step      │ <d>ms    │ features/a.feature:3                 │
-      │   slow step      │ <d>ms    │ features/a.feature:3                 │
-      │   slow step      │ <d>ms    │ features/a.feature:3                 │
-      │   5 more         │          │                                      │
-      └──────────────────┴──────────┴──────────────────────────────────────┘
+      ┌──────────────────┬──────────────┬──────────────────────────────────────┐
+      │ Pattern / Text   │ Duration     │ Location                             │
+      ├──────────────────┼──────────────┼──────────────────────────────────────┤
+      │ /^(slow )?step$/ │ <d>ms        │ features/step_definitions/steps.js:3 │
+      │   slow step      │ <d>ms        │ features/a.feature:3                 │
+      │   slow step      │ <d>ms        │ features/a.feature:3                 │
+      │   slow step      │ <d>ms        │ features/a.feature:3                 │
+      │   slow step      │ <d>ms        │ features/a.feature:3                 │
+      │   slow step      │ <d>ms        │ features/a.feature:3                 │
+      │   5 more         │              │                                      │
+      └──────────────────┴──────────────┴──────────────────────────────────────┘
       """

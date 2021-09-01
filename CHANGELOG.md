@@ -20,6 +20,7 @@ See the [migration guide](./docs/migration.md) for details of how to migrate fro
 ### Added
 
 ### Changed
+* Use performance timers for test case duration measurement.
 
 ### Deprecated
 
