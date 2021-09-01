@@ -5,7 +5,6 @@ Feature: usage formatter
   So I know where my bottelnecks are and what step definitions I can remove
 
 
-  @fake-timers
   Scenario:
     Given a file named "features/a.feature" with:
       """
@@ -52,7 +51,6 @@ Feature: usage formatter
       """
 
 
-  @fake-timers
   Scenario: only list 5 slowest matches
     Given a file named "features/a.feature" with:
       """

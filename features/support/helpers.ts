@@ -11,6 +11,7 @@ export function normalizeText(text: string): string {
     .replace(/\d+(.\d+)?ms/g, '<d>ms')
     .replace(/\//g, path.sep)
     .replace(/ +/g, ' ')
+    .replace('/─+/g', '─')
     .split('\n')
     .map((line) => line.trim())
     .join('\n')
