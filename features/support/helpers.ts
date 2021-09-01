@@ -11,13 +11,10 @@ export function normalizeText(text: string): string {
     .replace(/\d+(.\d+)?ms/g, '<d>ms')
     .replace(/\//g, path.sep)
     .replace(/ +/g, ' ')
-    .replace(/─+/ug, '─')
+    .replace(/─+/gu, '─')
     .split('\n')
     .map((line) => line.trim())
     .join('\n')
 
-  console.log(normalized);
-
   return normalizeSummaryDuration(normalized)
-
 }
