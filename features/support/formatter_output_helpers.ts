@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import {
   doesHaveValue,
   doesNotHaveValue,
@@ -68,13 +67,13 @@ export function stripMetaMessages(
 }
 
 export function normalizeJsonOutput(str: string, cwd: string): IJsonFeature[] {
-  const json = JSON.parse(valueOrDefault(str, '[]'))
-  _.each(json, (feature: IJsonFeature) => {
+  const json: IJsonFeature[] = JSON.parse(valueOrDefault(str, '[]'))
+  json.forEach((feature: IJsonFeature) => {
     if (doesHaveValue(feature.uri)) {
       feature.uri = normalizeExceptionAndUri(feature.uri, cwd)
     }
-    _.each(feature.elements, (element: IJsonScenario) => {
-      _.each(element.steps, (step: IJsonStep) => {
+    feature.elements.forEach((element: IJsonScenario) => {
+      element.steps.forEach((step: IJsonStep) => {
         if (doesHaveValue(step.match) && doesHaveValue(step.match.location)) {
           step.match.location = normalizeExceptionAndUri(
             step.match.location,

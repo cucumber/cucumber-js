@@ -1,17 +1,71 @@
-# Migrating to cucumber-js 7.x.x
+# Migrating from 7.x.x to 8.x.x
+
+## Removal of setDefinitionFunctionWrapper
+
+If this was used to wrap generator functions, please transition to using async / await.
+If this was used to wrap step definitions, please use `BeforeStep` / `AfterStep` hooks instead.
+If you had other use cases, please create an issue.
+
+# Migrating from 6.x.x to 7.x.x
 
 ## Package Name
 
 cucumber-js is now published at `@cucumber/cucumber` instead of `cucumber`. To upgrade, you'll need to remove the old package and add the new one:
- 
+
 ```shell
 $ npm rm cucumber
 $ npm install --save-dev @cucumber/cucumber
-``` 
- 
+```
+
 You'll need to update any `import`/`require` statements in your support code to use the new package name.
 
 (The executable is still `cucumber-js` though.)
+
+## Hooks
+
+The result object passed as the argument to your `After` hook function has a different structure.
+
+Previously in `cucumber`:
+
+```js
+{
+  "sourceLocation": {
+    "uri": "features/example.feature",
+    "line": 7
+  },
+  "pickle": {...},
+  "result": {
+    "duration": 660000000,
+    "status": "failed",
+    "exception": {
+      "name": "AssertionError",
+      "message": "...",
+      "showDiff": false,
+      "stack": "..."
+    },
+    "retried": true
+  }
+}
+```
+
+Now in `@cucumber/cucumber`:
+
+```js
+{
+  "gherkinDocument": {...}, // schema: https://github.com/cucumber/common/blob/messages/v16.0.1/messages/jsonschema/GherkinDocument.json
+  "pickle": {...}, // schema: https://github.com/cucumber/common/blob/messages/v16.0.1/messages/jsonschema/Pickle.json
+  "testCaseStartedId": "[uuid]",
+  "result": {
+    "status": "FAILED", // one of: UNKNOWN, PASSED, SKIPPED, PENDING, UNDEFINED, AMBIGUOUS, FAILED
+    "message": "...", // includes stack trace
+    "duration": {
+      "seconds": "0",
+      "nanos": 660000000
+    },
+    "willBeRetried": true
+  }
+}
+```
 
 ## Formatters
 

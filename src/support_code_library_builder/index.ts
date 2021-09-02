@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { buildParameterType, getDefinitionLineAndUri } from './build_helpers'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
@@ -8,15 +7,12 @@ import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { formatLocation } from '../formatter/helpers'
 import validateArguments from './validate_arguments'
-import arity from 'util-arity'
-
 import {
   CucumberExpression,
   ParameterTypeRegistry,
   RegularExpression,
 } from '@cucumber/cucumber-expressions'
-import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { validateNoGeneratorFunctions } from './finalize_helpers'
+import { doesHaveValue } from '../value_checker'
 import {
   DefineStepPattern,
   IDefineStepOptions,
@@ -74,7 +70,6 @@ export class SupportCodeLibraryBuilder {
   private beforeTestStepHookDefinitionConfigs: ITestStepHookDefinitionConfig[]
   private cwd: string
   private defaultTimeout: number
-  private definitionFunctionWrapper: any
   private newId: IdGenerator.NewId
   private parameterTypeRegistry: ParameterTypeRegistry
   private stepDefinitionConfigs: IStepDefinitionConfig[]
@@ -106,9 +101,6 @@ export class SupportCodeLibraryBuilder {
       Given: defineStep,
       setDefaultTimeout: (milliseconds) => {
         this.defaultTimeout = milliseconds
-      },
-      setDefinitionFunctionWrapper: (fn) => {
-        this.definitionFunctionWrapper = fn
       },
       setWorldConstructor: (fn) => {
         this.World = fn
@@ -149,13 +141,19 @@ export class SupportCodeLibraryBuilder {
 
   defineTestCaseHook(
     getCollection: () => ITestCaseHookDefinitionConfig[]
-  ): (
-    options: string | IDefineTestCaseHookOptions | TestCaseHookFunction,
-    code?: TestCaseHookFunction
+  ): <WorldType>(
+    options:
+      | string
+      | IDefineTestCaseHookOptions
+      | TestCaseHookFunction<WorldType>,
+    code?: TestCaseHookFunction<WorldType>
   ) => void {
-    return (
-      options: string | IDefineTestCaseHookOptions | TestCaseHookFunction,
-      code?: TestCaseHookFunction
+    return <WorldType>(
+      options:
+        | string
+        | IDefineTestCaseHookOptions
+        | TestCaseHookFunction<WorldType>,
+      code?: TestCaseHookFunction<WorldType>
     ) => {
       if (typeof options === 'string') {
         options = { tags: options }
@@ -180,13 +178,19 @@ export class SupportCodeLibraryBuilder {
 
   defineTestStepHook(
     getCollection: () => ITestStepHookDefinitionConfig[]
-  ): (
-    options: string | IDefineTestStepHookOptions | TestStepHookFunction,
-    code?: TestStepHookFunction
+  ): <WorldType>(
+    options:
+      | string
+      | IDefineTestStepHookOptions
+      | TestStepHookFunction<WorldType>,
+    code?: TestStepHookFunction<WorldType>
   ) => void {
-    return (
-      options: string | IDefineTestStepHookOptions | TestStepHookFunction,
-      code?: TestStepHookFunction
+    return <WorldType>(
+      options:
+        | string
+        | IDefineTestStepHookOptions
+        | TestStepHookFunction<WorldType>,
+      code?: TestStepHookFunction<WorldType>
     ) => {
       if (typeof options === 'string') {
         options = { tags: options }
@@ -232,39 +236,16 @@ export class SupportCodeLibraryBuilder {
     }
   }
 
-  wrapCode({
-    code,
-    wrapperOptions,
-  }: {
-    code: Function
-    wrapperOptions: any
-  }): Function {
-    if (doesHaveValue(this.definitionFunctionWrapper)) {
-      const codeLength = code.length
-      const wrappedCode = this.definitionFunctionWrapper(code, wrapperOptions)
-      if (wrappedCode !== code) {
-        return arity(codeLength, wrappedCode)
-      }
-      return wrappedCode
-    }
-    return code
-  }
-
   buildTestCaseHookDefinitions(
     configs: ITestCaseHookDefinitionConfig[],
     canonicalIds?: string[]
   ): TestCaseHookDefinition[] {
     return configs.map(({ code, line, options, uri }, index) => {
-      const wrappedCode = this.wrapCode({
-        code,
-        wrapperOptions: options.wrapperOptions,
-      })
       return new TestCaseHookDefinition({
-        code: wrappedCode,
+        code,
         id: canonicalIds ? canonicalIds[index] : this.newId(),
         line,
         options,
-        unwrappedCode: code,
         uri,
       })
     })
@@ -274,16 +255,11 @@ export class SupportCodeLibraryBuilder {
     configs: ITestStepHookDefinitionConfig[]
   ): TestStepHookDefinition[] {
     return configs.map(({ code, line, options, uri }) => {
-      const wrappedCode = this.wrapCode({
-        code,
-        wrapperOptions: options.wrapperOptions,
-      })
       return new TestStepHookDefinition({
-        code: wrappedCode,
+        code,
         id: this.newId(),
         line,
         options,
-        unwrappedCode: code,
         uri,
       })
     })
@@ -293,24 +269,17 @@ export class SupportCodeLibraryBuilder {
     configs: ITestRunHookDefinitionConfig[]
   ): TestRunHookDefinition[] {
     return configs.map(({ code, line, options, uri }) => {
-      const wrappedCode = this.wrapCode({
-        code,
-        wrapperOptions: options.wrapperOptions,
-      })
       return new TestRunHookDefinition({
-        code: wrappedCode,
+        code,
         id: this.newId(),
         line,
         options,
-        unwrappedCode: code,
         uri,
       })
     })
   }
 
-  buildStepDefinitions(
-    canonicalIds?: string[]
-  ): {
+  buildStepDefinitions(canonicalIds?: string[]): {
     stepDefinitions: StepDefinition[]
     undefinedParameterTypes: messages.UndefinedParameterType[]
   } {
@@ -342,19 +311,14 @@ export class SupportCodeLibraryBuilder {
           )
         }
 
-        const wrappedCode = this.wrapCode({
-          code,
-          wrapperOptions: options.wrapperOptions,
-        })
         stepDefinitions.push(
           new StepDefinition({
-            code: wrappedCode,
+            code,
             expression,
             id: canonicalIds ? canonicalIds[index] : this.newId(),
             line,
             options,
             pattern,
-            unwrappedCode: code,
             uri,
           })
         )
@@ -364,18 +328,6 @@ export class SupportCodeLibraryBuilder {
   }
 
   finalize(canonicalIds?: ICanonicalSupportCodeIds): ISupportCodeLibrary {
-    if (doesNotHaveValue(this.definitionFunctionWrapper)) {
-      const definitionConfigs = _.chain([
-        this.afterTestCaseHookDefinitionConfigs,
-        this.afterTestRunHookDefinitionConfigs,
-        this.beforeTestCaseHookDefinitionConfigs,
-        this.beforeTestRunHookDefinitionConfigs,
-        this.stepDefinitionConfigs,
-      ])
-        .flatten()
-        .value()
-      validateNoGeneratorFunctions({ cwd: this.cwd, definitionConfigs })
-    }
     const stepDefinitionsResult = this.buildStepDefinitions(
       canonicalIds?.stepDefinitionIds
     )
@@ -417,7 +369,6 @@ export class SupportCodeLibraryBuilder {
     this.beforeTestCaseHookDefinitionConfigs = []
     this.beforeTestRunHookDefinitionConfigs = []
     this.beforeTestStepHookDefinitionConfigs = []
-    this.definitionFunctionWrapper = null
     this.defaultTimeout = 5000
     this.parameterTypeRegistry = new ParameterTypeRegistry()
     this.stepDefinitionConfigs = []

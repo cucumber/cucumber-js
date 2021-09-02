@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import ArgvParser, {
   IParsedArgvFormatOptions,
   IParsedArgvOptions,
@@ -6,7 +5,6 @@ import ArgvParser, {
 import fs from 'mz/fs'
 import path from 'path'
 import OptionSplitter from './option_splitter'
-import bluebird from 'bluebird'
 import glob from 'glob'
 import { promisify } from 'util'
 import { IPickleFilterOptions } from '../pickle_filter'
@@ -59,8 +57,6 @@ export default class ConfigurationBuilder {
 
   constructor({ argv, cwd }: INewConfigurationBuilderOptions) {
     this.cwd = cwd
-
-    ArgvParser.lint(argv)
     const parsedArgv = ArgvParser.parse(argv)
     this.args = parsedArgv.args
     this.options = parsedArgv.options
@@ -122,28 +118,30 @@ export default class ConfigurationBuilder {
     unexpandedPaths: string[],
     defaultExtension: string
   ): Promise<string[]> {
-    const expandedPaths = await bluebird.map(
-      unexpandedPaths,
-      async (unexpandedPath) => {
+    const expandedPaths = await Promise.all(
+      unexpandedPaths.map(async (unexpandedPath) => {
         const matches = await promisify(glob)(unexpandedPath, {
           absolute: true,
           cwd: this.cwd,
         })
-        const expanded = await bluebird.map(matches, async (match) => {
-          if (path.extname(match) === '') {
-            return await promisify(glob)(`${match}/**/*${defaultExtension}`)
-          }
-          return [match]
-        })
-        return _.flatten(expanded)
-      }
+        const expanded = await Promise.all(
+          matches.map(async (match) => {
+            if (path.extname(match) === '') {
+              return await promisify(glob)(`${match}/**/*${defaultExtension}`)
+            }
+            return [match]
+          })
+        )
+        return expanded.flat()
+      })
     )
-    return _.flatten(expandedPaths).map((x) => path.normalize(x))
+    return expandedPaths.flat().map((x) => path.normalize(x))
   }
 
   async expandFeaturePaths(featurePaths: string[]): Promise<string[]> {
     featurePaths = featurePaths.map((p) => p.replace(/(:\d+)*$/g, '')) // Strip line numbers
-    return this.expandPaths(featurePaths, '.feature')
+    featurePaths = [...new Set(featurePaths)] // Deduplicate the feature files
+    return await this.expandPaths(featurePaths, '.feature')
   }
 
   getFeatureDirectoryPaths(featurePaths: string[]): string[] {
@@ -161,7 +159,7 @@ export default class ConfigurationBuilder {
       }
       return path.relative(this.cwd, featureDir)
     })
-    return _.uniq(featureDirs)
+    return [...new Set(featureDirs)]
   }
 
   isPublishing(): boolean {
@@ -193,7 +191,10 @@ export default class ConfigurationBuilder {
 
       mapping[publishUrl] = 'message'
     }
-    return _.map(mapping, (type, outputTo) => ({ outputTo, type }))
+    return Object.keys(mapping).map((outputTo) => ({
+      outputTo,
+      type: mapping[outputTo],
+    }))
   }
 
   isTruthyString(s: string | undefined): boolean {
@@ -205,18 +206,20 @@ export default class ConfigurationBuilder {
 
   async getUnexpandedFeaturePaths(): Promise<string[]> {
     if (this.args.length > 0) {
-      const nestedFeaturePaths = await bluebird.map(this.args, async (arg) => {
-        const filename = path.basename(arg)
-        if (filename[0] === '@') {
-          const filePath = path.join(this.cwd, arg)
-          const content = await fs.readFile(filePath, 'utf8')
-          return _.chain(content).split('\n').map(_.trim).compact().value()
-        }
-        return [arg]
-      })
-      const featurePaths = _.flatten(nestedFeaturePaths)
+      const nestedFeaturePaths = await Promise.all(
+        this.args.map(async (arg) => {
+          const filename = path.basename(arg)
+          if (filename[0] === '@') {
+            const filePath = path.join(this.cwd, arg)
+            const content = await fs.readFile(filePath, 'utf8')
+            return content.split('\n').map((x) => x.trim())
+          }
+          return [arg]
+        })
+      )
+      const featurePaths = nestedFeaturePaths.flat()
       if (featurePaths.length > 0) {
-        return featurePaths
+        return featurePaths.filter((x) => x !== '')
       }
     }
     return ['features/**/*.{feature,feature.md}']

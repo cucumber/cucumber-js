@@ -1,7 +1,6 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import UserCodeRunner, { IRunRequest, IRunResponse } from './user_code_runner'
-import bluebird from 'bluebird'
 import semver from 'semver'
 
 async function testUserCodeRunner(
@@ -242,7 +241,9 @@ describe('UserCodeRunner', () => {
         it('returns timeout as an error', async function () {
           // Arrange
           const fn = async function (): Promise<string> {
-            return await bluebird.resolve('result').delay(200)
+            return await new Promise((resolve) => {
+              setTimeout(() => resolve('result'), 200)
+            })
           }
 
           // Act
@@ -261,7 +262,9 @@ describe('UserCodeRunner', () => {
         it('disables timeout protection', async function () {
           // Arrange
           const fn = async function (): Promise<string> {
-            return await bluebird.resolve('result').delay(200)
+            return await new Promise((resolve) => {
+              setTimeout(() => resolve('result'), 200)
+            })
           }
 
           // Act

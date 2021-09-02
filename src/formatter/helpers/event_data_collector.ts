@@ -1,4 +1,3 @@
-import _, { values } from 'lodash'
 import * as messages from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 import { EventEmitter } from 'events'
@@ -41,7 +40,7 @@ export default class EventDataCollector {
   }
 
   getTestCaseAttempts(): ITestCaseAttempt[] {
-    return _.keys(this.testCaseAttemptDataMap).map((testCaseStartedId) => {
+    return Object.keys(this.testCaseAttemptDataMap).map((testCaseStartedId) => {
       return this.getTestCaseAttempt(testCaseStartedId)
     })
   }
@@ -113,17 +112,15 @@ export default class EventDataCollector {
     testStepId,
     testStepResult,
   }: messages.TestStepFinished): void {
-    this.testCaseAttemptDataMap[testCaseStartedId].stepResults[
-      testStepId
-    ] = testStepResult
+    this.testCaseAttemptDataMap[testCaseStartedId].stepResults[testStepId] =
+      testStepResult
   }
 
   storeTestCaseResult({ testCaseStartedId }: messages.TestCaseFinished): void {
-    const stepResults = values(
+    const stepResults = Object.values(
       this.testCaseAttemptDataMap[testCaseStartedId].stepResults
     )
-    this.testCaseAttemptDataMap[
-      testCaseStartedId
-    ].worstTestStepResult = messages.getWorstTestStepResult(stepResults)
+    this.testCaseAttemptDataMap[testCaseStartedId].worstTestStepResult =
+      messages.getWorstTestStepResult(stepResults)
   }
 }

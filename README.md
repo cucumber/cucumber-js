@@ -22,7 +22,7 @@ We've put a demo of Cucumber.js to [run in your browser](https://cucumber.github
 
 ## Help & support
 
-* See here: https://cucumber.io/support
+* See here: https://cucumber.io/support.
 
 ## Contributing
 
@@ -52,7 +52,7 @@ $ npm install cucumber@6
 
 ## Documentation
 
-The following documentation is for master. See below for documentation for older versions.
+The following documentation is for master. See below the documentation for older versions.
 
 * [CLI](/docs/cli.md)
 * [Custom Formatters](/docs/custom_formatters.md)
@@ -66,6 +66,10 @@ The following documentation is for master. See below for documentation for older
   * [Data Table Interface](/docs/support_files/data_table_interface.md)
   * [Attachments](/docs/support_files/attachments.md)
   * [API Reference](/docs/support_files/api_reference.md)
+* Guides
+  * [Running in parallel](./docs/parallel.md)
+  * [Retrying failing scenarios](./docs/retry.md)
+  * [Profiles](./docs/profiles.md)
 * [FAQ](/docs/faq.md)
 
 #### Documentation for older versions

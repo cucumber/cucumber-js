@@ -9,6 +9,39 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ----
 ## [Unreleased] (In Git)
 
+See the [migration guide](./docs/migration.md) for details of how to migrate from 7.x.x to 8.x.x
+
+### Breaking changes
+
+* Drop support for Node.js 10 and 15, add support for Node.js 16
+* Remove deprecated `--retryTagFilter` option (the correct option is `--retry-tag-filter`)
+* Remove `setDefinitionFunctionWrapper` and step definition option `wrapperOptions`
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+## [7.3.1] (2021-07-20)
+
+### Deprecated
+
+* Deprecate `setDefinitionFunctionWrapper` and step definition option `wrapperOptions`
+
+### Fixed
+
+* Prevent duplicate scenario execution where the same feature is targeted in multiple line expressions ([#1706](https://github.com/cucumber/cucumber-js/issues/1706))
+* Fixed reports banner to point to [new docs](https://cucumber.io/docs/cucumber/environment-variables/) about environment variables
+* Re-add color functions for use with custom formatters [1582](https://github.com/cucumber/cucumber-js/issues/1582)
+* IParameterTypeDefinition regexp fix [1702](https://github.com/cucumber/cucumber-js/issues/1702)
+
+## [7.3.0] (2021-06-17)
+
 ### Added
 
 * Experimental support for [Markdown](https://github.com/cucumber/common/blob/main/gherkin/MARKDOWN_WITH_GHERKIN.md)
@@ -20,14 +53,12 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
   [#1669](https://github.com/cucumber/cucumber-js/pull/1669))
 * Clarify that the JSON formatter will not be removed any time soon
 
-### Deprecated
-
-### Removed
-
 ### Fixed
 
+* `this` now has correct TypeScript type in support code functions ([#1667](https://github.com/cucumber/cucumber-js/issues/1667) [#1690](https://github.com/cucumber/cucumber-js/pull/1690))
 * Progress bar formatter now reports total step count correctly ([#1579](https://github.com/cucumber/cucumber-js/issues/1579)
   [#1669](https://github.com/cucumber/cucumber-js/pull/1669))
+* Rerun functionality will now run nothing if the rerun file is empty from the previous run ([#1302](https://github.com/cucumber/cucumber-js/issues/1302) [#1568](https://github.com/cucumber/cucumber-js/pull/1568))
 * All messages now emitted with project-relative `uri`s
   ([#1534](https://github.com/cucumber/cucumber-js/issues/1534)
   [#1672](https://github.com/cucumber/cucumber-js/pull/1672))
@@ -1841,7 +1872,8 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 <!-- Releases -->
-[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.2.1...master
+[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.3.0...master
+[7.3.0]:        https://github.com/cucumber/cucumber-js/compare/7.3.0-rc.0...7.0.0
 [7.2.1]:        https://github.com/cucumber/cucumber-js/compare/7.2.1-rc.0...7.0.0
 [7.2.0]:        https://github.com/cucumber/cucumber-js/compare/7.2.0-rc.0...7.0.0
 [7.1.0]:        https://github.com/cucumber/cucumber-js/compare/7.1.0-rc.0...7.0.0

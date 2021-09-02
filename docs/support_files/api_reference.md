@@ -2,7 +2,7 @@
 
 ## API Reference
 
-Each method can be destructed from the object returned by `require('@cucumber/cucumber')`. 
+Each method can be destructed from the object returned by `require('@cucumber/cucumber')`.
 
 ---
 
@@ -14,7 +14,9 @@ Define a new parameter type and optionally convert an output parameter into some
 * `regexp`: A regular expression (or array of regular expressions) that match the parameter.
 * `transformer`: An optional function which transforms the captured argument from a string into what is passed to the step definition.
   If no transform function is specified, the captured argument is left as a string.
-  The function can be synchronous or return a `Promise` of the transformed value. The value of `this` is the current world, so the function can delegate to world functions. World delegation does not work with arrow functions.
+  The function can be synchronous or return a `Promise` of the transformed value. The value of `this` is the current world, so the function can delegate to world functions.
+  Note that your transformer functions cannot reference the [world](./world.md) as `this` if you use
+  arrow functions. See [FAQ](../faq.md) for details.
 * `useForSnippets`: Defaults to `true`. That means this parameter type will be used to generate snippets for undefined steps. If the `regexp` frequently matches text you don't intend to be used as arguments, disable its use for snippets with `false`.
 * `preferForRegexpMatch`: Defaults to `false`. Set to `true` if you use regular expressions and you want this parameter type's `regexp` to take precedence over others during a match.
 
@@ -110,7 +112,6 @@ Aliases: `Given`, `When`, `Then`.
 * `pattern`: A regex or string pattern to match against a gherkin step.
 * `options`: An object with the following keys:
   - `timeout`: A step-specific timeout, to override the default timeout.
-  - `wrapperOptions`: Step-specific options that are passed to the definition function wrapper.
 * `fn`: A function, which should be defined as follows:
   - Should have one argument for each capture in the regular expression.
   - May have an additional argument if the gherkin step has a docstring or data table.
@@ -127,37 +128,6 @@ Alias of `defineStep`.
 #### `setDefaultTimeout(milliseconds)`
 
 Set the default timeout for asynchronous steps. Defaults to `5000` milliseconds.
-
----
-
-#### `setDefinitionFunctionWrapper(wrapper)`
-
-Set a function used to wrap step / hook definitions.
-
-The `wrapper` function is expected to take 2 arguments:
-
-- `fn` is the original function defined for the step - needs to be called in order for the step to be run.
-- `options` is the step specific `wrapperOptions` and may be undefined.
-
-A common use case is attaching a screenshot on step failure - this would typically look something like (for a promise-based setup):
-
-```javascript
-setDefinitionFunctionWrapper(function(fn, options) {
-  return function(...args) {
-    // call original function with correct `this` and arguments
-    // ensure return value of function is returned
-    return fn.apply(this, args)
-      .catch(error => {
-        // call a method on world
-        this.doScreenshot();
-        // rethrow error to avoid swallowing failure
-        throw error;
-      });
-  }
-})
-```
-
-When used, the result is wrapped again to ensure it has the same length of the original step / hook definition.
 
 ---
 
