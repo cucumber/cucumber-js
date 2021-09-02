@@ -21,7 +21,7 @@ See the [migration guide](./docs/migration.md) for details of how to migrate fro
 
 * `--config` option to the CLI. It allows you to specify a configuration file other than `cucumber.js`.
   See [docs/profiles.md](./docs/profiles.md#using-another-file-than-cucumber-js) for more info.
-  [#1434](https://github.com/cucumber/cucumber-js/pull/1434)
+  [#1794](https://github.com/cucumber/cucumber-js/pull/1794)
 
 ### Changed
 
