@@ -10,7 +10,7 @@ export default class ProfileLoader {
     this.directory = directory
   }
 
-  async getDefinitions(): Promise<Dictionary<string>> {
+  async getDefinitions(): Promise<Record<string, string>> {
     const isConfigPresent: number = process.argv.indexOf('--config')
     let definitionsFilePath: string = ''
     if (isConfigPresent > 0) {
