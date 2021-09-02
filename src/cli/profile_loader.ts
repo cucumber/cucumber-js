@@ -10,17 +10,11 @@ export default class ProfileLoader {
     this.directory = directory
   }
 
-  async getDefinitions(): Promise<Record<string, string>> {
-    const isConfigPresent: number = process.argv.indexOf('--config')
-    let definitionsFilePath: string = ''
-    if (isConfigPresent > 0) {
-      definitionsFilePath = path.join(
-        this.directory,
-        process.argv[isConfigPresent + 1].toString()
-      )
-    } else {
-      definitionsFilePath = path.join(this.directory, 'cucumber.js')
-    }
+  async getDefinitions(configFile?: string): Promise<Record<string, string>> {
+    const definitionsFilePath: string = path.join(
+      this.directory,
+      configFile || 'cucumber.js'
+    )
 
     const exists = await fs.exists(definitionsFilePath)
     if (!exists) {
@@ -33,8 +27,8 @@ export default class ProfileLoader {
     return definitions
   }
 
-  async getArgv(profiles: string[]): Promise<string[]> {
-    const definitions = await this.getDefinitions()
+  async getArgv(profiles: string[], configFile?: string): Promise<string[]> {
+    const definitions = await this.getDefinitions(configFile)
     if (profiles.length === 0 && doesHaveValue(definitions.default)) {
       profiles = ['default']
     }
