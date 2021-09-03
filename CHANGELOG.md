@@ -19,6 +19,10 @@ See the [migration guide](./docs/migration.md) for details of how to migrate fro
 
 ### Added
 
+* `--config` option to the CLI. It allows you to specify a configuration file other than `cucumber.js`.
+  See [docs/profiles.md](./docs/profiles.md#using-another-file-than-cucumberjs) for more info.
+  [#1794](https://github.com/cucumber/cucumber-js/pull/1794)
+
 ### Changed
 
 ### Deprecated
