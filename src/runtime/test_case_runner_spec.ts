@@ -99,7 +99,6 @@ describe('TestCaseRunner', () => {
           duration: messages.TimeConversion.millisecondsToDuration(1),
           status: messages.TestStepResultStatus.PASSED,
           message: undefined,
-          willBeRetried: false,
         }
 
         // Act
@@ -110,7 +109,7 @@ describe('TestCaseRunner', () => {
         })
 
         // Assert
-        const expectedtEnvelopes = [
+        const expectedtEnvelopes: messages.Envelope[] = [
           {
             testCaseStarted: {
               attempt: 0,
@@ -138,6 +137,7 @@ describe('TestCaseRunner', () => {
             testCaseFinished: {
               testCaseStartedId: '2',
               timestamp: predictableTimestamp(3),
+              willBeRetried: false,
             },
           },
         ]
@@ -165,7 +165,6 @@ describe('TestCaseRunner', () => {
           duration: messages.TimeConversion.millisecondsToDuration(0),
           status: messages.TestStepResultStatus.FAILED,
           message: 'fail',
-          willBeRetried: false,
         }
 
         // Act
@@ -216,7 +215,6 @@ describe('TestCaseRunner', () => {
           message,
           status: messages.TestStepResultStatus.AMBIGUOUS,
           duration: messages.TimeConversion.millisecondsToDuration(0),
-          willBeRetried: false,
         }
         expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
         expect(result).to.eql(
@@ -249,7 +247,6 @@ describe('TestCaseRunner', () => {
         const expected: messages.TestStepResult = {
           status: messages.TestStepResultStatus.UNDEFINED,
           duration: messages.TimeConversion.millisecondsToDuration(0),
-          willBeRetried: false,
         }
         expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
         expect(result).to.eql(
@@ -311,7 +308,6 @@ describe('TestCaseRunner', () => {
                 duration: messages.TimeConversion.millisecondsToDuration(0),
                 message: 'error',
                 status: messages.TestStepResultStatus.FAILED,
-                willBeRetried: true,
               },
               testStepId: '1',
               timestamp: predictableTimestamp(2),
@@ -321,6 +317,7 @@ describe('TestCaseRunner', () => {
             testCaseFinished: {
               testCaseStartedId: '2',
               timestamp: predictableTimestamp(3),
+              willBeRetried: true,
             },
           },
           {
@@ -345,7 +342,6 @@ describe('TestCaseRunner', () => {
                 duration: messages.TimeConversion.millisecondsToDuration(0),
                 message: undefined,
                 status: messages.TestStepResultStatus.PASSED,
-                willBeRetried: false,
               },
               testStepId: '1',
               timestamp: predictableTimestamp(6),
@@ -355,6 +351,7 @@ describe('TestCaseRunner', () => {
             testCaseFinished: {
               testCaseStartedId: '3',
               timestamp: predictableTimestamp(7),
+              willBeRetried: false,
             },
           },
         ]
@@ -392,7 +389,6 @@ describe('TestCaseRunner', () => {
         const expected: messages.TestStepResult = {
           status: messages.TestStepResultStatus.SKIPPED,
           duration: messages.TimeConversion.millisecondsToDuration(0),
-          willBeRetried: false,
         }
         expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
         expect(result).to.eql(
