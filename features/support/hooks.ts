@@ -48,7 +48,6 @@ Before('@esm', function (this: World) {
     name: 'feature-test-pickle',
     type: 'module',
   })
-  return undefined
 })
 
 Before('@global-install', function (this: World) {
