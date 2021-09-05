@@ -9,8 +9,9 @@ import { doesHaveValue, valueOrDefault } from '../value_checker'
 
 interface TestProfileLoaderOptions {
   definitionsFileContent?: string
+  definitionsFileName?: string
   profiles?: string[]
-  configFile?: string
+  configOption?: string
 }
 
 async function testProfileLoader(
@@ -19,15 +20,11 @@ async function testProfileLoader(
   const cwd = await promisify<DirOptions, string>(tmp.dir)({
     unsafeCleanup: true,
   })
-  let configurationFileName = 'cucumber.js'
-
-  if (doesHaveValue(opts.configFile)) {
-    configurationFileName = opts.configFile
-  }
+  const definitionsFileName = opts.definitionsFileName ?? 'cucumber.js'
 
   if (doesHaveValue(opts.definitionsFileContent)) {
     await fs.writeFile(
-      path.join(cwd, configurationFileName),
+      path.join(cwd, definitionsFileName),
       opts.definitionsFileContent
     )
   }
@@ -35,7 +32,7 @@ async function testProfileLoader(
   const profileLoader = new ProfileLoader(cwd)
   return await profileLoader.getArgv(
     valueOrDefault(opts.profiles, []),
-    opts.configFile
+    opts.configOption
   )
 }
 
@@ -171,12 +168,31 @@ describe('ProfileLoader', () => {
         // Act
         const result = await testProfileLoader({
           definitionsFileContent,
+          definitionsFileName: '.cucumber-rc.js',
           profiles: ['profile3'],
-          configFile: '.cucumber-rc.js',
+          configOption: '.cucumber-rc.js',
         })
 
         // Assert
         expect(result).to.eql(['--opt3', '--opt4'])
+      })
+
+      it('throws when the file doesnt exist', async () => {
+        // Arrange
+        const definitionsFileContent =
+          'module.exports = {profile3: "--opt3 --opt4"}'
+
+        // Act
+        try {
+          await testProfileLoader({
+            definitionsFileContent,
+            profiles: [],
+            configOption: 'doesntexist.js',
+          })
+          expect.fail('should throw')
+        } catch (e) {
+          expect(e.message).to.contain('Cannot find module')
+        }
       })
     })
   })

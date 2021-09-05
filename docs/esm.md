@@ -30,3 +30,5 @@ As well as support code, these things can also be in ES modules syntax:
 You can use ES modules selectively/incrementally - so you can have a mixture of CommonJS and ESM in the same project.
 
 When using a transpiler for e.g. TypeScript, ESM isn't supported - you'll need to configure your transpiler to output modules in CommonJS syntax (for now).
+
+The config file referenced for [Profiles](./profiles.md) can only be in CommonJS syntax. In a project with `type=module`, you can name the file `cucumber.cjs`, since Node expects `.js` files to be in ESM syntax in such projects.

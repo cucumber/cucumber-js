@@ -33,6 +33,12 @@ Feature: ES modules support
           }
       }
       """
+    And a file named "cucumber.cjs" with:
+      """
+      module.exports = {
+        'default': '--format summary'
+      }
+      """
     When I run cucumber-js with `<options> --format ./custom-formatter.js --format-options '{"snippetSyntax": "./custom-snippet-syntax.js"}' <args>`
     Then it passes
     Examples:
