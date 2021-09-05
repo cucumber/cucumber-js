@@ -76,14 +76,10 @@ export default class Worker {
     supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, this.newId)
     for (const codePath of supportCodePaths) {
-      if (
-        codePath.endsWith('.js') ||
-        codePath.endsWith('.mjs') ||
-        codePath.endsWith('.cjs')
-      ) {
-        await importer(pathToFileURL(codePath))
-      } else {
+      if (supportCodeRequiredModules.length) {
         require(codePath)
+      } else {
+        await importer(pathToFileURL(codePath))
       }
     }
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize(supportCodeIds)

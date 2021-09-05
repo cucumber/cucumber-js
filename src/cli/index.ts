@@ -162,19 +162,10 @@ export default class Cli {
     supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, newId)
     for (const codePath of supportCodePaths) {
-      try {
-        if (
-          codePath.endsWith('.js') ||
-          codePath.endsWith('.mjs') ||
-          codePath.endsWith('.cjs')
-        ) {
-          await importer(pathToFileURL(codePath))
-        } else {
-          require(codePath)
-        }
-      } catch (e) {
-        console.error(e.stack)
-        console.error('codepath: ' + codePath)
+      if (supportCodeRequiredModules.length) {
+        require(codePath)
+      } else {
+        await importer(pathToFileURL(codePath))
       }
     }
     return supportCodeLibraryBuilder.finalize()
