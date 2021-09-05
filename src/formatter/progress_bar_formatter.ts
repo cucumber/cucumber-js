@@ -80,7 +80,7 @@ export default class ProgressBarFormatter extends Formatter {
           testCaseAttempt,
         })
       )
-      if (worstTestStepResult.willBeRetried) {
+      if (testCaseFinished.willBeRetried) {
         const stepsToRetry = testCaseAttempt.pickle.steps.length
         this.progressBar.tick(-stepsToRetry)
       }

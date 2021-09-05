@@ -58,6 +58,7 @@ describe('IssueHelpers', () => {
                    error
                - Then a passing step # steps.ts:29
 
+
           `)
         )
       })
@@ -87,6 +88,7 @@ describe('IssueHelpers', () => {
                      an ambiguous step    - steps.ts:13
                      /an? ambiguous step/ - steps.ts:14
                - Then a passing step # steps.ts:29
+
 
           `)
         )
@@ -122,6 +124,7 @@ describe('IssueHelpers', () => {
 
                - Then a passing step # steps.ts:29
 
+
           `)
         )
       })
@@ -149,6 +152,7 @@ describe('IssueHelpers', () => {
                ? When a pending step # steps.ts:16
                    Pending
                - Then a passing step # steps.ts:29
+
 
           `)
         )
@@ -183,6 +187,7 @@ describe('IssueHelpers', () => {
                    | aaa | b | c   |
                    | d   | e | ff  |
                    | gg  | h | iii |
+
 
           `)
         )
@@ -224,6 +229,7 @@ describe('IssueHelpers', () => {
                    :-)
                    """
 
+
             `)
         )
       })
@@ -255,6 +261,7 @@ describe('IssueHelpers', () => {
                    Attachment (text/plain): Other info
                    error
                - Then a passing step # steps.ts:29
+
 
           `)
         )

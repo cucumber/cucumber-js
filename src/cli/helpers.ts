@@ -26,7 +26,10 @@ export async function getExpandedArgv({
 }: IGetExpandedArgvRequest): Promise<string[]> {
   const { options } = ArgvParser.parse(argv)
   let fullArgv = argv
-  const profileArgv = await new ProfileLoader(cwd).getArgv(options.profile)
+  const profileArgv = await new ProfileLoader(cwd).getArgv(
+    options.profile,
+    options.config
+  )
   if (profileArgv.length > 0) {
     fullArgv = argv.slice(0, 2).concat(profileArgv).concat(argv.slice(2))
   }

@@ -141,7 +141,7 @@ export default class ConfigurationBuilder {
   async expandFeaturePaths(featurePaths: string[]): Promise<string[]> {
     featurePaths = featurePaths.map((p) => p.replace(/(:\d+)*$/g, '')) // Strip line numbers
     featurePaths = [...new Set(featurePaths)] // Deduplicate the feature files
-    return this.expandPaths(featurePaths, '.feature')
+    return await this.expandPaths(featurePaths, '.feature')
   }
 
   getFeatureDirectoryPaths(featurePaths: string[]): string[] {

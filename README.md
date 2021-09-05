@@ -22,7 +22,7 @@ We've put a demo of Cucumber.js to [run in your browser](https://cucumber.github
 
 ## Help & support
 
-* See here: https://cucumber.io/support
+* See here: https://cucumber.io/support.
 
 ## Contributing
 
@@ -52,7 +52,7 @@ $ npm install cucumber@6
 
 ## Documentation
 
-The following documentation is for master. See below for documentation for older versions.
+The following documentation is for master. See below the documentation for older versions.
 
 * [CLI](/docs/cli.md)
 * [Custom Formatters](/docs/custom_formatters.md)
