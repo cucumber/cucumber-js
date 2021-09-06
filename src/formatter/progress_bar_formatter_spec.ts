@@ -20,7 +20,7 @@ import ProgressBarFormatter from './progress_bar_formatter'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { PassThrough } from 'stream'
 import ProgressBar from 'progress'
-import bluebird from 'bluebird'
+import { promisify } from 'util'
 
 interface ITestProgressBarFormatterOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
@@ -65,7 +65,7 @@ async function testProgressBarFormatter({
     log: logFn,
     parsedArgvOptions: {},
     stream: passThrough,
-    cleanup: bluebird.promisify(passThrough.end.bind(passThrough)),
+    cleanup: promisify(passThrough.end.bind(passThrough)),
     supportCodeLibrary,
   }) as ProgressBarFormatter
   let mocked = false
@@ -101,8 +101,7 @@ describe('ProgressBarFormatter', () => {
           uri: 'a.feature',
         },
         {
-          data:
-            'Feature: a\nScenario: b\nGiven a step\nWhen a step\nThen a step',
+          data: 'Feature: a\nScenario: b\nGiven a step\nWhen a step\nThen a step',
           uri: 'b.feature',
         },
       ]
@@ -125,8 +124,7 @@ describe('ProgressBarFormatter', () => {
           uri: 'a.feature',
         },
         {
-          data:
-            'Feature: a\nRule: b\nExample: c\nGiven a step\nWhen a step\nThen a step',
+          data: 'Feature: a\nRule: b\nExample: c\nGiven a step\nWhen a step\nThen a step',
           uri: 'b.feature',
         },
       ]
@@ -149,8 +147,7 @@ describe('ProgressBarFormatter', () => {
           uri: 'a.feature',
         },
         {
-          data:
-            'Feature: a\nScenario: b\nGiven a step\nWhen a step\nThen a step',
+          data: 'Feature: a\nScenario: b\nGiven a step\nWhen a step\nThen a step',
           uri: 'b.feature',
         },
       ]
@@ -370,8 +367,7 @@ describe('ProgressBarFormatter', () => {
         // Arrange
         const sources = [
           {
-            data:
-              'Feature: a\nScenario: b\nGiven a passing step\n When a flaky step\nThen a passing step',
+            data: 'Feature: a\nScenario: b\nGiven a passing step\n When a flaky step\nThen a passing step',
             uri: 'a.feature',
           },
         ]
@@ -384,7 +380,8 @@ describe('ProgressBarFormatter', () => {
           sources,
           supportCodeLibrary,
         })
-        const progressBar = progressBarFormatter.progressBar as sinon.SinonStubbedInstance<ProgressBar>
+        const progressBar =
+          progressBarFormatter.progressBar as sinon.SinonStubbedInstance<ProgressBar>
 
         // Assert
         expect(progressBar.interrupt).to.have.callCount(1)

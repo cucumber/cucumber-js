@@ -1,6 +1,5 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import _ from 'lodash'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import { testFormatter } from '../../test/formatter_helpers'
 
@@ -148,8 +147,7 @@ describe('RerunFormatter', () => {
       // Arrange
       const sources = [
         {
-          data:
-            'Feature: a\nScenario: b\nGiven a step\nScenario: c\nGiven a step',
+          data: 'Feature: a\nScenario: b\nGiven a step\nScenario: c\nGiven a step',
           uri: 'a.feature',
         },
       ]
@@ -163,65 +161,63 @@ describe('RerunFormatter', () => {
   })
 
   describe('with two failing scenarios in different files', () => {
-    _.each(
-      [
-        { separator: { opt: undefined, expected: '\n' }, label: 'default' },
-        { separator: { opt: '\n', expected: '\n' }, label: 'newline' },
-        { separator: { opt: ' ', expected: ' ' }, label: 'space' },
-      ],
-      ({ separator, label }) => {
-        describe(`using ${label} separator`, () => {
-          it('outputs the reference needed to run the scenario again', async () => {
-            // Arrange
-            const parsedArgvOptions = { rerun: { separator: separator.opt } }
-            const sources = [
-              {
-                data: 'Feature: a\nScenario: b\nGiven a step',
-                uri: 'a.feature',
-              },
-              {
-                data: 'Feature: a\n\nScenario: b\nGiven a step',
-                uri: 'b.feature',
-              },
-            ]
+    const examples = [
+      { separator: { opt: undefined, expected: '\n' }, label: 'default' },
+      { separator: { opt: '\n', expected: '\n' }, label: 'newline' },
+      { separator: { opt: ' ', expected: ' ' }, label: 'space' },
+    ]
+    examples.forEach(({ separator, label }) => {
+      describe(`using ${label} separator`, () => {
+        it('outputs the reference needed to run the scenario again', async () => {
+          // Arrange
+          const parsedArgvOptions = { rerun: { separator: separator.opt } }
+          const sources = [
+            {
+              data: 'Feature: a\nScenario: b\nGiven a step',
+              uri: 'a.feature',
+            },
+            {
+              data: 'Feature: a\n\nScenario: b\nGiven a step',
+              uri: 'b.feature',
+            },
+          ]
 
-            // Act
-            const output = await testFormatter({
-              parsedArgvOptions,
-              sources,
-              type: 'rerun',
-            })
-
-            // Assert
-            expect(output).to.eql(`a.feature:2${separator.expected}b.feature:3`)
+          // Act
+          const output = await testFormatter({
+            parsedArgvOptions,
+            sources,
+            type: 'rerun',
           })
 
-          it('outputs the reference needed to run the rule example again', async () => {
-            // Arrange
-            const parsedArgvOptions = { rerun: { separator: separator.opt } }
-            const sources = [
-              {
-                data: 'Feature: a\nRule: b\nExample: c\nGiven a step',
-                uri: 'a.feature',
-              },
-              {
-                data: 'Feature: a\n\nRule: b\nExample: c\nGiven a step',
-                uri: 'b.feature',
-              },
-            ]
-
-            // Act
-            const output = await testFormatter({
-              parsedArgvOptions,
-              sources,
-              type: 'rerun',
-            })
-
-            // Assert
-            expect(output).to.eql(`a.feature:3${separator.expected}b.feature:4`)
-          })
+          // Assert
+          expect(output).to.eql(`a.feature:2${separator.expected}b.feature:3`)
         })
-      }
-    )
+
+        it('outputs the reference needed to run the rule example again', async () => {
+          // Arrange
+          const parsedArgvOptions = { rerun: { separator: separator.opt } }
+          const sources = [
+            {
+              data: 'Feature: a\nRule: b\nExample: c\nGiven a step',
+              uri: 'a.feature',
+            },
+            {
+              data: 'Feature: a\n\nRule: b\nExample: c\nGiven a step',
+              uri: 'b.feature',
+            },
+          ]
+
+          // Act
+          const output = await testFormatter({
+            parsedArgvOptions,
+            sources,
+            type: 'rerun',
+          })
+
+          // Assert
+          expect(output).to.eql(`a.feature:3${separator.expected}b.feature:4`)
+        })
+      })
+    })
   })
 })

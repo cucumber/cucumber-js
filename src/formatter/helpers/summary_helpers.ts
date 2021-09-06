@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import Duration from 'duration'
 import { IColorFns } from '../get_color_fns'
 import { ITestCaseAttempt } from './event_data_collector'
@@ -28,22 +27,24 @@ export function formatSummary({
   const testCaseResults: messages.TestStepResult[] = []
   const testStepResults: messages.TestStepResult[] = []
   let totalStepDuration = messages.TimeConversion.millisecondsToDuration(0)
-  testCaseAttempts.forEach(({ testCase, worstTestStepResult, stepResults }) => {
-    Object.values(stepResults).forEach((stepResult) => {
-      totalStepDuration = messages.TimeConversion.addDurations(
-        totalStepDuration,
-        stepResult.duration
-      )
-    })
-    if (!worstTestStepResult.willBeRetried) {
-      testCaseResults.push(worstTestStepResult)
-      _.each(testCase.testSteps, (testStep) => {
-        if (doesHaveValue(testStep.pickleStepId)) {
-          testStepResults.push(stepResults[testStep.id])
-        }
+  testCaseAttempts.forEach(
+    ({ testCase, willBeRetried, worstTestStepResult, stepResults }) => {
+      Object.values(stepResults).forEach((stepResult) => {
+        totalStepDuration = messages.TimeConversion.addDurations(
+          totalStepDuration,
+          stepResult.duration
+        )
       })
+      if (!willBeRetried) {
+        testCaseResults.push(worstTestStepResult)
+        testCase.testSteps.forEach((testStep) => {
+          if (doesHaveValue(testStep.pickleStepId)) {
+            testStepResults.push(stepResults[testStep.id])
+          }
+        })
+      }
     }
-  })
+  )
   const scenarioSummary = getCountSummary({
     colorFns,
     objects: testCaseResults,
@@ -71,8 +72,10 @@ function getCountSummary({
   objects,
   type,
 }: IGetCountSummaryRequest): string {
-  const counts = _.chain(objects).groupBy('status').mapValues('length').value()
-  const total = _.chain(counts).values().sum().value()
+  const counts: Record<string, number> = {}
+  STATUS_REPORT_ORDER.forEach((x) => (counts[x] = 0))
+  objects.forEach((x) => (counts[x.status] += 1))
+  const total = Object.values(counts).reduce((acc, x) => acc + x, 0)
   let text = `${total.toString()} ${type}${total === 1 ? '' : 's'}`
   if (total > 0) {
     const details: string[] = []

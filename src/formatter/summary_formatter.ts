@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { formatIssue, formatSummary, isFailure, isWarning } from './helpers'
 import Formatter, { IFormatterOptions } from './'
 import { doesHaveValue } from '../value_checker'
@@ -36,10 +35,20 @@ export default class SummaryFormatter extends Formatter {
     const failures: ITestCaseAttempt[] = []
     const warnings: ITestCaseAttempt[] = []
     const testCaseAttempts = this.eventDataCollector.getTestCaseAttempts()
-    _.each(testCaseAttempts, (testCaseAttempt) => {
-      if (isFailure(testCaseAttempt.worstTestStepResult)) {
+    testCaseAttempts.forEach((testCaseAttempt) => {
+      if (
+        isFailure(
+          testCaseAttempt.worstTestStepResult,
+          testCaseAttempt.willBeRetried
+        )
+      ) {
         failures.push(testCaseAttempt)
-      } else if (isWarning(testCaseAttempt.worstTestStepResult)) {
+      } else if (
+        isWarning(
+          testCaseAttempt.worstTestStepResult,
+          testCaseAttempt.willBeRetried
+        )
+      ) {
         warnings.push(testCaseAttempt)
       }
     })

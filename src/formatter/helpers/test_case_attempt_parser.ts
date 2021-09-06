@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { getStepKeywordType, KeywordType } from './keyword_type'
 import {
   getGherkinScenarioLocationMap,
@@ -133,9 +132,8 @@ export function parseTestCaseAttempt({
 }: IParseTestCaseAttemptRequest): IParsedTestCaseAttempt {
   const { testCase, pickle, gherkinDocument } = testCaseAttempt
   const gherkinStepMap = getGherkinStepMap(gherkinDocument)
-  const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(
-    gherkinDocument
-  )
+  const gherkinScenarioLocationMap =
+    getGherkinScenarioLocationMap(gherkinDocument)
   const pickleStepMap = getPickleStepMap(pickle)
   const relativePickleUri = pickle.uri
   const parsedTestCase: IParsedTestCase = {
@@ -143,14 +141,17 @@ export function parseTestCaseAttempt({
     name: pickle.name,
     sourceLocation: {
       uri: relativePickleUri,
-      line: gherkinScenarioLocationMap[_.last(pickle.astNodeIds)].line,
+      line: gherkinScenarioLocationMap[
+        pickle.astNodeIds[pickle.astNodeIds.length - 1]
+      ].line,
     },
     worstTestStepResult: testCaseAttempt.worstTestStepResult,
   }
   const parsedTestSteps: IParsedTestStep[] = []
   let isBeforeHook = true
   let previousKeywordType = KeywordType.Precondition
-  _.each(testCase.testSteps, (testStep) => {
+  
+  testCase.testSteps.forEach((testStep) => {
     const testStepResult = testCaseAttempt.stepResults[testStep.id] || {
       status: Status.UNKNOWN,
     }

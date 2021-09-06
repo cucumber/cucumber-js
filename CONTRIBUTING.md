@@ -1,29 +1,37 @@
-# Thank you!
+# Welcome 💖
 
-Before anything else, thank you. Thank you for taking some of your precious time helping this project move forward.
+Before anything else, thank you for taking some of your precious time to help this project move forward. ❤️
+
+If you're new to open source and feeling a bit nervous 😳, we understand! We recommend watching [this excellent guide](https://egghead.io/talks/git-how-to-make-your-first-open-source-contribution)
+to give you a grounding in some of the basic concepts. We want you to feel safe to make mistakes, and ask questions.
+
+If anything in this guide or anywhere else in the codebase doesn't make sense to you, please let us know! It's through your feedback that we can make this codebase more welcoming, so we'll be glad to hear thoughts.
+
+You can chat with us in the [#committers-js](https://cucumberbdd.slack.com/archives/C612KCP1P) channel in our [Community Slack], or feel free to [raise an issue] if you're experiencing any friction trying make your contribution.
 
 ## Setup
 
-* install [Node.Js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/)
-* `yarn install`
+* install [Node.Js](https://nodejs.org/en/)
+* `npm install` - Install dependencies
+* `npm test` - Compile typescript and run the tests
 
 ## Tests
 
-See the `package.json` scripts section for how to run each category of tests.
+Now type `npm run` or see the `package.json` scripts section for how to run each category of tests.
 
-* lint - `yarn lint`
+* lint - `npm run lint`
   * [prettier](https://github.com/prettier/prettier)
   * [eslint](https://eslint.org/)
   * [dependency-lint](https://github.com/charlierudolph/dependency-lint)
-* typescript tests - `yarn types-test`
+* typescript tests - `npm run types-test`
   * [tsd](https://github.com/SamVerschueren/tsd)
-* unit tests - `yarn unit-test`
+* unit tests - `npm run unit-test`
   * [mocha](https://mochajs.org/)
   * [chai](https://www.chaijs.com/)
   * [sinon](https://sinonjs.org/)
-* compatibility kit - `yarn cck-test`
+* compatibility kit - `npm run cck-test`
   * checking that cucumber-js emits the [correct messages](https://github.com/cucumber/cucumber/tree/master/compatibility-kit) 
-* feature tests - `yarn feature-test`
+* feature tests - `npm run feature-test`
   * cucumber-js tests itself
 
 ## Internals
@@ -77,16 +85,15 @@ Start the container:
 
     make docker-run
 
-Inside the container, install the correct versions of Node and Yarn:
+Inside the container, install the correct version of Node:
 
     nvm install --lts
-    npm install -g yarn
 
 Then update the dependencies and test:
 
-    yarn update-dependencies
-    yarn
-    yarn test
+    npm run update-dependencies
+    npm run
+    npm run test
 
 If the tests fail, update your code to be compatible with the new libraries, or revert the library upgrades that break the build.
 
@@ -132,6 +139,10 @@ Push to git:
     git push
     git push --tags
 
+* Edit and publish the [release entry on GitHub](https://github.com/cucumber/cucumber-js/releases)
 * Update [docs.cucumber.io](https://github.com/cucumber/docs.cucumber.io)
   * Update the cucumber-js version `data/versions.yaml`
   * Ensure the javascript examples are up to date
+
+[Community Slack]: https://cucumber.io/community#slack
+[raise an issue]: https://github.com/cucumber/cucumber-js/issues/new/choose

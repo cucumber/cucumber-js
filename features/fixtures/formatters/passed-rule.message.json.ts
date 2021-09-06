@@ -2,8 +2,7 @@ module.exports = [
   {
     source: {
       uri: 'features/a.feature',
-      data:
-        'Feature: a feature\n  Rule: a rule\n    Example: an example\n      Given a step',
+      data: 'Feature: a feature\n  Rule: a rule\n    Example: an example\n      Given a step',
       mediaType: 'text/x.cucumber.gherkin+plain',
     },
   },
@@ -155,7 +154,6 @@ module.exports = [
           nanos: 0,
         },
         status: 'PASSED',
-        willBeRetried: false,
       },
       timestamp: {
         seconds: 0,
@@ -170,6 +168,7 @@ module.exports = [
         seconds: 0,
         nanos: 4000000,
       },
+      willBeRetried: false,
     },
   },
   {

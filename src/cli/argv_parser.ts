@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { Command } from 'commander'
 import path from 'path'
 import { dialects } from '@cucumber/gherkin'
@@ -21,6 +20,7 @@ export interface IParsedArgvFormatOptions {
 
 export interface IParsedArgvOptions {
   backtrace: boolean
+  config: string
   dryRun: boolean
   exit: boolean
   failFast: boolean
@@ -65,10 +65,10 @@ const ArgvParser = {
         const e: Error = error
         throw new Error(`${option} passed invalid JSON: ${e.message}: ${str}`)
       }
-      if (!_.isPlainObject(val)) {
+      if (typeof val !== 'object' || Array.isArray(val)) {
         throw new Error(`${option} must be passed JSON of an object: ${str}`)
       }
-      return _.merge(memo, val)
+      return { ...memo, ...val }
     }
   },
 
@@ -85,7 +85,7 @@ const ArgvParser = {
   },
 
   validateLanguage(value: string): string {
-    if (!_.includes(_.keys(dialects), value)) {
+    if (!Object.keys(dialects).includes(value)) {
       throw new Error(`Unsupported ISO 639-1: ${value}`)
     }
     return value
@@ -107,6 +107,11 @@ const ArgvParser = {
       .usage('[options] [<GLOB|DIR|FILE[:LINE]>...]')
       .version(version, '-v, --version')
       .option('-b, --backtrace', 'show full backtrace for errors')
+      .option(
+        '-c, --config <TYPE[:PATH]>',
+        'specify configuration file',
+        'cucumber.js'
+      )
       .option(
         '-d, --dry-run',
         'invoke formatters without executing steps',
@@ -200,7 +205,7 @@ const ArgvParser = {
         0
       )
       .option(
-        '--retryTagFilter, --retry-tag-filter <EXPRESSION>',
+        '--retry-tag-filter <EXPRESSION>',
         `only retries the features or scenarios with tags matching the expression (repeatable).
         This option requires '--retry' to be specified.`,
         ArgvParser.mergeTags,
@@ -228,20 +233,12 @@ const ArgvParser = {
     })
 
     program.parse(argv)
-    const options = program.opts() as IParsedArgvOptions
+    const options: IParsedArgvOptions = program.opts()
     ArgvParser.validateRetryOptions(options)
 
     return {
       options,
       args: program.args,
-    }
-  },
-
-  lint(fullArgv: string[]): void {
-    if (fullArgv.includes('--retryTagFilter')) {
-      console.warn(
-        'the argument --retryTagFilter is deprecated and will be removed in a future release; please use --retry-tag-filter'
-      )
     }
   },
 }

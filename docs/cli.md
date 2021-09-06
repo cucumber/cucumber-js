@@ -122,25 +122,11 @@ Note that the rerun file parser can only work with the default separator for now
 
 ## Parallel
 
-You can run your scenarios in parallel with `--parallel <NUMBER_OF_WORKERS>`. Each worker is run in a separate Node process and receives the following env variables:
-
-* `CUCUMBER_PARALLEL` - set to 'true'
-* `CUCUMBER_TOTAL_WORKERS` - set to the number of workers
-* `CUCUMBER_WORKER_ID` - ID for worker ('0', '1', '2', etc.)
-
-### Timing
-
-When using parallel mode, the last line of the summary output differentiates between real time elapsed during the test run and aggregate time spent actually running steps: 
-
-```
-73 scenarios (73 passed)
-512 steps (512 passed)
-0m51.627s (executing steps: 4m51.228s)
-```
+See [Parallel](./parallel.md).
 
 ## Profiles
 
-In order to store and reuse commonly used CLI options, you can add a `cucumber.js` file to your project root directory. The file should export an object where the key is the profile name and the value is a string of CLI options. The profile can be applied with `-p <NAME>` or `--profile <NAME>`. This will prepend the profile's CLI options to the ones provided by the command line. Multiple profiles can be specified at a time. If no profile is specified and a profile named `default` exists, it will be applied.
+See [Profiles](./profiles.md).
 
 ## Tags
 
@@ -157,8 +143,7 @@ A note on using in conjunction with `--retry`: we consider a test case to have f
 
 ## Retry failing tests
 
-Use `--retry <int>` to rerun tests that have been failing. This can be very helpful for flaky tests.
-To only retry failing tests in a subset of test use `--retry-tag-filter <EXPRESSION>` (use the same as in Use [Tags](#tags))
+See [Retry](./retry.md)
 
 ## Transpilation
 
@@ -228,10 +213,4 @@ Note that the first `--require tests.setup.js` overrides the default require glo
 
 ## World Parameters
 
-You can pass in parameters to pass to the world constructor with `--world-parameters <JSON>`. The JSON string must define an object. The parsed object will be passed as the `parameters` to the the world constructor. This option is repeatable and the objects will be merged with the last instance taking precedence.
-
-Example:
-
-```
---world-parameters '{"fancySetting":true}'
-```
+See [World](./support_files/world.md).

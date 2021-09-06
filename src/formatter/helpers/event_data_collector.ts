@@ -1,10 +1,10 @@
-import _, { values } from 'lodash'
 import * as messages from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 import { EventEmitter } from 'events'
 
 interface ITestCaseAttemptData {
   attempt: number
+  willBeRetried: boolean
   testCaseId: string
   stepAttachments: Record<string, messages.Attachment[]>
   stepResults: Record<string, messages.TestStepResult>
@@ -13,6 +13,7 @@ interface ITestCaseAttemptData {
 
 export interface ITestCaseAttempt {
   attempt: number
+  willBeRetried: boolean
   gherkinDocument: messages.GherkinDocument
   pickle: messages.Pickle
   stepAttachments: Record<string, messages.Attachment[]>
@@ -41,7 +42,7 @@ export default class EventDataCollector {
   }
 
   getTestCaseAttempts(): ITestCaseAttempt[] {
-    return _.keys(this.testCaseAttemptDataMap).map((testCaseStartedId) => {
+    return Object.keys(this.testCaseAttemptDataMap).map((testCaseStartedId) => {
       return this.getTestCaseAttempt(testCaseStartedId)
     })
   }
@@ -55,6 +56,7 @@ export default class EventDataCollector {
       pickle,
       testCase,
       attempt: testCaseAttemptData.attempt,
+      willBeRetried: testCaseAttemptData.willBeRetried,
       stepAttachments: testCaseAttemptData.stepAttachments,
       stepResults: testCaseAttemptData.stepResults,
       worstTestStepResult: testCaseAttemptData.worstTestStepResult,
@@ -85,11 +87,11 @@ export default class EventDataCollector {
   private initTestCaseAttempt(testCaseStarted: messages.TestCaseStarted): void {
     this.testCaseAttemptDataMap[testCaseStarted.id] = {
       attempt: testCaseStarted.attempt,
+      willBeRetried: false,
       testCaseId: testCaseStarted.testCaseId,
       stepAttachments: {},
       stepResults: {},
       worstTestStepResult: {
-        willBeRetried: false,
         duration: { seconds: 0, nanos: 0 },
         status: messages.TestStepResultStatus.UNKNOWN,
       },
@@ -113,17 +115,19 @@ export default class EventDataCollector {
     testStepId,
     testStepResult,
   }: messages.TestStepFinished): void {
-    this.testCaseAttemptDataMap[testCaseStartedId].stepResults[
-      testStepId
-    ] = testStepResult
+    this.testCaseAttemptDataMap[testCaseStartedId].stepResults[testStepId] =
+      testStepResult
   }
 
-  storeTestCaseResult({ testCaseStartedId }: messages.TestCaseFinished): void {
-    const stepResults = values(
+  storeTestCaseResult({
+    testCaseStartedId,
+    willBeRetried,
+  }: messages.TestCaseFinished): void {
+    const stepResults = Object.values(
       this.testCaseAttemptDataMap[testCaseStartedId].stepResults
     )
-    this.testCaseAttemptDataMap[
-      testCaseStartedId
-    ].worstTestStepResult = messages.getWorstTestStepResult(stepResults)
+    this.testCaseAttemptDataMap[testCaseStartedId].worstTestStepResult =
+      messages.getWorstTestStepResult(stepResults)
+    this.testCaseAttemptDataMap[testCaseStartedId].willBeRetried = willBeRetried
   }
 }

@@ -129,7 +129,6 @@ Feature: After hook interface
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
       const {<TYPE>} = require('@cucumber/cucumber')
-      const Promise = require('bluebird')
 
       <TYPE>(function(scenario, callback) {
         return Promise.resolve()
@@ -153,7 +152,6 @@ Feature: After hook interface
     Given a file named "features/support/hooks.js" with:
       """
       const {<TYPE>} = require('@cucumber/cucumber')
-      const Promise = require('bluebird')
 
       <TYPE>(function() {
         return Promise.resolve()
@@ -171,7 +169,6 @@ Feature: After hook interface
     Given a file named "features/support/hooks.js" with:
       """
       const {<TYPE>} = require('@cucumber/cucumber')
-      const Promise = require('bluebird')
 
       <TYPE>(function(){
         return Promise.reject(new Error('my error'))
@@ -193,7 +190,6 @@ Feature: After hook interface
     Given a file named "features/support/hooks.js" with:
       """
       const {<TYPE>} = require('@cucumber/cucumber')
-      const Promise = require('bluebird')
 
       <TYPE>(function() {
         return Promise.reject()
@@ -216,7 +212,6 @@ Feature: After hook interface
     Given a file named "features/support/hooks.js" with:
       """
       const {<TYPE>} = require('@cucumber/cucumber')
-      const Promise = require('bluebird')
 
       <TYPE>(function(){
         return new Promise(function() {
