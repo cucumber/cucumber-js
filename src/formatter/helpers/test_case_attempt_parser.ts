@@ -11,6 +11,7 @@ import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue, valueOrDefault } from '../../value_checker'
 import TestCaseHookDefinition from '../../models/test_case_hook_definition'
 import { ILineAndUri } from '../../types'
+import { TestStepResult } from '@cucumber/messages'
 
 export interface IParsedTestStep {
   actionLocation?: ILineAndUri
@@ -150,12 +151,11 @@ export function parseTestCaseAttempt({
   const parsedTestSteps: IParsedTestStep[] = []
   let isBeforeHook = true
   let previousKeywordType = KeywordType.Precondition
-  
+
   testCase.testSteps.forEach((testStep) => {
-    const testStepResult = testCaseAttempt.stepResults[testStep.id] || {
-      status: Status.UNKNOWN,
-    }
-    
+    const testStepResult =
+      testCaseAttempt.stepResults[testStep.id] || new TestStepResult()
+
     isBeforeHook = isBeforeHook && doesHaveValue(testStep.hookId)
 
     let keyword, keywordType, pickleStep
