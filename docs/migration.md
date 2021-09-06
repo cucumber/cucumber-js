@@ -53,8 +53,7 @@ Now in `@cucumber/cucumber`:
     "duration": {
       "seconds": "0",
       "nanos": 660000000
-    },
-    "willBeRetried": true
+    }
   }
 }
 ```

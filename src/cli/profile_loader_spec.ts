@@ -10,6 +10,7 @@ import { doesHaveValue, valueOrDefault } from '../value_checker'
 interface TestProfileLoaderOptions {
   definitionsFileContent?: string
   profiles?: string[]
+  configFile?: string
 }
 
 async function testProfileLoader(
@@ -18,14 +19,24 @@ async function testProfileLoader(
   const cwd = await promisify<DirOptions, string>(tmp.dir)({
     unsafeCleanup: true,
   })
+  let configurationFileName = 'cucumber.js'
+
+  if (doesHaveValue(opts.configFile)) {
+    configurationFileName = opts.configFile
+  }
+
   if (doesHaveValue(opts.definitionsFileContent)) {
     await fs.writeFile(
-      path.join(cwd, 'cucumber.js'),
+      path.join(cwd, configurationFileName),
       opts.definitionsFileContent
     )
   }
+
   const profileLoader = new ProfileLoader(cwd)
-  return await profileLoader.getArgv(valueOrDefault(opts.profiles, []))
+  return await profileLoader.getArgv(
+    valueOrDefault(opts.profiles, []),
+    opts.configFile
+  )
 }
 
 describe('ProfileLoader', () => {
@@ -148,6 +159,24 @@ describe('ProfileLoader', () => {
             expect(caughtErrorMessage).to.eql('Undefined profile: profile2')
           })
         })
+      })
+    })
+
+    describe('with non-default configuration file', () => {
+      it('returns the argv for the given profile', async function () {
+        // Arrange
+        const definitionsFileContent =
+          'module.exports = {profile3: "--opt3 --opt4"}'
+
+        // Act
+        const result = await testProfileLoader({
+          definitionsFileContent,
+          profiles: ['profile3'],
+          configFile: '.cucumber-rc.js',
+        })
+
+        // Assert
+        expect(result).to.eql(['--opt3', '--opt4'])
       })
     })
   })

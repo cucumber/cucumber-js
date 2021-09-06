@@ -26,16 +26,20 @@ describe('Cucumber Compatibility Kit', () => {
     const suiteName = match[1]
     const extension = match[2]
     it(`passes the cck suite for '${suiteName}'`, async () => {
-      const args = [
-        'node',
-        path.join(PROJECT_PATH, 'bin', 'cucumber-js'),
-      ].concat([
+      const cliOptions = [
         `${CCK_FEATURES_PATH}/${suiteName}/${suiteName}${extension}`,
         '--require',
         `${CCK_IMPLEMENTATIONS_PATH}/${suiteName}/${suiteName}.ts`,
         '--profile',
         'cck',
-      ])
+      ]
+      if (suiteName === 'retry') {
+        cliOptions.push('--retry', '2')
+      }
+      const args = [
+        'node',
+        path.join(PROJECT_PATH, 'bin', 'cucumber-js'),
+      ].concat(cliOptions)
       const stdout = new PassThrough()
       try {
         await new Cli({
