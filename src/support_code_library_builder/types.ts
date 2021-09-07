@@ -18,6 +18,7 @@ export interface ITestCaseHookParameter {
 export interface ITestStepHookParameter {
   gherkinDocument: messages.GherkinDocument
   pickle: messages.Pickle
+  pickleStep: messages.PickleStep
   result: messages.TestStepResult
   testCaseStartedId: string
   testStepId: string
