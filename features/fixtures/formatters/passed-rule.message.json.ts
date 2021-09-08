@@ -154,7 +154,6 @@ module.exports = [
           nanos: 0,
         },
         status: 'PASSED',
-        willBeRetried: false,
       },
       timestamp: {
         seconds: 0,
@@ -169,6 +168,7 @@ module.exports = [
         seconds: 0,
         nanos: 4000000,
       },
+      willBeRetried: false,
     },
   },
   {
