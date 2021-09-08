@@ -25,6 +25,8 @@ See the [migration guide](./docs/migration.md) for details of how to migrate fro
   [#1794](https://github.com/cucumber/cucumber-js/pull/1794)
 
 ### Changed
+* Use performance timers for test case duration measurement.
+  [#1793](https://github.com/cucumber/cucumber-js/pull/1793)
 
 ### Deprecated
 
