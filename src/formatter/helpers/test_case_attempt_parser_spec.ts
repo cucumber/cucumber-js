@@ -5,9 +5,7 @@ import { parseTestCaseAttempt } from '.'
 import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
 import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
-import { parse } from '../../../test/gherkin_helpers'
 import { reindent } from 'reindent-template-literals'
-import { TestStepResult } from '@cucumber/messages'
 import { getTestCaseAttempts } from '../../../test/formatter_helpers'
 
 describe('TestCaseAttemptParser', () => {
@@ -35,30 +33,12 @@ describe('TestCaseAttemptParser', () => {
     describe('with no test step result', () => {
       it('initialize step result with status UNKNOWN', async () => {
         // Arrange
-        const parsed = await parse(source)
+        const [testCaseAttempt] = await getTestCaseAttempts({
+          sources: [source],
+          supportCodeLibrary,
+        })
 
-        const testCase = {
-          id: '0',
-          pickleId: parsed.pickles[0].id,
-          testSteps: [
-            {
-              id: '1',
-              pickleStepId: parsed.pickles[0].steps[0].id,
-              stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
-            },
-          ],
-        }
-
-        const testCaseAttempt = {
-          gherkinDocument: parsed.gherkinDocument,
-          pickle: parsed.pickles[0],
-          testCase,
-          attempt: 0,
-          willBeRetried: false,
-          stepAttachments: {},
-          stepResults: {},
-          worstTestStepResult: new TestStepResult(),
-        }
+        testCaseAttempt.stepResults = {}
 
         // Act
         const output = parseTestCaseAttempt({
