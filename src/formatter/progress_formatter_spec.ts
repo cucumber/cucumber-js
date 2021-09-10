@@ -85,6 +85,7 @@ describe('ProgressFormatter', () => {
         6 scenarios (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)
         6 steps (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)
         <duration-stat>
+
       `)
     )
   })
@@ -126,6 +127,7 @@ describe('ProgressFormatter', () => {
         3 scenarios (3 passed)
         3 steps (3 passed)
         <duration-stat>
+
       `)
     )
   })

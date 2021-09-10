@@ -63,9 +63,26 @@ When('a JPEG image is attached', async function (this: World) {
         'compatibility-kit',
         'features',
         'attachments',
-        'cucumber-growing-on-vine.jpg'
+        'cucumber.png'
       )
     ),
-    'image/jpg'
+    'image/png'
+  )
+})
+
+When('the {word} png is attached', async function (filename) {
+  await this.attach(
+    fs.createReadStream(
+      path.join(
+        process.cwd(),
+        'node_modules',
+        '@cucumber',
+        'compatibility-kit',
+        'features',
+        'attachments',
+        filename
+      )
+    ),
+    'image/png'
   )
 })
