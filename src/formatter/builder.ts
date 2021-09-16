@@ -61,30 +61,22 @@ const FormatterBuilder = {
   },
 
   getConstructorByType(type: string, cwd: string): typeof Formatter {
-    switch (type) {
-      case 'json':
-        return JsonFormatter
-      case 'message':
-        return MessageFormatter
-      case 'html':
-        return HtmlFormatter
-      case 'progress':
-        return ProgressFormatter
-      case 'progress-bar':
-        return ProgressBarFormatter
-      case 'rerun':
-        return RerunFormatter
-      case 'snippets':
-        return SnippetsFormatter
-      case 'summary':
-        return SummaryFormatter
-      case 'usage':
-        return UsageFormatter
-      case 'usage-json':
-        return UsageJsonFormatter
-      default:
-        return FormatterBuilder.loadCustomFormatter(type, cwd)
+    
+    const formatters: Record<string, typeof Formatter> = {
+      'json': JsonFormatter,
+      'message': MessageFormatter,
+      'html': HtmlFormatter,
+      'progress': ProgressFormatter,
+      'progress-bar': ProgressBarFormatter,
+      'rerun': RerunFormatter,
+      'snippets': SnippetsFormatter,
+      'summary': SummaryFormatter,
+      'usage': UsageFormatter,
+      'usage-json': UsageJsonFormatter,
+      'default': FormatterBuilder.loadCustomFormatter(type, cwd)
     }
+
+    return formatters.type
   },
 
   getStepDefinitionSnippetBuilder({
