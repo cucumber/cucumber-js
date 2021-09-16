@@ -21,8 +21,7 @@ import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 import HtmlFormatter from './html_formatter'
 import { pathToFileURL } from 'url'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { importer } = require('../importer')
+import importer from '../importer'
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
