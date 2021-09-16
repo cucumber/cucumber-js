@@ -60,7 +60,7 @@ export default class UsageFormatter extends Formatter {
             col2.push(
               `${messages.TimeConversion.durationToMilliseconds(
                 match.duration
-              ).toString()}ms`
+              ).toFixed(2)}ms`
             )
           } else {
             col2.push('-')
