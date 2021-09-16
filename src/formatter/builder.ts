@@ -76,7 +76,7 @@ const FormatterBuilder = {
       'default': FormatterBuilder.loadCustomFormatter(type, cwd)
     }
 
-    return formatters.type
+    return formatters[type] ? formatters[type] : formatters.default
   },
 
   getStepDefinitionSnippetBuilder({
