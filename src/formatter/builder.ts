@@ -72,10 +72,11 @@ const FormatterBuilder = {
       summary: SummaryFormatter,
       usage: UsageFormatter,
       'usage-json': UsageJsonFormatter,
-      default: FormatterBuilder.loadCustomFormatter(type, cwd),
     }
 
-    return formatters[type] ? formatters[type] : formatters.default
+    return formatters[type]
+      ? formatters[type]
+      : FormatterBuilder.loadCustomFormatter(type, cwd)
   },
 
   getStepDefinitionSnippetBuilder({
