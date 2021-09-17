@@ -61,19 +61,18 @@ const FormatterBuilder = {
   },
 
   getConstructorByType(type: string, cwd: string): typeof Formatter {
-    
     const formatters: Record<string, typeof Formatter> = {
-      'json': JsonFormatter,
-      'message': MessageFormatter,
-      'html': HtmlFormatter,
-      'progress': ProgressFormatter,
+      json: JsonFormatter,
+      message: MessageFormatter,
+      html: HtmlFormatter,
+      progress: ProgressFormatter,
       'progress-bar': ProgressBarFormatter,
-      'rerun': RerunFormatter,
-      'snippets': SnippetsFormatter,
-      'summary': SummaryFormatter,
-      'usage': UsageFormatter,
+      rerun: RerunFormatter,
+      snippets: SnippetsFormatter,
+      summary: SummaryFormatter,
+      usage: UsageFormatter,
       'usage-json': UsageJsonFormatter,
-      'default': FormatterBuilder.loadCustomFormatter(type, cwd)
+      default: FormatterBuilder.loadCustomFormatter(type, cwd),
     }
 
     return formatters[type] ? formatters[type] : formatters.default
