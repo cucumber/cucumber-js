@@ -85,6 +85,22 @@ Feature: Publish reports
       └──────────────────────────────────────────────────────────────────────────┘
       """
 
+  @spawn @wip
+  Scenario: a listener can be registered to receive the published report URL
+    Given a file named "features/support/publishListener.js" with:
+      """
+      const { registerPublishListener } = require('@cucumber/cucumber')
+
+      registerPublishListener(async function (reportUrl: string) {
+        console.log(`registerPublishListener called with: ${reportUrl}`)
+      })
+      """
+    When I run cucumber-js with arguments `--publish` and env ``
+    Then the output contains the text:
+      """
+      registerPublishListener called with: https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3
+      """
+
   @spawn
   Scenario: when results are not published, a banner explains how to publish
     When I run cucumber-js
