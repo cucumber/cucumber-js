@@ -44,6 +44,7 @@ requiredModules:
       - 'dist/**/*'
       - 'lib/**/*'
       - 'node_modules/**/*'
+      - 'src/importer.js'
       - 'tmp/**/*'
     root: '**/*.{js,ts}'
   stripLoaders: false

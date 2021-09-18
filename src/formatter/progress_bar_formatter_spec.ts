@@ -58,7 +58,7 @@ async function testProgressBarFormatter({
     output += data
   }
   const passThrough = new PassThrough()
-  const progressBarFormatter = FormatterBuilder.build('progress-bar', {
+  const progressBarFormatter = (await FormatterBuilder.build('progress-bar', {
     cwd: '',
     eventBroadcaster,
     eventDataCollector: new EventDataCollector(eventBroadcaster),
@@ -67,7 +67,7 @@ async function testProgressBarFormatter({
     stream: passThrough,
     cleanup: promisify(passThrough.end.bind(passThrough)),
     supportCodeLibrary,
-  }) as ProgressBarFormatter
+  })) as ProgressBarFormatter
   let mocked = false
   for (const envelope of envelopes) {
     eventBroadcaster.emit('envelope', envelope)

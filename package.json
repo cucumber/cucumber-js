@@ -163,6 +163,15 @@
     "lib": "./lib"
   },
   "main": "./lib/index.js",
+  "exports": {
+    ".": {
+      "import": "./lib/wrapper.mjs",
+      "require": "./lib/index.js"
+    },
+    "./lib/*": {
+      "require": "./lib/*.js"
+    }
+  },
   "types": "./lib/index.d.ts",
   "engines": {
     "node": ">=12"
@@ -180,7 +189,6 @@
     "cli-table3": "^0.6.0",
     "colors": "^1.4.0",
     "commander": "^8.0.0",
-    "create-require": "^1.1.1",
     "duration": "^0.2.2",
     "durations": "^3.4.2",
     "figures": "^3.2.0",
@@ -252,7 +260,7 @@
     "typescript": "4.4.2"
   },
   "scripts": {
-    "build-local": "tsc --build tsconfig.node.json",
+    "build-local": "tsc --build tsconfig.node.json && cp src/importer.js lib/ && cp src/wrapper.mjs lib/",
     "cck-test": "mocha 'compatibility/**/*_spec.ts'",
     "feature-test": "node ./bin/cucumber-js",
     "html-formatter": "node ./bin/cucumber-js --profile htmlFormatter",
