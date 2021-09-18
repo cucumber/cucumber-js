@@ -30,8 +30,9 @@ import HttpStream from '../formatter/http_stream'
 import { promisify } from 'util'
 import { Writable } from 'stream'
 import { pathToFileURL } from 'url'
-import importer from '../importer'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { importer } = require('../importer')
 const { incrementing, uuid } = IdGenerator
 
 export interface ICliRunResult {

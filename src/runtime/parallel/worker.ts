@@ -19,8 +19,9 @@ import { IRuntimeOptions } from '../index'
 import { PredictableTestRunStopwatch, RealTestRunStopwatch } from '../stopwatch'
 import { duration } from 'durations'
 import { pathToFileURL } from 'url'
-import importer from '../../importer'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { importer } = require('../../importer')
 const { uuid } = IdGenerator
 
 type IExitFunction = (exitCode: number, error?: Error, message?: string) => void
