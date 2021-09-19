@@ -162,7 +162,7 @@ export default class Coordinator {
       testCaseFinished.testCaseStartedId
     )
     if (
-      !worstTestStepResult.willBeRetried &&
+      !testCaseFinished.willBeRetried &&
       this.shouldCauseFailure(worstTestStepResult.status)
     ) {
       this.success = false

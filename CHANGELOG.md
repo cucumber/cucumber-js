@@ -9,14 +9,25 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ----
 ## [Unreleased] (In Git)
 
+See the [migration guide](./docs/migration.md) for details of how to migrate from 7.x.x to 8.x.x
+
 ### Breaking changes
 
 * Drop support for Node.js 10 and 15, add support for Node.js 16
-* Remove deprecated `--retryTagFilter` option (the correct option is `--retry-tag-filter`) 
+* Remove deprecated `--retryTagFilter` option (the correct option is `--retry-tag-filter`)
+* Remove `setDefinitionFunctionWrapper` and step definition option `wrapperOptions`
 
 ### Added
 
+* Add support for user code as native ES modules
+* `BeforeStep` and `AfterStep` hook functions now have access to the `pickleStep` in their argument object.
+* `--config` option to the CLI. It allows you to specify a configuration file other than `cucumber.js`.
+  See [docs/profiles.md](./docs/profiles.md#using-another-file-than-cucumberjs) for more info.
+  [#1794](https://github.com/cucumber/cucumber-js/pull/1794)
+
 ### Changed
+* Use performance timers for test case duration measurement.
+  [#1793](https://github.com/cucumber/cucumber-js/pull/1793)
 
 ### Deprecated
 
@@ -24,8 +35,18 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Fixed
 
+## [7.3.1] (2021-07-20)
+
+### Deprecated
+
+* Deprecate `setDefinitionFunctionWrapper` and step definition option `wrapperOptions`
+
+### Fixed
+
 * Prevent duplicate scenario execution where the same feature is targeted in multiple line expressions ([#1706](https://github.com/cucumber/cucumber-js/issues/1706))
-* Fixed reports banner to point to [new docs](https://cucumber.io/docs/cucumber/environment-variables/) about environment variables 
+* Fixed reports banner to point to [new docs](https://cucumber.io/docs/cucumber/environment-variables/) about environment variables
+* Re-add color functions for use with custom formatters [1582](https://github.com/cucumber/cucumber-js/issues/1582)
+* IParameterTypeDefinition regexp fix [1702](https://github.com/cucumber/cucumber-js/issues/1702)
 
 ## [7.3.0] (2021-06-17)
 

@@ -139,7 +139,6 @@ module.exports = [
           nanos: 0,
         },
         status: 'FAILED',
-        willBeRetried: true,
         message: 'Error: my error',
       },
       timestamp: {
@@ -155,6 +154,7 @@ module.exports = [
         seconds: 0,
         nanos: 4000000,
       },
+      willBeRetried: true,
     },
   },
   {
@@ -188,7 +188,6 @@ module.exports = [
           nanos: 0,
         },
         status: 'PASSED',
-        willBeRetried: false,
       },
       timestamp: {
         seconds: 0,
@@ -203,6 +202,7 @@ module.exports = [
         seconds: 0,
         nanos: 8000000,
       },
+      willBeRetried: false,
     },
   },
   {

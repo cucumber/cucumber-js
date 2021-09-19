@@ -39,3 +39,12 @@ Some notes about how Profiles work:
 
 - The `--profile` CLI option is repeatable, so you can apply multiple profiles at once.
 - You can still supply options directly on the command line when using profiles, they will be appended to whatever comes from profiles.
+
+## Using another file than `cucumber.js`
+
+Run `cucumber-js` with `--config` - or `-c` - to specify your configuration file
+if it is something else than the default `cucumber.js`.
+
+```shell
+$ cucumber-js --config .cucumber-rc.js
+```
