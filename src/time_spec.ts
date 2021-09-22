@@ -2,7 +2,7 @@ import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import { wrapPromiseWithTimeout } from './time'
 
-describe.only('wrapPromiseWithTimeout()', () => {
+describe('wrapPromiseWithTimeout()', () => {
   describe('promise times out (default timeout message)', () => {
     it('rejects the promise', async () => {
       // Arrange

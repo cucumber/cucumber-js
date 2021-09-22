@@ -1,14 +1,39 @@
+# Migrating to cucumber-js 8.x.x
+
+## Generator functions
+
+Generator functions (`function*` with the `yield` keyword) are not more natively
+supported with cucumber-js.
+
+You can still use generators as before but you need to add your own dependencies
+to `bluebird` and `is-generator`. Cucumber-js will no display explicit error message
+anymore in case you use a generator without wrapping it properly.
+
+```javascript
+const isGenerator = require('is-generator')
+const {coroutine} = require('bluebird')
+const {setDefinitionFunctionWrapper} = require('@cucumber/cucumber')
+
+setDefinitionFunctionWrapper(function (fn) {
+  if (isGenerator.fn(fn)) {
+    return coroutine(fn)
+  } else {
+    return fn
+  }
+})
+```
+
 # Migrating to cucumber-js 7.x.x
 
 ## Package Name
 
 cucumber-js is now published at `@cucumber/cucumber` instead of `cucumber`. To upgrade, you'll need to remove the old package and add the new one:
- 
+
 ```shell
 $ npm rm cucumber
 $ npm install --save-dev @cucumber/cucumber
-``` 
- 
+```
+
 You'll need to update any `import`/`require` statements in your support code to use the new package name.
 
 (The executable is still `cucumber-js` though.)

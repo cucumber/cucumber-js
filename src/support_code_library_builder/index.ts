@@ -14,8 +14,7 @@ import {
   ParameterTypeRegistry,
   RegularExpression,
 } from '@cucumber/cucumber-expressions'
-import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { validateNoGeneratorFunctions } from './finalize_helpers'
+import { doesHaveValue } from '../value_checker'
 import {
   DefineStepPattern,
   IDefineStepOptions,
@@ -373,16 +372,6 @@ export class SupportCodeLibraryBuilder {
   }
 
   finalize(canonicalIds?: ICanonicalSupportCodeIds): ISupportCodeLibrary {
-    if (doesNotHaveValue(this.definitionFunctionWrapper)) {
-      const definitionConfigs = [
-        this.afterTestCaseHookDefinitionConfigs,
-        this.afterTestRunHookDefinitionConfigs,
-        this.beforeTestCaseHookDefinitionConfigs,
-        this.beforeTestRunHookDefinitionConfigs,
-        this.stepDefinitionConfigs,
-      ].flat()
-      validateNoGeneratorFunctions({ cwd: this.cwd, definitionConfigs })
-    }
     const stepDefinitionsResult = this.buildStepDefinitions(
       canonicalIds?.stepDefinitionIds
     )
