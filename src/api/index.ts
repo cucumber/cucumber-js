@@ -1,7 +1,7 @@
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 
-interface IRunCucumberOptions {
+export interface IRunCucumberOptions {
   cwd: string
   features: {
     defaultDialect?: string
