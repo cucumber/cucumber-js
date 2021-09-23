@@ -48,39 +48,3 @@ export async function runCucumber(
 ): Promise<IRunResult> {
   return null
 }
-
-const result = await runCucumber({
-  cwd: process.cwd(),
-  features: {
-    paths: ['features/**/*.feature'],
-  },
-  filters: {
-    name: ['Acme'],
-    tagExpression: '@interesting',
-  },
-  support: {
-    transpileWith: ['ts-node'],
-    paths: ['features/support/**/*.ts'],
-  },
-  runtime: {
-    failFast: true,
-    retry: {
-      count: 1,
-      tagExpression: '@flaky',
-    },
-    strict: true,
-    worldParameters: {
-      foo: 'bar',
-    },
-  },
-  formats: {
-    stdout: '@cucumber/pretty-formatter',
-    files: {
-      'report.html': 'html',
-      'TEST-cucumber.xml': 'junit',
-    },
-    options: {
-      printAttachments: false,
-    },
-  },
-})
