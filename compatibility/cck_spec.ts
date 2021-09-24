@@ -5,12 +5,12 @@ import glob from 'glob'
 import fs from 'fs'
 import path from 'path'
 import { PassThrough, pipeline, Writable } from 'stream'
-import { Cli } from '../src'
 import toString from 'stream-to-string'
 import { normalizeMessageOutput } from '../features/support/formatter_output_helpers'
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
 import util from 'util'
+import { IRunCucumberOptions, runCucumber } from '../src/api'
 
 const asyncPipeline = util.promisify(pipeline)
 const PROJECT_PATH = path.join(__dirname, '..')
@@ -26,27 +26,28 @@ describe('Cucumber Compatibility Kit', () => {
     const suiteName = match[1]
     const extension = match[2]
     it(`passes the cck suite for '${suiteName}'`, async () => {
-      const cliOptions = [
-        `${CCK_FEATURES_PATH}/${suiteName}/${suiteName}${extension}`,
-        '--require',
-        `${CCK_IMPLEMENTATIONS_PATH}/${suiteName}/${suiteName}.ts`,
-        '--profile',
-        'cck',
-      ]
-      if (suiteName === 'retry') {
-        cliOptions.push('--retry', '2')
-      }
-      const args = [
-        'node',
-        path.join(PROJECT_PATH, 'bin', 'cucumber-js'),
-      ].concat(cliOptions)
       const stdout = new PassThrough()
+      const runOptions: IRunCucumberOptions = {
+        cwd: PROJECT_PATH,
+        outputStream: stdout,
+        features: {
+          paths: [`${CCK_FEATURES_PATH}/${suiteName}/${suiteName}${extension}`],
+        },
+        support: {
+          transpileWith: ['ts-node/register'],
+          paths: [`${CCK_IMPLEMENTATIONS_PATH}/${suiteName}/${suiteName}.ts`],
+        },
+        formats: {
+          toOutputStream: 'message',
+        },
+        runtime: {},
+      }
+
+      if (suiteName === 'retry') {
+        runOptions.runtime.retry = { count: 2 }
+      }
       try {
-        await new Cli({
-          argv: args,
-          cwd: PROJECT_PATH,
-          stdout,
-        }).run()
+        await runCucumber(runOptions)
       } catch (ignored) {
         console.error(ignored)
       }
