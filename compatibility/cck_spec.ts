@@ -10,7 +10,8 @@ import { normalizeMessageOutput } from '../features/support/formatter_output_hel
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
 import util from 'util'
-import { IRunCucumberOptions, runCucumber } from '../src/api'
+import { runCucumber } from '../src/api'
+import { IRunConfiguration } from '../src/configuration'
 
 const asyncPipeline = util.promisify(pipeline)
 const PROJECT_PATH = path.join(__dirname, '..')
@@ -27,7 +28,7 @@ describe('Cucumber Compatibility Kit', () => {
     const extension = match[2]
     it(`passes the cck suite for '${suiteName}'`, async () => {
       const stdout = new PassThrough()
-      const runOptions: IRunCucumberOptions = {
+      const runOptions: IRunConfiguration = {
         cwd: PROJECT_PATH,
         outputStream: stdout,
         features: {
