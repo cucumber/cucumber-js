@@ -2,6 +2,7 @@ colors: true
 file:
   - test/test_helper.ts
 full-trace: true
+forbid-only: true
 recursive: true
 reporter: dot
 require: 'ts-node/register'
