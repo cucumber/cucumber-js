@@ -1,9 +1,11 @@
 # Migrating to cucumber-js 8.x.x
 
-## Generator functions
+## Generator step definitions
 
-Generator functions (`function*` with the `yield` keyword) are not more natively
-supported with cucumber-js.
+Generator functions used in step definitions (`function*` with the `yield` keyword)
+are not natively supported anymore with cucumber-js.
+
+You may consider using `async`/`await` rather than generators.
 
 You can still use generators as before but you need to add your own dependencies
 to `bluebird` and `is-generator`. Cucumber-js will no display explicit error message
