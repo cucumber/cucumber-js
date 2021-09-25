@@ -70,7 +70,7 @@ export async function runCucumber(
   const gherkinMessageStream = GherkinStreams.fromPaths(
     options.features.paths,
     {
-      defaultDialect: options.features.defaultDialect,
+      defaultDialect: options.features?.defaultDialect,
       newId,
       relativeTo: cwd,
     }
