@@ -1,2 +1,2 @@
-export * from './discoverConfiguration'
+export * from './collectConfiguration'
 export * from './types'
