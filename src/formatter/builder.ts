@@ -21,6 +21,7 @@ import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 import HtmlFormatter from './html_formatter'
 import createRequire from 'create-require'
+import FormatterDocumentationHelper from './formatterDocumentationHelper'
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
@@ -53,9 +54,12 @@ const FormatterBuilder = {
       snippetSyntax: options.parsedArgvOptions.snippetSyntax,
       supportCodeLibrary: options.supportCodeLibrary,
     })
+    const documentation: string =
+      FormatterDocumentationHelper.getFormatterDocumentationByType(type)
     return new FormatterConstructor({
       colorFns,
       snippetBuilder,
+      documentation,
       ...options,
     })
   },
