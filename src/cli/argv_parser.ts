@@ -231,13 +231,10 @@ const ArgvParser = {
       process.exit()
     })
 
-    program.on('--help', () => {
-      /* eslint-disable no-console */
-      console.log(
-        '  For more details please visit https://github.com/cucumber/cucumber-js/blob/master/docs/cli.md\n'
-      )
-      /* eslint-enable no-console */
-    })
+    program.addHelpText(
+      'afterAll',
+      'For more details please visit https://github.com/cucumber/cucumber-js/blob/main/docs/cli.md'
+    )
 
     program.parse(argv)
     const options: IParsedArgvOptions = program.opts()
