@@ -6,7 +6,6 @@ import {
   parseGherkinMessageStream,
 } from './helpers'
 import { validateInstall } from './install_validator'
-import * as I18n from './i18n'
 import ConfigurationBuilder, {
   IConfiguration,
   IConfigurationFormat,
@@ -174,14 +173,6 @@ export default class Cli {
   async run(): Promise<ICliRunResult> {
     await validateInstall(this.cwd)
     const configuration = await this.getConfiguration()
-    if (configuration.listI18nLanguages) {
-      this.stdout.write(I18n.getLanguages())
-      return { shouldExitImmediately: true, success: true }
-    }
-    if (configuration.listI18nKeywordsFor !== '') {
-      this.stdout.write(I18n.getKeywords(configuration.listI18nKeywordsFor))
-      return { shouldExitImmediately: true, success: true }
-    }
     const newId =
       configuration.predictableIds && configuration.parallel <= 1
         ? incrementing()

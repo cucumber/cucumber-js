@@ -2,6 +2,7 @@ import { Command } from 'commander'
 import path from 'path'
 import { dialects } from '@cucumber/gherkin'
 import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
+import { getKeywords, getLanguages } from './i18n'
 
 // Using require instead of import so compiled typescript will have the desired folder structure
 const { version } = require('../../package.json') // eslint-disable-line @typescript-eslint/no-var-requires
@@ -219,6 +220,16 @@ const ArgvParser = {
         ArgvParser.mergeJson('--world-parameters'),
         {}
       )
+
+    program.on('option:i18n-languages', () => {
+      console.log(getLanguages())
+      process.exit()
+    })
+
+    program.on('option:i18n-keywords', function (isoCode: string) {
+      console.log(getKeywords(isoCode))
+      process.exit()
+    })
 
     program.on('--help', () => {
       /* eslint-disable no-console */
