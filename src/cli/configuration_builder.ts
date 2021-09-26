@@ -225,12 +225,13 @@ export async function buildConfiguration(
 ): Promise<IRunConfiguration> {
   const { args, options } = fromArgv
   return {
-    features: {
+    sources: {
       paths: args,
       defaultDialect: options.language,
     },
-    filters: {
-      name: options.name,
+    pickles: {
+      order: options.order,
+      names: options.name,
       tagExpression: options.tags,
     },
     support: {

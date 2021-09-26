@@ -1,14 +1,14 @@
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
-import { IFormatterStream } from '../formatter'
 
 export interface IRunConfiguration {
-  features: {
+  sources: {
     defaultDialect?: string
     paths: string[]
   }
-  filters?: {
-    name?: string[]
+  pickles?: {
+    order?: string
+    names?: string[]
     tagExpression?: string
   }
   support?:

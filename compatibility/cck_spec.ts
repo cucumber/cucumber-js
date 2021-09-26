@@ -29,7 +29,7 @@ describe('Cucumber Compatibility Kit', () => {
     it(`passes the cck suite for '${suiteName}'`, async () => {
       const stdout = new PassThrough()
       const runConfiguration: IRunConfiguration = {
-        features: {
+        sources: {
           paths: [`${CCK_FEATURES_PATH}/${suiteName}/${suiteName}${extension}`],
         },
         support: {
