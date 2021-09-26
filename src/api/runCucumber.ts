@@ -32,9 +32,12 @@ const { importer } = require('../importer')
 
 export async function runCucumber(
   configuration: IRunConfiguration,
-  environment?: {
+  environment: {
     cwd: string
     stdout: IFormatterStream
+  } = {
+    cwd: process.cwd(),
+    stdout: process.stdout,
   }
 ): Promise<IRunResult> {
   const { cwd, stdout } = environment
