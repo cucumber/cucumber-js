@@ -81,6 +81,9 @@ export async function runCucumber(
     formatOptions: configuration.formats?.options ?? {},
     formats: [
       { type: configuration.formats?.stdout ?? 'progress', outputTo: '' },
+      ...Object.entries(configuration.formats?.files ?? {}).map(
+        ([outputTo, type]) => ({ outputTo, type })
+      ),
     ],
     supportCodeLibrary,
   })
