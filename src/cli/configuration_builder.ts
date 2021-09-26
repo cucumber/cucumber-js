@@ -1,4 +1,5 @@
 import ArgvParser, {
+  IParsedArgv,
   IParsedArgvFormatOptions,
   IParsedArgvOptions,
 } from './argv_parser'
@@ -10,6 +11,7 @@ import { promisify } from 'util'
 import { IPickleFilterOptions } from '../pickle_filter'
 import { IRuntimeOptions } from '../runtime'
 import { valueOrDefault } from '../value_checker'
+import { IRunConfiguration } from '../configuration'
 
 export interface IConfigurationFormat {
   outputTo: string
@@ -22,8 +24,6 @@ export interface IConfiguration {
   formats: IConfigurationFormat[]
   formatOptions: IParsedArgvFormatOptions
   publishing: boolean
-  listI18nKeywordsFor: string
-  listI18nLanguages: boolean
   order: string
   parallel: number
   pickleFilterOptions: IPickleFilterOptions
@@ -63,30 +63,24 @@ export default class ConfigurationBuilder {
   }
 
   async build(): Promise<IConfiguration> {
-    const listI18nKeywordsFor = this.options.i18nKeywords
-    const listI18nLanguages = this.options.i18nLanguages
     const unexpandedFeaturePaths = await this.getUnexpandedFeaturePaths()
-    let featurePaths: string[] = []
-    let supportCodePaths: string[] = []
-    if (listI18nKeywordsFor === '' && !listI18nLanguages) {
-      featurePaths = await this.expandFeaturePaths(unexpandedFeaturePaths)
-      let unexpandedSupportCodePaths = this.options.require
-      if (unexpandedSupportCodePaths.length === 0) {
-        unexpandedSupportCodePaths = this.getFeatureDirectoryPaths(featurePaths)
-      }
-      supportCodePaths = await this.expandPaths(
-        unexpandedSupportCodePaths,
-        '.@(js|mjs)'
-      )
+    const featurePaths: string[] = await this.expandFeaturePaths(
+      unexpandedFeaturePaths
+    )
+    let unexpandedSupportCodePaths = this.options.require
+    if (unexpandedSupportCodePaths.length === 0) {
+      unexpandedSupportCodePaths = this.getFeatureDirectoryPaths(featurePaths)
     }
+    const supportCodePaths = await this.expandPaths(
+      unexpandedSupportCodePaths,
+      '.@(js|mjs)'
+    )
     return {
       featureDefaultLanguage: this.options.language,
       featurePaths,
       formats: this.getFormats(),
       formatOptions: this.options.formatOptions,
       publishing: this.isPublishing(),
-      listI18nKeywordsFor,
-      listI18nLanguages,
       order: this.options.order,
       parallel: this.options.parallel,
       pickleFilterOptions: {
@@ -223,5 +217,53 @@ export default class ConfigurationBuilder {
       }
     }
     return ['features/**/*.{feature,feature.md}']
+  }
+}
+
+export async function buildConfiguration(
+  fromArgv: IParsedArgv
+): Promise<IRunConfiguration> {
+  const { args, options } = fromArgv
+  return {
+    features: {
+      paths: args,
+      defaultDialect: options.language,
+    },
+    filters: {
+      name: options.name,
+      tagExpression: options.tags,
+    },
+    support: {
+      transpileWith: options.requireModule,
+      paths: options.require,
+    },
+    runtime: {
+      dryRun: options.dryRun,
+      failFast: options.failFast,
+      filterStacktraces: !options.backtrace,
+      parallel: options.parallel > 0 ? { count: options.parallel } : null,
+      retry:
+        options.retry > 0
+          ? {
+              count: options.retry,
+              tagExpression: options.retryTagFilter,
+            }
+          : null,
+      strict: options.strict,
+      worldParameters: options.worldParameters,
+    },
+    formats: {
+      stdout: options.format.find((option) => !option.includes(':')),
+      files: options.format
+        .filter((option) => option.includes(':'))
+        .reduce((prev, curr) => {
+          const [type, target] = OptionSplitter.split(curr)
+          return {
+            ...prev,
+            [target]: type,
+          }
+        }, {}),
+      options: options.formatOptions,
+    },
   }
 }

@@ -1,11 +1,14 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import ConfigurationBuilder from './configuration_builder'
+import ConfigurationBuilder, {
+  buildConfiguration,
+} from './configuration_builder'
 import fsExtra from 'fs-extra'
 import path from 'path'
 import tmp, { DirOptions } from 'tmp'
 import { promisify } from 'util'
 import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
+import ArgvParser from './argv_parser'
 
 async function buildTestWorkingDirectory(): Promise<string> {
   const cwd = await promisify<DirOptions, string>(tmp.dir)({
@@ -18,6 +21,31 @@ async function buildTestWorkingDirectory(): Promise<string> {
 const baseArgv = ['/path/to/node', '/path/to/cucumber-js']
 
 describe('Configuration', () => {
+  describe('buildConfiguration', () => {
+    it('should map formatters ', async () => {
+      const result = await buildConfiguration(
+        ArgvParser.parse([
+          ...baseArgv,
+          '--format',
+          'message',
+          '--format',
+          'json:./report.json',
+          '--format',
+          'html:./report.html',
+        ])
+      )
+
+      expect(result.formats).to.eql({
+        stdout: 'message',
+        files: {
+          './report.html': 'html',
+          './report.json': 'json',
+        },
+        options: {},
+      })
+    })
+  })
+
   describe('no argv', () => {
     it('returns the default configuration', async function () {
       // Arrange
@@ -34,8 +62,6 @@ describe('Configuration', () => {
         formatOptions: {},
         formats: [{ outputTo: '', type: 'progress' }],
         publishing: false,
-        listI18nKeywordsFor: '',
-        listI18nLanguages: false,
         order: 'defined',
         parallel: 0,
         pickleFilterOptions: {
