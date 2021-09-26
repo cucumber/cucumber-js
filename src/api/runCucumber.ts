@@ -99,10 +99,12 @@ export async function runCucumber(
       eventBroadcaster,
       eventDataCollector,
       gherkinMessageStream,
-      order: 'defined',
+      order: 'defined', // TODO from --order
       pickleFilter: new PickleFilter({
         cwd,
         featurePaths: unexpandedFeaturePaths,
+        names: configuration.filters?.name,
+        tagExpression: configuration.filters?.tagExpression,
       }),
     })
   }
@@ -116,14 +118,14 @@ export async function runCucumber(
     eventBroadcaster,
     eventDataCollector,
     options: {
-      dryRun: false,
-      failFast: false,
-      filterStacktraces: false,
+      dryRun: configuration.runtime?.dryRun,
+      failFast: configuration.runtime?.failFast,
+      filterStacktraces: configuration.runtime?.filterStacktraces,
       predictableIds: false,
       retry: configuration.runtime?.retry?.count ?? 0,
-      retryTagFilter: '',
-      strict: false,
-      worldParameters: {},
+      retryTagFilter: configuration.runtime?.retry?.tagExpression,
+      strict: configuration.runtime?.strict,
+      worldParameters: configuration.runtime?.worldParameters,
     },
     newId,
     pickleIds,
