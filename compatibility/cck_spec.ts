@@ -28,9 +28,7 @@ describe('Cucumber Compatibility Kit', () => {
     const extension = match[2]
     it(`passes the cck suite for '${suiteName}'`, async () => {
       const stdout = new PassThrough()
-      const runOptions: IRunConfiguration = {
-        cwd: PROJECT_PATH,
-        outputStream: stdout,
+      const runConfiguration: IRunConfiguration = {
         features: {
           paths: [`${CCK_FEATURES_PATH}/${suiteName}/${suiteName}${extension}`],
         },
@@ -39,16 +37,18 @@ describe('Cucumber Compatibility Kit', () => {
           paths: [`${CCK_IMPLEMENTATIONS_PATH}/${suiteName}/${suiteName}.ts`],
         },
         formats: {
-          toOutputStream: 'message',
+          stdout: 'message',
         },
         runtime: {},
       }
-
       if (suiteName === 'retry') {
-        runOptions.runtime.retry = { count: 2 }
+        runConfiguration.runtime.retry = { count: 2 }
       }
       try {
-        await runCucumber(runOptions)
+        await runCucumber(runConfiguration, {
+          cwd: PROJECT_PATH,
+          stdout,
+        })
       } catch (ignored) {
         console.error(ignored)
       }

@@ -3,7 +3,6 @@ import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { IFormatterStream } from '../formatter'
 
 export interface IRunConfiguration {
-  cwd: string
   features: {
     defaultDialect?: string
     paths: string[]
@@ -33,9 +32,8 @@ export interface IRunConfiguration {
     worldParameters?: any
   }
   formats?: {
-    toOutputStream: string
+    stdout: string
     files?: Record<string, string>
     options?: IParsedArgvFormatOptions
   }
-  outputStream: IFormatterStream
 }

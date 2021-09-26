@@ -31,25 +31,42 @@ import { IRunResult } from './types'
 const { importer } = require('../importer')
 
 export async function runCucumber(
-  options: IRunConfiguration
+  configuration: IRunConfiguration,
+  environment?: {
+    cwd: string
+    stdout: IFormatterStream
+  }
 ): Promise<IRunResult> {
-  const { cwd, outputStream } = options
+  const { cwd, stdout } = environment
   const newId = IdGenerator.uuid()
 
+  const unexpandedFeaturePaths = await getUnexpandedFeaturePaths(
+    cwd,
+    configuration.features?.paths
+  )
+  const featurePaths: string[] = await expandFeaturePaths(
+    cwd,
+    unexpandedFeaturePaths
+  )
+
   let supportCodeLibrary
-  if ('World' in options.support) {
-    supportCodeLibrary = options.support
+  if ('World' in configuration.support) {
+    supportCodeLibrary = configuration.support
   } else {
+    let unexpandedSupportCodePaths = configuration.support.paths
+    if (unexpandedSupportCodePaths.length === 0) {
+      unexpandedSupportCodePaths = getFeatureDirectoryPaths(cwd, featurePaths)
+    }
     const supportCodePaths = await expandPaths(
       cwd,
-      options.support.paths,
+      unexpandedSupportCodePaths,
       '.@(js|mjs)'
     )
     supportCodeLibrary = await getSupportCodeLibrary({
       cwd,
       newId,
       supportCodePaths,
-      supportCodeRequiredModules: options.support.transpileWith,
+      supportCodeRequiredModules: configuration.support.transpileWith,
     })
   }
 
@@ -58,26 +75,25 @@ export async function runCucumber(
 
   const cleanup = await initializeFormatters({
     cwd,
-    outputStream: outputStream,
+    stdout,
     eventBroadcaster,
     eventDataCollector,
-    formatOptions: {},
-    formats: [{ type: options.formats.toOutputStream, outputTo: '' }],
+    formatOptions: configuration.formats?.options ?? {},
+    formats: [
+      { type: configuration.formats?.stdout ?? 'progress', outputTo: '' },
+    ],
     supportCodeLibrary,
   })
   await emitMetaMessage(eventBroadcaster)
 
-  const gherkinMessageStream = GherkinStreams.fromPaths(
-    options.features.paths,
-    {
-      defaultDialect: options.features?.defaultDialect,
-      newId,
-      relativeTo: cwd,
-    }
-  )
+  const gherkinMessageStream = GherkinStreams.fromPaths(featurePaths, {
+    defaultDialect: configuration.features?.defaultDialect,
+    newId,
+    relativeTo: cwd,
+  })
   let pickleIds: string[] = []
 
-  if (options.features.paths.length > 0) {
+  if (featurePaths.length > 0) {
     pickleIds = await parseGherkinMessageStream({
       cwd,
       eventBroadcaster,
@@ -86,7 +102,7 @@ export async function runCucumber(
       order: 'defined',
       pickleFilter: new PickleFilter({
         cwd,
-        featurePaths: options.features.paths,
+        featurePaths: unexpandedFeaturePaths,
       }),
     })
   }
@@ -104,7 +120,7 @@ export async function runCucumber(
       failFast: false,
       filterStacktraces: false,
       predictableIds: false,
-      retry: options.runtime?.retry?.count ?? 0,
+      retry: configuration.runtime?.retry?.count ?? 0,
       retryTagFilter: '',
       strict: false,
       worldParameters: {},
@@ -147,7 +163,7 @@ async function getSupportCodeLibrary({
 
 async function initializeFormatters({
   cwd,
-  outputStream,
+  stdout,
   eventBroadcaster,
   eventDataCollector,
   formatOptions,
@@ -155,7 +171,7 @@ async function initializeFormatters({
   supportCodeLibrary,
 }: {
   cwd: string
-  outputStream: IFormatterStream
+  stdout: IFormatterStream
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   formatOptions: IParsedArgvFormatOptions
@@ -164,7 +180,7 @@ async function initializeFormatters({
 }): Promise<() => Promise<void>> {
   const formatters: Formatter[] = await Promise.all(
     formats.map(async ({ type, outputTo }) => {
-      let stream: IFormatterStream = outputStream
+      let stream: IFormatterStream = stdout
       if (outputTo !== '') {
         if (outputTo.match(/^https?:\/\//) !== null) {
           const headers: { [key: string]: string } = {}
@@ -200,7 +216,7 @@ async function initializeFormatters({
         parsedArgvOptions: formatOptions,
         stream,
         cleanup:
-          stream === outputStream
+          stream === stdout
             ? async () => await Promise.resolve()
             : promisify<any>(stream.end.bind(stream)),
         supportCodeLibrary,
@@ -248,4 +264,58 @@ async function expandPaths(
     })
   )
   return expandedPaths.flat().map((x) => path.normalize(x))
+}
+
+async function getUnexpandedFeaturePaths(
+  cwd: string,
+  args: string[]
+): Promise<string[]> {
+  if (args.length > 0) {
+    const nestedFeaturePaths = await Promise.all(
+      args.map(async (arg) => {
+        const filename = path.basename(arg)
+        if (filename[0] === '@') {
+          const filePath = path.join(cwd, arg)
+          const content = await fs.readFile(filePath, 'utf8')
+          return content.split('\n').map((x) => x.trim())
+        }
+        return [arg]
+      })
+    )
+    const featurePaths = nestedFeaturePaths.flat()
+    if (featurePaths.length > 0) {
+      return featurePaths.filter((x) => x !== '')
+    }
+  }
+  return ['features/**/*.{feature,feature.md}']
+}
+
+function getFeatureDirectoryPaths(
+  cwd: string,
+  featurePaths: string[]
+): string[] {
+  const featureDirs = featurePaths.map((featurePath) => {
+    let featureDir = path.dirname(featurePath)
+    let childDir: string
+    let parentDir = featureDir
+    while (childDir !== parentDir) {
+      childDir = parentDir
+      parentDir = path.dirname(childDir)
+      if (path.basename(parentDir) === 'features') {
+        featureDir = parentDir
+        break
+      }
+    }
+    return path.relative(cwd, featureDir)
+  })
+  return [...new Set(featureDirs)]
+}
+
+async function expandFeaturePaths(
+  cwd: string,
+  featurePaths: string[]
+): Promise<string[]> {
+  featurePaths = featurePaths.map((p) => p.replace(/(:\d+)*$/g, '')) // Strip line numbers
+  featurePaths = [...new Set(featurePaths)] // Deduplicate the feature files
+  return await expandPaths(cwd, featurePaths, '.feature')
 }
