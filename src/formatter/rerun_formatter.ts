@@ -14,7 +14,7 @@ interface UriToLinesMap {
 }
 
 export default class RerunFormatter extends Formatter {
-  private readonly separator: string
+  private readonly separator: string = 'Prints failing files with line numbers.'
 
   constructor(options: IFormatterOptions) {
     super(options)
