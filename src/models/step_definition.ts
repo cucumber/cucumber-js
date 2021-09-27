@@ -7,7 +7,6 @@ import Definition, {
 } from './definition'
 import { parseStepArgument } from '../step_arguments'
 import { Expression } from '@cucumber/cucumber-expressions'
-import bluebird from 'bluebird'
 import { doesHaveValue } from '../value_checker'
 
 export default class StepDefinition extends Definition implements IDefinition {
@@ -24,7 +23,7 @@ export default class StepDefinition extends Definition implements IDefinition {
     step,
     world,
   }: IGetInvocationDataRequest): Promise<IGetInvocationDataResponse> {
-    const parameters = await bluebird.all(
+    const parameters = await Promise.all(
       this.expression.match(step.text).map((arg) => arg.getValue(world))
     )
     if (doesHaveValue(step.argument)) {

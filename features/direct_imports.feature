@@ -44,3 +44,20 @@ Feature: Core feature elements execution using direct imports
       """
       features/step_definitions/cucumber_steps.js:3
       """
+
+  Scenario: deep imports don't break everything
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+        Scenario: some scenario
+          Given a step passes
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+      const TestCaseHookDefinition = require('@cucumber/cucumber/lib/models/test_case_hook_definition')
+
+      Given(/^a step passes$/, function() {});
+      """
+    When I run cucumber-js
+    Then it passes

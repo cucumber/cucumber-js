@@ -20,6 +20,7 @@ export interface IParsedArgvFormatOptions {
 
 export interface IParsedArgvOptions {
   backtrace: boolean
+  config: string
   dryRun: boolean
   exit: boolean
   failFast: boolean
@@ -105,6 +106,7 @@ const ArgvParser = {
       .usage('[options] [<GLOB|DIR|FILE[:LINE]>...]')
       .version(version, '-v, --version')
       .option('-b, --backtrace', 'show full backtrace for errors')
+      .option('-c, --config <TYPE[:PATH]>', 'specify configuration file')
       .option(
         '-d, --dry-run',
         'invoke formatters without executing steps',
