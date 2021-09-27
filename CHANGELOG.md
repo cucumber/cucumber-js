@@ -19,6 +19,7 @@ See the [migration guide](./docs/migration.md) for details of how to migrate fro
 
 ### Added
 
+* Add support for user code as native ES modules
 * `BeforeStep` and `AfterStep` hook functions now have access to the `pickleStep` in their argument object.
 * `--config` option to the CLI. It allows you to specify a configuration file other than `cucumber.js`.
   See [docs/profiles.md](./docs/profiles.md#using-another-file-than-cucumberjs) for more info.

@@ -3,24 +3,31 @@ import path from 'path'
 import stringArgv from 'string-argv'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 
-export default class ProfileLoader {
-  private readonly directory: string
+const DEFAULT_FILENAMES = ['cucumber.cjs', 'cucumber.js']
 
-  constructor(directory: string) {
-    this.directory = directory
-  }
+export default class ProfileLoader {
+  constructor(private readonly directory: string) {}
 
   async getDefinitions(configFile?: string): Promise<Record<string, string>> {
-    const definitionsFilePath: string = path.join(
-      this.directory,
-      configFile || 'cucumber.js'
+    if (configFile) {
+      return this.loadFile(configFile)
+    }
+
+    const defaultFile = DEFAULT_FILENAMES.find((filename) =>
+      fs.existsSync(path.join(this.directory, filename))
     )
 
-    const exists = await fs.exists(definitionsFilePath)
-    if (!exists) {
-      return {}
+    if (defaultFile) {
+      return this.loadFile(defaultFile)
     }
-    const definitions = require(definitionsFilePath) // eslint-disable-line @typescript-eslint/no-var-requires
+
+    return {}
+  }
+
+  loadFile(configFile: string): Record<string, string> {
+    const definitionsFilePath: string = path.join(this.directory, configFile)
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const definitions = require(definitionsFilePath)
     if (typeof definitions !== 'object') {
       throw new Error(`${definitionsFilePath} does not export an object`)
     }
