@@ -8,6 +8,7 @@ import { promisify } from 'util'
 
 export default class HtmlFormatter extends Formatter {
   private readonly _finished: Promise<void>
+  public static readonly documentation: string = 'Outputs HTML report'
 
   constructor(options: IFormatterOptions) {
     super(options)
