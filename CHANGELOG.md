@@ -17,12 +17,15 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Added
 
+* Add support for user code as native ES modules
 * `BeforeStep` and `AfterStep` hook functions now have access to the `pickleStep` in their argument object.
 * `--config` option to the CLI. It allows you to specify a configuration file other than `cucumber.js`.
   See [docs/profiles.md](./docs/profiles.md#using-another-file-than-cucumberjs) for more info.
   [#1794](https://github.com/cucumber/cucumber-js/pull/1794)
 
 ### Changed
+* Use performance timers for test case duration measurement.
+  [#1793](https://github.com/cucumber/cucumber-js/pull/1793)
 
 ### Deprecated
 

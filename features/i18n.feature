@@ -26,6 +26,7 @@ Feature: internationalization
       """
       ENGLISH KEYWORD  | NATIVE KEYWORDS
       Feature          | "フィーチャ", "機能"
+      Rule             | "Rule"
       Background       | "背景"
       Scenario         | "シナリオ"
       Scenario Outline | "シナリオアウトライン", "シナリオテンプレート", "テンプレ", "シナリオテンプレ"
