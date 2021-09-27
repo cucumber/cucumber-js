@@ -28,7 +28,6 @@ export interface IFormatterOptions {
   stream: WritableStream
   cleanup: IFormatterCleanupFn
   supportCodeLibrary: ISupportCodeLibrary
-  documentation: string
 }
 
 export default class Formatter {
@@ -51,7 +50,6 @@ export default class Formatter {
     this.stream = options.stream
     this.supportCodeLibrary = options.supportCodeLibrary
     this.cleanup = options.cleanup
-    this.documentation = options.documentation
   }
 
   async finished(): Promise<void> {
