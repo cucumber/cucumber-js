@@ -266,5 +266,6 @@ export async function buildConfiguration(
         }, {}),
       options: options.formatOptions,
     },
+    predictableIds: options.predictableIds,
   }
 }

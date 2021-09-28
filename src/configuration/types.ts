@@ -36,4 +36,5 @@ export interface IRunConfiguration {
     files?: Record<string, string>
     options?: IParsedArgvFormatOptions
   }
+  predictableIds?: boolean
 }
