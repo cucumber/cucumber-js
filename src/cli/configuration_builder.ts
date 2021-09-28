@@ -27,7 +27,6 @@ export interface IConfiguration {
   order: string
   parallel: number
   pickleFilterOptions: IPickleFilterOptions
-  predictableIds: boolean
   profiles: string[]
   runtimeOptions: IRuntimeOptions
   shouldExitImmediately: boolean
@@ -95,11 +94,9 @@ export default class ConfigurationBuilder {
         names: this.options.name,
         tagExpression: this.options.tags,
       },
-      predictableIds: this.options.predictableIds,
       profiles: this.options.profile,
       runtimeOptions: {
         dryRun: this.options.dryRun,
-        predictableIds: this.options.predictableIds,
         failFast: this.options.failFast,
         filterStacktraces: !this.options.backtrace,
         retry: this.options.retry,
