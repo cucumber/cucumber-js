@@ -51,6 +51,7 @@ describe('Cucumber Compatibility Kit', () => {
         await runCucumber(runConfiguration, {
           cwd: PROJECT_PATH,
           stdout,
+          env: process.env,
         })
       } catch (ignored) {
         console.error(ignored)
