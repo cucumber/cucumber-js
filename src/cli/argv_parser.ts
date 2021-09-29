@@ -33,7 +33,6 @@ export interface IParsedArgvOptions {
   name: string[]
   order: string
   parallel: number
-  predictableIds: boolean
   profile: string[]
   publish: boolean
   publishQuiet: boolean
@@ -167,11 +166,6 @@ const ArgvParser = {
         'run in parallel with the given number of workers',
         (val) => ArgvParser.validateCountOption(val, '--parallel'),
         0
-      )
-      .option(
-        '--predictable-ids',
-        'Use predictable ids in messages (option ignored if using parallel)',
-        false
       )
       .option(
         '--publish',

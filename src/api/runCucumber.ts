@@ -45,9 +45,7 @@ export async function runCucumber(
   }
 ): Promise<IRunResult> {
   const { cwd, stdout } = environment
-  const newId = configuration.predictableIds
-    ? IdGenerator.incrementing()
-    : IdGenerator.uuid()
+  const newId = IdGenerator.uuid()
 
   const { unexpandedFeaturePaths, featurePaths, supportCodePaths } =
     await resolvePaths(cwd, configuration)
@@ -104,7 +102,6 @@ export async function runCucumber(
     dryRun: configuration.runtime?.dryRun,
     failFast: configuration.runtime?.failFast,
     filterStacktraces: configuration.runtime?.filterStacktraces,
-    predictableIds: configuration.predictableIds,
     retry: configuration.runtime?.retry?.count ?? 0,
     retryTagFilter: configuration.runtime?.retry?.tagExpression,
     strict: configuration.runtime?.strict,

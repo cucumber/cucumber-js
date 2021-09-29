@@ -96,3 +96,26 @@ export function normalizeJsonOutput(str: string, cwd: string): IJsonFeature[] {
   })
   return json
 }
+
+export const ignorableKeys = [
+  'meta',
+  // sources
+  'uri',
+  'line',
+  // ids
+  'astNodeId',
+  'astNodeIds',
+  'hookId',
+  'id',
+  'pickleId',
+  'pickleStepId',
+  'stepDefinitionIds',
+  'testCaseId',
+  'testCaseStartedId',
+  'testStepId',
+  // time
+  'nanos',
+  'seconds',
+  // errors
+  'message',
+]

@@ -29,5 +29,4 @@ export interface IRunConfiguration {
     worldParameters?: any
   }
   formats?: IFormatterConfiguration
-  predictableIds?: boolean
 }
