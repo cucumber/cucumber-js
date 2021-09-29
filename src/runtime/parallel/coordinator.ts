@@ -4,7 +4,7 @@ import { retriesForPickle } from '../helpers'
 import * as messages from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../../formatter/helpers'
-import { IRuntimeOptions } from '..'
+import { IRuntime, IRuntimeOptions } from '..'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { ICoordinatorReport, IWorkerCommand } from './command_types'
 import { doesHaveValue } from '../../value_checker'
@@ -28,6 +28,7 @@ export interface INewCoordinatorOptions {
   supportCodeLibrary: ISupportCodeLibrary
   supportCodePaths: string[]
   supportCodeRequiredModules: string[]
+  numberOfWorkers: number
 }
 
 interface IWorker {
@@ -35,7 +36,7 @@ interface IWorker {
   process: ChildProcess
 }
 
-export default class Coordinator {
+export default class Coordinator implements IRuntime {
   private readonly cwd: string
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
@@ -50,6 +51,7 @@ export default class Coordinator {
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private readonly supportCodePaths: string[]
   private readonly supportCodeRequiredModules: string[]
+  private readonly numberOfWorkers: number
   private success: boolean
 
   constructor({
@@ -62,6 +64,7 @@ export default class Coordinator {
     supportCodeLibrary,
     supportCodePaths,
     supportCodeRequiredModules,
+    numberOfWorkers,
   }: INewCoordinatorOptions) {
     this.cwd = cwd
     this.eventBroadcaster = eventBroadcaster
@@ -75,6 +78,7 @@ export default class Coordinator {
     this.supportCodePaths = supportCodePaths
     this.supportCodeRequiredModules = supportCodeRequiredModules
     this.pickleIds = pickleIds
+    this.numberOfWorkers = numberOfWorkers
     this.nextPickleIdIndex = 0
     this.success = true
     this.workers = {}
@@ -169,7 +173,7 @@ export default class Coordinator {
     }
   }
 
-  async run(numberOfWorkers: number): Promise<boolean> {
+  async start(): Promise<boolean> {
     const envelope: messages.Envelope = {
       testRunStarted: {
         timestamp: this.stopwatch.timestamp(),
@@ -186,8 +190,8 @@ export default class Coordinator {
       supportCodeLibrary: this.supportCodeLibrary,
     })
     return await new Promise<boolean>((resolve) => {
-      for (let i = 0; i <= numberOfWorkers; i++) {
-        this.startWorker(i.toString(), numberOfWorkers)
+      for (let i = 0; i <= this.numberOfWorkers; i++) {
+        this.startWorker(i.toString(), this.numberOfWorkers)
       }
       this.onFinish = resolve
     })

@@ -23,11 +23,11 @@ import { WriteStream as TtyWriteStream } from 'tty'
 import FormatterBuilder from '../formatter/builder'
 import { GherkinStreams } from '@cucumber/gherkin-streams'
 import PickleFilter from '../pickle_filter'
-import Runtime from '../runtime'
 import { IRunConfiguration } from '../configuration'
 import { IRunResult } from './types'
 import { DEFAULT_CUCUMBER_PUBLISH_URL } from '../formatter/publish'
 import { resolvePaths } from './paths'
+import { makeRuntime } from './runtime'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
@@ -100,22 +100,27 @@ export async function runCucumber(
     newId,
   })
 
-  const runtime = new Runtime({
+  const runtimeOptions = {
+    dryRun: configuration.runtime?.dryRun,
+    failFast: configuration.runtime?.failFast,
+    filterStacktraces: configuration.runtime?.filterStacktraces,
+    predictableIds: configuration.predictableIds,
+    retry: configuration.runtime?.retry?.count ?? 0,
+    retryTagFilter: configuration.runtime?.retry?.tagExpression,
+    strict: configuration.runtime?.strict,
+    worldParameters: configuration.runtime?.worldParameters,
+  }
+  const runtime = makeRuntime({
+    cwd,
     eventBroadcaster,
     eventDataCollector,
-    options: {
-      dryRun: configuration.runtime?.dryRun,
-      failFast: configuration.runtime?.failFast,
-      filterStacktraces: configuration.runtime?.filterStacktraces,
-      predictableIds: configuration.predictableIds,
-      retry: configuration.runtime?.retry?.count ?? 0,
-      retryTagFilter: configuration.runtime?.retry?.tagExpression,
-      strict: configuration.runtime?.strict,
-      worldParameters: configuration.runtime?.worldParameters,
-    },
-    newId,
     pickleIds,
+    newId,
     supportCodeLibrary,
+    supportCodePaths,
+    supportCodeRequiredModules: configuration.support.transpileWith,
+    options: runtimeOptions,
+    parallel: configuration.runtime.parallel?.count ?? 0,
   })
   const success = await runtime.start()
   await cleanup()

@@ -17,6 +17,10 @@ import {
 } from './stopwatch'
 import { assembleTestCases } from './assemble_test_cases'
 
+export interface IRuntime {
+  start: () => Promise<boolean>
+}
+
 export interface INewRuntimeOptions {
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
@@ -37,7 +41,7 @@ export interface IRuntimeOptions {
   worldParameters: any
 }
 
-export default class Runtime {
+export default class Runtime implements IRuntime {
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
   private readonly stopwatch: ITestRunStopwatch

@@ -1,4 +1,3 @@
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IFormatterConfiguration } from '../formatter'
 
 export interface IRunConfiguration {
