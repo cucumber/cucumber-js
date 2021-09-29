@@ -50,10 +50,11 @@ export default class Cli {
         cwd: this.cwd,
       })
     )
-    const configuration = await buildConfiguration(fromArgv)
+    const configuration = await buildConfiguration(fromArgv, process.env)
     const { success } = await runCucumber(configuration, {
       cwd: this.cwd,
       stdout: this.stdout,
+      env: process.env,
     })
     return {
       shouldExitImmediately: fromArgv.options.exit,

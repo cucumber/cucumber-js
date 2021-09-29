@@ -221,7 +221,8 @@ export default class ConfigurationBuilder {
 }
 
 export async function buildConfiguration(
-  fromArgv: IParsedArgv
+  fromArgv: IParsedArgv,
+  env: typeof process.env
 ): Promise<IRunConfiguration> {
   const { args, options } = fromArgv
   return {
@@ -255,17 +256,50 @@ export async function buildConfiguration(
     },
     formats: {
       stdout: options.format.find((option) => !option.includes(':')),
-      files: options.format
-        .filter((option) => option.includes(':'))
-        .reduce((prev, curr) => {
-          const [type, target] = OptionSplitter.split(curr)
-          return {
-            ...prev,
-            [target]: type,
-          }
-        }, {}),
+      files: new Map(
+        options.format
+          .filter((option) => option.includes(':'))
+          .map((item) => {
+            const [type, target] = OptionSplitter.split(item)
+            return [target, type]
+          })
+      ),
+      publish: makePublishConfig(options, env),
       options: options.formatOptions,
     },
     predictableIds: options.predictableIds,
+  }
+}
+
+function isTruthyString(s: string | undefined): boolean {
+  if (s === undefined) {
+    return false
+  }
+  return s.match(/^(false|no|0)$/i) === null
+}
+
+function isPublishing(
+  options: IParsedArgvOptions,
+  env: typeof process.env
+): boolean {
+  return (
+    options.publish ||
+    isTruthyString(env.CUCUMBER_PUBLISH_ENABLED) ||
+    env.CUCUMBER_PUBLISH_URL !== undefined ||
+    env.CUCUMBER_PUBLISH_TOKEN !== undefined
+  )
+}
+
+function makePublishConfig(
+  options: IParsedArgvOptions,
+  env: typeof process.env
+): any {
+  const enabled = isPublishing(options, env)
+  if (!enabled) {
+    return false
+  }
+  return {
+    url: env.CUCUMBER_PUBLISH_URL,
+    token: env.CUCUMBER_PUBLISH_TOKEN,
   }
 }

@@ -1,6 +1,8 @@
-import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import Formatter, { IFormatterStream } from '../formatter'
+import Formatter, {
+  IFormatterConfiguration,
+  IFormatterStream,
+} from '../formatter'
 import { IdGenerator } from '@cucumber/messages'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
 import { pathToFileURL } from 'url'
@@ -19,13 +21,13 @@ import { promisify } from 'util'
 import { doesNotHaveValue } from '../value_checker'
 import { WriteStream as TtyWriteStream } from 'tty'
 import FormatterBuilder from '../formatter/builder'
-import { IConfigurationFormat } from '../cli/configuration_builder'
 import { GherkinStreams } from '@cucumber/gherkin-streams'
 import PickleFilter from '../pickle_filter'
 import Runtime from '../runtime'
 import { IRunConfiguration } from '../configuration'
 import glob from 'glob'
 import { IRunResult } from './types'
+import { DEFAULT_CUCUMBER_PUBLISH_URL } from '../formatter/publish'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
@@ -35,9 +37,11 @@ export async function runCucumber(
   environment: {
     cwd: string
     stdout: IFormatterStream
+    env: typeof process.env
   } = {
     cwd: process.cwd(),
     stdout: process.stdout,
+    env: process.env,
   }
 ): Promise<IRunResult> {
   const { cwd, stdout } = environment
@@ -83,13 +87,7 @@ export async function runCucumber(
     stdout,
     eventBroadcaster,
     eventDataCollector,
-    formatOptions: configuration.formats?.options ?? {},
-    formats: [
-      { type: configuration.formats?.stdout ?? 'progress', outputTo: '' },
-      ...Object.entries(configuration.formats?.files ?? {}).map(
-        ([outputTo, type]) => ({ outputTo, type })
-      ),
-    ],
+    configuration: configuration.formats,
     supportCodeLibrary,
   })
   await emitMetaMessage(eventBroadcaster)
@@ -176,76 +174,89 @@ async function initializeFormatters({
   stdout,
   eventBroadcaster,
   eventDataCollector,
-  formatOptions,
-  formats,
+  configuration = {},
   supportCodeLibrary,
 }: {
   cwd: string
   stdout: IFormatterStream
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
-  formatOptions: IParsedArgvFormatOptions
-  formats: IConfigurationFormat[]
+  configuration: IFormatterConfiguration
   supportCodeLibrary: ISupportCodeLibrary
 }): Promise<() => Promise<void>> {
-  const formatters: Formatter[] = await Promise.all(
-    formats.map(async ({ type, outputTo }) => {
-      let stream: IFormatterStream = stdout
-      if (outputTo !== '') {
-        if (outputTo.match(/^https?:\/\//) !== null) {
-          const headers: { [key: string]: string } = {}
-          if (process.env.CUCUMBER_PUBLISH_TOKEN !== undefined) {
-            headers.Authorization = `Bearer ${process.env.CUCUMBER_PUBLISH_TOKEN}`
-          }
-
-          stream = new HttpStream(outputTo, 'GET', headers)
-          const readerStream = new Writable({
-            objectMode: true,
-            write: function (responseBody: string, encoding, writeCallback) {
-              console.error(responseBody)
-              writeCallback()
-            },
-          })
-          stream.pipe(readerStream)
-        } else {
-          const fd = await fs.open(path.resolve(cwd, outputTo), 'w')
-          stream = fs.createWriteStream(null, { fd })
-        }
-      }
-
-      stream.on('error', (error) => {
-        console.error(error.message)
-        process.exit(1)
-      })
-
-      const typeOptions = {
-        cwd,
-        eventBroadcaster,
-        eventDataCollector,
-        log: stream.write.bind(stream),
-        parsedArgvOptions: formatOptions,
-        stream,
-        cleanup:
-          stream === stdout
-            ? async () => await Promise.resolve()
-            : promisify<any>(stream.end.bind(stream)),
-        supportCodeLibrary,
-      }
-      if (doesNotHaveValue(formatOptions.colorsEnabled)) {
-        typeOptions.parsedArgvOptions.colorsEnabled = (
-          stream as TtyWriteStream
-        ).isTTY
-      }
-      if (type === 'progress-bar' && !(stream as TtyWriteStream).isTTY) {
-        const outputToName = outputTo === '' ? 'stdout' : outputTo
-        console.warn(
-          `Cannot use 'progress-bar' formatter for output to '${outputToName}' as not a TTY. Switching to 'progress' formatter.`
-        )
-        type = 'progress'
-      }
-      return await FormatterBuilder.build(type, typeOptions)
+  async function initializeFormatter(
+    stream: IFormatterStream,
+    target: string,
+    type: string
+  ): Promise<Formatter> {
+    stream.on('error', (error) => {
+      console.error(error.message)
+      process.exit(1)
     })
+    const typeOptions = {
+      cwd,
+      eventBroadcaster,
+      eventDataCollector,
+      log: stream.write.bind(stream),
+      parsedArgvOptions: configuration.options ?? {},
+      stream,
+      cleanup:
+        stream === stdout
+          ? async () => await Promise.resolve()
+          : promisify<any>(stream.end.bind(stream)),
+      supportCodeLibrary,
+    }
+    if (doesNotHaveValue(configuration.options?.colorsEnabled)) {
+      typeOptions.parsedArgvOptions.colorsEnabled = (
+        stream as TtyWriteStream
+      ).isTTY
+    }
+    if (type === 'progress-bar' && !(stream as TtyWriteStream).isTTY) {
+      console.warn(
+        `Cannot use 'progress-bar' formatter for output to '${target}' as not a TTY. Switching to 'progress' formatter.`
+      )
+      type = 'progress'
+    }
+    return await FormatterBuilder.build(type, typeOptions)
+  }
+
+  const formatters: Formatter[] = []
+
+  formatters.push(
+    await initializeFormatter(
+      stdout,
+      'stdout',
+      configuration.stdout ?? 'progress'
+    )
   )
+
+  if (configuration.files) {
+    for (const [target, type] of configuration.files) {
+      const stream: IFormatterStream = fs.createWriteStream(null, {
+        fd: await fs.open(path.resolve(cwd, target), 'w'),
+      })
+      formatters.push(await initializeFormatter(stream, target, type))
+    }
+  }
+
+  if (configuration.publish) {
+    const { url = DEFAULT_CUCUMBER_PUBLISH_URL, token } = configuration.publish
+    const headers: { [key: string]: string } = {}
+    if (token !== undefined) {
+      headers.Authorization = `Bearer ${token}`
+    }
+    const stream = new HttpStream(url, 'GET', headers)
+    const readerStream = new Writable({
+      objectMode: true,
+      write: function (responseBody: string, encoding, writeCallback) {
+        console.error(responseBody)
+        writeCallback()
+      },
+    })
+    stream.pipe(readerStream)
+    formatters.push(await initializeFormatter(stream, url, 'message'))
+  }
+
   return async function () {
     await Promise.all(formatters.map(async (f) => await f.finished()))
   }

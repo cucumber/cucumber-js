@@ -1,5 +1,5 @@
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import { IParsedArgvFormatOptions } from '../cli/argv_parser'
+import { IFormatterConfiguration } from '../formatter'
 
 export interface IRunConfiguration {
   sources: {
@@ -31,10 +31,6 @@ export interface IRunConfiguration {
     strict?: boolean
     worldParameters?: any
   }
-  formats?: {
-    stdout: string
-    files?: Record<string, string>
-    options?: IParsedArgvFormatOptions
-  }
+  formats?: IFormatterConfiguration
   predictableIds?: boolean
 }

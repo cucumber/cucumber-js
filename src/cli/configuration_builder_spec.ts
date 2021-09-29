@@ -32,15 +32,17 @@ describe('Configuration', () => {
           'json:./report.json',
           '--format',
           'html:./report.html',
-        ])
+        ]),
+        process.env
       )
 
       expect(result.formats).to.eql({
         stdout: 'message',
-        files: {
-          './report.html': 'html',
-          './report.json': 'json',
-        },
+        files: new Map([
+          ['./report.html', 'html'],
+          ['./report.json', 'json'],
+        ]),
+        publish: false,
         options: {},
       })
     })
