@@ -11,12 +11,10 @@ export interface IRunConfiguration {
     names?: string[]
     tagExpression?: string
   }
-  support?:
-    | {
-        transpileWith?: string[]
-        paths: string[]
-      }
-    | ISupportCodeLibrary
+  support?: {
+    transpileWith?: string[]
+    paths: string[]
+  }
   runtime?: {
     dryRun?: boolean
     failFast?: boolean
