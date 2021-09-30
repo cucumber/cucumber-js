@@ -267,7 +267,7 @@ export async function buildConfiguration(
   }
 }
 
-function isTruthyString(s: string | undefined): boolean {
+export function isTruthyString(s: string | undefined): boolean {
   if (s === undefined) {
     return false
   }
@@ -281,7 +281,6 @@ function isPublishing(
   return (
     options.publish ||
     isTruthyString(env.CUCUMBER_PUBLISH_ENABLED) ||
-    env.CUCUMBER_PUBLISH_URL !== undefined ||
     env.CUCUMBER_PUBLISH_TOKEN !== undefined
   )
 }

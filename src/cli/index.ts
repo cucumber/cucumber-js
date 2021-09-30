@@ -1,17 +1,16 @@
 import { getExpandedArgv } from './helpers'
 import { validateInstall } from './install_validator'
-import ConfigurationBuilder, {
-  buildConfiguration,
-  IConfiguration,
-} from './configuration_builder'
+import { buildConfiguration, isTruthyString } from './configuration_builder'
 import { IFormatterStream } from '../formatter'
 import { runCucumber } from '../api'
 import ArgvParser from './argv_parser'
 
 export interface ICliRunResult {
+  shouldAdvertisePublish: boolean
   shouldExitImmediately: boolean
   success: boolean
 }
+
 export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
@@ -31,17 +30,6 @@ export default class Cli {
     this.stdout = stdout
   }
 
-  async getConfiguration(): Promise<IConfiguration> {
-    const fullArgv = await getExpandedArgv({
-      argv: this.argv,
-      cwd: this.cwd,
-    })
-    return await ConfigurationBuilder.build({
-      argv: fullArgv,
-      cwd: this.cwd,
-    })
-  }
-
   async run(): Promise<ICliRunResult> {
     await validateInstall(this.cwd)
     const fromArgv = ArgvParser.parse(
@@ -57,6 +45,10 @@ export default class Cli {
       env: process.env,
     })
     return {
+      shouldAdvertisePublish:
+        !configuration.formats.publish &&
+        !fromArgv.options.publishQuiet &&
+        !isTruthyString(process.env.CUCUMBER_PUBLISH_QUIET),
       shouldExitImmediately: fromArgv.options.exit,
       success,
     }

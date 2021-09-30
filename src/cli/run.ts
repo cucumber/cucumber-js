@@ -26,8 +26,7 @@ export default async function run(): Promise<void> {
     exitWithError(error)
   }
 
-  const config = await cli.getConfiguration()
-  if (!config.publishing && !config.suppressPublishAdvertisement) {
+  if (result.shouldAdvertisePublish) {
     displayPublishAdvertisementBanner()
   }
 
