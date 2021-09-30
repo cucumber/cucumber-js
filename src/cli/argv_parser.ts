@@ -32,7 +32,6 @@ export interface IParsedArgvOptions {
   name: string[]
   order: string
   parallel: number
-  predictableIds: boolean
   profile: string[]
   publish: boolean
   publishQuiet: boolean
@@ -107,11 +106,7 @@ const ArgvParser = {
       .usage('[options] [<GLOB|DIR|FILE[:LINE]>...]')
       .version(version, '-v, --version')
       .option('-b, --backtrace', 'show full backtrace for errors')
-      .option(
-        '-c, --config <TYPE[:PATH]>',
-        'specify configuration file',
-        'cucumber.js'
-      )
+      .option('-c, --config <TYPE[:PATH]>', 'specify configuration file')
       .option(
         '-d, --dry-run',
         'invoke formatters without executing steps',
@@ -170,11 +165,6 @@ const ArgvParser = {
         'run in parallel with the given number of workers',
         (val) => ArgvParser.validateCountOption(val, '--parallel'),
         0
-      )
-      .option(
-        '--predictable-ids',
-        'Use predictable ids in messages (option ignored if using parallel)',
-        false
       )
       .option(
         '--publish',

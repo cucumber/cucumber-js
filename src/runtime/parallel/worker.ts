@@ -16,9 +16,12 @@ import TestRunHookDefinition from '../../models/test_run_hook_definition'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue, valueOrDefault } from '../../value_checker'
 import { IRuntimeOptions } from '../index'
-import { PredictableTestRunStopwatch, RealTestRunStopwatch } from '../stopwatch'
+import { RealTestRunStopwatch } from '../stopwatch'
 import { duration } from 'durations'
+import { pathToFileURL } from 'url'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { importer } = require('../../importer')
 const { uuid } = IdGenerator
 
 type IExitFunction = (exitCode: number, error?: Error, message?: string) => void
@@ -72,7 +75,13 @@ export default class Worker {
   }: IWorkerCommandInitialize): Promise<void> {
     supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, this.newId)
-    supportCodePaths.forEach((codePath) => require(codePath))
+    for (const codePath of supportCodePaths) {
+      if (supportCodeRequiredModules.length) {
+        require(codePath)
+      } else {
+        await importer(pathToFileURL(codePath))
+      }
+    }
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize(supportCodeIds)
 
     this.worldParameters = options.worldParameters
@@ -117,9 +126,7 @@ export default class Worker {
     retries,
     skip,
   }: IWorkerCommandRun): Promise<void> {
-    const stopwatch = this.options.predictableIds
-      ? new PredictableTestRunStopwatch()
-      : new RealTestRunStopwatch()
+    const stopwatch = new RealTestRunStopwatch()
     stopwatch.from(duration(elapsed))
     const testCaseRunner = new TestCaseRunner({
       eventBroadcaster: this.eventBroadcaster,

@@ -91,3 +91,7 @@ Feature: default command line arguments
       | OPT      |
       | -c       |
       | --config |
+
+  Scenario: specifying a configuration file that doesn't exist
+    When I run cucumber-js with `--config doesntexist.js`
+    Then it fails

@@ -20,7 +20,9 @@ import { Writable as WritableStream } from 'stream'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 import HtmlFormatter from './html_formatter'
-import createRequire from 'create-require'
+import { pathToFileURL } from 'url'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { importer } = require('../importer')
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
@@ -41,18 +43,19 @@ export interface IBuildOptions {
 }
 
 const FormatterBuilder = {
-  build(type: string, options: IBuildOptions): Formatter {
-    const FormatterConstructor = FormatterBuilder.getConstructorByType(
+  async build(type: string, options: IBuildOptions): Promise<Formatter> {
+    const FormatterConstructor = await FormatterBuilder.getConstructorByType(
       type,
       options.cwd
     )
     const colorFns = getColorFns(options.parsedArgvOptions.colorsEnabled)
-    const snippetBuilder = FormatterBuilder.getStepDefinitionSnippetBuilder({
-      cwd: options.cwd,
-      snippetInterface: options.parsedArgvOptions.snippetInterface,
-      snippetSyntax: options.parsedArgvOptions.snippetSyntax,
-      supportCodeLibrary: options.supportCodeLibrary,
-    })
+    const snippetBuilder =
+      await FormatterBuilder.getStepDefinitionSnippetBuilder({
+        cwd: options.cwd,
+        snippetInterface: options.parsedArgvOptions.snippetInterface,
+        snippetSyntax: options.parsedArgvOptions.snippetSyntax,
+        supportCodeLibrary: options.supportCodeLibrary,
+      })
     return new FormatterConstructor({
       colorFns,
       snippetBuilder,
@@ -60,7 +63,7 @@ const FormatterBuilder = {
     })
   },
 
-  getConstructorByType(type: string, cwd: string): typeof Formatter {
+  async getConstructorByType(type: string, cwd: string): typeof Formatter {
     const formatters: Record<string, typeof Formatter> = {
       json: JsonFormatter,
       message: MessageFormatter,
@@ -74,12 +77,12 @@ const FormatterBuilder = {
       'usage-json': UsageJsonFormatter,
     }
 
-    return formatters[type]
+    return await formatters[type]
       ? formatters[type]
       : FormatterBuilder.loadCustomFormatter(type, cwd)
   },
 
-  getStepDefinitionSnippetBuilder({
+  async getStepDefinitionSnippetBuilder({
     cwd,
     snippetInterface,
     snippetSyntax,
@@ -91,7 +94,9 @@ const FormatterBuilder = {
     let Syntax = JavascriptSnippetSyntax
     if (doesHaveValue(snippetSyntax)) {
       const fullSyntaxPath = path.resolve(cwd, snippetSyntax)
-      Syntax = require(fullSyntaxPath) // eslint-disable-line @typescript-eslint/no-var-requires
+      Syntax = FormatterBuilder.resolveConstructor(
+        await importer(pathToFileURL(fullSyntaxPath))
+      )
     }
     return new StepDefinitionSnippetBuilder({
       snippetSyntax: new Syntax(snippetInterface),
@@ -99,20 +104,30 @@ const FormatterBuilder = {
     })
   },
 
-  loadCustomFormatter(customFormatterPath: string, cwd: string) {
-    const CustomFormatter = createRequire(cwd)(customFormatterPath)
-
-    if (typeof CustomFormatter === 'function') {
+  async loadCustomFormatter(customFormatterPath: string, cwd: string) {
+    let CustomFormatter = customFormatterPath.startsWith(`.`)
+      ? await importer(pathToFileURL(path.resolve(cwd, customFormatterPath)))
+      : await importer(customFormatterPath)
+    CustomFormatter = FormatterBuilder.resolveConstructor(CustomFormatter)
+    if (doesHaveValue(CustomFormatter)) {
       return CustomFormatter
-    } else if (
-      doesHaveValue(CustomFormatter) &&
-      typeof CustomFormatter.default === 'function'
-    ) {
-      return CustomFormatter.default
+    } else {
+      throw new Error(
+        `Custom formatter (${customFormatterPath}) does not export a function`
+      )
     }
-    throw new Error(
-      `Custom formatter (${customFormatterPath}) does not export a function`
-    )
+  },
+
+  resolveConstructor(ImportedCode: any) {
+    if (typeof ImportedCode === 'function') {
+      return ImportedCode
+    } else if (
+      doesHaveValue(ImportedCode) &&
+      typeof ImportedCode.default === 'function'
+    ) {
+      return ImportedCode.default
+    }
+    return null
   },
 }
 
