@@ -63,7 +63,10 @@ const FormatterBuilder = {
     })
   },
 
-  async getConstructorByType(type: string, cwd: string): typeof Formatter {
+  async getConstructorByType(
+    type: string,
+    cwd: string
+  ): Promise<typeof Formatter> {
     const formatters: Record<string, typeof Formatter> = {
       json: JsonFormatter,
       message: MessageFormatter,
@@ -77,9 +80,9 @@ const FormatterBuilder = {
       'usage-json': UsageJsonFormatter,
     }
 
-    return await formatters[type]
+    return (await formatters[type])
       ? formatters[type]
-      : FormatterBuilder.loadCustomFormatter(type, cwd)
+      : await FormatterBuilder.loadCustomFormatter(type, cwd)
   },
 
   async getStepDefinitionSnippetBuilder({
