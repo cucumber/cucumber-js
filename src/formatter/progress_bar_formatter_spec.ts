@@ -375,7 +375,7 @@ describe('ProgressBarFormatter', () => {
 
         // Act
         const { progressBarFormatter } = await testProgressBarFormatter({
-          runtimeOptions: { retry: 1 },
+          runtimeOptions: { retry: { count: 1 } },
           shouldStopFn: (envelope) => false,
           sources,
           supportCodeLibrary,

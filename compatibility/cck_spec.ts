@@ -42,10 +42,15 @@ describe('Cucumber Compatibility Kit', () => {
         formats: {
           stdout: 'message',
         },
-        runtime: {},
-      }
-      if (suiteName === 'retry') {
-        runConfiguration.runtime.retry = { count: 2 }
+        runtime: {
+          dryRun: false,
+          failFast: false,
+          filterStacktraces: true,
+          parallel: false,
+          retry: suiteName === 'retry' ? { count: 2 } : false,
+          strict: true,
+          worldParameters: {},
+        },
       }
       try {
         await runCucumber(runConfiguration, {

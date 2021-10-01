@@ -30,8 +30,13 @@ export interface IRuntimeOptions {
   dryRun: boolean
   failFast: boolean
   filterStacktraces: boolean
-  retry: number
-  retryTagFilter: string
+  parallel: { count: number } | false
+  retry:
+    | {
+        count: number
+        tagExpression?: string
+      }
+    | false
   strict: boolean
   worldParameters: any
 }

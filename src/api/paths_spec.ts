@@ -33,6 +33,10 @@ describe('resolvePaths', () => {
           sources: {
             paths: [relativeFeaturePath],
           },
+          support: {
+            paths: [],
+            transpileWith: [],
+          },
         })
 
       // Assert
@@ -51,6 +55,10 @@ describe('resolvePaths', () => {
       const { featurePaths } = await resolvePaths(cwd, {
         sources: {
           paths: [`${relativeFeaturePath}:3`, `${relativeFeaturePath}:4`],
+        },
+        support: {
+          paths: [],
+          transpileWith: [],
         },
       })
 
@@ -71,6 +79,10 @@ describe('resolvePaths', () => {
       const { featurePaths, unexpandedFeaturePaths, supportCodePaths } =
         await resolvePaths(cwd, {
           sources: { paths: [relativeFeaturePath] },
+          support: {
+            paths: [],
+            transpileWith: [],
+          },
         })
 
       // Assert
@@ -94,6 +106,10 @@ describe('resolvePaths', () => {
       const { featurePaths, unexpandedFeaturePaths, supportCodePaths } =
         await resolvePaths(cwd, {
           sources: { paths: [relativeFeaturePath] },
+          support: {
+            paths: [],
+            transpileWith: [],
+          },
         })
 
       // Assert
@@ -117,7 +133,13 @@ describe('resolvePaths', () => {
 
       // Act
       const { featurePaths, unexpandedFeaturePaths, supportCodePaths } =
-        await resolvePaths(cwd, { sources: { paths: [relativeFeaturePath] } })
+        await resolvePaths(cwd, {
+          sources: { paths: [relativeFeaturePath] },
+          support: {
+            paths: [],
+            transpileWith: [],
+          },
+        })
 
       // Assert
       expect(featurePaths).to.eql([featurePath])
@@ -136,7 +158,13 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(rerunPath, '')
       // Act
       const { featurePaths, unexpandedFeaturePaths, supportCodePaths } =
-        await resolvePaths(cwd, { sources: { paths: [relativeRerunPath] } })
+        await resolvePaths(cwd, {
+          sources: { paths: [relativeRerunPath] },
+          support: {
+            paths: [],
+            transpileWith: [],
+          },
+        })
 
       // Assert
       expect(featurePaths).to.eql([])
@@ -155,7 +183,13 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(rerunPath, '\n')
       // Act
       const { featurePaths, unexpandedFeaturePaths, supportCodePaths } =
-        await resolvePaths(cwd, { sources: { paths: [relativeRerunPath] } })
+        await resolvePaths(cwd, {
+          sources: { paths: [relativeRerunPath] },
+          support: {
+            paths: [],
+            transpileWith: [],
+          },
+        })
 
       // Assert
       expect(featurePaths).to.eql([])
@@ -177,6 +211,10 @@ describe('resolvePaths', () => {
       const { featurePaths, unexpandedFeaturePaths, supportCodePaths } =
         await resolvePaths(cwd, {
           sources: { paths: [relativeRerunPath] },
+          support: {
+            paths: [],
+            transpileWith: [],
+          },
         })
 
       // Assert

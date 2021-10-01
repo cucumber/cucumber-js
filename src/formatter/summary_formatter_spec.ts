@@ -192,7 +192,7 @@ describe('SummaryFormatter', () => {
 
     describe('retrying a flaky step', () => {
       it('logs the issue', async () => {
-        const runtimeOptions = { retry: 1 }
+        const runtimeOptions = { retry: { count: 1 } }
         const sources = [
           {
             data: 'Feature: a\nScenario: b\nGiven a flaky step',
@@ -226,7 +226,7 @@ describe('SummaryFormatter', () => {
 
     describe('retrying with a failing step', () => {
       it('logs the issue', async () => {
-        const runtimeOptions = { retry: 1 }
+        const runtimeOptions = { retry: { count: 1 } }
         const sources = [
           {
             data: 'Feature: a\nScenario: b\nGiven a failing step',

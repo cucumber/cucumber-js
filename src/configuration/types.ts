@@ -1,4 +1,5 @@
 import { IFormatterConfiguration } from '../formatter'
+import { IRuntimeOptions } from '../runtime'
 
 export interface IRunConfiguration {
   sources: {
@@ -10,23 +11,10 @@ export interface IRunConfiguration {
     names?: string[]
     tagExpression?: string
   }
-  support?: {
-    transpileWith?: string[]
+  support: {
+    transpileWith: string[]
     paths: string[]
   }
-  runtime?: {
-    dryRun?: boolean
-    failFast?: boolean
-    filterStacktraces?: boolean
-    parallel?: {
-      count: number
-    }
-    retry?: {
-      count: number
-      tagExpression?: string
-    }
-    strict?: boolean
-    worldParameters?: any
-  }
+  runtime: IRuntimeOptions
   formats?: IFormatterConfiguration
 }

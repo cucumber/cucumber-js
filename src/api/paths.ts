@@ -6,7 +6,7 @@ import { IRunConfiguration } from '../configuration'
 
 export async function resolvePaths(
   cwd: string,
-  configuration: IRunConfiguration
+  configuration: Pick<IRunConfiguration, 'sources' | 'support'>
 ): Promise<{
   unexpandedFeaturePaths: string[]
   featurePaths: string[]
@@ -14,13 +14,13 @@ export async function resolvePaths(
 }> {
   const unexpandedFeaturePaths = await getUnexpandedFeaturePaths(
     cwd,
-    configuration.sources?.paths
+    configuration.sources.paths
   )
   const featurePaths: string[] = await expandFeaturePaths(
     cwd,
     unexpandedFeaturePaths
   )
-  let unexpandedSupportCodePaths = configuration.support?.paths ?? []
+  let unexpandedSupportCodePaths = configuration.support.paths ?? []
   if (unexpandedSupportCodePaths.length === 0) {
     unexpandedSupportCodePaths = getFeatureDirectoryPaths(cwd, featurePaths)
   }

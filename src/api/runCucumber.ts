@@ -98,15 +98,6 @@ export async function runCucumber(
     newId,
   })
 
-  const runtimeOptions = {
-    dryRun: configuration.runtime?.dryRun,
-    failFast: configuration.runtime?.failFast,
-    filterStacktraces: configuration.runtime?.filterStacktraces,
-    retry: configuration.runtime?.retry?.count ?? 0,
-    retryTagFilter: configuration.runtime?.retry?.tagExpression,
-    strict: configuration.runtime?.strict,
-    worldParameters: configuration.runtime?.worldParameters,
-  }
   const runtime = makeRuntime({
     cwd,
     eventBroadcaster,
@@ -116,8 +107,7 @@ export async function runCucumber(
     supportCodeLibrary,
     supportCodePaths,
     supportCodeRequiredModules: configuration.support.transpileWith,
-    options: runtimeOptions,
-    parallel: configuration.runtime.parallel?.count ?? 0,
+    options: configuration.runtime,
   })
   const success = await runtime.start()
   await cleanup()
