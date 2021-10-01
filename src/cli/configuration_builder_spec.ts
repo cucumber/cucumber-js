@@ -45,12 +45,10 @@ describe('Configuration', () => {
           tagExpression: '',
         },
         profiles: [],
-        predictableIds: false,
         runtimeOptions: {
           dryRun: false,
           failFast: false,
           filterStacktraces: true,
-          predictableIds: false,
           retry: 0,
           retryTagFilter: '',
           strict: true,

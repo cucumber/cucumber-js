@@ -33,7 +33,7 @@ import { pathToFileURL } from 'url'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
-const { incrementing, uuid } = IdGenerator
+const { uuid } = IdGenerator
 
 export interface ICliRunResult {
   shouldExitImmediately: boolean
@@ -182,10 +182,7 @@ export default class Cli {
       this.stdout.write(I18n.getKeywords(configuration.listI18nKeywordsFor))
       return { shouldExitImmediately: true, success: true }
     }
-    const newId =
-      configuration.predictableIds && configuration.parallel <= 1
-        ? incrementing()
-        : uuid()
+    const newId = uuid()
     const supportCodeLibrary = await this.getSupportCodeLibrary({
       newId,
       supportCodePaths: configuration.supportCodePaths,

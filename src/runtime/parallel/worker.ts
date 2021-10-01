@@ -16,7 +16,7 @@ import TestRunHookDefinition from '../../models/test_run_hook_definition'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue, valueOrDefault } from '../../value_checker'
 import { IRuntimeOptions } from '../index'
-import { PredictableTestRunStopwatch, RealTestRunStopwatch } from '../stopwatch'
+import { RealTestRunStopwatch } from '../stopwatch'
 import { duration } from 'durations'
 import { pathToFileURL } from 'url'
 
@@ -126,9 +126,7 @@ export default class Worker {
     retries,
     skip,
   }: IWorkerCommandRun): Promise<void> {
-    const stopwatch = this.options.predictableIds
-      ? new PredictableTestRunStopwatch()
-      : new RealTestRunStopwatch()
+    const stopwatch = new RealTestRunStopwatch()
     stopwatch.from(duration(elapsed))
     const testCaseRunner = new TestCaseRunner({
       eventBroadcaster: this.eventBroadcaster,
