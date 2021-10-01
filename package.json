@@ -178,11 +178,11 @@
   },
   "dependencies": {
     "@cucumber/create-meta": "6.0.1",
-    "@cucumber/cucumber-expressions": "12.1.2",
+    "@cucumber/cucumber-expressions": "12.1.3",
     "@cucumber/gherkin": "20.0.1",
     "@cucumber/gherkin-streams": "3.0.0",
     "@cucumber/html-formatter": "16.0.1",
-    "@cucumber/messages": "17.0.1",
+    "@cucumber/messages": "17.1.1",
     "@cucumber/tag-expressions": "3.0.1",
     "assertion-error-formatter": "^3.0.0",
     "capital-case": "^1.0.4",
