@@ -232,7 +232,7 @@
     "@typescript-eslint/parser": "4.32.0",
     "chai": "4.3.4",
     "chai-exclude": "2.0.3",
-    "coffeescript": "2.5.1",
+    "coffeescript": "2.6.0",
     "dependency-lint": "7.1.0",
     "dirty-chai": "2.0.1",
     "eslint": "7.32.0",
