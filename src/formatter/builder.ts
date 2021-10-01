@@ -80,7 +80,7 @@ const FormatterBuilder = {
       'usage-json': UsageJsonFormatter,
     }
 
-    return (await formatters[type])
+    return formatters[type]
       ? formatters[type]
       : await FormatterBuilder.loadCustomFormatter(type, cwd)
   },
