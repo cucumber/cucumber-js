@@ -5,6 +5,7 @@ import * as messages from '@cucumber/messages'
 import IEnvelope = messages.Envelope
 
 export default class UsageJsonFormatter extends Formatter {
+  public static readonly documentation: string = ''
   constructor(options: IFormatterOptions) {
     super(options)
     options.eventBroadcaster.on('envelope', (envelope: IEnvelope) => {

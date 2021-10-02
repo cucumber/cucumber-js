@@ -13,6 +13,7 @@ export default class ProgressBarFormatter extends Formatter {
   private testRunStarted: messages.TestRunStarted
   private issueCount: number
   public progressBar: ProgressBar
+  public static readonly documentation: string = ''
 
   constructor(options: IFormatterOptions) {
     super(options)
