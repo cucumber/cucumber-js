@@ -25,6 +25,28 @@ const Formatters = {
       'usage-json': UsageJsonFormatter,
     }
   },
+  buildFormattersDocumentationString(): string {
+    let concatanatedFormattersDocumentation: string = ''
+    const formattersDocumentation: Record<string, string> = {
+      json: JsonFormatter.documentation,
+      message: MessageFormatter.documentation,
+      html: HtmlFormatter.documentation,
+      progress: ProgressFormatter.documentation,
+      'progress-bar': ProgressBarFormatter.documentation,
+      rerun: RerunFormatter.documentation,
+      snippets: SnippetsFormatter.documentation,
+      summary: SummaryFormatter.documentation,
+      usage: UsageFormatter.documentation,
+      'usage-json': UsageJsonFormatter.documentation,
+    }
+
+    for (const formatter in formattersDocumentation) {
+      concatanatedFormattersDocumentation +=
+        formatter + ' : ' + formattersDocumentation[formatter] + '\n'
+    }
+
+    return concatanatedFormattersDocumentation
+  },
 }
 
 export default Formatters
