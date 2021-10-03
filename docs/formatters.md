@@ -121,3 +121,7 @@ The Usage Formatter lists your step definitions and tells you about usages in yo
 ### `usage-json`
 
 Does what the Usage Formatter does, but outputs JSON, which can be output to a file and then consumed by other tools.
+
+### Other officially-supported formatters
+
+* [@cucumber/pretty-formatter](https://www.npmjs.com/package/@cucumber/pretty-formatter) - prints the feature with inline results,  colours and custom themes.

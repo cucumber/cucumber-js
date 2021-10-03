@@ -68,9 +68,12 @@ The following documentation is for master. See below the documentation for older
   * [API Reference](/docs/support_files/api_reference.md)
 * Guides
   * [ES Modules](./docs/esm.md)
+  * [Formatters](./docs/formatters.md)
   * [Running in parallel](./docs/parallel.md)
-  * [Retrying failing scenarios](./docs/retry.md)
   * [Profiles](./docs/profiles.md)
+  * [Rerunning failed scenarios](./docs/rerun.md)
+  * [Retrying failing scenarios](./docs/retry.md)
+  * [Snippets for undefined steps](./docs/snippets.md)
 * [FAQ](/docs/faq.md)
 
 #### Documentation for older versions
