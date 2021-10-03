@@ -71,8 +71,8 @@ The following documentation is for master. See below the documentation for older
   * [Formatters](./docs/formatters.md)
   * [Running in parallel](./docs/parallel.md)
   * [Profiles](./docs/profiles.md)
-  * [Rerunning failed scenarios](./docs/rerun.md)
-  * [Retrying failing scenarios](./docs/retry.md)
+  * [Rerunning just failures](./docs/rerun.md)
+  * [Retrying flaky scenarios](./docs/retry.md)
   * [Snippets for undefined steps](./docs/snippets.md)
 * [FAQ](/docs/faq.md)
 

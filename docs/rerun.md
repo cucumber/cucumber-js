@@ -1,5 +1,7 @@
 # Rerun
 
+*Note: if you want a mechanism to retry flaky scenarios when they fail in CI, take a look at [Retry](./retry.md) instead.*
+
 If you're doing TDD, you might sometimes work like this:
 
 1. Run all the tests to see what fails
