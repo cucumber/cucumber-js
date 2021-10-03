@@ -17,6 +17,7 @@ See the [migration guide](./docs/migration.md) for details of how to migrate fro
 * Remove deprecated `--retryTagFilter` option (the correct option is `--retry-tag-filter`)
 * Remove `setDefinitionFunctionWrapper` and step definition option `wrapperOptions`
 * Remove `--predictable-ids` option (was only used for internal testing)
+* Relative paths for custom snippet syntaxes must begin with `.` ([#1640](https://github.com/cucumber/cucumber-js/issues/1640))
 
 ### Added
 
