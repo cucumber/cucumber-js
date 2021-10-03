@@ -15,7 +15,7 @@ First, enable the `rerun` formatter every time you run cucumber-js:
 --format rerun:@rerun.txt
 ```
 
-You can do this via the CLI, or more like via a [default profile](./profiles.md).
+You can do this via the CLI, or more likely via a [default profile](./profiles.md).
 
 The output file doesn't have to be named `@rerun.txt`, but its name _does_ have to start with `@` - this is how cucumber-js will later distinguish it from feature files. Either way, you should add this file to your `.gitignore` so you don't accidentally commit it. 
 
@@ -26,7 +26,7 @@ features/adding.feature:3:19
 features/editing.feature:8
 ```
 
-If this syntax looks familiar, it's the same as for specifying scenarios by line on the CLI, and translates to:
+If this notation looks familiar, it's the same as for specifying scenarios by line on the CLI, and translates to:
 
 - In `adding.feature`, the scenarios on lines 3 and 19
 - In `editing.feature`, the scenario on line 8
@@ -47,7 +47,7 @@ In other words, the one we fixed has passed and thus dropped off. We can repeat 
 
 ## Separator
 
-By default, items in the rerun file are separated by newlines. This can be overwritten via a [format option](./formatters.md#options):
+By default, entries in the rerun file are separated by newlines. This can be overwritten via a [format option](./formatters.md#options):
 
 ```
 --format-options '{"rerun": {"separator": "<separator>"}}'
