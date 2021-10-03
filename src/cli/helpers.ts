@@ -104,12 +104,13 @@ export function orderPickleIds(pickleIds: string[], order: string): void {
 }
 
 export async function emitMetaMessage(
-  eventBroadcaster: EventEmitter
+  eventBroadcaster: EventEmitter,
+  env: NodeJS.ProcessEnv
 ): Promise<void> {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { version } = require('../../package.json')
   eventBroadcaster.emit('envelope', {
-    meta: createMeta('cucumber-js', version, process.env),
+    meta: createMeta('cucumber-js', version, env),
   })
 }
 

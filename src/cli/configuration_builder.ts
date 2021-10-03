@@ -4,7 +4,7 @@ import { IRunConfiguration } from '../configuration'
 
 export async function buildConfiguration(
   fromArgv: IParsedArgv,
-  env: typeof process.env
+  env: NodeJS.ProcessEnv
 ): Promise<IRunConfiguration> {
   const { args, options } = fromArgv
   return {
@@ -61,7 +61,7 @@ export function isTruthyString(s: string | undefined): boolean {
 
 function isPublishing(
   options: IParsedArgvOptions,
-  env: typeof process.env
+  env: NodeJS.ProcessEnv
 ): boolean {
   return (
     options.publish ||
@@ -72,7 +72,7 @@ function isPublishing(
 
 function makePublishConfig(
   options: IParsedArgvOptions,
-  env: typeof process.env
+  env: NodeJS.ProcessEnv
 ): any {
   const enabled = isPublishing(options, env)
   if (!enabled) {

@@ -92,7 +92,7 @@ describe('helpers', () => {
       const envelopes: messages.Envelope[] = []
       const eventBroadcaster = new EventEmitter()
       eventBroadcaster.on('envelope', (e) => envelopes.push(e))
-      await emitMetaMessage(eventBroadcaster)
+      await emitMetaMessage(eventBroadcaster, {})
 
       expect(envelopes).to.have.length(1)
       expect(envelopes[0].meta.implementation.name).to.eq('cucumber-js')

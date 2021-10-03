@@ -16,7 +16,7 @@ describe('buildConfiguration', () => {
         '--format',
         'html:./report.html',
       ]),
-      process.env
+      {}
     )
 
     expect(result.formats).to.eql({

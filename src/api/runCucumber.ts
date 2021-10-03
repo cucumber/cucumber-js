@@ -37,14 +37,14 @@ export async function runCucumber(
   environment: {
     cwd: string
     stdout: IFormatterStream
-    env: typeof process.env
+    env: NodeJS.ProcessEnv
   } = {
     cwd: process.cwd(),
     stdout: process.stdout,
     env: process.env,
   }
 ): Promise<IRunResult> {
-  const { cwd, stdout } = environment
+  const { cwd, stdout, env } = environment
   const newId = IdGenerator.uuid()
 
   const { unexpandedFeaturePaths, featurePaths, supportCodePaths } =
@@ -68,7 +68,7 @@ export async function runCucumber(
     configuration: configuration.formats,
     supportCodeLibrary,
   })
-  await emitMetaMessage(eventBroadcaster)
+  await emitMetaMessage(eventBroadcaster, env)
 
   const gherkinMessageStream = GherkinStreams.fromPaths(featurePaths, {
     defaultDialect: configuration.sources?.defaultDialect,

@@ -12,11 +12,11 @@ function displayPublishAdvertisementBanner(): void {
 }
 
 export default async function run(): Promise<void> {
-  const cwd = process.cwd()
   const cli = new Cli({
     argv: process.argv,
-    cwd,
+    cwd: process.cwd(),
     stdout: process.stdout,
+    env: process.env,
   })
 
   let result: ICliRunResult

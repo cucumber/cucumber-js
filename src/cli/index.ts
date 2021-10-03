@@ -15,19 +15,23 @@ export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
   private readonly stdout: IFormatterStream
+  private readonly env: NodeJS.ProcessEnv
 
   constructor({
     argv,
     cwd,
     stdout,
+    env,
   }: {
     argv: string[]
     cwd: string
     stdout: IFormatterStream
+    env: NodeJS.ProcessEnv
   }) {
     this.argv = argv
     this.cwd = cwd
     this.stdout = stdout
+    this.env = env
   }
 
   async run(): Promise<ICliRunResult> {
@@ -38,17 +42,17 @@ export default class Cli {
         cwd: this.cwd,
       })
     )
-    const configuration = await buildConfiguration(fromArgv, process.env)
+    const configuration = await buildConfiguration(fromArgv, this.env)
     const { success } = await runCucumber(configuration, {
       cwd: this.cwd,
       stdout: this.stdout,
-      env: process.env,
+      env: this.env,
     })
     return {
       shouldAdvertisePublish:
         !configuration.formats.publish &&
         !fromArgv.options.publishQuiet &&
-        !isTruthyString(process.env.CUCUMBER_PUBLISH_QUIET),
+        !isTruthyString(this.env.CUCUMBER_PUBLISH_QUIET),
       shouldExitImmediately: fromArgv.options.exit,
       success,
     }
