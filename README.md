@@ -55,8 +55,6 @@ $ npm install cucumber@6
 The following documentation is for master. See below the documentation for older versions.
 
 * [CLI](/docs/cli.md)
-* [Custom Formatters](/docs/custom_formatters.md)
-* [Custom Snippet Syntaxes](/docs/custom_snippet_syntaxes.md)
 * [NodeJs Example](/docs/nodejs_example.md)
 * Support Files
   * [World](/docs/support_files/world.md)
