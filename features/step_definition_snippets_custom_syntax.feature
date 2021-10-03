@@ -45,7 +45,7 @@ Feature: step definition snippets custom syntax
       """
 
   Scenario Outline:
-    When I run cucumber-js with `--format-options '{"snippetInterface": "<INTERFACE>", "snippetSyntax": "coffeescript_syntax.js"}'`
+    When I run cucumber-js with `--format-options '{"snippetInterface": "<INTERFACE>", "snippetSyntax": "./coffeescript_syntax.js"}'`
     Then it fails
     And the output contains the text:
       """
