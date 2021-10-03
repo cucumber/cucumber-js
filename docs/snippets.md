@@ -27,10 +27,11 @@ By default, the snippet uses the "synchronous" style. You can use the `snippetIn
 - "async-await" - Outputs an async function where you can use `await` - probably the best choice if you aren't sure.
 - "callback" - Outputs a plain function with a callback function as the final argument.
 - "promise" - Outputs a plain function from which you should return a `Promise`.
+- "synchronous" - Outputs a plain function with no async pattern.
 
 ## Options
 
-- `snippetInterface` - set to one of 'async-await', 'callback', 'generator', 'promise', or 'synchronous' to alter the style of generated snippets for undefined steps
-- `snippetSyntax`
+- `snippetInterface` - set to one of 'async-await', 'callback', 'promise', or 'synchronous' to alter the style of generated snippets for undefined steps
+- `snippetSyntax` - module name of path of the [custom snippet syntax](./custom_snippet_syntaxes.md) to be used
 
 
