@@ -31,6 +31,8 @@ By default, the snippet uses the "synchronous" style. You can use the `snippetIn
 
 ## Options
 
+These [format options](./formatters.md#options) influence how the snippets are rendered by all formatters that output snippets:
+
 - `snippetInterface` - set to one of 'async-await', 'callback', 'promise', or 'synchronous' to alter the style of generated snippets for undefined steps
 - `snippetSyntax` - module name of path of the [custom snippet syntax](./custom_snippet_syntaxes.md) to be used
 
