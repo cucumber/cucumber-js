@@ -16,9 +16,11 @@ See the [migration guide](./docs/migration.md) for details of how to migrate fro
 * Drop support for Node.js 10 and 15, add support for Node.js 16
 * Remove deprecated `--retryTagFilter` option (the correct option is `--retry-tag-filter`)
 * Remove `setDefinitionFunctionWrapper` and step definition option `wrapperOptions`
+* Remove `--predictable-ids` option (was only used for internal testing)
 
 ### Added
 
+* Add support for user code as native ES modules
 * `BeforeStep` and `AfterStep` hook functions now have access to the `pickleStep` in their argument object.
 * `--config` option to the CLI. It allows you to specify a configuration file other than `cucumber.js`.
   See [docs/profiles.md](./docs/profiles.md#using-another-file-than-cucumberjs) for more info.
@@ -1879,7 +1881,8 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 <!-- Releases -->
-[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.3.0...master
+[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.3.1...master
+[7.3.1]:        https://github.com/cucumber/cucumber-js/compare/7.3.1...7.3.0
 [7.3.0]:        https://github.com/cucumber/cucumber-js/compare/7.3.0-rc.0...7.0.0
 [7.2.1]:        https://github.com/cucumber/cucumber-js/compare/7.2.1-rc.0...7.0.0
 [7.2.0]:        https://github.com/cucumber/cucumber-js/compare/7.2.0-rc.0...7.0.0
