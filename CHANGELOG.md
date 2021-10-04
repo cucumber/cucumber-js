@@ -9,13 +9,11 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ----
 ## [Unreleased] (In Git)
 
-See the [migration guide](./docs/migration.md) for details of how to migrate from 7.x.x to 8.x.x
-
 ### Breaking changes
 
 * Drop support for Node.js 10 and 15, add support for Node.js 16
 * Remove deprecated `--retryTagFilter` option (the correct option is `--retry-tag-filter`)
-* Remove `setDefinitionFunctionWrapper` and step definition option `wrapperOptions`
+* Remove validation that step definition functions are not generators
 * Remove `--predictable-ids` option (was only used for internal testing)
 * Relative paths for custom snippet syntaxes must begin with `.` ([#1640](https://github.com/cucumber/cucumber-js/issues/1640))
 

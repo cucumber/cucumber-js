@@ -135,6 +135,7 @@ describe('helpers', () => {
         stepDefinitions: [
           new StepDefinition({
             code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '0',
             line: 9,
             options: {},
@@ -172,6 +173,7 @@ describe('helpers', () => {
         stepDefinitions: [
           new StepDefinition({
             code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '0',
             line: 9,
             options: {},
@@ -209,6 +211,7 @@ describe('helpers', () => {
         beforeTestCaseHookDefinitions: [
           new TestCaseHookDefinition({
             code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '0',
             line: 3,
             options: {
@@ -220,6 +223,7 @@ describe('helpers', () => {
         afterTestCaseHookDefinitions: [
           new TestCaseHookDefinition({
             code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '1',
             line: 7,
             options: {},
@@ -227,6 +231,7 @@ describe('helpers', () => {
           }),
           new TestCaseHookDefinition({
             code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '2',
             line: 11,
             options: {},
@@ -280,6 +285,7 @@ describe('helpers', () => {
         beforeTestRunHookDefinitions: [
           new TestRunHookDefinition({
             code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '0',
             line: 3,
             options: {},
@@ -289,6 +295,7 @@ describe('helpers', () => {
         afterTestRunHookDefinitions: [
           new TestRunHookDefinition({
             code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '1',
             line: 7,
             options: {},
@@ -296,6 +303,7 @@ describe('helpers', () => {
           }),
           new TestRunHookDefinition({
             code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '2',
             line: 11,
             options: {},
