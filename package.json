@@ -178,8 +178,8 @@
   },
   "dependencies": {
     "@cucumber/create-meta": "6.0.1",
-    "@cucumber/cucumber-expressions": "12.1.3",
-    "@cucumber/gherkin": "21.0.0",
+    "@cucumber/cucumber-expressions": "13.1.3",
+    "@cucumber/gherkin": "22.0.0",
     "@cucumber/gherkin-streams": "4.0.0",
     "@cucumber/html-formatter": "17.0.0",
     "@cucumber/messages": "17.1.1",
