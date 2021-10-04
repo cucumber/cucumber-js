@@ -113,6 +113,7 @@ Aliases: `Given`, `When`, `Then`.
 * `pattern`: A regex or string pattern to match against a gherkin step.
 * `options`: An object with the following keys:
   - `timeout`: A step-specific timeout, to override the default timeout.
+  - `wrapperOptions`: Step-specific options that are passed to the definition function wrapper.
 * `fn`: A function, which should be defined as follows:
   - Should have one argument for each capture in the regular expression.
   - May have an additional argument if the gherkin step has a docstring or data table.
@@ -129,6 +130,37 @@ Alias of `defineStep`.
 #### `setDefaultTimeout(milliseconds)`
 
 Set the default timeout for asynchronous steps. Defaults to `5000` milliseconds.
+
+---
+
+#### `setDefinitionFunctionWrapper(wrapper)`
+
+_Note: the usage of `setDefinitionFunctionWrapper` is discouraged in favor of [BeforeStep](#beforestepoptions-fn) and [AfterStep](#afterstepoptions-fn) hooks._
+
+Set a function used to wrap step / hook definitions.
+
+The `wrapper` function is expected to take 2 arguments:
+
+- `fn` is the original function defined for the step - needs to be called in order for the step to be run.
+- `options` is the step specific `wrapperOptions` and may be undefined.
+
+Example:
+
+```javascript
+setDefinitionFunctionWrapper(function(fn, options) {
+  return function(...args) {
+    // call original function with correct `this` and arguments
+    // ensure return value of function is returned
+    return fn.apply(this, args)
+      .catch(error => {
+        // rethrow error to avoid swallowing failure
+        throw error;
+      });
+  }
+})
+```
+
+When used, the result is wrapped again to ensure it has the same length of the original step / hook definition.
 
 ---
 
