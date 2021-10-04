@@ -13,7 +13,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 * Drop support for Node.js 10 and 15, add support for Node.js 16
 * Remove deprecated `--retryTagFilter` option (the correct option is `--retry-tag-filter`)
-* Drop native support for generator functions used as step definitions
+* Remove validation that step definition functions are not generators
 * Remove `--predictable-ids` option (was only used for internal testing)
 
 ### Added
