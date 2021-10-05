@@ -121,7 +121,7 @@ const ArgvParser = {
       .option('--fail-fast', 'abort the run on first failure', false)
       .option(
         '-f, --format <TYPE[:PATH]>',
-        'specify the output format, optionally supply PATH to redirect formatter output (repeatable).  Available formats: ' +
+        'specify the output format, optionally supply PATH to redirect formatter output (repeatable).  Available formats:\n' +
           Formatters.buildFormattersDocumentationString(),
         ArgvParser.collect,
         []
