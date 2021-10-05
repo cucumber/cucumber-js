@@ -30,7 +30,11 @@ const Formatters = {
     const formatters = this.getFormatters()
     for (const formatterName in formatters) {
       concatanatedFormattersDocumentation +=
-        formatterName + ' : ' + formatters[formatterName].documentation + '\n'
+        '    ' +
+        formatterName +
+        ': ' +
+        formatters[formatterName].documentation +
+        '\n'
     }
 
     return concatanatedFormattersDocumentation
