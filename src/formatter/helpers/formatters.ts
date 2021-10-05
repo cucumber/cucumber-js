@@ -27,22 +27,10 @@ const Formatters = {
   },
   buildFormattersDocumentationString(): string {
     let concatanatedFormattersDocumentation: string = ''
-    const formattersDocumentation: Record<string, string> = {
-      json: JsonFormatter.documentation,
-      message: MessageFormatter.documentation,
-      html: HtmlFormatter.documentation,
-      progress: ProgressFormatter.documentation,
-      'progress-bar': ProgressBarFormatter.documentation,
-      rerun: RerunFormatter.documentation,
-      snippets: SnippetsFormatter.documentation,
-      summary: SummaryFormatter.documentation,
-      usage: UsageFormatter.documentation,
-      'usage-json': UsageJsonFormatter.documentation,
-    }
-
-    for (const formatter in formattersDocumentation) {
+    const formatters = this.getFormatters()
+    for (const formatterName in formatters) {
       concatanatedFormattersDocumentation +=
-        formatter + ' : ' + formattersDocumentation[formatter] + '\n'
+        formatterName + ' : ' + formatters[formatterName].documentation + '\n'
     }
 
     return concatanatedFormattersDocumentation
