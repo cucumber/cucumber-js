@@ -5,7 +5,9 @@ import * as messages from '@cucumber/messages'
 import IEnvelope = messages.Envelope
 
 export default class SnippetsFormatter extends Formatter {
-  public static readonly documentation: string = ''
+  public static readonly documentation: string =
+    "The Snippets Formatter doesn't output anything regarding the test run; it just prints snippets to implement any undefined steps"
+
   constructor(options: IFormatterOptions) {
     super(options)
     options.eventBroadcaster.on('envelope', (envelope: IEnvelope) => {
