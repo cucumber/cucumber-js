@@ -29,12 +29,7 @@ const Formatters = {
     let concatanatedFormattersDocumentation: string = ''
     const formatters = this.getFormatters()
     for (const formatterName in formatters) {
-      concatanatedFormattersDocumentation +=
-        '    ' +
-        formatterName +
-        ': ' +
-        formatters[formatterName].documentation +
-        '\n'
+      concatanatedFormattersDocumentation += `    ${formatterName}: ${formatters[formatterName].documentation}\n`
     }
 
     return concatanatedFormattersDocumentation
