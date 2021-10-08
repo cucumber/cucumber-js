@@ -12,6 +12,9 @@ interface ILogIssuesRequest {
 }
 
 export default class SummaryFormatter extends Formatter {
+  public static readonly documentation: string =
+    'Summary output of feature and scenarios'
+
   constructor(options: IFormatterOptions) {
     super(options)
     let testRunStartedTimestamp: messages.Timestamp
