@@ -16,6 +16,9 @@ const STATUS_CHARACTER_MAPPING: Map<messages.TestStepResultStatus, string> =
   ])
 
 export default class ProgressFormatter extends SummaryFormatter {
+  public static readonly documentation: string =
+    'Prints one character per scenario.'
+
   constructor(options: IFormatterOptions) {
     options.eventBroadcaster.on('envelope', (envelope: IEnvelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {

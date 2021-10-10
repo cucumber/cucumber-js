@@ -6,6 +6,9 @@ import * as messages from '@cucumber/messages'
 import IEnvelope = messages.Envelope
 
 export default class UsageFormatter extends Formatter {
+  public static readonly documentation: string =
+    'Prints where step definitions are used. The slowest step definitions (with duration) are listed first. If --dry-run is used the duration is not shown, and step definitions are sorted by filename instead.'
+
   constructor(options: IFormatterOptions) {
     super(options)
     options.eventBroadcaster.on('envelope', (envelope: IEnvelope) => {

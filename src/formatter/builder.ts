@@ -1,16 +1,7 @@
 import getColorFns from './get_color_fns'
 import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascript_snippet_syntax'
-import JsonFormatter from './json_formatter'
-import MessageFormatter from './message_formatter'
 import path from 'path'
-import ProgressBarFormatter from './progress_bar_formatter'
-import ProgressFormatter from './progress_formatter'
-import RerunFormatter from './rerun_formatter'
-import SnippetsFormatter from './snippets_formatter'
 import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
-import SummaryFormatter from './summary_formatter'
-import UsageFormatter from './usage_formatter'
-import UsageJsonFormatter from './usage_json_formatter'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import Formatter, { IFormatterCleanupFn, IFormatterLogFn } from '.'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
@@ -19,8 +10,8 @@ import EventDataCollector from './helpers/event_data_collector'
 import { Writable as WritableStream } from 'stream'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
-import HtmlFormatter from './html_formatter'
 import { pathToFileURL } from 'url'
+import Formatters from './helpers/formatters'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
 
@@ -67,30 +58,12 @@ const FormatterBuilder = {
     type: string,
     cwd: string
   ): Promise<typeof Formatter> {
-    switch (type) {
-      case 'json':
-        return JsonFormatter
-      case 'message':
-        return MessageFormatter
-      case 'html':
-        return HtmlFormatter
-      case 'progress':
-        return ProgressFormatter
-      case 'progress-bar':
-        return ProgressBarFormatter
-      case 'rerun':
-        return RerunFormatter
-      case 'snippets':
-        return SnippetsFormatter
-      case 'summary':
-        return SummaryFormatter
-      case 'usage':
-        return UsageFormatter
-      case 'usage-json':
-        return UsageJsonFormatter
-      default:
-        return await FormatterBuilder.loadCustomClass('formatter', type, cwd)
-    }
+    const formatters: Record<string, typeof Formatter> =
+      Formatters.getFormatters()
+
+    return formatters[type]
+      ? formatters[type]
+      : await FormatterBuilder.loadCustomClass('formatter', type, cwd)
   },
 
   async getStepDefinitionSnippetBuilder({
