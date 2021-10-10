@@ -15,6 +15,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 * Remove deprecated `--retryTagFilter` option (the correct option is `--retry-tag-filter`)
 * Remove validation that step definition functions are not generators
 * Remove `--predictable-ids` option (was only used for internal testing)
+* Relative paths for custom snippet syntaxes must begin with `.` ([#1640](https://github.com/cucumber/cucumber-js/issues/1640))
 
 ### Added
 

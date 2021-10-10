@@ -23,9 +23,9 @@ Feature: step definition snippets custom syntax
       """
 
     Examples:
-      | INTERFACE   | SNIPPET_FUNCTION_KEYWORD_AND_PARAMETERS | SNIPPET_IMPLEMENTATION    |
-      | callback    | function (callback)                     | callback(null, 'pending') |
-      | generator   | function *()                            | return 'pending'          |
-      | promise     | function ()                             | return 'pending'          |
-      | async-await | async function ()                       | return 'pending'          |
-      | synchronous | function ()                             | return 'pending'          |
+      | INTERFACE   | SNIPPET_FUNCTION_KEYWORD_AND_PARAMETERS | SNIPPET_IMPLEMENTATION            |
+      | callback    | function (callback)                     | callback(null, 'pending')         |
+      | generator   | function *()                            | return 'pending'                  |
+      | promise     | function ()                             | return Promise.resolve('pending') |
+      | async-await | async function ()                       | return 'pending'                  |
+      | synchronous | function ()                             | return 'pending'                  |
