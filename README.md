@@ -55,8 +55,6 @@ $ npm install cucumber@6
 The following documentation is for master. See below the documentation for older versions.
 
 * [CLI](/docs/cli.md)
-* [Custom Formatters](/docs/custom_formatters.md)
-* [Custom Snippet Syntaxes](/docs/custom_snippet_syntaxes.md)
 * [NodeJs Example](/docs/nodejs_example.md)
 * Support Files
   * [World](/docs/support_files/world.md)
@@ -68,9 +66,12 @@ The following documentation is for master. See below the documentation for older
   * [API Reference](/docs/support_files/api_reference.md)
 * Guides
   * [ES Modules](./docs/esm.md)
+  * [Formatters](./docs/formatters.md)
   * [Running in parallel](./docs/parallel.md)
-  * [Retrying failing scenarios](./docs/retry.md)
   * [Profiles](./docs/profiles.md)
+  * [Rerunning just failures](./docs/rerun.md)
+  * [Retrying flaky scenarios](./docs/retry.md)
+  * [Snippets for undefined steps](./docs/snippets.md)
 * [FAQ](/docs/faq.md)
 
 #### Documentation for older versions

@@ -63,7 +63,7 @@ const FormatterBuilder = {
 
     return formatters[type]
       ? formatters[type]
-      : await FormatterBuilder.loadCustomFormatter(type, cwd)
+      : await FormatterBuilder.loadCustomClass('formatter', type, cwd)
   },
 
   async getStepDefinitionSnippetBuilder({
@@ -77,9 +77,10 @@ const FormatterBuilder = {
     }
     let Syntax = JavascriptSnippetSyntax
     if (doesHaveValue(snippetSyntax)) {
-      const fullSyntaxPath = path.resolve(cwd, snippetSyntax)
-      Syntax = FormatterBuilder.resolveConstructor(
-        await importer(pathToFileURL(fullSyntaxPath))
+      Syntax = await FormatterBuilder.loadCustomClass(
+        'syntax',
+        snippetSyntax,
+        cwd
       )
     }
     return new StepDefinitionSnippetBuilder({
@@ -88,16 +89,20 @@ const FormatterBuilder = {
     })
   },
 
-  async loadCustomFormatter(customFormatterPath: string, cwd: string) {
-    let CustomFormatter = customFormatterPath.startsWith(`.`)
-      ? await importer(pathToFileURL(path.resolve(cwd, customFormatterPath)))
-      : await importer(customFormatterPath)
-    CustomFormatter = FormatterBuilder.resolveConstructor(CustomFormatter)
-    if (doesHaveValue(CustomFormatter)) {
-      return CustomFormatter
+  async loadCustomClass(
+    type: 'formatter' | 'syntax',
+    descriptor: string,
+    cwd: string
+  ) {
+    let CustomClass = descriptor.startsWith(`.`)
+      ? await importer(pathToFileURL(path.resolve(cwd, descriptor)))
+      : await importer(descriptor)
+    CustomClass = FormatterBuilder.resolveConstructor(CustomClass)
+    if (doesHaveValue(CustomClass)) {
+      return CustomClass
     } else {
       throw new Error(
-        `Custom formatter (${customFormatterPath}) does not export a function`
+        `Custom ${type} (${descriptor}) does not export a function/class`
       )
     }
   },
