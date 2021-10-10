@@ -63,3 +63,21 @@ export function retriesForPickle(
   }
   return 0
 }
+
+export function shouldCauseFailure(
+  status: messages.TestStepResultStatus,
+  options: IRuntimeOptions
+): boolean {
+  if (options.dryRun) {
+    return false
+  }
+  const failureStatuses: messages.TestStepResultStatus[] = [
+    messages.TestStepResultStatus.AMBIGUOUS,
+    messages.TestStepResultStatus.FAILED,
+    messages.TestStepResultStatus.UNDEFINED,
+  ]
+  if (options.strict) {
+    failureStatuses.push(messages.TestStepResultStatus.PENDING)
+  }
+  return failureStatuses.includes(status)
+}
