@@ -25,9 +25,30 @@ Then('I remove the todo {string}', function (string) {
 By default, the snippet uses the "synchronous" style. You can use the `snippetInterface` [format option](./formatters.md#options) to specify one of the styles that supports asynchronous steps:
 
 - "async-await" - Outputs an async function where you can use `await` - probably the best choice if you aren't sure.
+  Running with `--format-options '{"snippetInterface":"async-await"}'` yields:
+  ```js
+  Then('I remove the todo {string}', async function (string) {
+    // Write code here that turns the phrase above into concrete actions
+    return 'pending';
+  });
+  ```
 - "callback" - Outputs a plain function with a callback function as the final argument.
+  Running with `--format-options '{"snippetInterface":"callback"}'` yields:
+  ```js
+  Then('I remove the todo {string}', function (string, callback) {
+    // Write code here that turns the phrase above into concrete actions
+    callback(null, 'pending');
+  });
+  ```
 - "promise" - Outputs a plain function from which you should return a `Promise`.
-- "synchronous" - Outputs a plain function with no async pattern.
+  Running with `--format-options '{"snippetInterface":"promise"}'` yields:
+  ```js
+  Then('I remove the todo {string}', function (string) {
+    // Write code here that turns the phrase above into concrete actions
+    return Promise.resolve('pending');
+  });
+  ```
+- "synchronous" - Outputs a plain function with no async pattern (see earlier example).
 
 ## Options
 
