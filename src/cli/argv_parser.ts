@@ -3,6 +3,7 @@ import path from 'path'
 import { dialects } from '@cucumber/gherkin'
 import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
 import { getKeywords, getLanguages } from './i18n'
+import Formatters from '../formatter/helpers/formatters'
 
 // Using require instead of import so compiled typescript will have the desired folder structure
 const { version } = require('../../package.json') // eslint-disable-line @typescript-eslint/no-var-requires
@@ -121,7 +122,8 @@ const ArgvParser = {
       .option('--fail-fast', 'abort the run on first failure', false)
       .option(
         '-f, --format <TYPE[:PATH]>',
-        'specify the output format, optionally supply PATH to redirect formatter output (repeatable)',
+        'specify the output format, optionally supply PATH to redirect formatter output (repeatable).  Available formats:\n' +
+          Formatters.buildFormattersDocumentationString(),
         ArgvParser.collect,
         []
       )

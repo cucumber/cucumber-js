@@ -51,6 +51,7 @@ export default class Formatter {
   protected stream: WritableStream
   protected supportCodeLibrary: ISupportCodeLibrary
   private readonly cleanup: IFormatterCleanupFn
+  static readonly documentation: string
 
   constructor(options: IFormatterOptions) {
     this.colorFns = options.colorFns

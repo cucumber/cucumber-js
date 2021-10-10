@@ -9,13 +9,11 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ----
 ## [Unreleased] (In Git)
 
-See the [migration guide](./docs/migration.md) for details of how to migrate from 7.x.x to 8.x.x
-
 ### Breaking changes
 
 * Drop support for Node.js 10 and 15, add support for Node.js 16
 * Remove deprecated `--retryTagFilter` option (the correct option is `--retry-tag-filter`)
-* Remove `setDefinitionFunctionWrapper` and step definition option `wrapperOptions`
+* Remove validation that step definition functions are not generators
 * Remove `--predictable-ids` option (was only used for internal testing)
 
 ### Added
@@ -35,6 +33,8 @@ See the [migration guide](./docs/migration.md) for details of how to migrate fro
 ### Removed
 
 ### Fixed
+* When running the help command, it now shows all available formatters under the --format option. 
+  [#1798](https://github.com/cucumber/cucumber-js/pull/1798)
 
 ## [7.3.1] (2021-07-20)
 
@@ -1881,7 +1881,8 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 <!-- Releases -->
-[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.3.0...master
+[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.3.1...master
+[7.3.1]:        https://github.com/cucumber/cucumber-js/compare/7.3.1...7.3.0
 [7.3.0]:        https://github.com/cucumber/cucumber-js/compare/7.3.0-rc.0...7.0.0
 [7.2.1]:        https://github.com/cucumber/cucumber-js/compare/7.2.1-rc.0...7.0.0
 [7.2.0]:        https://github.com/cucumber/cucumber-js/compare/7.2.0-rc.0...7.0.0
