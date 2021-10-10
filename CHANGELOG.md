@@ -34,6 +34,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Removed
 
 ### Fixed
+
+* When running with `--dry-run`, undefined or ambiguous steps no longer cause the process to exit with code 1.
 * When running the help command, it now shows all available formatters under the --format option. 
   [#1798](https://github.com/cucumber/cucumber-js/pull/1798)
 
