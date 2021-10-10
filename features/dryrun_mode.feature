@@ -35,6 +35,10 @@ Feature: Dryrun mode
     And scenario "some scenario" step "Given a step" has status "ambiguous"
 
   Scenario: pending step
+
+    Since steps aren't actually executed in dry run, a step that would resolve to pending
+    will still show up as skipped.
+
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
@@ -45,7 +49,7 @@ Feature: Dryrun mode
       """
     When I run cucumber-js with `--dry-run`
     Then it passes
-    And scenario "some scenario" step "Given a step" has status "pending"
+    And scenario "some scenario" step "Given a step" has status "skipped"
 
   Scenario: undefined step
     When I run cucumber-js with `--dry-run`
