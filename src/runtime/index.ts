@@ -159,13 +159,17 @@ export default class Runtime {
   }
 
   shouldCauseFailure(status: messages.TestStepResultStatus): boolean {
+    if (this.options.dryRun) {
+      return false
+    }
     const failureStatuses: messages.TestStepResultStatus[] = [
       messages.TestStepResultStatus.AMBIGUOUS,
       messages.TestStepResultStatus.FAILED,
       messages.TestStepResultStatus.UNDEFINED,
     ]
-    if (this.options.strict)
+    if (this.options.strict) {
       failureStatuses.push(messages.TestStepResultStatus.PENDING)
+    }
     return failureStatuses.includes(status)
   }
 }
