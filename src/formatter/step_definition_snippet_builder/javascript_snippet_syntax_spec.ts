@@ -89,7 +89,7 @@ describe('JavascriptSnippetSyntax', () => {
           reindent(`
             functionName('{string} def {string}', function (string, string2) {
               // comment
-              return 'pending';
+              return Promise.resolve('pending');
             });`)
         )
       })
