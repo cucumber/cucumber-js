@@ -1,6 +1,6 @@
 import { ChildProcess, fork } from 'child_process'
 import path from 'path'
-import { retriesForPickle } from '../helpers'
+import { retriesForPickle, shouldCauseFailure } from '../helpers'
 import * as messages from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../../formatter/helpers'
@@ -157,7 +157,7 @@ export default class Coordinator {
     )
     if (
       !testCaseFinished.willBeRetried &&
-      this.shouldCauseFailure(worstTestStepResult.status)
+      shouldCauseFailure(worstTestStepResult.status, this.options)
     ) {
       this.success = false
     }
@@ -213,12 +213,5 @@ export default class Coordinator {
       },
     }
     worker.process.send(runCommand)
-  }
-
-  shouldCauseFailure(status: messages.TestStepResultStatus): boolean {
-    return (
-      ['AMBIGUOUS', 'FAILED', 'UNDEFINED'].includes(status) ||
-      (status === 'PENDING' && this.options.strict)
-    )
   }
 }

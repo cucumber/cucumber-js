@@ -2,7 +2,7 @@ import { EventDataCollector, formatLocation } from '../formatter/helpers'
 import StackTraceFilter from '../stack_trace_filter'
 import UserCodeRunner from '../user_code_runner'
 import VError from 'verror'
-import { retriesForPickle } from './helpers'
+import { retriesForPickle, shouldCauseFailure } from './helpers'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
 import TestCaseRunner from './test_case_runner'
@@ -109,7 +109,7 @@ export default class Runtime {
       worldParameters: this.options.worldParameters,
     })
     const status = await testCaseRunner.run()
-    if (this.shouldCauseFailure(status)) {
+    if (shouldCauseFailure(status, this.options)) {
       this.success = false
     }
   }
@@ -156,16 +156,5 @@ export default class Runtime {
       this.stackTraceFilter.unfilter()
     }
     return this.success
-  }
-
-  shouldCauseFailure(status: messages.TestStepResultStatus): boolean {
-    const failureStatuses: messages.TestStepResultStatus[] = [
-      messages.TestStepResultStatus.AMBIGUOUS,
-      messages.TestStepResultStatus.FAILED,
-      messages.TestStepResultStatus.UNDEFINED,
-    ]
-    if (this.options.strict)
-      failureStatuses.push(messages.TestStepResultStatus.PENDING)
-    return failureStatuses.includes(status)
   }
 }
