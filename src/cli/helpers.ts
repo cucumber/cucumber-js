@@ -103,6 +103,14 @@ export function orderPickleIds(pickleIds: string[], order: string): void {
   }
 }
 
+export function isJavaScript(filePath: string): boolean {
+  return (
+    filePath.endsWith('.js') ||
+    filePath.endsWith('.mjs') ||
+    filePath.endsWith('.cjs')
+  )
+}
+
 export async function emitMetaMessage(
   eventBroadcaster: EventEmitter
 ): Promise<void> {
