@@ -38,14 +38,15 @@ export async function buildConfiguration(
     },
     formats: {
       stdout: options.format.find((option) => !option.includes(':')),
-      files: new Map(
-        options.format
-          .filter((option) => option.includes(':'))
-          .map((item) => {
-            const [type, target] = OptionSplitter.split(item)
-            return [target, type]
-          })
-      ),
+      files: options.format
+        .filter((option) => option.includes(':'))
+        .reduce((mapped, item) => {
+          const [type, target] = OptionSplitter.split(item)
+          return {
+            ...mapped,
+            [target]: type,
+          }
+        }, {}),
       publish: makePublishConfig(options, env),
       options: options.formatOptions,
     },

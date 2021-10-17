@@ -11,7 +11,7 @@ import HttpStream from './http_stream'
 
 export interface IFormatterConfiguration {
   stdout?: string
-  files?: Map<string, string>
+  files?: Record<string, string>
   publish?:
     | {
         url?: string

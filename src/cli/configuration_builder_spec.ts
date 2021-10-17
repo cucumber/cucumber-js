@@ -21,10 +21,10 @@ describe('buildConfiguration', () => {
 
     expect(result.formats).to.eql({
       stdout: 'message',
-      files: new Map([
-        ['./report.html', 'html'],
-        ['./report.json', 'json'],
-      ]),
+      files: {
+        './report.html': 'html',
+        './report.json': 'json',
+      },
       publish: false,
       options: {},
     })

@@ -77,7 +77,7 @@ export async function initializeFormatters({
   )
 
   if (configuration.files) {
-    for (const [target, type] of configuration.files) {
+    for (const [target, type] of Object.entries(configuration.files)) {
       const stream: IFormatterStream = fs.createWriteStream(null, {
         fd: await fs.open(path.resolve(cwd, target), 'w'),
       })
