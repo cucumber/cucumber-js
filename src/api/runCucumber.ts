@@ -1,8 +1,5 @@
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IFormatterStream } from '../formatter'
 import { IdGenerator } from '@cucumber/messages'
-import supportCodeLibraryBuilder from '../support_code_library_builder'
-import { pathToFileURL } from 'url'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../formatter/helpers'
 import {
@@ -17,9 +14,7 @@ import { IRunResult } from './types'
 import { resolvePaths } from './paths'
 import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { importer } = require('../importer')
+import { getSupportCodeLibrary } from './support'
 
 export async function runCucumber(
   configuration: IRunConfiguration,
@@ -105,27 +100,4 @@ export async function runCucumber(
     success,
     support: supportCodeLibrary,
   }
-}
-
-async function getSupportCodeLibrary({
-  cwd,
-  newId,
-  supportCodeRequiredModules,
-  supportCodePaths,
-}: {
-  cwd: string
-  newId: IdGenerator.NewId
-  supportCodeRequiredModules: string[]
-  supportCodePaths: string[]
-}): Promise<ISupportCodeLibrary> {
-  supportCodeLibraryBuilder.reset(cwd, newId)
-  supportCodeRequiredModules.map((module) => require(module))
-  for (const codePath of supportCodePaths) {
-    if (supportCodeRequiredModules.length) {
-      require(codePath)
-    } else {
-      await importer(pathToFileURL(codePath))
-    }
-  }
-  return supportCodeLibraryBuilder.finalize()
 }
