@@ -19,6 +19,7 @@ import { IRuntimeOptions } from '../index'
 import { RealTestRunStopwatch } from '../stopwatch'
 import { duration } from 'durations'
 import { pathToFileURL } from 'url'
+import { isJavaScript } from '../../cli/helpers'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../../importer')
@@ -76,7 +77,7 @@ export default class Worker {
     supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, this.newId)
     for (const codePath of supportCodePaths) {
-      if (supportCodeRequiredModules.length) {
+      if (supportCodeRequiredModules.length || !isJavaScript(codePath)) {
         require(codePath)
       } else {
         await importer(pathToFileURL(codePath))

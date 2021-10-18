@@ -3,6 +3,7 @@ import {
   emitMetaMessage,
   emitSupportCodeMessages,
   getExpandedArgv,
+  isJavaScript,
   parseGherkinMessageStream,
 } from './helpers'
 import { validateInstall } from './install_validator'
@@ -162,7 +163,7 @@ export default class Cli {
     supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, newId)
     for (const codePath of supportCodePaths) {
-      if (supportCodeRequiredModules.length) {
+      if (supportCodeRequiredModules.length || !isJavaScript(codePath)) {
         require(codePath)
       } else {
         await importer(pathToFileURL(codePath))
