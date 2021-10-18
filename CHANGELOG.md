@@ -7,18 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ----
-## [Unreleased] (In Git)
-
-### Breaking changes
-
-* Drop support for Node.js 10 and 15, add support for Node.js 16
-* Remove deprecated `--retryTagFilter` option (the correct option is `--retry-tag-filter`)
-* Remove validation that step definition functions are not generators
-* Remove `--predictable-ids` option (was only used for internal testing)
-* Relative paths for custom snippet syntaxes must begin with `.` ([#1640](https://github.com/cucumber/cucumber-js/issues/1640))
+## [Unreleased]
 
 ### Added
 
+* Add `wrapPromiseWithTimeout` to public API ([#1566](https://github.com/cucumber/cucumber-js/pull/1566))
 * Add support for user code as native ES modules
 * `BeforeStep` and `AfterStep` hook functions now have access to the `pickleStep` in their argument object.
 * `--config` option to the CLI. It allows you to specify a configuration file other than `cucumber.js`.
@@ -26,17 +19,23 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
   [#1794](https://github.com/cucumber/cucumber-js/pull/1794)
 
 ### Changed
+
+* Relative paths for custom snippet syntaxes must begin with `.` ([#1640](https://github.com/cucumber/cucumber-js/issues/1640))
 * Use performance timers for test case duration measurement.
   [#1793](https://github.com/cucumber/cucumber-js/pull/1793)
 
-### Deprecated
-
 ### Removed
+
+* Drop support for Node.js 10 and 15, add support for Node.js 16
+* Remove deprecated `--retryTagFilter` option (the correct option is `--retry-tag-filter`) ([#1713](https://github.com/cucumber/cucumber-js/pull/1713))
+* Remove validation that step definition functions are not generators
+* Remove `--predictable-ids` option (was only used for internal testing)
 
 ### Fixed
 
+* Allow targetting same file multiple times ([#1708](https://github.com/cucumber/cucumber-js/pull/1708))
 * When running with `--dry-run`, undefined or ambiguous steps no longer cause the process to exit with code 1. ([#1814](https://github.com/cucumber/cucumber-js/pull/1814))
-* When running the help command, it now shows all available formatters under the --format option. 
+* When running the help command, it now shows all available formatters under the --format option.
   [#1798](https://github.com/cucumber/cucumber-js/pull/1798)
 
 ## [7.3.1] (2021-07-20)
