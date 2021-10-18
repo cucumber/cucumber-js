@@ -178,12 +178,12 @@
   },
   "dependencies": {
     "@cucumber/create-meta": "6.0.1",
-    "@cucumber/cucumber-expressions": "13.1.3",
-    "@cucumber/gherkin": "22.0.0",
-    "@cucumber/gherkin-streams": "4.0.0",
-    "@cucumber/html-formatter": "17.0.0",
-    "@cucumber/messages": "17.1.1",
-    "@cucumber/tag-expressions": "4.0.2",
+    "@cucumber/cucumber-expressions": "^14.0.0",
+    "@cucumber/gherkin": "^22.0.0",
+    "@cucumber/gherkin-streams": "^4.0.0",
+    "@cucumber/html-formatter": "^17.0.0",
+    "@cucumber/messages": "^17.1.1",
+    "@cucumber/tag-expressions": "^4.1.0",
     "assertion-error-formatter": "^3.0.0",
     "capital-case": "^1.0.4",
     "cli-table3": "^0.6.0",
@@ -208,9 +208,9 @@
     "verror": "^1.10.0"
   },
   "devDependencies": {
-    "@cucumber/compatibility-kit": "9.0.0",
-    "@cucumber/message-streams": "3.0.0",
-    "@cucumber/query": "11.0.0",
+    "@cucumber/compatibility-kit": "^9.0.0",
+    "@cucumber/message-streams": "^3.0.0",
+    "@cucumber/query": "^11.0.0",
     "@sinonjs/fake-timers": "8.0.1",
     "@types/chai": "4.2.22",
     "@types/dirty-chai": "2.0.2",
@@ -246,7 +246,7 @@
     "eslint-plugin-standard": "4.1.0",
     "express": "4.17.1",
     "fs-extra": "10.0.0",
-    "mocha": "9.1.2",
+    "mocha": "^9.1.3",
     "mustache": "4.2.0",
     "nyc": "15.1.0",
     "prettier": "2.4.1",
@@ -256,9 +256,9 @@
     "sinon-chai": "3.7.0",
     "stream-buffers": "3.0.2",
     "stream-to-string": "1.2.0",
-    "ts-node": "10.2.1",
+    "ts-node": "^10.3.0",
     "tsd": "0.17.0",
-    "typescript": "4.4.3"
+    "typescript": "^4.4.4"
   },
   "scripts": {
     "build-local": "tsc --build tsconfig.node.json && cp src/importer.js lib/ && cp src/wrapper.mjs lib/",
