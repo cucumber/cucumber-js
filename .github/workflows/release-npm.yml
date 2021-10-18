@@ -1,0 +1,24 @@
+name: Release NPM
+
+on:
+  push:
+    branches: [release/*]
+
+jobs:
+  publish-npm:
+    name: Publish NPM module
+    runs-on: ubuntu-latest
+    environment: Release
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+          cache-dependency-path: javascript/package-lock.json
+      - run: npm install-test
+        working-directory: javascript
+      - uses: cucumber/action-publish-npm@v1.0.0
+        with:
+          npm-token: ${{ secrets.NPM_TOKEN }}
+          working-directory: javascript
