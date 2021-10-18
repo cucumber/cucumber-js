@@ -1307,9 +1307,7 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/8.0.0-rc.1...main
-[8.0.0-rc.1]: https://github.com/cucumber/cucumber-js/compare/8.0.0-rc.1...main
-[8.0.0-rc.1]: https://github.com/cucumber/cucumber-js/compare/v7.3.1...main
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v7.3.1...HEAD
 [7.3.1]: https://github.com/cucumber/cucumber-js/compare/v7.3.0...v7.3.1
 [7.3.0]: https://github.com/cucumber/cucumber-js/compare/v7.2.1...v7.3.0
 [7.2.1]: https://github.com/cucumber/cucumber-js/compare/v7.2.0...v7.2.1
