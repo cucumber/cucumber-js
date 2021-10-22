@@ -13,6 +13,8 @@ export default class ProgressBarFormatter extends Formatter {
   private testRunStarted: messages.TestRunStarted
   private issueCount: number
   public progressBar: ProgressBar
+  public static readonly documentation: string =
+    'Similar to the Progress Formatter, but provides a real-time updating progress bar based on the total number of steps to be executed in the test run'
 
   constructor(options: IFormatterOptions) {
     super(options)

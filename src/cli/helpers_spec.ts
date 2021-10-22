@@ -3,6 +3,7 @@ import { expect } from 'chai'
 import {
   emitMetaMessage,
   emitSupportCodeMessages,
+  isJavaScript,
   parseGherkinMessageStream,
 } from './helpers'
 import { EventEmitter } from 'events'
@@ -87,6 +88,16 @@ function testEmitSupportCodeMessages(
 }
 
 describe('helpers', () => {
+  describe('isJavaScript', () => {
+    it('should identify a native javascript file path that can be `import()`ed', () => {
+      expect(isJavaScript('foo/bar.js')).to.be.true()
+      expect(isJavaScript('foo/bar.mjs')).to.be.true()
+      expect(isJavaScript('foo/bar.cjs')).to.be.true()
+      expect(isJavaScript('foo/bar.ts')).to.be.false()
+      expect(isJavaScript('foo/bar.coffee')).to.be.false()
+    })
+  })
+
   describe('emitMetaMessage', () => {
     it('emits a meta message', async () => {
       const envelopes: messages.Envelope[] = []
@@ -135,6 +146,7 @@ describe('helpers', () => {
         stepDefinitions: [
           new StepDefinition({
             code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '0',
             line: 9,
             options: {},
@@ -172,6 +184,7 @@ describe('helpers', () => {
         stepDefinitions: [
           new StepDefinition({
             code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '0',
             line: 9,
             options: {},
@@ -209,6 +222,7 @@ describe('helpers', () => {
         beforeTestCaseHookDefinitions: [
           new TestCaseHookDefinition({
             code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '0',
             line: 3,
             options: {
@@ -220,6 +234,7 @@ describe('helpers', () => {
         afterTestCaseHookDefinitions: [
           new TestCaseHookDefinition({
             code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '1',
             line: 7,
             options: {},
@@ -227,6 +242,7 @@ describe('helpers', () => {
           }),
           new TestCaseHookDefinition({
             code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '2',
             line: 11,
             options: {},
@@ -280,6 +296,7 @@ describe('helpers', () => {
         beforeTestRunHookDefinitions: [
           new TestRunHookDefinition({
             code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '0',
             line: 3,
             options: {},
@@ -289,6 +306,7 @@ describe('helpers', () => {
         afterTestRunHookDefinitions: [
           new TestRunHookDefinition({
             code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '1',
             line: 7,
             options: {},
@@ -296,6 +314,7 @@ describe('helpers', () => {
           }),
           new TestRunHookDefinition({
             code: noopFunction,
+            unwrappedCode: noopFunction,
             id: '2',
             line: 11,
             options: {},

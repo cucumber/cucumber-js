@@ -58,7 +58,6 @@ export class World {
     const messageFilename = 'message.ndjson'
     const args = ['node', executablePath].concat(inputArgs, [
       '--backtrace',
-      '--predictable-ids',
       '--format',
       `message:${messageFilename}`,
     ])

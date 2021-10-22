@@ -23,8 +23,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm i -g npm@7
-    - run: npm install
-    - run: npm test
+    - run: npm install-test
 
   coverage:
     runs-on: ubuntu-latest

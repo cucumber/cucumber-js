@@ -7,7 +7,10 @@ import path from 'path'
 import { PassThrough, pipeline, Writable } from 'stream'
 import { Cli } from '../src'
 import toString from 'stream-to-string'
-import { normalizeMessageOutput } from '../features/support/formatter_output_helpers'
+import {
+  ignorableKeys,
+  normalizeMessageOutput,
+} from '../features/support/formatter_output_helpers'
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
 import util from 'util'
@@ -74,28 +77,7 @@ describe('Cucumber Compatibility Kit', () => {
       )
 
       expect(actualMessages)
-        .excludingEvery([
-          'meta',
-          // sources
-          'uri',
-          'line',
-          // ids
-          'astNodeId',
-          'astNodeIds',
-          'hookId',
-          'id',
-          'pickleId',
-          'pickleStepId',
-          'stepDefinitionIds',
-          'testCaseId',
-          'testCaseStartedId',
-          'testStepId',
-          // time
-          'nanos',
-          'seconds',
-          // errors
-          'message',
-        ])
+        .excludingEvery(ignorableKeys)
         .to.deep.eq(expectedMessages)
     })
   })

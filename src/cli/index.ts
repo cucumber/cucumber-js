@@ -3,6 +3,7 @@ import {
   emitMetaMessage,
   emitSupportCodeMessages,
   getExpandedArgv,
+  isJavaScript,
   parseGherkinMessageStream,
 } from './helpers'
 import { validateInstall } from './install_validator'
@@ -29,8 +30,11 @@ import { IParsedArgvFormatOptions } from './argv_parser'
 import HttpStream from '../formatter/http_stream'
 import { promisify } from 'util'
 import { Writable } from 'stream'
+import { pathToFileURL } from 'url'
 
-const { incrementing, uuid } = IdGenerator
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { importer } = require('../importer')
+const { uuid } = IdGenerator
 
 export interface ICliRunResult {
   shouldExitImmediately: boolean
@@ -143,7 +147,7 @@ export default class Cli {
           )
           type = 'progress'
         }
-        return FormatterBuilder.build(type, typeOptions)
+        return await FormatterBuilder.build(type, typeOptions)
       })
     )
     return async function () {
@@ -151,21 +155,20 @@ export default class Cli {
     }
   }
 
-  getSupportCodeLibrary({
+  async getSupportCodeLibrary({
     newId,
     supportCodeRequiredModules,
     supportCodePaths,
-  }: IGetSupportCodeLibraryRequest): ISupportCodeLibrary {
+  }: IGetSupportCodeLibraryRequest): Promise<ISupportCodeLibrary> {
     supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, newId)
-    supportCodePaths.forEach((codePath) => {
-      try {
+    for (const codePath of supportCodePaths) {
+      if (supportCodeRequiredModules.length || !isJavaScript(codePath)) {
         require(codePath)
-      } catch (e) {
-        console.error(e.stack)
-        console.error('codepath: ' + codePath)
+      } else {
+        await importer(pathToFileURL(codePath))
       }
-    })
+    }
     return supportCodeLibraryBuilder.finalize()
   }
 
@@ -180,11 +183,8 @@ export default class Cli {
       this.stdout.write(I18n.getKeywords(configuration.listI18nKeywordsFor))
       return { shouldExitImmediately: true, success: true }
     }
-    const newId =
-      configuration.predictableIds && configuration.parallel <= 1
-        ? incrementing()
-        : uuid()
-    const supportCodeLibrary = this.getSupportCodeLibrary({
+    const newId = uuid()
+    const supportCodeLibrary = await this.getSupportCodeLibrary({
       newId,
       supportCodePaths: configuration.supportCodePaths,
       supportCodeRequiredModules: configuration.supportCodeRequiredModules,

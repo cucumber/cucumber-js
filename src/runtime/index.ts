@@ -2,7 +2,7 @@ import { EventDataCollector, formatLocation } from '../formatter/helpers'
 import StackTraceFilter from '../stack_trace_filter'
 import UserCodeRunner from '../user_code_runner'
 import VError from 'verror'
-import { retriesForPickle } from './helpers'
+import { retriesForPickle, shouldCauseFailure } from './helpers'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
 import TestCaseRunner from './test_case_runner'
@@ -10,11 +10,7 @@ import { EventEmitter } from 'events'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
-import {
-  ITestRunStopwatch,
-  PredictableTestRunStopwatch,
-  RealTestRunStopwatch,
-} from './stopwatch'
+import { ITestRunStopwatch, RealTestRunStopwatch } from './stopwatch'
 import { assembleTestCases } from './assemble_test_cases'
 
 export interface INewRuntimeOptions {
@@ -28,7 +24,6 @@ export interface INewRuntimeOptions {
 
 export interface IRuntimeOptions {
   dryRun: boolean
-  predictableIds: boolean
   failFast: boolean
   filterStacktraces: boolean
   retry: number
@@ -58,9 +53,7 @@ export default class Runtime {
   }: INewRuntimeOptions) {
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
-    this.stopwatch = options.predictableIds
-      ? new PredictableTestRunStopwatch()
-      : new RealTestRunStopwatch()
+    this.stopwatch = new RealTestRunStopwatch()
     this.newId = newId
     this.options = options
     this.pickleIds = pickleIds
@@ -116,7 +109,7 @@ export default class Runtime {
       worldParameters: this.options.worldParameters,
     })
     const status = await testCaseRunner.run()
-    if (this.shouldCauseFailure(status)) {
+    if (shouldCauseFailure(status, this.options)) {
       this.success = false
     }
   }
@@ -163,16 +156,5 @@ export default class Runtime {
       this.stackTraceFilter.unfilter()
     }
     return this.success
-  }
-
-  shouldCauseFailure(status: messages.TestStepResultStatus): boolean {
-    const failureStatuses: messages.TestStepResultStatus[] = [
-      messages.TestStepResultStatus.AMBIGUOUS,
-      messages.TestStepResultStatus.FAILED,
-      messages.TestStepResultStatus.UNDEFINED,
-    ]
-    if (this.options.strict)
-      failureStatuses.push(messages.TestStepResultStatus.PENDING)
-    return failureStatuses.includes(status)
   }
 }

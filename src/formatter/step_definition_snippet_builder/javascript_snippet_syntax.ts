@@ -29,6 +29,8 @@ export default class JavaScriptSnippetSyntax implements ISnippetSnytax {
     let implementation: string
     if (this.snippetInterface === SnippetInterface.Callback) {
       implementation = `${CALLBACK_NAME}(null, 'pending');`
+    } else if (this.snippetInterface === SnippetInterface.Promise) {
+      implementation = "return Promise.resolve('pending');"
     } else {
       implementation = "return 'pending';"
     }
