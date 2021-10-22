@@ -1,4 +1,5 @@
 import path from 'path'
+import { wrapCallSite } from '@cspotcode/source-map-support'
 import stackChain from 'stack-chain'
 import { isFileNameInCucumber } from '../stack_trace_filter'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
@@ -12,16 +13,7 @@ export function getDefinitionLineAndUri(
   let line: number
   let uri: string
   try {
-    console.log(new Error().stack.split("\n").slice(1).map(
-      (line: String) => line.match(/(\/.*):(\d+):\d+/).slice(1,3)
-    ))
-    const stackframes = stackChain.callSite()
-    /*console.log(
-      stackframes.map((frame: CallSite) => [
-        frame.getLineNumber(),
-        frame.getFileName(),
-      ])
-    )*/
+    const stackframes: CallSite[] = stackChain.callSite().map(wrapCallSite)
     const stackframe = stackframes.find(
       (frame: CallSite) =>
         frame.getFileName() !== __filename && !isExcluded(frame.getFileName())
