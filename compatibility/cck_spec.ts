@@ -13,7 +13,7 @@ import {
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
 import util from 'util'
-import { runCucumber } from '../src/api'
+import { runCucumber } from '../src/run'
 import { IRunConfiguration } from '../src/configuration'
 
 const asyncPipeline = util.promisify(pipeline)

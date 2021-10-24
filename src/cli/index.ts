@@ -2,7 +2,7 @@ import { getExpandedArgv } from './helpers'
 import { validateInstall } from './install_validator'
 import { buildConfiguration, isTruthyString } from './configuration_builder'
 import { IFormatterStream } from '../formatter'
-import { runCucumber } from '../api'
+import { runCucumber } from '../run'
 import ArgvParser from './argv_parser'
 
 export interface ICliRunResult {
