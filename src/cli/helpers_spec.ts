@@ -3,6 +3,7 @@ import { expect } from 'chai'
 import {
   emitMetaMessage,
   emitSupportCodeMessages,
+  isJavaScript,
   parseGherkinMessageStream,
 } from './helpers'
 import { EventEmitter } from 'events'
@@ -87,6 +88,16 @@ function testEmitSupportCodeMessages(
 }
 
 describe('helpers', () => {
+  describe('isJavaScript', () => {
+    it('should identify a native javascript file path that can be `import()`ed', () => {
+      expect(isJavaScript('foo/bar.js')).to.be.true()
+      expect(isJavaScript('foo/bar.mjs')).to.be.true()
+      expect(isJavaScript('foo/bar.cjs')).to.be.true()
+      expect(isJavaScript('foo/bar.ts')).to.be.false()
+      expect(isJavaScript('foo/bar.coffee')).to.be.false()
+    })
+  })
+
   describe('emitMetaMessage', () => {
     it('emits a meta message', async () => {
       const envelopes: messages.Envelope[] = []

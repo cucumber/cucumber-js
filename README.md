@@ -65,6 +65,7 @@ The following documentation is for master. See below the documentation for older
   * [Attachments](/docs/support_files/attachments.md)
   * [API Reference](/docs/support_files/api_reference.md)
 * Guides
+  * [Dry Run](./docs/dry_run.md)
   * [ES Modules](./docs/esm.md)
   * [Formatters](./docs/formatters.md)
   * [Running in parallel](./docs/parallel.md)
