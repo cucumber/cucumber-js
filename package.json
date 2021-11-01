@@ -182,7 +182,7 @@
     "node": ">=12"
   },
   "dependencies": {
-    "@cucumber/create-meta": "6.0.1",
+    "@cucumber/create-meta": "6.0.2",
     "@cucumber/cucumber-expressions": "^14.0.0",
     "@cucumber/gherkin": "^22.0.0",
     "@cucumber/gherkin-streams": "^4.0.0",
@@ -213,9 +213,9 @@
     "verror": "^1.10.0"
   },
   "devDependencies": {
-    "@cucumber/compatibility-kit": "^9.0.0",
-    "@cucumber/message-streams": "^3.0.0",
-    "@cucumber/query": "^11.0.0",
+    "@cucumber/compatibility-kit": "9.0.0",
+    "@cucumber/message-streams": "3.0.0",
+    "@cucumber/query": "11.0.0",
     "@sinonjs/fake-timers": "8.0.1",
     "@types/chai": "4.2.22",
     "@types/dirty-chai": "2.0.2",
