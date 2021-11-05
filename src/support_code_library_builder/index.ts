@@ -1,4 +1,5 @@
-import { buildParameterType, getDefinitionLineAndUri } from './build_helpers'
+import { buildParameterType } from './build_parameter_type'
+import { getDefinitionLineAndUri } from './get_definition_line_and_uri'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
@@ -7,6 +8,8 @@ import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { formatLocation } from '../formatter/helpers'
 import validateArguments from './validate_arguments'
+import arity from 'util-arity'
+
 import {
   CucumberExpression,
   ParameterTypeRegistry,
@@ -70,6 +73,7 @@ export class SupportCodeLibraryBuilder {
   private beforeTestStepHookDefinitionConfigs: ITestStepHookDefinitionConfig[]
   private cwd: string
   private defaultTimeout: number
+  private definitionFunctionWrapper: any
   private newId: IdGenerator.NewId
   private parameterTypeRegistry: ParameterTypeRegistry
   private stepDefinitionConfigs: IStepDefinitionConfig[]
@@ -101,6 +105,9 @@ export class SupportCodeLibraryBuilder {
       Given: defineStep,
       setDefaultTimeout: (milliseconds) => {
         this.defaultTimeout = milliseconds
+      },
+      setDefinitionFunctionWrapper: (fn) => {
+        this.definitionFunctionWrapper = fn
       },
       setWorldConstructor: (fn) => {
         this.World = fn
@@ -236,16 +243,39 @@ export class SupportCodeLibraryBuilder {
     }
   }
 
+  wrapCode({
+    code,
+    wrapperOptions,
+  }: {
+    code: Function
+    wrapperOptions: any
+  }): Function {
+    if (doesHaveValue(this.definitionFunctionWrapper)) {
+      const codeLength = code.length
+      const wrappedCode = this.definitionFunctionWrapper(code, wrapperOptions)
+      if (wrappedCode !== code) {
+        return arity(codeLength, wrappedCode)
+      }
+      return wrappedCode
+    }
+    return code
+  }
+
   buildTestCaseHookDefinitions(
     configs: ITestCaseHookDefinitionConfig[],
     canonicalIds?: string[]
   ): TestCaseHookDefinition[] {
     return configs.map(({ code, line, options, uri }, index) => {
-      return new TestCaseHookDefinition({
+      const wrappedCode = this.wrapCode({
         code,
+        wrapperOptions: options.wrapperOptions,
+      })
+      return new TestCaseHookDefinition({
+        code: wrappedCode,
         id: canonicalIds ? canonicalIds[index] : this.newId(),
         line,
         options,
+        unwrappedCode: code,
         uri,
       })
     })
@@ -255,11 +285,16 @@ export class SupportCodeLibraryBuilder {
     configs: ITestStepHookDefinitionConfig[]
   ): TestStepHookDefinition[] {
     return configs.map(({ code, line, options, uri }) => {
-      return new TestStepHookDefinition({
+      const wrappedCode = this.wrapCode({
         code,
+        wrapperOptions: options.wrapperOptions,
+      })
+      return new TestStepHookDefinition({
+        code: wrappedCode,
         id: this.newId(),
         line,
         options,
+        unwrappedCode: code,
         uri,
       })
     })
@@ -269,11 +304,16 @@ export class SupportCodeLibraryBuilder {
     configs: ITestRunHookDefinitionConfig[]
   ): TestRunHookDefinition[] {
     return configs.map(({ code, line, options, uri }) => {
-      return new TestRunHookDefinition({
+      const wrappedCode = this.wrapCode({
         code,
+        wrapperOptions: options.wrapperOptions,
+      })
+      return new TestRunHookDefinition({
+        code: wrappedCode,
         id: this.newId(),
         line,
         options,
+        unwrappedCode: code,
         uri,
       })
     })
@@ -311,14 +351,19 @@ export class SupportCodeLibraryBuilder {
           )
         }
 
+        const wrappedCode = this.wrapCode({
+          code,
+          wrapperOptions: options.wrapperOptions,
+        })
         stepDefinitions.push(
           new StepDefinition({
-            code,
+            code: wrappedCode,
             expression,
             id: canonicalIds ? canonicalIds[index] : this.newId(),
             line,
             options,
             pattern,
+            unwrappedCode: code,
             uri,
           })
         )
@@ -369,6 +414,7 @@ export class SupportCodeLibraryBuilder {
     this.beforeTestCaseHookDefinitionConfigs = []
     this.beforeTestRunHookDefinitionConfigs = []
     this.beforeTestStepHookDefinitionConfigs = []
+    this.definitionFunctionWrapper = null
     this.defaultTimeout = 5000
     this.parameterTypeRegistry = new ParameterTypeRegistry()
     this.stepDefinitionConfigs = []

@@ -7,7 +7,10 @@ import path from 'path'
 import { PassThrough, pipeline, Writable } from 'stream'
 import { Cli } from '../src'
 import toString from 'stream-to-string'
-import { normalizeMessageOutput } from '../features/support/formatter_output_helpers'
+import {
+  ignorableKeys,
+  normalizeMessageOutput,
+} from '../features/support/formatter_output_helpers'
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
 import util from 'util'
@@ -26,16 +29,20 @@ describe('Cucumber Compatibility Kit', () => {
     const suiteName = match[1]
     const extension = match[2]
     it(`passes the cck suite for '${suiteName}'`, async () => {
-      const args = [
-        'node',
-        path.join(PROJECT_PATH, 'bin', 'cucumber-js'),
-      ].concat([
+      const cliOptions = [
         `${CCK_FEATURES_PATH}/${suiteName}/${suiteName}${extension}`,
         '--require',
         `${CCK_IMPLEMENTATIONS_PATH}/${suiteName}/${suiteName}.ts`,
         '--profile',
         'cck',
-      ])
+      ]
+      if (suiteName === 'retry') {
+        cliOptions.push('--retry', '2')
+      }
+      const args = [
+        'node',
+        path.join(PROJECT_PATH, 'bin', 'cucumber-js'),
+      ].concat(cliOptions)
       const stdout = new PassThrough()
       try {
         await new Cli({
@@ -70,28 +77,7 @@ describe('Cucumber Compatibility Kit', () => {
       )
 
       expect(actualMessages)
-        .excludingEvery([
-          'meta',
-          // sources
-          'uri',
-          'line',
-          // ids
-          'astNodeId',
-          'astNodeIds',
-          'hookId',
-          'id',
-          'pickleId',
-          'pickleStepId',
-          'stepDefinitionIds',
-          'testCaseId',
-          'testCaseStartedId',
-          'testStepId',
-          // time
-          'nanos',
-          'seconds',
-          // errors
-          'message',
-        ])
+        .excludingEvery(ignorableKeys)
         .to.deep.eq(expectedMessages)
     })
   })

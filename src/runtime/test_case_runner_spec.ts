@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
+import sinon from 'sinon'
 import TestCaseRunner from './test_case_runner'
 import { EventEmitter } from 'events'
 import { IdGenerator } from '@cucumber/messages'
@@ -99,7 +100,6 @@ describe('TestCaseRunner', () => {
           duration: messages.TimeConversion.millisecondsToDuration(1),
           status: messages.TestStepResultStatus.PASSED,
           message: undefined,
-          willBeRetried: false,
         }
 
         // Act
@@ -110,7 +110,7 @@ describe('TestCaseRunner', () => {
         })
 
         // Assert
-        const expectedtEnvelopes = [
+        const expectedtEnvelopes: messages.Envelope[] = [
           {
             testCaseStarted: {
               attempt: 0,
@@ -138,6 +138,7 @@ describe('TestCaseRunner', () => {
             testCaseFinished: {
               testCaseStartedId: '2',
               timestamp: predictableTimestamp(3),
+              willBeRetried: false,
             },
           },
         ]
@@ -165,7 +166,6 @@ describe('TestCaseRunner', () => {
           duration: messages.TimeConversion.millisecondsToDuration(0),
           status: messages.TestStepResultStatus.FAILED,
           message: 'fail',
-          willBeRetried: false,
         }
 
         // Act
@@ -216,7 +216,6 @@ describe('TestCaseRunner', () => {
           message,
           status: messages.TestStepResultStatus.AMBIGUOUS,
           duration: messages.TimeConversion.millisecondsToDuration(0),
-          willBeRetried: false,
         }
         expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
         expect(result).to.eql(
@@ -249,7 +248,6 @@ describe('TestCaseRunner', () => {
         const expected: messages.TestStepResult = {
           status: messages.TestStepResultStatus.UNDEFINED,
           duration: messages.TimeConversion.millisecondsToDuration(0),
-          willBeRetried: false,
         }
         expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
         expect(result).to.eql(
@@ -311,7 +309,6 @@ describe('TestCaseRunner', () => {
                 duration: messages.TimeConversion.millisecondsToDuration(0),
                 message: 'error',
                 status: messages.TestStepResultStatus.FAILED,
-                willBeRetried: true,
               },
               testStepId: '1',
               timestamp: predictableTimestamp(2),
@@ -321,6 +318,7 @@ describe('TestCaseRunner', () => {
             testCaseFinished: {
               testCaseStartedId: '2',
               timestamp: predictableTimestamp(3),
+              willBeRetried: true,
             },
           },
           {
@@ -345,7 +343,6 @@ describe('TestCaseRunner', () => {
                 duration: messages.TimeConversion.millisecondsToDuration(0),
                 message: undefined,
                 status: messages.TestStepResultStatus.PASSED,
-                willBeRetried: false,
               },
               testStepId: '1',
               timestamp: predictableTimestamp(6),
@@ -355,6 +352,7 @@ describe('TestCaseRunner', () => {
             testCaseFinished: {
               testCaseStartedId: '3',
               timestamp: predictableTimestamp(7),
+              willBeRetried: false,
             },
           },
         ]
@@ -392,7 +390,6 @@ describe('TestCaseRunner', () => {
         const expected: messages.TestStepResult = {
           status: messages.TestStepResultStatus.SKIPPED,
           duration: messages.TimeConversion.millisecondsToDuration(0),
-          willBeRetried: false,
         }
         expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
         expect(result).to.eql(
@@ -438,14 +435,17 @@ describe('TestCaseRunner', () => {
 
     describe('with step hooks', () => {
       it('emits the expected envelopes and returns a skipped result', async () => {
+        const beforeStep = sinon.stub()
+        const afterStep = sinon.stub()
+
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(
           ({ Given, BeforeStep, AfterStep }) => {
             Given('a step', function () {
               clock.tick(1)
             })
-            BeforeStep(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            AfterStep(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            BeforeStep(beforeStep) // eslint-disable-line @typescript-eslint/no-empty-function
+            AfterStep(afterStep) // eslint-disable-line @typescript-eslint/no-empty-function
           }
         )
         const {
@@ -468,6 +468,22 @@ describe('TestCaseRunner', () => {
         expect(result).to.eql(
           envelopes[2].testStepFinished.testStepResult.status
         )
+        expect(beforeStep).to.have.been.calledOnceWith({
+          gherkinDocument,
+          pickle,
+          pickleStep: pickle.steps[0],
+          testCaseStartedId: envelopes[1].testStepStarted.testCaseStartedId,
+          testStepId: envelopes[1].testStepStarted.testStepId,
+          result: undefined,
+        })
+        expect(afterStep).to.have.been.calledOnceWith({
+          gherkinDocument,
+          pickle,
+          pickleStep: pickle.steps[0],
+          testCaseStartedId: envelopes[2].testStepFinished.testCaseStartedId,
+          testStepId: envelopes[2].testStepFinished.testStepId,
+          result: envelopes[2].testStepFinished.testStepResult,
+        })
       })
     })
   })

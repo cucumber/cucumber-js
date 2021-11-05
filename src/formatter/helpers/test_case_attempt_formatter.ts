@@ -101,10 +101,7 @@ export function formatTestCaseAttempt({
     supportCodeLibrary,
   })
   let text = `Scenario: ${parsed.testCase.name}`
-  text += getAttemptText(
-    parsed.testCase.attempt,
-    parsed.testCase.worstTestStepResult.willBeRetried
-  )
+  text += getAttemptText(parsed.testCase.attempt, testCaseAttempt.willBeRetried)
   text += ` # ${colorFns.location(
     formatLocation(parsed.testCase.sourceLocation)
   )}\n`

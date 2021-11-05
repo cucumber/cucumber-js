@@ -12,6 +12,9 @@ interface ILogIssuesRequest {
 }
 
 export default class SummaryFormatter extends Formatter {
+  public static readonly documentation: string =
+    'Summary output of feature and scenarios'
+
   constructor(options: IFormatterOptions) {
     super(options)
     let testRunStartedTimestamp: messages.Timestamp
@@ -36,9 +39,19 @@ export default class SummaryFormatter extends Formatter {
     const warnings: ITestCaseAttempt[] = []
     const testCaseAttempts = this.eventDataCollector.getTestCaseAttempts()
     testCaseAttempts.forEach((testCaseAttempt) => {
-      if (isFailure(testCaseAttempt.worstTestStepResult)) {
+      if (
+        isFailure(
+          testCaseAttempt.worstTestStepResult,
+          testCaseAttempt.willBeRetried
+        )
+      ) {
         failures.push(testCaseAttempt)
-      } else if (isWarning(testCaseAttempt.worstTestStepResult)) {
+      } else if (
+        isWarning(
+          testCaseAttempt.worstTestStepResult,
+          testCaseAttempt.willBeRetried
+        )
+      ) {
         warnings.push(testCaseAttempt)
       }
     })

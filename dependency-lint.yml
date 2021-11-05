@@ -20,6 +20,7 @@ ignoreErrors:
     - '@typescript-eslint/eslint-plugin' # peer dependency of standard-with-typescript
     - '@typescript-eslint/parser' # peer dependency of @typescript-eslint/eslint-plugin
     - '@types/*' # type definitions
+    - bluebird # features/generator_step_definitions.feature
     - coffeescript # features/compiler.feature
     - eslint-config-prettier # .eslintrc.yml - extends - prettier
     - eslint-config-standard-with-typescript # .eslintrc.yml - extends - standard-with-typescript
@@ -44,6 +45,7 @@ requiredModules:
       - 'dist/**/*'
       - 'lib/**/*'
       - 'node_modules/**/*'
+      - 'src/importer.js'
       - 'tmp/**/*'
     root: '**/*.{js,ts}'
   stripLoaders: false

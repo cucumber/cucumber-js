@@ -1,6 +1,6 @@
 import { ChildProcess, fork } from 'child_process'
 import path from 'path'
-import { retriesForPickle } from '../helpers'
+import { retriesForPickle, shouldCauseFailure } from '../helpers'
 import * as messages from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../../formatter/helpers'
@@ -8,11 +8,7 @@ import { IRuntimeOptions } from '..'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { ICoordinatorReport, IWorkerCommand } from './command_types'
 import { doesHaveValue } from '../../value_checker'
-import {
-  ITestRunStopwatch,
-  PredictableTestRunStopwatch,
-  RealTestRunStopwatch,
-} from '../stopwatch'
+import { ITestRunStopwatch, RealTestRunStopwatch } from '../stopwatch'
 import { assembleTestCases, IAssembledTestCases } from '../assemble_test_cases'
 import { IdGenerator } from '@cucumber/messages'
 
@@ -66,9 +62,7 @@ export default class Coordinator {
     this.cwd = cwd
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
-    this.stopwatch = options.predictableIds
-      ? new PredictableTestRunStopwatch()
-      : new RealTestRunStopwatch()
+    this.stopwatch = new RealTestRunStopwatch()
     this.options = options
     this.newId = newId
     this.supportCodeLibrary = supportCodeLibrary
@@ -162,8 +156,8 @@ export default class Coordinator {
       testCaseFinished.testCaseStartedId
     )
     if (
-      !worstTestStepResult.willBeRetried &&
-      this.shouldCauseFailure(worstTestStepResult.status)
+      !testCaseFinished.willBeRetried &&
+      shouldCauseFailure(worstTestStepResult.status, this.options)
     ) {
       this.success = false
     }
@@ -219,12 +213,5 @@ export default class Coordinator {
       },
     }
     worker.process.send(runCommand)
-  }
-
-  shouldCauseFailure(status: messages.TestStepResultStatus): boolean {
-    return (
-      ['AMBIGUOUS', 'FAILED', 'UNDEFINED'].includes(status) ||
-      (status === 'PENDING' && this.options.strict)
-    )
   }
 }

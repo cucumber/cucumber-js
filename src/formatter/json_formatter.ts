@@ -81,6 +81,9 @@ interface UriToTestCaseAttemptsMap {
 }
 
 export default class JsonFormatter extends Formatter {
+  public static readonly documentation: string =
+    'Prints the feature as JSON. The JSON format is in maintenance mode. Please consider using the message formatter with the standalone json-formatter (https://github.com/cucumber/cucumber/tree/master/json-formatter).'
+
   constructor(options: IFormatterOptions) {
     super(options)
     options.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
@@ -132,7 +135,7 @@ export default class JsonFormatter extends Formatter {
     this.eventDataCollector
       .getTestCaseAttempts()
       .forEach((testCaseAttempt: ITestCaseAttempt) => {
-        if (!testCaseAttempt.worstTestStepResult.willBeRetried) {
+        if (!testCaseAttempt.willBeRetried) {
           const uri = testCaseAttempt.pickle.uri
           if (doesNotHaveValue(groupedTestCaseAttempts[uri])) {
             groupedTestCaseAttempts[uri] = []

@@ -58,7 +58,7 @@ When(
     args += ' ' + formats.map((f) => `--format ${f}`).join(' ')
     const renderedArgs = Mustache.render(args, this)
     const stringArgs = stringArgv(renderedArgs)
-    return this.run(this.localExecutablePath, stringArgs)
+    return await this.run(this.localExecutablePath, stringArgs)
   }
 )
 

@@ -22,8 +22,8 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - run: yarn install
-    - run: yarn test
+    - run: npm i -g npm@7
+    - run: npm install-test
 
   coverage:
     runs-on: ubuntu-latest
@@ -32,8 +32,8 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 16.x
-      - run: yarn install
-      - run: yarn test-coverage
+      - run: npm install
+      - run: npm run test-coverage
       - uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -45,4 +45,4 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 16.x
-      - run: yarn audit --groups dependencies
+      - run: npm audit --groups dependencies

@@ -3,28 +3,39 @@ import path from 'path'
 import stringArgv from 'string-argv'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 
-export default class ProfileLoader {
-  private readonly directory: string
+const DEFAULT_FILENAMES = ['cucumber.cjs', 'cucumber.js']
 
-  constructor(directory: string) {
-    this.directory = directory
+export default class ProfileLoader {
+  constructor(private readonly directory: string) {}
+
+  async getDefinitions(configFile?: string): Promise<Record<string, string>> {
+    if (configFile) {
+      return this.loadFile(configFile)
+    }
+
+    const defaultFile = DEFAULT_FILENAMES.find((filename) =>
+      fs.existsSync(path.join(this.directory, filename))
+    )
+
+    if (defaultFile) {
+      return this.loadFile(defaultFile)
+    }
+
+    return {}
   }
 
-  async getDefinitions(): Promise<Record<string, string>> {
-    const definitionsFilePath = path.join(this.directory, 'cucumber.js')
-    const exists = await fs.exists(definitionsFilePath)
-    if (!exists) {
-      return {}
-    }
-    const definitions = require(definitionsFilePath) // eslint-disable-line @typescript-eslint/no-var-requires
+  loadFile(configFile: string): Record<string, string> {
+    const definitionsFilePath: string = path.join(this.directory, configFile)
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const definitions = require(definitionsFilePath)
     if (typeof definitions !== 'object') {
       throw new Error(`${definitionsFilePath} does not export an object`)
     }
     return definitions
   }
 
-  async getArgv(profiles: string[]): Promise<string[]> {
-    const definitions = await this.getDefinitions()
+  async getArgv(profiles: string[], configFile?: string): Promise<string[]> {
+    const definitions = await this.getDefinitions(configFile)
     if (profiles.length === 0 && doesHaveValue(definitions.default)) {
       profiles = ['default']
     }

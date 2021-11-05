@@ -2,6 +2,7 @@ import { Command } from 'commander'
 import path from 'path'
 import { dialects } from '@cucumber/gherkin'
 import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
+import Formatters from '../formatter/helpers/formatters'
 
 // Using require instead of import so compiled typescript will have the desired folder structure
 const { version } = require('../../package.json') // eslint-disable-line @typescript-eslint/no-var-requires
@@ -20,6 +21,7 @@ export interface IParsedArgvFormatOptions {
 
 export interface IParsedArgvOptions {
   backtrace: boolean
+  config: string
   dryRun: boolean
   exit: boolean
   failFast: boolean
@@ -31,7 +33,6 @@ export interface IParsedArgvOptions {
   name: string[]
   order: string
   parallel: number
-  predictableIds: boolean
   profile: string[]
   publish: boolean
   publishQuiet: boolean
@@ -106,6 +107,7 @@ const ArgvParser = {
       .usage('[options] [<GLOB|DIR|FILE[:LINE]>...]')
       .version(version, '-v, --version')
       .option('-b, --backtrace', 'show full backtrace for errors')
+      .option('-c, --config <TYPE[:PATH]>', 'specify configuration file')
       .option(
         '-d, --dry-run',
         'invoke formatters without executing steps',
@@ -119,7 +121,8 @@ const ArgvParser = {
       .option('--fail-fast', 'abort the run on first failure', false)
       .option(
         '-f, --format <TYPE[:PATH]>',
-        'specify the output format, optionally supply PATH to redirect formatter output (repeatable)',
+        'specify the output format, optionally supply PATH to redirect formatter output (repeatable).  Available formats:\n' +
+          Formatters.buildFormattersDocumentationString(),
         ArgvParser.collect,
         []
       )
@@ -164,11 +167,6 @@ const ArgvParser = {
         'run in parallel with the given number of workers',
         (val) => ArgvParser.validateCountOption(val, '--parallel'),
         0
-      )
-      .option(
-        '--predictable-ids',
-        'Use predictable ids in messages (option ignored if using parallel)',
-        false
       )
       .option(
         '--publish',
