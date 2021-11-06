@@ -12,3 +12,4 @@ tmp/
 usage.txt
 yarn-error.log
 .vscode
+.DS_Store
