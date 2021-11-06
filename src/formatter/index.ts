@@ -9,18 +9,6 @@ import { EventEmitter } from 'events'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import HttpStream from './http_stream'
 
-export interface IFormatterConfiguration {
-  stdout?: string
-  files?: Record<string, string>
-  publish?:
-    | {
-        url?: string
-        token?: string
-      }
-    | false
-  options?: IParsedArgvFormatOptions
-}
-
 export type IFormatterStream =
   | FsWriteStream
   | TtyWriteStream

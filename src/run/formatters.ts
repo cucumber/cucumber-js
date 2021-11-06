@@ -1,7 +1,4 @@
-import Formatter, {
-  IFormatterConfiguration,
-  IFormatterStream,
-} from '../formatter'
+import Formatter, { IFormatterStream } from '../formatter'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../formatter/helpers'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
@@ -14,6 +11,7 @@ import path from 'path'
 import { DEFAULT_CUCUMBER_PUBLISH_URL } from '../formatter/publish'
 import HttpStream from '../formatter/http_stream'
 import { Writable } from 'stream'
+import { IFormatterConfiguration } from '../configuration'
 
 export async function initializeFormatters({
   cwd,
