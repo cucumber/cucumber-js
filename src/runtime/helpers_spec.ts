@@ -58,7 +58,7 @@ describe('Helpers', () => {
     it('returns options.retry if set and no options.retryTagFilter is specified', async () => {
       // Arrange
       const pickle = await getPickleWithTags([])
-      const options = buildOptions({ retry: { count: 1 } })
+      const options = buildOptions({ retry: 1 })
 
       // Act
       const result = retriesForPickle(pickle, options)
@@ -71,7 +71,8 @@ describe('Helpers', () => {
       // Arrange
       const pickle = await getPickleWithTags(['@retry'])
       const options = buildOptions({
-        retry: { count: 1, tagExpression: '@retry' },
+        retry: 1,
+        retryTagFilter: '@retry',
       })
 
       // Act
@@ -85,7 +86,8 @@ describe('Helpers', () => {
       // Arrange
       const pickle = await getPickleWithTags([])
       const options = buildOptions({
-        retry: { count: 1, tagExpression: '@retry' },
+        retry: 1,
+        retryTagFilter: '@retry',
       })
 
       // Act

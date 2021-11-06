@@ -25,14 +25,9 @@ export async function buildConfiguration(
       dryRun: options.dryRun,
       failFast: options.failFast,
       filterStacktraces: !options.backtrace,
-      parallel: options.parallel > 0 ? { count: options.parallel } : null,
-      retry:
-        options.retry > 0
-          ? {
-              count: options.retry,
-              tagExpression: options.retryTagFilter,
-            }
-          : null,
+      parallel: options.parallel,
+      retry: options.retry,
+      retryTagFilter: options.retryTagFilter,
       strict: options.strict,
       worldParameters: options.worldParameters,
     },

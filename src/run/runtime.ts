@@ -24,9 +24,9 @@ export function makeRuntime({
   supportCodeLibrary: ISupportCodeLibrary
   supportCodePaths: string[]
   supportCodeRequiredModules: string[]
-  options: IRuntimeOptions
+  options: IRuntimeOptions & { parallel: number }
 }): IRuntime {
-  if (options.parallel) {
+  if (options.parallel > 0) {
     return new Coordinator({
       cwd,
       eventBroadcaster,
@@ -37,7 +37,7 @@ export function makeRuntime({
       supportCodeLibrary,
       supportCodePaths,
       supportCodeRequiredModules,
-      numberOfWorkers: options.parallel.count,
+      numberOfWorkers: options.parallel,
     })
   }
   return new Runtime({

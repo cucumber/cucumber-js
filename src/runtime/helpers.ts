@@ -52,11 +52,11 @@ export function retriesForPickle(
   if (!options.retry) {
     return 0
   }
-  const retries = options.retry.count
+  const retries = options.retry
   if (retries === 0) {
     return 0
   }
-  const retryTagFilter = options.retry.tagExpression
+  const retryTagFilter = options.retryTagFilter
   if (!retryTagFilter) {
     return retries
   }

@@ -15,6 +15,6 @@ export interface IRunConfiguration {
     transpileWith: string[]
     paths: string[]
   }
-  runtime: IRuntimeOptions
+  runtime: IRuntimeOptions & { parallel: number }
   formats?: IFormatterConfiguration
 }

@@ -163,7 +163,7 @@ describe('SummaryHelpers', () => {
 
         // Act
         const output = await testFormatSummary({
-          runtimeOptions: { retry: { count: 1 } },
+          runtimeOptions: { retry: 1 },
           sourceData,
           supportCodeLibrary,
         })

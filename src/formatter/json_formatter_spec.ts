@@ -126,7 +126,7 @@ describe('JsonFormatter', () => {
 
         // Act
         const output = await testFormatter({
-          runtimeOptions: { retry: { count: 1 } },
+          runtimeOptions: { retry: 1 },
           sources,
           supportCodeLibrary,
           type: 'json',
