@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Allows for parentheses in paths for developers working on cucumber's own code ([[#1735](https://github.com/cucumber/cucumber-js/issues/1735)])
 
 ## [8.0.0-rc.1] - 2021-10-19
 ### Added

@@ -182,6 +182,7 @@
     "node": ">=12"
   },
   "dependencies": {
+    "@cspotcode/source-map-support": "^0.7.0",
     "@cucumber/create-meta": "6.0.2",
     "@cucumber/cucumber-expressions": "^14.0.0",
     "@cucumber/gherkin": "^22.0.0",
@@ -206,7 +207,6 @@
     "resolve": "^1.19.0",
     "resolve-pkg": "^2.0.0",
     "stack-chain": "^2.0.0",
-    "stacktrace-js": "^2.0.2",
     "string-argv": "^0.3.1",
     "tmp": "^0.2.1",
     "util-arity": "^1.1.0",
