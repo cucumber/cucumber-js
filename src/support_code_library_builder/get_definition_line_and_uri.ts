@@ -12,22 +12,20 @@ export function getDefinitionLineAndUri(
 ): ILineAndUri {
   let line: number
   let uri: string
-  try {
-    const stackframes: CallSite[] = stackChain.callSite().map(wrapCallSite)
-    const stackframe = stackframes.find(
-      (frame: CallSite) =>
-        frame.getFileName() !== __filename && !isExcluded(frame.getFileName())
-    )
-    if (stackframe != null) {
-      line = stackframe.getLineNumber()
-      uri = stackframe.getFileName()
-      if (doesHaveValue(uri)) {
-        uri = path.relative(cwd, uri)
-      }
+
+  const stackframes: CallSite[] = stackChain.callSite().map(wrapCallSite)
+  const stackframe = stackframes.find(
+    (frame: CallSite) =>
+      frame.getFileName() !== __filename && !isExcluded(frame.getFileName())
+  )
+  if (stackframe != null) {
+    line = stackframe.getLineNumber()
+    uri = stackframe.getFileName()
+    if (doesHaveValue(uri)) {
+      uri = path.relative(cwd, uri)
     }
-  } catch (e) {
-    console.warn('Warning: unable to get definition line and uri', e)
   }
+  
   return {
     line: valueOrDefault(line, 0),
     uri: valueOrDefault(uri, 'unknown'),
