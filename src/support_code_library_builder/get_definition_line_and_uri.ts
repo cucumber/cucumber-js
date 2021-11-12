@@ -25,7 +25,7 @@ export function getDefinitionLineAndUri(
       uri = path.relative(cwd, uri)
     }
   }
-  
+
   return {
     line: valueOrDefault(line, 0),
     uri: valueOrDefault(uri, 'unknown'),
