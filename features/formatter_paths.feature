@@ -3,15 +3,15 @@ Feature: Formatter Paths
   Background:
     Given a file named "features/a.feature" with:
       """
-      Feature: some feature
-        Scenario: some scenario
-          Given a passing step
+Feature: some feature
+  Scenario: some scenario
+    Given a passing step
       """
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given} = require('@cucumber/cucumber')
+    const {Given} = require('@cucumber/cucumber')
 
-      Given(/^a passing step$/, function() {})
+    Given(/^a passing step$/, function() {})
       """
 
   Scenario: Relative path
@@ -23,9 +23,10 @@ Feature: Formatter Paths
       <duration-stat>
       """
 
+  @wip
   Scenario: Absolute path
     Given "{{{tmpDir}}}" is an absolute path
-    When I run cucumber-js with `-f summary:{{{tmpDir}}}/summary.txt`
+    When I run cucumber-js with `-f summary:"{{{tmpDir}}}/summary.txt"`
     Then the file "{{{tmpDir}}}/summary.txt" has the text:
       """
       1 scenario (1 passed)
