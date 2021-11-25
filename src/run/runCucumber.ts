@@ -55,7 +55,7 @@ export async function runCucumber(
   await emitMetaMessage(eventBroadcaster, env)
 
   const gherkinMessageStream = GherkinStreams.fromPaths(featurePaths, {
-    defaultDialect: configuration.sources?.defaultDialect,
+    defaultDialect: configuration.sources.defaultDialect,
     newId,
     relativeTo: cwd,
   })
@@ -67,12 +67,12 @@ export async function runCucumber(
       eventBroadcaster,
       eventDataCollector,
       gherkinMessageStream,
-      order: configuration.pickles?.order ?? 'defined',
+      order: configuration.sources.order ?? 'defined',
       pickleFilter: new PickleFilter({
         cwd,
         featurePaths: unexpandedFeaturePaths,
-        names: configuration.pickles?.names,
-        tagExpression: configuration.pickles?.tagExpression,
+        names: configuration.sources.names,
+        tagExpression: configuration.sources.tagExpression,
       }),
     })
   }

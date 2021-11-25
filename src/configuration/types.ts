@@ -4,12 +4,10 @@ import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 export interface IRunConfiguration {
   sources: {
     defaultDialect?: string
-    paths: string[]
-  }
-  pickles?: {
-    order?: string
+    paths?: string[]
     names?: string[]
     tagExpression?: string
+    order?: string // TODO make me an enum?
   }
   support: {
     transpileWith: string[]

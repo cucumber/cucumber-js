@@ -11,11 +11,9 @@ export async function buildConfiguration(
     sources: {
       paths: args,
       defaultDialect: options.language,
-    },
-    pickles: {
-      order: options.order,
       names: options.name,
       tagExpression: options.tags,
+      order: options.order,
     },
     support: {
       transpileWith: options.requireModule,
