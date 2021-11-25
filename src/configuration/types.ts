@@ -13,7 +13,7 @@ export interface IRunConfiguration {
     transpileWith: string[]
     paths: string[]
   }
-  runtime: IRuntimeOptions & { parallel: number }
+  runtime?: Partial<IRuntimeOptions> & { parallel?: number }
   formats?: IFormatterConfiguration
 }
 

@@ -1,4 +1,8 @@
-import Runtime, { IRuntime, IRuntimeOptions } from '../runtime'
+import Runtime, {
+  DEFAULT_RUNTIME_OPTIONS,
+  IRuntime,
+  IRuntimeOptions,
+} from '../runtime'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../formatter/helpers'
 import { IdGenerator } from '@cucumber/messages'
@@ -14,7 +18,7 @@ export function makeRuntime({
   supportCodeLibrary,
   supportCodePaths,
   supportCodeRequiredModules,
-  options,
+  options: { parallel = 0, ...runtimeOptions } = {},
 }: {
   cwd: string
   eventBroadcaster: EventEmitter
@@ -24,9 +28,14 @@ export function makeRuntime({
   supportCodeLibrary: ISupportCodeLibrary
   supportCodePaths: string[]
   supportCodeRequiredModules: string[]
-  options: IRuntimeOptions & { parallel: number }
+  options: Partial<IRuntimeOptions> & { parallel?: number }
 }): IRuntime {
-  if (options.parallel > 0) {
+  // sprinkle specified runtime options over the defaults
+  const options = {
+    ...DEFAULT_RUNTIME_OPTIONS,
+    ...runtimeOptions,
+  }
+  if (parallel > 0) {
     return new Coordinator({
       cwd,
       eventBroadcaster,
@@ -37,7 +46,7 @@ export function makeRuntime({
       supportCodeLibrary,
       supportCodePaths,
       supportCodeRequiredModules,
-      numberOfWorkers: options.parallel,
+      numberOfWorkers: parallel,
     })
   }
   return new Runtime({

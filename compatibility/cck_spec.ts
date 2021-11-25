@@ -43,14 +43,7 @@ describe('Cucumber Compatibility Kit', () => {
           stdout: 'message',
         },
         runtime: {
-          dryRun: false,
-          failFast: false,
-          filterStacktraces: true,
-          parallel: 0,
           retry: suiteName === 'retry' ? 2 : 0,
-          retryTagFilter: '',
-          strict: true,
-          worldParameters: {},
         },
       }
       try {
