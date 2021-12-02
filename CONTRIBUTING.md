@@ -9,15 +9,20 @@ If anything in this guide or anywhere else in the codebase doesn't make sense to
 
 You can chat with us in the [#committers-js](https://cucumberbdd.slack.com/archives/C612KCP1P) channel in our [Community Slack], or feel free to [raise an issue] if you're experiencing any friction trying make your contribution.
 
-## Setup
+## Local setup
 
+To get a local development environment, use [Git] to [fork and clone] the repo, then:
+
+* If you're running Windows, make sure to enable [Developer Mode].
 * install [Node.Js](https://nodejs.org/en/)
 * `npm install` - Install dependencies
 * `npm test` - Compile typescript and run the tests
 
+If everything passes, you're ready to hack! ⛏
+
 ## Tests
 
-Now type `npm run` or see the `package.json` scripts section for how to run each category of tests.
+Type `npm run` or see the `package.json` scripts section for how to run each category of tests.
 
 * lint - `npm run lint`
   * [prettier](https://github.com/prettier/prettier)
@@ -67,3 +72,6 @@ The runtime emits events with an [EventEmitter](https://nodejs.org/api/events.ht
 
 [Community Slack]: https://cucumber.io/community#slack
 [raise an issue]: https://github.com/cucumber/cucumber-js/issues/new/choose
+[Developer Mode]: https://docs.microsoft.com/en-us/windows/apps/get-started/developer-mode-features-and-debugging
+[fork and clone]: https://docs.github.com/en/get-started/quickstart/fork-a-repo
+[Git]: https://docs.github.com/en/get-started/quickstart/set-up-git
