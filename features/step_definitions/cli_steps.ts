@@ -9,8 +9,7 @@ import {
   valueOrDefault,
 } from '../../src/value_checker'
 import { World } from '../support/world'
-
-const { version } = require('../../package.json') // eslint-disable-line @typescript-eslint/no-var-requires
+import { version } from '../../src/version'
 
 When('my env includes {string}', function (this: World, envString: string) {
   this.sharedEnv = this.parseEnvString(envString)

@@ -3,9 +3,7 @@ import path from 'path'
 import { dialects } from '@cucumber/gherkin'
 import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
 import Formatters from '../formatter/helpers/formatters'
-
-// Using require instead of import so compiled typescript will have the desired folder structure
-const { version } = require('../../package.json') // eslint-disable-line @typescript-eslint/no-var-requires
+import { version } from '../version'
 
 export interface IParsedArgvFormatRerunOptions {
   separator?: string
