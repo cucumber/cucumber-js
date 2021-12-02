@@ -267,7 +267,7 @@
     "typescript": "4.5.2"
   },
   "scripts": {
-    "build-local": "tsc --build tsconfig.node.json && npx shx cp src/importer.js lib/ && npx shx cp src/wrapper.mjs lib/",
+    "build-local": "tsc --build tsconfig.node.json && shx cp src/importer.js lib/ && shx cp src/wrapper.mjs lib/",
     "cck-test": "mocha 'compatibility/**/*_spec.ts'",
     "feature-test": "node ./bin/cucumber-js",
     "html-formatter": "node ./bin/cucumber-js --profile htmlFormatter",
