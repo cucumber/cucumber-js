@@ -112,7 +112,8 @@ export default class Cli {
             })
             stream.pipe(readerStream)
           } else {
-            const fd = await fs.open(path.resolve(this.cwd, outputTo), 'w')
+            const resolvedPath = path.resolve(this.cwd, outputTo)
+            const fd = await fs.open(resolvedPath, 'w')
             stream = fs.createWriteStream(null, { fd })
           }
         }
