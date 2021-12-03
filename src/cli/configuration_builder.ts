@@ -178,8 +178,8 @@ export default class ConfigurationBuilder {
     const mapping: { [key: string]: string } = { '': 'progress' }
     this.options.format.forEach((format) => {
       const [type, outputToRaw] = OptionSplitter.split(format)
-      //TODO: test this
-      const outputTo = outputToRaw.replace(/"/g, "")
+      // TODO: test this
+      const outputTo = outputToRaw.replace(/"/g, '')
       mapping[outputTo] = type
     })
     if (this.isPublishing()) {
