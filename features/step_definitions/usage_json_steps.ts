@@ -1,9 +1,8 @@
+import { DataTable, Then } from '../../'
 import { expect } from 'chai'
 import path from 'path'
-
-import { DataTable, Then } from '../../'
-import { IUsage } from '../../src/formatter/helpers/usage_helpers'
 import { World } from '../support/world'
+import { IUsage } from '../../src/formatter/helpers/usage_helpers'
 
 Then('it outputs the usage data:', function (this: World, table: DataTable) {
   const usageData: IUsage[] = JSON.parse(this.lastRun.output)

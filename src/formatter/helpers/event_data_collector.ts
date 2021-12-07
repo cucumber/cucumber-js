@@ -1,7 +1,6 @@
 import * as messages from '@cucumber/messages'
-import { EventEmitter } from 'events'
-
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
+import { EventEmitter } from 'events'
 
 interface ITestCaseAttemptData {
   attempt: number

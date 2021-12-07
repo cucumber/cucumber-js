@@ -1,8 +1,7 @@
-import * as messages from '@cucumber/messages'
-
+import SummaryFormatter from './summary_formatter'
 import { doesHaveValue } from '../value_checker'
 import { IFormatterOptions } from './index'
-import SummaryFormatter from './summary_formatter'
+import * as messages from '@cucumber/messages'
 import IEnvelope = messages.Envelope
 import ITestStepFinished = messages.TestStepFinished
 

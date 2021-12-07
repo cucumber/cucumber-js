@@ -1,7 +1,6 @@
 import fs from 'mz/fs'
 import path from 'path'
 import stringArgv from 'string-argv'
-
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 
 const DEFAULT_FILENAMES = ['cucumber.cjs', 'cucumber.js']

@@ -1,8 +1,7 @@
-import { expect } from 'chai'
 import { beforeEach, describe, it } from 'mocha'
-
-import { parse } from '../test/gherkin_helpers'
+import { expect } from 'chai'
 import PickleFilter from './pickle_filter'
+import { parse } from '../test/gherkin_helpers'
 
 describe('PickleFilter', () => {
   const cwd = '/project'

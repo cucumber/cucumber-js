@@ -1,5 +1,5 @@
-import colors from 'colors/safe'
 import { reindent } from 'reindent-template-literals'
+import colors from 'colors/safe'
 
 export function warnUserAboutEnablingDeveloperMode(error: any): void {
   if (!(error?.code === 'EPERM')) {

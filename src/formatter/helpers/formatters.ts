@@ -1,5 +1,4 @@
 import Formatter from '../.'
-import HtmlFormatter from '../html_formatter'
 import JsonFormatter from '../json_formatter'
 import MessageFormatter from '../message_formatter'
 import ProgressBarFormatter from '../progress_bar_formatter'
@@ -9,6 +8,7 @@ import SnippetsFormatter from '../snippets_formatter'
 import SummaryFormatter from '../summary_formatter'
 import UsageFormatter from '../usage_formatter'
 import UsageJsonFormatter from '../usage_json_formatter'
+import HtmlFormatter from '../html_formatter'
 
 const Formatters = {
   getFormatters(): Record<string, typeof Formatter> {

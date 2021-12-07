@@ -1,15 +1,14 @@
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
-import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
-import { expect } from 'chai'
-import { EventEmitter } from 'events'
-import { afterEach, beforeEach, describe, it } from 'mocha'
-
-import { parse } from '../../test/gherkin_helpers'
-import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import timeMethods from '../time'
+import { EventEmitter } from 'events'
 import { assembleTestCases, IAssembledTestCases } from './assemble_test_cases'
+import { afterEach, beforeEach, describe, it } from 'mocha'
+import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
+import timeMethods from '../time'
+import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
+import { parse } from '../../test/gherkin_helpers'
+import { expect } from 'chai'
 
 interface IRequest {
   gherkinDocument: messages.GherkinDocument

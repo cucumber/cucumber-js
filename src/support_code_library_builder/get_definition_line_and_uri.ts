@@ -1,10 +1,9 @@
-import { wrapCallSite } from '@cspotcode/source-map-support'
 import path from 'path'
+import { wrapCallSite } from '@cspotcode/source-map-support'
 import stackChain from 'stack-chain'
-
 import { isFileNameInCucumber } from '../stack_trace_filter'
-import { ILineAndUri } from '../types'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
+import { ILineAndUri } from '../types'
 import CallSite = NodeJS.CallSite
 
 export function getDefinitionLineAndUri(

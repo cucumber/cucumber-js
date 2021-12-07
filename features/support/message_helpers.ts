@@ -1,14 +1,13 @@
-import * as messages from '@cucumber/messages'
-import { getWorstTestStepResult } from '@cucumber/messages'
-import { Query } from '@cucumber/query'
-import util from 'util'
-
 import { getGherkinStepMap } from '../../src/formatter/helpers/gherkin_document_parser'
 import {
   getPickleStepMap,
   getStepKeyword,
 } from '../../src/formatter/helpers/pickle_parser'
+import util from 'util'
+import * as messages from '@cucumber/messages'
+import { Query } from '@cucumber/query'
 import { doesHaveValue, doesNotHaveValue } from '../../src/value_checker'
+import { getWorstTestStepResult } from '@cucumber/messages'
 
 export interface IStepTextAndResult {
   text: string

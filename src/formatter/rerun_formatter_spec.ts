@@ -1,8 +1,7 @@
-import { expect } from 'chai'
 import { describe, it } from 'mocha'
-
-import { testFormatter } from '../../test/formatter_helpers'
+import { expect } from 'chai'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
+import { testFormatter } from '../../test/formatter_helpers'
 
 const onePickleSources = [
   {

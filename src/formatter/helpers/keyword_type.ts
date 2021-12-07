@@ -1,5 +1,4 @@
 import { Dialect, dialects } from '@cucumber/gherkin'
-
 import { doesHaveValue } from '../../value_checker'
 
 export enum KeywordType {

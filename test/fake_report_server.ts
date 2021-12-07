@@ -1,9 +1,8 @@
-import express from 'express'
-import http from 'http'
 import { AddressInfo, Server, Socket } from 'net'
+import express from 'express'
 import { pipeline, Writable } from 'stream'
+import http from 'http'
 import { promisify } from 'util'
-
 import { doesHaveValue } from '../src/value_checker'
 
 type Callback = (err?: Error | null) => void

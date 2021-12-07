@@ -1,11 +1,10 @@
-import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
-import { IdGenerator } from '@cucumber/messages'
-import { expect } from 'chai'
 import { describe, it } from 'mocha'
+import { expect } from 'chai'
 import sinon from 'sinon'
-
-import { getPickleWithTags } from '../../test/gherkin_helpers'
+import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
 import supportCodeLibraryBuilder from './'
+import { IdGenerator } from '@cucumber/messages'
+import { getPickleWithTags } from '../../test/gherkin_helpers'
 
 const { uuid } = IdGenerator
 

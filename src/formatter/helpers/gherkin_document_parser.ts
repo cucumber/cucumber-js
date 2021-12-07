@@ -1,5 +1,4 @@
 import * as messages from '@cucumber/messages'
-
 import { doesHaveValue } from '../../value_checker'
 
 export function getGherkinStepMap(

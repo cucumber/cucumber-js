@@ -1,5 +1,5 @@
-import * as messages from '@cucumber/messages'
 import { performance } from 'perf_hooks'
+import * as messages from '@cucumber/messages'
 
 let previousTimestamp: number
 

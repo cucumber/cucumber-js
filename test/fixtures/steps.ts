@@ -1,8 +1,8 @@
 // Tests depend on the lines the steps are defined on
 
+import { buildSupportCodeLibrary } from '../runtime_helpers'
 import { ISupportCodeLibrary } from '../../src/support_code_library_builder/types'
 import World from '../../src/support_code_library_builder/world'
-import { buildSupportCodeLibrary } from '../runtime_helpers'
 
 export function getBaseSupportCodeLibrary(): ISupportCodeLibrary {
   return buildSupportCodeLibrary(__dirname, ({ Given }) => {

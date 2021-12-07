@@ -1,7 +1,6 @@
-import VError from 'verror'
-
-import { doesHaveValue } from '../../value_checker'
 import Worker from './worker'
+import VError from 'verror'
+import { doesHaveValue } from '../../value_checker'
 
 function run(): void {
   const exit = (exitCode: number, error?: Error, message?: string): void => {

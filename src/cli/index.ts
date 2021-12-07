@@ -1,28 +1,4 @@
-import { GherkinStreams } from '@cucumber/gherkin-streams'
-import { IdGenerator } from '@cucumber/messages'
-import { EventEmitter } from 'events'
-import fs from 'mz/fs'
-import path from 'path'
-import { Writable } from 'stream'
-import { WriteStream as TtyWriteStream } from 'tty'
-import { pathToFileURL } from 'url'
-import { promisify } from 'util'
-
-import Formatter, { IFormatterStream } from '../formatter'
-import FormatterBuilder from '../formatter/builder'
 import { EventDataCollector } from '../formatter/helpers'
-import HttpStream from '../formatter/http_stream'
-import PickleFilter from '../pickle_filter'
-import Runtime from '../runtime'
-import ParallelRuntimeCoordinator from '../runtime/parallel/coordinator'
-import supportCodeLibraryBuilder from '../support_code_library_builder'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import { doesNotHaveValue } from '../value_checker'
-import { IParsedArgvFormatOptions } from './argv_parser'
-import ConfigurationBuilder, {
-  IConfiguration,
-  IConfigurationFormat,
-} from './configuration_builder'
 import {
   emitMetaMessage,
   emitSupportCodeMessages,
@@ -30,8 +6,31 @@ import {
   isJavaScript,
   parseGherkinMessageStream,
 } from './helpers'
-import * as I18n from './i18n'
 import { validateInstall } from './install_validator'
+import * as I18n from './i18n'
+import ConfigurationBuilder, {
+  IConfiguration,
+  IConfigurationFormat,
+} from './configuration_builder'
+import { EventEmitter } from 'events'
+import FormatterBuilder from '../formatter/builder'
+import fs from 'mz/fs'
+import path from 'path'
+import PickleFilter from '../pickle_filter'
+import ParallelRuntimeCoordinator from '../runtime/parallel/coordinator'
+import Runtime from '../runtime'
+import supportCodeLibraryBuilder from '../support_code_library_builder'
+import { IdGenerator } from '@cucumber/messages'
+import Formatter, { IFormatterStream } from '../formatter'
+import { WriteStream as TtyWriteStream } from 'tty'
+import { doesNotHaveValue } from '../value_checker'
+import { GherkinStreams } from '@cucumber/gherkin-streams'
+import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { IParsedArgvFormatOptions } from './argv_parser'
+import HttpStream from '../formatter/http_stream'
+import { promisify } from 'util'
+import { Writable } from 'stream'
+import { pathToFileURL } from 'url'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')

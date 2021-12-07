@@ -1,7 +1,6 @@
-import * as messages from '@cucumber/messages'
 import isStream from 'is-stream'
 import { Readable } from 'stream'
-
+import * as messages from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 
 export interface IAttachmentMedia {

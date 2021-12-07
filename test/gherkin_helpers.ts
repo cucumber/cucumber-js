@@ -1,10 +1,9 @@
-import { IGherkinOptions } from '@cucumber/gherkin'
-import { GherkinStreams } from '@cucumber/gherkin-streams'
 import * as messages from '@cucumber/messages'
 import { SourceMediaType } from '@cucumber/messages'
-import { EventEmitter } from 'events'
-
 import { doesHaveValue } from '../src/value_checker'
+import { IGherkinOptions } from '@cucumber/gherkin'
+import { GherkinStreams } from '@cucumber/gherkin-streams'
+import { EventEmitter } from 'events'
 
 export interface IParsedSource {
   pickles: messages.Pickle[]

@@ -1,9 +1,8 @@
-import { expect } from 'chai'
 import { describe, it } from 'mocha'
-
+import { expect } from 'chai'
+import { getUsage } from './'
 import { getEnvelopesAndEventDataCollector } from '../../../../test/formatter_helpers'
 import { buildSupportCodeLibrary } from '../../../../test/runtime_helpers'
-import { getUsage } from './'
 
 describe('Usage Helpers', () => {
   describe('getUsage', () => {

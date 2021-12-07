@@ -1,11 +1,10 @@
-import { expect } from 'chai'
-import fsExtra from 'fs-extra'
-import Mustache from 'mustache'
-import fs from 'mz/fs'
-import path from 'path'
-
 import { Given, Then } from '../../'
+import { expect } from 'chai'
 import { normalizeText } from '../support/helpers'
+import fs from 'mz/fs'
+import fsExtra from 'fs-extra'
+import path from 'path'
+import Mustache from 'mustache'
 import { World } from '../support/world'
 
 Given(

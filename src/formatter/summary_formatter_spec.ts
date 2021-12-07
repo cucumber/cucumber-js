@@ -1,12 +1,11 @@
-import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
+import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import figures from 'figures'
-import { afterEach, beforeEach, describe, it } from 'mocha'
-
-import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
-import { testFormatter } from '../../test/formatter_helpers'
-import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
+import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
+import { testFormatter } from '../../test/formatter_helpers'
+import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
+import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 
 describe('SummaryFormatter', () => {
   let clock: InstalledClock

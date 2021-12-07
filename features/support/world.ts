@@ -1,18 +1,17 @@
-import * as messageStreams from '@cucumber/message-streams'
-import * as messages from '@cucumber/messages'
-import { expect } from 'chai'
+import { Cli, setWorldConstructor } from '../../'
 import { execFile } from 'child_process'
+import { expect } from 'chai'
+import toString from 'stream-to-string'
+import { PassThrough, pipeline, Writable } from 'stream'
 import colors from 'colors/safe'
 import fs from 'fs'
 import path from 'path'
-import { PassThrough, pipeline, Writable } from 'stream'
-import toString from 'stream-to-string'
-import util from 'util'
 import VError from 'verror'
-
-import { Cli, setWorldConstructor } from '../../'
-import { doesHaveValue } from '../../src/value_checker'
+import * as messages from '@cucumber/messages'
+import * as messageStreams from '@cucumber/message-streams'
 import FakeReportServer from '../../test/fake_report_server'
+import { doesHaveValue } from '../../src/value_checker'
+import util from 'util'
 
 const asyncPipeline = util.promisify(pipeline)
 

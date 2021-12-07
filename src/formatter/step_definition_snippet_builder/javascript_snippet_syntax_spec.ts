@@ -1,15 +1,14 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+import JavascriptSnippetSyntax from './javascript_snippet_syntax'
+import { SnippetInterface } from './snippet_syntax'
+import { ISnippetSyntaxBuildOptions } from '../../../lib/formatter/step_definition_snippet_builder/snippet_syntax'
 import {
   CucumberExpressionGenerator,
   GeneratedExpression,
   ParameterTypeRegistry,
 } from '@cucumber/cucumber-expressions'
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
 import { reindent } from 'reindent-template-literals'
-
-import { ISnippetSyntaxBuildOptions } from '../../../lib/formatter/step_definition_snippet_builder/snippet_syntax'
-import JavascriptSnippetSyntax from './javascript_snippet_syntax'
-import { SnippetInterface } from './snippet_syntax'
 
 function generateExpressions(text: string): readonly GeneratedExpression[] {
   const parameterTypeRegistry = new ParameterTypeRegistry()

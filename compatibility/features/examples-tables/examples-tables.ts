@@ -1,6 +1,5 @@
 import assert from 'assert'
-
-import { Given, Then, When } from '../../../src'
+import { Given, When, Then } from '../../../src'
 
 Given('there are {int} cucumbers', function (this: any, initialCount: number) {
   this.count = initialCount

@@ -1,8 +1,7 @@
-import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import semver from 'semver'
-
+import { expect } from 'chai'
 import UserCodeRunner, { IRunRequest, IRunResponse } from './user_code_runner'
+import semver from 'semver'
 
 async function testUserCodeRunner(
   opts: Partial<IRunRequest>

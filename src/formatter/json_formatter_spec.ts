@@ -1,14 +1,13 @@
-import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
-import { expect } from 'chai'
 import { afterEach, beforeEach, describe, it } from 'mocha'
-
-import { IJsonFeature, IJsonScenario } from '../../lib/formatter/json_formatter'
+import { expect } from 'chai'
+import { testFormatter } from '../../test/formatter_helpers'
 import {
   getJsonFormatterSupportCodeLibrary,
   getJsonFormatterSupportCodeLibraryWithHooks,
 } from '../../test/fixtures/json_formatter_steps'
-import { testFormatter } from '../../test/formatter_helpers'
+import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
+import { IJsonFeature, IJsonScenario } from '../../lib/formatter/json_formatter'
 
 describe('JsonFormatter', () => {
   let clock: InstalledClock

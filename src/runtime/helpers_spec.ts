@@ -1,10 +1,9 @@
-import { expect } from 'chai'
 import { describe, it } from 'mocha'
-
-import { getPickleWithTags } from '../../test/gherkin_helpers'
-import { buildOptions } from '../../test/runtime_helpers'
-import StepDefinition from '../models/step_definition'
+import { expect } from 'chai'
 import { getAmbiguousStepException, retriesForPickle } from './helpers'
+import { getPickleWithTags } from '../../test/gherkin_helpers'
+import StepDefinition from '../models/step_definition'
+import { buildOptions } from '../../test/runtime_helpers'
 
 describe('Helpers', () => {
   describe('getAmbiguousStepException', () => {

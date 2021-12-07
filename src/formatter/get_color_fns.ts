@@ -1,5 +1,5 @@
-import { TestStepResultStatus } from '@cucumber/messages'
 import colors from 'colors/safe'
+import { TestStepResultStatus } from '@cucumber/messages'
 
 colors.enable()
 

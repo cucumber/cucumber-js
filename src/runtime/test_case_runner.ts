@@ -1,21 +1,20 @@
+import { getAmbiguousStepException } from './helpers'
+import AttachmentManager from './attachment_manager'
+import StepRunner from './step_runner'
 import * as messages from '@cucumber/messages'
 import { getWorstTestStepResult, IdGenerator } from '@cucumber/messages'
 import { EventEmitter } from 'events'
-
-import { IDefinition } from '../models/definition'
-import StepDefinition from '../models/step_definition'
-import TestCaseHookDefinition from '../models/test_case_hook_definition'
-import TestStepHookDefinition from '../models/test_step_hook_definition'
 import {
   ISupportCodeLibrary,
   ITestCaseHookParameter,
   ITestStepHookParameter,
 } from '../support_code_library_builder/types'
+import TestCaseHookDefinition from '../models/test_case_hook_definition'
+import TestStepHookDefinition from '../models/test_step_hook_definition'
+import { IDefinition } from '../models/definition'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import AttachmentManager from './attachment_manager'
-import { getAmbiguousStepException } from './helpers'
-import StepRunner from './step_runner'
 import { ITestRunStopwatch } from './stopwatch'
+import StepDefinition from '../models/step_definition'
 
 export interface INewTestCaseRunnerOptions {
   eventBroadcaster: EventEmitter

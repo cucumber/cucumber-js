@@ -1,6 +1,6 @@
 import { dialects } from '@cucumber/gherkin'
-import { capitalCase } from 'capital-case'
 import Table from 'cli-table3'
+import { capitalCase } from 'capital-case'
 
 const keywords = [
   'feature',

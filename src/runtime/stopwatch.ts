@@ -1,5 +1,5 @@
 import * as messages from '@cucumber/messages'
-import { Duration, duration, Stopwatch, stopwatch } from 'durations'
+import { stopwatch, Stopwatch, duration, Duration } from 'durations'
 
 export interface ITestRunStopwatch {
   from: (duration: Duration) => ITestRunStopwatch

@@ -1,11 +1,10 @@
-import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
-import { expect } from 'chai'
 import { afterEach, beforeEach, describe, it } from 'mocha'
-import { reindent } from 'reindent-template-literals'
-
+import { expect } from 'chai'
+import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
+import timeMethods from '../time'
 import { getUsageSupportCodeLibrary } from '../../test/fixtures/usage_steps'
 import { testFormatter } from '../../test/formatter_helpers'
-import timeMethods from '../time'
+import { reindent } from 'reindent-template-literals'
 
 describe('UsageFormatter', () => {
   let clock: InstalledClock

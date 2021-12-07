@@ -1,8 +1,7 @@
-import { TimeConversion } from '@cucumber/messages'
-import { expect } from 'chai'
 import { describe, it } from 'mocha'
-
 import { RealTestRunStopwatch } from './stopwatch'
+import { expect } from 'chai'
+import { TimeConversion } from '@cucumber/messages'
 
 describe('stopwatch', () => {
   it('returns a timestamp close to now', () => {

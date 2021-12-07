@@ -1,10 +1,9 @@
-import assert from 'assert'
+import { Given, Then, DataTable } from '../..'
+import { World } from '../support/world'
 import { expect } from 'chai'
 import { URL } from 'url'
-
-import { DataTable, Given, Then } from '../..'
 import FakeReportServer from '../../test/fake_report_server'
-import { World } from '../support/world'
+import assert from 'assert'
 
 Given(
   'a report server is running on {string}',
