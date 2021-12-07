@@ -9,7 +9,6 @@ parserOptions:
   project: './tsconfig.json'
 plugins:
   - import
-  - simple-import-sort
   - node
   - "@typescript-eslint"
 rules:
