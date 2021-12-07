@@ -85,16 +85,18 @@ export async function parseGherkinMessageStream({
 
 // Orders the pickleIds in place - morphs input
 export function orderPickleIds(pickleIds: string[], order: string): void {
-  let [type, seed] = OptionSplitter.split(order)
+  const [type, seed] = OptionSplitter.split(order)
   switch (type) {
     case 'defined':
       break
     case 'random':
       if (seed === '') {
-        seed = Math.floor(Math.random() * 1000 * 1000).toString()
-        console.warn(`Random order using seed: ${seed}`)
+        const newSeed = Math.floor(Math.random() * 1000 * 1000).toString()
+        console.warn(`Random order using seed: ${newSeed}`)
+        shuffle(pickleIds, newSeed)
+      } else {
+        shuffle(pickleIds, seed)
       }
-      shuffle(pickleIds, seed)
       break
     default:
       throw new Error(

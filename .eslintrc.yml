@@ -1,8 +1,17 @@
 extends:
-  - standard-with-typescript
+  - "eslint:recommended"
+  - "plugin:import/typescript"
+  - "plugin:@typescript-eslint/eslint-recommended"
+  - "plugin:@typescript-eslint/recommended"
   - "plugin:prettier/recommended"
+parser: "@typescript-eslint/parser"
 parserOptions:
   project: './tsconfig.json'
+plugins:
+  - import
+  - simple-import-sort
+  - node
+  - "@typescript-eslint"
 rules:
   prettier/prettier:
     - error
@@ -10,4 +19,9 @@ rules:
       singleQuote: true
       semi: false
   # requires strictNullChecks compiler option, produces many errors with messages objects
-  '@typescript-eslint/strict-boolean-expressions': off
+  "@typescript-eslint/strict-boolean-expressions": off
+  "@typescript-eslint/no-explicit-any": off
+  "@typescript-eslint/no-inferrable-types": off
+  "@typescript-eslint/no-empty-function": off
+  "@typescript-eslint/ban-types": off
+  "@typescript-eslint/no-unused-vars": off
