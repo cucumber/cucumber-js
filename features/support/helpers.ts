@@ -1,5 +1,6 @@
-import path from 'path'
 import figures from 'figures'
+import path from 'path'
+
 import { normalizeSummaryDuration } from '../../test/formatter_helpers'
 
 export function normalizeText(text: string): string {

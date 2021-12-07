@@ -1,5 +1,6 @@
-import { When, Then, DataTable } from '../../../src'
 import { expect } from 'chai'
+
+import { DataTable, Then, When } from '../../../src'
 
 When(
   'the following table is transposed:',

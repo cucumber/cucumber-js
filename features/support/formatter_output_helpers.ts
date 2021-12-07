@@ -1,14 +1,15 @@
-import {
-  doesHaveValue,
-  doesNotHaveValue,
-  valueOrDefault,
-} from '../../src/value_checker'
+import * as messages from '@cucumber/messages'
+
 import {
   IJsonFeature,
   IJsonScenario,
   IJsonStep,
 } from '../../src/formatter/json_formatter'
-import * as messages from '@cucumber/messages'
+import {
+  doesHaveValue,
+  doesNotHaveValue,
+  valueOrDefault,
+} from '../../src/value_checker'
 
 // Converting windows stack trace to posix and removing cwd
 //    C:\\project\\path\\features\\support/code.js

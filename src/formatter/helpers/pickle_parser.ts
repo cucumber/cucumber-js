@@ -1,5 +1,6 @@
-import { getGherkinScenarioLocationMap } from './gherkin_document_parser'
 import * as messages from '@cucumber/messages'
+
+import { getGherkinScenarioLocationMap } from './gherkin_document_parser'
 
 export interface IGetPickleLocationRequest {
   gherkinDocument: messages.GherkinDocument

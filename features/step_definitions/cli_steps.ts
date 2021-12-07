@@ -1,13 +1,14 @@
-import { DataTable, Then, When } from '../../'
 import { expect } from 'chai'
-import { normalizeText } from '../support/helpers'
-import stringArgv from 'string-argv'
 import Mustache from 'mustache'
+import stringArgv from 'string-argv'
+
+import { DataTable, Then, When } from '../../'
 import {
   doesHaveValue,
   doesNotHaveValue,
   valueOrDefault,
 } from '../../src/value_checker'
+import { normalizeText } from '../support/helpers'
 import { World } from '../support/world'
 
 const { version } = require('../../package.json') // eslint-disable-line @typescript-eslint/no-var-requires

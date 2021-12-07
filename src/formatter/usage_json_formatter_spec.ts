@@ -1,9 +1,10 @@
-import { afterEach, beforeEach, describe, it } from 'mocha'
-import { expect } from 'chai'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
-import timeMethods from '../time'
+import { expect } from 'chai'
+import { afterEach, beforeEach, describe, it } from 'mocha'
+
 import { getUsageSupportCodeLibrary } from '../../test/fixtures/usage_steps'
 import { testFormatter } from '../../test/formatter_helpers'
+import timeMethods from '../time'
 
 describe('UsageJsonFormatter', () => {
   let clock: InstalledClock

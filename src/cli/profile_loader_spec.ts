@@ -1,11 +1,12 @@
-import { describe, it } from 'mocha'
 import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import fs from 'mz/fs'
 import path from 'path'
-import ProfileLoader from './profile_loader'
 import tmp, { DirOptions } from 'tmp'
 import { promisify } from 'util'
+
 import { doesHaveValue, valueOrDefault } from '../value_checker'
+import ProfileLoader from './profile_loader'
 
 interface TestProfileLoaderOptions {
   definitionsFileContent?: string

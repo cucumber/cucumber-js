@@ -1,5 +1,5 @@
-import colors from 'colors/safe'
 import Table from 'cli-table3'
+import colors from 'colors/safe'
 
 const underlineBoldCyan = (x: string): string =>
   colors.underline(colors.bold(colors.cyan(x)))

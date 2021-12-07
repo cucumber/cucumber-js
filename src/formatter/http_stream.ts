@@ -1,8 +1,9 @@
-import { pipeline, Transform, Writable } from 'stream'
-import tmp from 'tmp'
 import fs from 'fs'
 import http from 'http'
 import https from 'https'
+import { pipeline, Transform, Writable } from 'stream'
+import tmp from 'tmp'
+
 import { doesHaveValue } from '../value_checker'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT'

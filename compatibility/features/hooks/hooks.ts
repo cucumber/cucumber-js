@@ -1,6 +1,7 @@
-import { When, Before, After, World } from '../../../src'
 import fs from 'fs'
 import path from 'path'
+
+import { After, Before, When, World } from '../../../src'
 
 Before(function () {
   // no-op

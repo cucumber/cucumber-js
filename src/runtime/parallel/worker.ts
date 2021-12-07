@@ -1,25 +1,26 @@
+import { IdGenerator } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
+import { duration } from 'durations'
+import { EventEmitter } from 'events'
+import { pathToFileURL } from 'url'
+
+import { isJavaScript } from '../../cli/helpers'
 import { formatLocation } from '../../formatter/helpers'
+import TestRunHookDefinition from '../../models/test_run_hook_definition'
+import StackTraceFilter from '../../stack_trace_filter'
+import supportCodeLibraryBuilder from '../../support_code_library_builder'
+import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
+import UserCodeRunner from '../../user_code_runner'
+import { doesHaveValue, valueOrDefault } from '../../value_checker'
+import { IRuntimeOptions } from '../index'
+import { RealTestRunStopwatch } from '../stopwatch'
+import TestCaseRunner from '../test_case_runner'
 import {
   ICoordinatorReport,
   IWorkerCommand,
   IWorkerCommandInitialize,
   IWorkerCommandRun,
 } from './command_types'
-import { EventEmitter } from 'events'
-import StackTraceFilter from '../../stack_trace_filter'
-import supportCodeLibraryBuilder from '../../support_code_library_builder'
-import TestCaseRunner from '../test_case_runner'
-import UserCodeRunner from '../../user_code_runner'
-import { IdGenerator } from '@cucumber/messages'
-import * as messages from '@cucumber/messages'
-import TestRunHookDefinition from '../../models/test_run_hook_definition'
-import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
-import { doesHaveValue, valueOrDefault } from '../../value_checker'
-import { IRuntimeOptions } from '../index'
-import { RealTestRunStopwatch } from '../stopwatch'
-import { duration } from 'durations'
-import { pathToFileURL } from 'url'
-import { isJavaScript } from '../../cli/helpers'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../../importer')

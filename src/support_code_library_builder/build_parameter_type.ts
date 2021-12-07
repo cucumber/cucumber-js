@@ -1,4 +1,5 @@
 import { ParameterType } from '@cucumber/cucumber-expressions'
+
 import { IParameterTypeDefinition } from './types'
 
 export function buildParameterType({

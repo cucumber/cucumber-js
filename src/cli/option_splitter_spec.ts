@@ -1,5 +1,6 @@
-import { describe, it } from 'mocha'
 import { expect } from 'chai'
+import { describe, it } from 'mocha'
+
 import OptionSplitter from './option_splitter'
 
 describe('OptionSplitter', () => {

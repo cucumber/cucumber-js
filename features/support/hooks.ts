@@ -1,12 +1,13 @@
-import { After, Before, formatterHelpers } from '../../'
 import fs from 'fs'
 import fsExtra from 'fs-extra'
 import path from 'path'
 import tmp from 'tmp'
-import { doesHaveValue } from '../../src/value_checker'
-import { World } from './world'
+
+import { After, Before, formatterHelpers } from '../../'
 import { ITestCaseHookParameter } from '../../src/support_code_library_builder/types'
+import { doesHaveValue } from '../../src/value_checker'
 import { warnUserAboutEnablingDeveloperMode } from './warn_user_about_enabling_developer_mode'
+import { World } from './world'
 
 const projectPath = path.join(__dirname, '..', '..')
 

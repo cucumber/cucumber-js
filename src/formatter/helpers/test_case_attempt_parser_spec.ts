@@ -1,12 +1,13 @@
-import { describe, it } from 'mocha'
-import { expect } from 'chai'
-import * as messages from '@cucumber/messages'
-import { parseTestCaseAttempt } from '.'
-import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
-import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
+import * as messages from '@cucumber/messages'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { reindent } from 'reindent-template-literals'
+
+import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
 import { getTestCaseAttempts } from '../../../test/formatter_helpers'
+import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
+import { parseTestCaseAttempt } from '.'
 
 describe('TestCaseAttemptParser', () => {
   describe('parseTestCaseAttempt', () => {

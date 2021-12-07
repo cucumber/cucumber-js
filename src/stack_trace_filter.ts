@@ -1,5 +1,6 @@
-import stackChain from 'stack-chain'
 import path from 'path'
+import stackChain from 'stack-chain'
+
 import { valueOrDefault } from './value_checker'
 import CallSite = NodeJS.CallSite
 

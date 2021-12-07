@@ -1,26 +1,27 @@
-import { afterEach, beforeEach, describe, it } from 'mocha'
+import * as messages from '@cucumber/messages'
+import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import { expect } from 'chai'
-import sinon from 'sinon'
 import { EventEmitter } from 'events'
-import { EventDataCollector } from './helpers'
+import { afterEach, beforeEach, describe, it } from 'mocha'
+import ProgressBar from 'progress'
+import sinon from 'sinon'
+import { PassThrough } from 'stream'
+import { promisify } from 'util'
+
+import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import {
   getEnvelopesAndEventDataCollector,
   ITestSource,
   normalizeSummaryDuration,
 } from '../../test/formatter_helpers'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
-import FormatterBuilder from './builder'
-import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
-import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
-import timeMethods from '../time'
 import { IRuntimeOptions } from '../runtime'
-import * as messages from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import ProgressBarFormatter from './progress_bar_formatter'
+import timeMethods from '../time'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { PassThrough } from 'stream'
-import ProgressBar from 'progress'
-import { promisify } from 'util'
+import FormatterBuilder from './builder'
+import { EventDataCollector } from './helpers'
+import ProgressBarFormatter from './progress_bar_formatter'
 
 interface ITestProgressBarFormatterOptions {
   runtimeOptions?: Partial<IRuntimeOptions>

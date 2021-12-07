@@ -1,14 +1,15 @@
-import { Then } from '../../'
 import { expect, use } from 'chai'
 import chaiExclude from 'chai-exclude'
+import fs from 'mz/fs'
+import path from 'path'
+
+import { Then } from '../../'
 import {
   ignorableKeys,
   normalizeJsonOutput,
   normalizeMessageOutput,
   stripMetaMessages,
 } from '../support/formatter_output_helpers'
-import fs from 'mz/fs'
-import path from 'path'
 import { World } from '../support/world'
 
 use(chaiExclude)

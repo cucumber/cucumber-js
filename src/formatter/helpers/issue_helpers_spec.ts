@@ -1,12 +1,13 @@
-import { describe, it } from 'mocha'
 import { expect } from 'chai'
+import figures from 'figures'
+import { describe, it } from 'mocha'
+import { reindent } from 'reindent-template-literals'
+
+import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
+import { getTestCaseAttempts } from '../../../test/formatter_helpers'
+import FormatterBuilder from '../builder'
 import getColorFns from '../get_color_fns'
 import { formatIssue } from './issue_helpers'
-import figures from 'figures'
-import { getTestCaseAttempts } from '../../../test/formatter_helpers'
-import { reindent } from 'reindent-template-literals'
-import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
-import FormatterBuilder from '../builder'
 
 async function testFormatIssue(sourceData: string): Promise<string> {
   const sources = [

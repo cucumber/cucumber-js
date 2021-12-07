@@ -1,17 +1,18 @@
-import { getStepKeywordType, KeywordType } from './keyword_type'
+import * as messages from '@cucumber/messages'
+import { TestStepResult } from '@cucumber/messages'
+
+import TestCaseHookDefinition from '../../models/test_case_hook_definition'
+import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
+import { ILineAndUri } from '../../types'
+import { doesHaveValue, valueOrDefault } from '../../value_checker'
+import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
+import { ITestCaseAttempt } from './event_data_collector'
 import {
   getGherkinScenarioLocationMap,
   getGherkinStepMap,
 } from './gherkin_document_parser'
+import { getStepKeywordType, KeywordType } from './keyword_type'
 import { getPickleStepMap, getStepKeyword } from './pickle_parser'
-import * as messages from '@cucumber/messages'
-import { ITestCaseAttempt } from './event_data_collector'
-import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
-import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
-import { doesHaveValue, valueOrDefault } from '../../value_checker'
-import TestCaseHookDefinition from '../../models/test_case_hook_definition'
-import { ILineAndUri } from '../../types'
-import { TestStepResult } from '@cucumber/messages'
 
 export interface IParsedTestStep {
   actionLocation?: ILineAndUri

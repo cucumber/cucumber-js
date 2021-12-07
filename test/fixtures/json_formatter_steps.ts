@@ -1,9 +1,10 @@
 // Tests depend on the lines the steps are defined on
 
-import { buildSupportCodeLibrary } from '../runtime_helpers'
-import { ISupportCodeLibrary } from '../../src/support_code_library_builder/types'
 import { InstalledClock } from '@sinonjs/fake-timers'
+
 import { World } from '../../src'
+import { ISupportCodeLibrary } from '../../src/support_code_library_builder/types'
+import { buildSupportCodeLibrary } from '../runtime_helpers'
 
 export function getJsonFormatterSupportCodeLibrary(
   clock: InstalledClock

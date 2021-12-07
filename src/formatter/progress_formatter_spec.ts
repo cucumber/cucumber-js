@@ -1,10 +1,11 @@
-import { afterEach, beforeEach, describe, it } from 'mocha'
+import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import { expect } from 'chai'
+import figures from 'figures'
+import { afterEach, beforeEach, describe, it } from 'mocha'
+import { reindent } from 'reindent-template-literals'
+
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { testFormatter } from '../../test/formatter_helpers'
-import { reindent } from 'reindent-template-literals'
-import figures from 'figures'
-import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 
 describe('ProgressFormatter', () => {

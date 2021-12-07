@@ -1,5 +1,6 @@
-import Cli, { ICliRunResult } from './'
 import VError from 'verror'
+
+import Cli, { ICliRunResult } from './'
 import publishBanner from './publish_banner'
 
 function exitWithError(error: Error): void {

@@ -1,17 +1,18 @@
-import getColorFns from './get_color_fns'
-import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascript_snippet_syntax'
-import path from 'path'
-import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import Formatter, { IFormatterCleanupFn, IFormatterLogFn } from '.'
-import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { EventEmitter } from 'events'
-import EventDataCollector from './helpers/event_data_collector'
+import path from 'path'
 import { Writable as WritableStream } from 'stream'
-import { IParsedArgvFormatOptions } from '../cli/argv_parser'
-import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 import { pathToFileURL } from 'url'
+
+import { IParsedArgvFormatOptions } from '../cli/argv_parser'
+import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { doesHaveValue, doesNotHaveValue } from '../value_checker'
+import Formatter, { IFormatterCleanupFn, IFormatterLogFn } from '.'
+import getColorFns from './get_color_fns'
+import EventDataCollector from './helpers/event_data_collector'
 import Formatters from './helpers/formatters'
+import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
+import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascript_snippet_syntax'
+import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
 

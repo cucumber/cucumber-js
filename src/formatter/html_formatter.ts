@@ -1,10 +1,11 @@
-import Formatter, { IFormatterOptions } from '.'
+import CucumberHtmlStream from '@cucumber/html-formatter'
 import * as messages from '@cucumber/messages'
 import resolvePkg from 'resolve-pkg'
-import CucumberHtmlStream from '@cucumber/html-formatter'
-import { doesHaveValue } from '../value_checker'
 import { finished } from 'stream'
 import { promisify } from 'util'
+
+import { doesHaveValue } from '../value_checker'
+import Formatter, { IFormatterOptions } from '.'
 
 export default class HtmlFormatter extends Formatter {
   private readonly _finished: Promise<void>

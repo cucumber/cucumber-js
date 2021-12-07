@@ -1,6 +1,7 @@
+import util from 'util'
+
 import { wrapPromiseWithTimeout } from './time'
 import UncaughtExceptionManager from './uncaught_exception_manager'
-import util from 'util'
 import { doesHaveValue } from './value_checker'
 
 export interface IRunRequest {

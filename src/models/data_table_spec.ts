@@ -1,7 +1,8 @@
-import { describe, it } from 'mocha'
-import { expect } from 'chai'
-import DataTable from './data_table'
 import * as messages from '@cucumber/messages'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
+
+import DataTable from './data_table'
 
 const id = 'id'
 const location: messages.Location = { line: 0 }

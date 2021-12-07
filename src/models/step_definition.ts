@@ -1,3 +1,7 @@
+import { Expression } from '@cucumber/cucumber-expressions'
+
+import { parseStepArgument } from '../step_arguments'
+import { doesHaveValue } from '../value_checker'
 import DataTable from './data_table'
 import Definition, {
   IDefinition,
@@ -5,9 +9,6 @@ import Definition, {
   IGetInvocationDataResponse,
   IStepDefinitionParameters,
 } from './definition'
-import { parseStepArgument } from '../step_arguments'
-import { Expression } from '@cucumber/cucumber-expressions'
-import { doesHaveValue } from '../value_checker'
 
 export default class StepDefinition extends Definition implements IDefinition {
   public readonly pattern: string | RegExp

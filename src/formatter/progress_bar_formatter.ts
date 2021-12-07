@@ -1,11 +1,12 @@
-import { formatIssue, formatSummary, isIssue } from './helpers'
-import Formatter, { IFormatterOptions } from './'
+import * as messages from '@cucumber/messages'
 import ProgressBar from 'progress'
 import { WriteStream as TtyWriteStream } from 'tty'
-import * as messages from '@cucumber/messages'
-import { doesHaveValue, valueOrDefault } from '../value_checker'
-import { formatUndefinedParameterType } from './helpers/issue_helpers'
+
 import { durationBetweenTimestamps } from '../time'
+import { doesHaveValue, valueOrDefault } from '../value_checker'
+import Formatter, { IFormatterOptions } from './'
+import { formatIssue, formatSummary, isIssue } from './helpers'
+import { formatUndefinedParameterType } from './helpers/issue_helpers'
 
 // Inspired by https://github.com/thekompanee/fuubar and https://github.com/martinciu/fuubar-cucumber
 export default class ProgressBarFormatter extends Formatter {

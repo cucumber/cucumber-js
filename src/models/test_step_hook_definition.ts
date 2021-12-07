@@ -1,12 +1,13 @@
+import * as messages from '@cucumber/messages'
+
 import { PickleTagFilter } from '../pickle_filter'
 import Definition, {
   IDefinition,
-  IGetInvocationDataResponse,
-  IGetInvocationDataRequest,
   IDefinitionParameters,
+  IGetInvocationDataRequest,
+  IGetInvocationDataResponse,
   IHookDefinitionOptions,
 } from './definition'
-import * as messages from '@cucumber/messages'
 
 export default class TestStepHookDefinition
   extends Definition

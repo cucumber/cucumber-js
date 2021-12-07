@@ -1,8 +1,9 @@
+import * as messages from '@cucumber/messages'
 import Duration from 'duration'
+
+import { doesHaveValue } from '../../value_checker'
 import { IColorFns } from '../get_color_fns'
 import { ITestCaseAttempt } from './event_data_collector'
-import * as messages from '@cucumber/messages'
-import { doesHaveValue } from '../../value_checker'
 
 const STATUS_REPORT_ORDER = [
   messages.TestStepResultStatus.FAILED,

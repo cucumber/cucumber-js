@@ -1,11 +1,12 @@
-import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import ConfigurationBuilder from './configuration_builder'
 import fsExtra from 'fs-extra'
+import { describe, it } from 'mocha'
 import path from 'path'
 import tmp, { DirOptions } from 'tmp'
 import { promisify } from 'util'
+
 import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
+import ConfigurationBuilder from './configuration_builder'
 
 async function buildTestWorkingDirectory(): Promise<string> {
   const cwd = await promisify<DirOptions, string>(tmp.dir)({

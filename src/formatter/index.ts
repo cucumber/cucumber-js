@@ -1,13 +1,14 @@
+import { EventEmitter } from 'events'
+import { WriteStream as FsWriteStream } from 'fs'
+import { PassThrough, Writable as WritableStream } from 'stream'
+import { WriteStream as TtyWriteStream } from 'tty'
+
+import { IParsedArgvFormatOptions } from '../cli/argv_parser'
+import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IColorFns } from './get_color_fns'
 import { EventDataCollector } from './helpers'
-import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
-import { PassThrough, Writable as WritableStream } from 'stream'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import { WriteStream as FsWriteStream } from 'fs'
-import { WriteStream as TtyWriteStream } from 'tty'
-import { EventEmitter } from 'events'
-import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import HttpStream from './http_stream'
+import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
 
 export type IFormatterStream =
   | FsWriteStream

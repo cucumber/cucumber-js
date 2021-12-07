@@ -1,15 +1,16 @@
+import glob from 'glob'
+import fs from 'mz/fs'
+import path from 'path'
+import { promisify } from 'util'
+
+import { IPickleFilterOptions } from '../pickle_filter'
+import { IRuntimeOptions } from '../runtime'
+import { valueOrDefault } from '../value_checker'
 import ArgvParser, {
   IParsedArgvFormatOptions,
   IParsedArgvOptions,
 } from './argv_parser'
-import fs from 'mz/fs'
-import path from 'path'
 import OptionSplitter from './option_splitter'
-import glob from 'glob'
-import { promisify } from 'util'
-import { IPickleFilterOptions } from '../pickle_filter'
-import { IRuntimeOptions } from '../runtime'
-import { valueOrDefault } from '../value_checker'
 
 export interface IConfigurationFormat {
   outputTo: string

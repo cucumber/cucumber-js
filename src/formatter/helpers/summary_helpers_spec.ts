@@ -1,16 +1,17 @@
-import { afterEach, beforeEach, describe, it } from 'mocha'
-import { expect } from 'chai'
-import getColorFns from '../get_color_fns'
-import { formatSummary } from './summary_helpers'
-import { getTestCaseAttempts } from '../../../test/formatter_helpers'
-import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
+import * as messages from '@cucumber/messages'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
-import timeMethods, { durationBetweenTimestamps } from '../../time'
+import { expect } from 'chai'
+import { afterEach, beforeEach, describe, it } from 'mocha'
+
+import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
+import { getTestCaseAttempts } from '../../../test/formatter_helpers'
 import { buildSupportCodeLibrary } from '../../../test/runtime_helpers'
 import { IRuntimeOptions } from '../../runtime'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
+import timeMethods, { durationBetweenTimestamps } from '../../time'
 import { doesNotHaveValue } from '../../value_checker'
-import * as messages from '@cucumber/messages'
+import getColorFns from '../get_color_fns'
+import { formatSummary } from './summary_helpers'
 
 interface ITestFormatSummaryOptions {
   runtimeOptions?: Partial<IRuntimeOptions>

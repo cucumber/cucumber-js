@@ -1,9 +1,10 @@
-import * as messages from '@cucumber/messages'
-import TestCaseHookDefinition from '../models/test_case_hook_definition'
-import TestStepHookDefinition from '../models/test_step_hook_definition'
-import TestRunHookDefinition from '../models/test_run_hook_definition'
-import StepDefinition from '../models/step_definition'
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
+import * as messages from '@cucumber/messages'
+
+import StepDefinition from '../models/step_definition'
+import TestCaseHookDefinition from '../models/test_case_hook_definition'
+import TestRunHookDefinition from '../models/test_run_hook_definition'
+import TestStepHookDefinition from '../models/test_step_hook_definition'
 import { IWorld } from './world'
 
 export type DefineStepPattern = string | RegExp

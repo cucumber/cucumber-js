@@ -1,16 +1,17 @@
-import { describe, it } from 'mocha'
+import * as messages from '@cucumber/messages'
 import { expect } from 'chai'
+import { describe, it } from 'mocha'
+
+import {
+  IParsedSourceWithEnvelopes,
+  parse,
+} from '../../../test/gherkin_helpers'
 import {
   getGherkinExampleRuleMap,
   getGherkinScenarioLocationMap,
   getGherkinScenarioMap,
   getGherkinStepMap,
 } from './gherkin_document_parser'
-import {
-  IParsedSourceWithEnvelopes,
-  parse,
-} from '../../../test/gherkin_helpers'
-import * as messages from '@cucumber/messages'
 import IGherkinDocument = messages.GherkinDocument
 import { reindent } from 'reindent-template-literals'
 

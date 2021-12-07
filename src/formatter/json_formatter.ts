@@ -1,13 +1,14 @@
+import * as messages from '@cucumber/messages'
+
+import { parseStepArgument } from '../step_arguments'
+import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import Formatter, { IFormatterOptions } from './'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
-import * as messages from '@cucumber/messages'
+import { ITestCaseAttempt } from './helpers/event_data_collector'
 import {
   getGherkinExampleRuleMap,
   getGherkinScenarioLocationMap,
 } from './helpers/gherkin_document_parser'
-import { ITestCaseAttempt } from './helpers/event_data_collector'
-import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { parseStepArgument } from '../step_arguments'
 
 const { getGherkinStepMap, getGherkinScenarioMap } = GherkinDocumentParser
 
