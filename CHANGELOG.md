@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- Switched to new `@cucumber/ci-environment` library for CI detection ([#1867](https://github.com/cucumber/cucumber-js/issues/1867))
+
 ### Fixed
 - Allows for parentheses in paths for developers working on cucumber's own code ([[#1735](https://github.com/cucumber/cucumber-js/issues/1735)])
 - Smoother onboarding for Windows developers ([#1863](https://github.com/cucumber/cucumber-js/pull/1863))
