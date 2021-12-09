@@ -1,4 +1,3 @@
-import { IFormatterStream } from '../formatter'
 import { IdGenerator } from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../formatter/helpers'
@@ -10,7 +9,7 @@ import {
 import { GherkinStreams } from '@cucumber/gherkin-streams'
 import PickleFilter from '../pickle_filter'
 import { IRunConfiguration } from '../configuration'
-import { IRunResult } from './types'
+import { IRunEnvironment, IRunResult } from './types'
 import { resolvePaths } from './paths'
 import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
@@ -18,11 +17,7 @@ import { getSupportCodeLibrary } from './support'
 
 export async function runCucumber(
   configuration: IRunConfiguration,
-  environment: {
-    cwd: string
-    stdout: IFormatterStream
-    env: NodeJS.ProcessEnv
-  } = {
+  environment: IRunEnvironment = {
     cwd: process.cwd(),
     stdout: process.stdout,
     env: process.env,
