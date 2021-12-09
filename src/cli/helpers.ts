@@ -7,6 +7,7 @@ import { EventDataCollector } from '../formatter/helpers'
 import { doesHaveValue } from '../value_checker'
 import OptionSplitter from './option_splitter'
 import { Readable } from 'stream'
+import os from 'os'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
 import detectCiEnvironment from '@cucumber/ci-environment'
@@ -126,13 +127,27 @@ export async function emitMetaMessage(
       version,
       name: 'cucumber-js',
     },
-    ci: {
-      ...ciEnvironment,
-      git: {
-        ...ciEnvironment.git,
-        remote: ciEnvironment.git.remote,
-      },
+    cpu: {
+      name: os.arch(),
     },
+    os: {
+      name: os.platform(),
+      version: os.release(),
+    },
+    runtime: {
+      name: 'node.js',
+      version: process.versions.node,
+    },
+    ci: ciEnvironment
+      ? {
+          ...ciEnvironment,
+          git: {
+            ...ciEnvironment.git,
+            remote: ciEnvironment.git.remote ?? '',
+            revision: ciEnvironment.git.revision ?? '',
+          },
+        }
+      : null,
   }
   eventBroadcaster.emit('envelope', {
     meta,
