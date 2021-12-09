@@ -9,7 +9,7 @@ import OptionSplitter from './option_splitter'
 import { Readable } from 'stream'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
-import createMeta from '@cucumber/create-meta'
+import detectCiEnvironment from '@cucumber/ci-environment'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
@@ -119,8 +119,23 @@ export async function emitMetaMessage(
 ): Promise<void> {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { version } = require('../../package.json')
+  const ciEnvironment = detectCiEnvironment(env)
+  const meta: messages.Meta = {
+    protocolVersion: messages.version,
+    implementation: {
+      version,
+      name: 'cucumber-js',
+    },
+    ci: {
+      ...ciEnvironment,
+      git: {
+        ...ciEnvironment.git,
+        remote: ciEnvironment.git.remote,
+      },
+    },
+  }
   eventBroadcaster.emit('envelope', {
-    meta: createMeta('cucumber-js', version, env),
+    meta,
   })
 }
 
