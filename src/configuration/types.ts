@@ -1,5 +1,6 @@
 import { IRuntimeOptions } from '../runtime'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
+import { PickleOrder } from '../cli/helpers'
 
 export interface IRunConfiguration {
   sources: {
@@ -7,7 +8,7 @@ export interface IRunConfiguration {
     paths?: string[]
     names?: string[]
     tagExpression?: string
-    order?: string // TODO make me an enum?
+    order?: PickleOrder
   }
   support: {
     transpileWith: string[]

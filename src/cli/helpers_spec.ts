@@ -5,6 +5,7 @@ import {
   emitSupportCodeMessages,
   isJavaScript,
   parseGherkinMessageStream,
+  PickleOrder,
 } from './helpers'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
@@ -31,7 +32,7 @@ const noopFunction = (): void => {
 interface ITestParseGherkinMessageStreamRequest {
   cwd: string
   gherkinMessageStream: Readable
-  order: string
+  order: PickleOrder
   pickleFilter: PickleFilter
 }
 

@@ -4,6 +4,7 @@ import { dialects } from '@cucumber/gherkin'
 import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
 import { getKeywords, getLanguages } from './i18n'
 import Formatters from '../formatter/helpers/formatters'
+import { PickleOrder } from './helpers'
 
 // Using require instead of import so compiled typescript will have the desired folder structure
 const { version } = require('../../package.json') // eslint-disable-line @typescript-eslint/no-var-requires
@@ -32,7 +33,7 @@ export interface IParsedArgvOptions {
   i18nLanguages: boolean
   language: string
   name: string[]
-  order: string
+  order: PickleOrder
   parallel: number
   profile: string[]
   publish: boolean
