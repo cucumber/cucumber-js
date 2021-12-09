@@ -183,7 +183,7 @@
   },
   "dependencies": {
     "@cspotcode/source-map-support": "^0.7.0",
-    "@cucumber/create-meta": "6.0.4",
+    "@cucumber/ci-environment": "7.0.1",
     "@cucumber/cucumber-expressions": "^14.0.0",
     "@cucumber/gherkin": "^22.0.0",
     "@cucumber/gherkin-streams": "^4.0.0",
