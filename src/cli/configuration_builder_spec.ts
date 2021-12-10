@@ -316,6 +316,27 @@ describe('Configuration', () => {
       ])
     })
 
+    it('splits absolute paths with spaces in them', async function () {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const argv = baseArgv.concat([
+        '-f',
+        '/custom/formatter:"/formatter directory/output.txt"',
+      ])
+
+      // Act
+      const { formats } = await ConfigurationBuilder.build({ argv, cwd })
+
+      // Assert
+      expect(formats).to.eql([
+        { outputTo: '', type: 'progress' },
+        {
+          outputTo: '/formatter directory/output.txt',
+          type: '/custom/formatter',
+        },
+      ])
+    })
+
     it('splits absolute windows paths', async function () {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
