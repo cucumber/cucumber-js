@@ -175,7 +175,8 @@
     },
     "./lib/*": {
       "require": "./lib/*.js"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "types": "./lib/index.d.ts",
   "engines": {
