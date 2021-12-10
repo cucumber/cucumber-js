@@ -5,6 +5,7 @@ import {
   emitSupportCodeMessages,
   isJavaScript,
   parseGherkinMessageStream,
+  PickleOrder,
 } from './helpers'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
@@ -31,7 +32,7 @@ const noopFunction = (): void => {
 interface ITestParseGherkinMessageStreamRequest {
   cwd: string
   gherkinMessageStream: Readable
-  order: string
+  order: PickleOrder
   pickleFilter: PickleFilter
 }
 
@@ -103,7 +104,7 @@ describe('helpers', () => {
       const envelopes: messages.Envelope[] = []
       const eventBroadcaster = new EventEmitter()
       eventBroadcaster.on('envelope', (e) => envelopes.push(e))
-      await emitMetaMessage(eventBroadcaster)
+      await emitMetaMessage(eventBroadcaster, {})
 
       expect(envelopes).to.have.length(1)
       expect(envelopes[0].meta.implementation.name).to.eq('cucumber-js')

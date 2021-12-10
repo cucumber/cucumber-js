@@ -5,7 +5,6 @@ import glob from 'glob'
 import fs from 'fs'
 import path from 'path'
 import { PassThrough, pipeline, Writable } from 'stream'
-import { Cli } from '../src'
 import toString from 'stream-to-string'
 import {
   ignorableKeys,
@@ -14,6 +13,8 @@ import {
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
 import util from 'util'
+import { runCucumber } from '../src/run'
+import { IRunConfiguration } from '../src/configuration'
 
 const asyncPipeline = util.promisify(pipeline)
 const PROJECT_PATH = path.join(__dirname, '..')
@@ -29,27 +30,28 @@ describe('Cucumber Compatibility Kit', () => {
     const suiteName = match[1]
     const extension = match[2]
     it(`passes the cck suite for '${suiteName}'`, async () => {
-      const cliOptions = [
-        `${CCK_FEATURES_PATH}/${suiteName}/${suiteName}${extension}`,
-        '--require',
-        `${CCK_IMPLEMENTATIONS_PATH}/${suiteName}/${suiteName}.ts`,
-        '--profile',
-        'cck',
-      ]
-      if (suiteName === 'retry') {
-        cliOptions.push('--retry', '2')
-      }
-      const args = [
-        'node',
-        path.join(PROJECT_PATH, 'bin', 'cucumber-js'),
-      ].concat(cliOptions)
       const stdout = new PassThrough()
+      const runConfiguration: IRunConfiguration = {
+        sources: {
+          paths: [`${CCK_FEATURES_PATH}/${suiteName}/${suiteName}${extension}`],
+        },
+        support: {
+          transpileWith: ['ts-node/register'],
+          paths: [`${CCK_IMPLEMENTATIONS_PATH}/${suiteName}/${suiteName}.ts`],
+        },
+        formats: {
+          stdout: 'message',
+        },
+        runtime: {
+          retry: suiteName === 'retry' ? 2 : 0,
+        },
+      }
       try {
-        await new Cli({
-          argv: args,
+        await runCucumber(runConfiguration, {
           cwd: PROJECT_PATH,
           stdout,
-        }).run()
+          env: process.env,
+        })
       } catch (ignored) {
         console.error(ignored)
       }

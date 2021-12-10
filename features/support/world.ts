@@ -83,6 +83,7 @@ export class World {
         argv: args,
         cwd,
         stdout,
+        env,
       })
       let error: any, stderr: string
       try {
