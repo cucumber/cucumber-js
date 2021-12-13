@@ -77,7 +77,7 @@ Feature: Core feature elements execution using direct imports
 
       Given(/^a step checks the version number$/, function() {
         if (package_version !== library_version) {
-          throw new Error('package version: ' + package_version + ' !== library version: ' + library_version)
+          throw new Error(`package version: ${package_version} !== library version: ${library_version}`)
         }
       });
       """
