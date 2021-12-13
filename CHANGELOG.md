@@ -9,8 +9,17 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [Unreleased]
 ### Fixed
+- Ensure package.json can be imported by consuming projects
+  ([PR#1870](https://github.com/cucumber/cucumber-js/pull/1870)
+   [Issue#1869](https://github.com/cucumber/cucumber-js/issues/1869))
 - Allows for parentheses in paths for developers working on cucumber's own code ([[#1735](https://github.com/cucumber/cucumber-js/issues/1735)])
 - Smoother onboarding for Windows developers ([#1863](https://github.com/cucumber/cucumber-js/pull/1863))
+
+### Added
+- Export cucumber version number. It is now possible to retrieve the current version
+  of cucumber using `import { version } from '@cucumber/cucumber'`.
+  ([PR#1866](https://github.com/cucumber/cucumber-js/pull/1866)
+   [Issue#1853](https://github.com/cucumber/cucumber-js/issues/1853))
 
 ## [8.0.0-rc.1] - 2021-10-19
 ### Added
