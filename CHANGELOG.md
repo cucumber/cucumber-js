@@ -9,7 +9,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [Unreleased]
 ### Fixed
-- Add `package.json` to node module `exports`
+- Ensure package.json can be imported by consuming projects
   ([PR#1870](https://github.com/cucumber/cucumber-js/pull/1870)
    [Issue#1869](https://github.com/cucumber/cucumber-js/issues/1869))
 - Allows for parentheses in paths for developers working on cucumber's own code ([[#1735](https://github.com/cucumber/cucumber-js/issues/1735)])
