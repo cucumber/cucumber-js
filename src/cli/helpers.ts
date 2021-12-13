@@ -14,6 +14,7 @@ import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { builtinParameterTypes } from '../support_code_library_builder'
+import { version } from '../version'
 
 export interface IGetExpandedArgvRequest {
   argv: string[]
@@ -117,8 +118,6 @@ export async function emitMetaMessage(
   eventBroadcaster: EventEmitter,
   env: NodeJS.ProcessEnv
 ): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { version } = require('../../package.json')
   eventBroadcaster.emit('envelope', {
     meta: createMeta('cucumber-js', version, env),
   })
