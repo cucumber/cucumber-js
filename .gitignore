@@ -13,3 +13,4 @@ usage.txt
 yarn-error.log
 .vscode
 .DS_Store
+src/version.ts
