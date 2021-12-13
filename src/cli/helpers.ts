@@ -42,9 +42,11 @@ interface IParseGherkinMessageStreamRequest {
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   gherkinMessageStream: Readable
-  order: string
+  order: PickleOrder
   pickleFilter: PickleFilter
 }
+
+export type PickleOrder = 'defined' | 'random'
 
 export async function parseGherkinMessageStream({
   cwd,
@@ -85,7 +87,7 @@ export async function parseGherkinMessageStream({
 }
 
 // Orders the pickleIds in place - morphs input
-export function orderPickleIds(pickleIds: string[], order: string): void {
+export function orderPickleIds(pickleIds: string[], order: PickleOrder): void {
   let [type, seed] = OptionSplitter.split(order)
   switch (type) {
     case 'defined':
@@ -113,10 +115,11 @@ export function isJavaScript(filePath: string): boolean {
 }
 
 export async function emitMetaMessage(
-  eventBroadcaster: EventEmitter
+  eventBroadcaster: EventEmitter,
+  env: NodeJS.ProcessEnv
 ): Promise<void> {
   eventBroadcaster.emit('envelope', {
-    meta: createMeta('cucumber-js', version, process.env),
+    meta: createMeta('cucumber-js', version, env),
   })
 }
 

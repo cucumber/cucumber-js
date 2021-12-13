@@ -2,8 +2,10 @@ import { Command } from 'commander'
 import path from 'path'
 import { dialects } from '@cucumber/gherkin'
 import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
+import { getKeywords, getLanguages } from './i18n'
 import Formatters from '../formatter/helpers/formatters'
 import { version } from '../version'
+import { PickleOrder } from './helpers'
 
 export interface IParsedArgvFormatRerunOptions {
   separator?: string
@@ -29,7 +31,7 @@ export interface IParsedArgvOptions {
   i18nLanguages: boolean
   language: string
   name: string[]
-  order: string
+  order: PickleOrder
   parallel: number
   profile: string[]
   publish: boolean
@@ -214,13 +216,20 @@ const ArgvParser = {
         {}
       )
 
-    program.on('--help', () => {
-      /* eslint-disable no-console */
-      console.log(
-        '  For more details please visit https://github.com/cucumber/cucumber-js/blob/master/docs/cli.md\n'
-      )
-      /* eslint-enable no-console */
+    program.on('option:i18n-languages', () => {
+      console.log(getLanguages())
+      process.exit()
     })
+
+    program.on('option:i18n-keywords', function (isoCode: string) {
+      console.log(getKeywords(isoCode))
+      process.exit()
+    })
+
+    program.addHelpText(
+      'afterAll',
+      'For more details please visit https://github.com/cucumber/cucumber-js/blob/main/docs/cli.md'
+    )
 
     program.parse(argv)
     const options: IParsedArgvOptions = program.opts()
