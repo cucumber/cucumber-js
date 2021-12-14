@@ -23,7 +23,6 @@ Feature: Formatter Paths
       <duration-stat>
       """
 
-  @wip
   Scenario: Absolute path
     Given "{{{tmpDir}}}" is an absolute path
     When I run cucumber-js with `-f summary:"{{{tmpDir}}}/summary.txt"`
