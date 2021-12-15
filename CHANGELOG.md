@@ -9,7 +9,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [Unreleased]
 ### Changed
-- Switched to new `@cucumber/ci-environment` library for CI detection ([#1867](https://github.com/cucumber/cucumber-js/issues/1867))
+- Switched to new `@cucumber/ci-environment` library for CI detection ([#1868](https://github.com/cucumber/cucumber-js/pull/1868))
 
 ### Fixed
 - Handles spaces in paths for developers working on cucumbers's own code ([#1845](https://github.com/cucumber/cucumber-js/issues/1845))
