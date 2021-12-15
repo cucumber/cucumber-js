@@ -8,8 +8,8 @@ import { doesHaveValue } from '../value_checker'
 import OptionSplitter from './option_splitter'
 import { Readable } from 'stream'
 import os from 'os'
-import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
+import { IdGenerator } from '@cucumber/messages'
 import detectCiEnvironment from '@cucumber/ci-environment'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
@@ -119,7 +119,6 @@ export async function emitMetaMessage(
   eventBroadcaster: EventEmitter,
   env: NodeJS.ProcessEnv
 ): Promise<void> {
-  const ciEnvironment = detectCiEnvironment(env)
   const meta: messages.Meta = {
     protocolVersion: messages.version,
     implementation: {
@@ -137,7 +136,7 @@ export async function emitMetaMessage(
       name: 'node.js',
       version: process.versions.node,
     },
-    ci: ciEnvironment,
+    ci: detectCiEnvironment(env),
   }
   eventBroadcaster.emit('envelope', {
     meta,
