@@ -137,16 +137,7 @@ export async function emitMetaMessage(
       name: 'node.js',
       version: process.versions.node,
     },
-    ci: ciEnvironment
-      ? {
-          ...ciEnvironment,
-          git: {
-            ...ciEnvironment.git,
-            remote: ciEnvironment.git.remote ?? '',
-            revision: ciEnvironment.git.revision ?? '',
-          },
-        }
-      : null,
+    ci: ciEnvironment,
   }
   eventBroadcaster.emit('envelope', {
     meta,
