@@ -119,7 +119,6 @@ export async function emitMetaMessage(
   eventBroadcaster: EventEmitter,
   env: NodeJS.ProcessEnv
 ): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const ciEnvironment = detectCiEnvironment(env)
   const meta: messages.Meta = {
     protocolVersion: messages.version,
