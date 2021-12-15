@@ -20,6 +20,11 @@ describe('OptionSplitter', () => {
       output: ['/custom/formatter', '/formatter/output.txt'],
     },
     {
+      description: 'splits paths with quotes around them',
+      input: '/custom/formatter:"/formatter directory/output.txt"',
+      output: ['/custom/formatter', '/formatter directory/output.txt'],
+    },
+    {
       description: 'splits absolute windows paths',
       input: 'C:\\custom\\formatter:C:\\formatter\\output.txt',
       output: ['C:\\custom\\formatter', 'C:\\formatter\\output.txt'],

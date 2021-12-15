@@ -9,6 +9,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [Unreleased]
 ### Fixed
+- Handles spaces in paths for developers working on cucumbers's own code ([#1845](https://github.com/cucumber/cucumber-js/issues/1845))
 - Ensure package.json can be imported by consuming projects
   ([PR#1870](https://github.com/cucumber/cucumber-js/pull/1870)
    [Issue#1869](https://github.com/cucumber/cucumber-js/issues/1869))
