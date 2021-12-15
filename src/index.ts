@@ -13,6 +13,7 @@ export {
 } from './runtime'
 export { default as supportCodeLibraryBuilder } from './support_code_library_builder'
 export { default as DataTable } from './models/data_table'
+export { version } from './version'
 
 // Formatters
 export { default as Formatter, IFormatterOptions } from './formatter'
