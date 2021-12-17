@@ -37,6 +37,10 @@ jobs:
       - uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: reports
+          path: reports
 
   audit-dependencies:
     runs-on: ubuntu-latest
