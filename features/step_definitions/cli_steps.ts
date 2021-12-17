@@ -16,7 +16,15 @@ When('my env includes {string}', function (this: World, envString: string) {
 })
 
 When(
-  /^I run cucumber-js(?: with `(|.+)`)?$/,
+  'I run cucumber-js',
+  { timeout: 10000 },
+  async function (this: World) {
+    return await this.run(this.localExecutablePath, [])
+  }
+)
+
+When(
+  'I run cucumber-js with `{}`',
   { timeout: 10000 },
   async function (this: World, args: string) {
     const renderedArgs = Mustache.render(valueOrDefault(args, ''), this)
