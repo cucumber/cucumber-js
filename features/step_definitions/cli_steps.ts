@@ -54,7 +54,7 @@ When(
   { timeout: 10000 },
   async function (this: World) {
     const formats = ['html:html.out', 'json:json.out']
-    let args:string = ' ' + formats.map((f) => `--format ${f}`).join(' ')
+    const args:string = formats.map((f) => `--format ${f}`).join(' ')
     const renderedArgs = Mustache.render(args, this)
     const stringArgs = stringArgv(renderedArgs)
     return await this.run(this.localExecutablePath, stringArgs)
