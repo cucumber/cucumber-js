@@ -184,7 +184,7 @@
   },
   "dependencies": {
     "@cspotcode/source-map-support": "^0.7.0",
-    "@cucumber/ci-environment": "8.0.0",
+    "@cucumber/ci-environment": "8.0.1",
     "@cucumber/cucumber-expressions": "14.0.0",
     "@cucumber/gherkin": "22.0.0",
     "@cucumber/gherkin-streams": "4.0.0",
@@ -266,7 +266,7 @@
     "stream-to-string": "1.2.0",
     "ts-node": "10.4.0",
     "tsd": "0.19.1",
-    "typescript": "4.5.2"
+    "typescript": "4.5.4"
   },
   "scripts": {
     "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.node.json && shx cp src/importer.js lib/ && shx cp src/wrapper.mjs lib/",
