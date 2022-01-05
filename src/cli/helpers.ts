@@ -7,13 +7,15 @@ import { EventDataCollector } from '../formatter/helpers'
 import { doesHaveValue } from '../value_checker'
 import OptionSplitter from './option_splitter'
 import { Readable } from 'stream'
-import { IdGenerator } from '@cucumber/messages'
+import os from 'os'
 import * as messages from '@cucumber/messages'
-import createMeta from '@cucumber/create-meta'
+import { IdGenerator } from '@cucumber/messages'
+import detectCiEnvironment from '@cucumber/ci-environment'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { builtinParameterTypes } from '../support_code_library_builder'
+import { version } from '../version'
 
 export interface IGetExpandedArgvRequest {
   argv: string[]
@@ -41,9 +43,11 @@ interface IParseGherkinMessageStreamRequest {
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   gherkinMessageStream: Readable
-  order: string
+  order: PickleOrder
   pickleFilter: PickleFilter
 }
+
+export type PickleOrder = 'defined' | 'random'
 
 export async function parseGherkinMessageStream({
   cwd,
@@ -84,7 +88,7 @@ export async function parseGherkinMessageStream({
 }
 
 // Orders the pickleIds in place - morphs input
-export function orderPickleIds(pickleIds: string[], order: string): void {
+export function orderPickleIds(pickleIds: string[], order: PickleOrder): void {
   const [type, seed] = OptionSplitter.split(order)
   switch (type) {
     case 'defined':
@@ -114,12 +118,30 @@ export function isJavaScript(filePath: string): boolean {
 }
 
 export async function emitMetaMessage(
-  eventBroadcaster: EventEmitter
+  eventBroadcaster: EventEmitter,
+  env: NodeJS.ProcessEnv
 ): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { version } = require('../../package.json')
+  const meta: messages.Meta = {
+    protocolVersion: messages.version,
+    implementation: {
+      version,
+      name: 'cucumber-js',
+    },
+    cpu: {
+      name: os.arch(),
+    },
+    os: {
+      name: os.platform(),
+      version: os.release(),
+    },
+    runtime: {
+      name: 'node.js',
+      version: process.versions.node,
+    },
+    ci: detectCiEnvironment(env),
+  }
   eventBroadcaster.emit('envelope', {
-    meta: createMeta('cucumber-js', version, process.env),
+    meta,
   })
 }
 

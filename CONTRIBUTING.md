@@ -11,10 +11,12 @@ You can chat with us in the [#committers-js](https://cucumberbdd.slack.com/archi
 
 ## Local setup
 
-To get a local development environment, use [Git] to [fork and clone] the repo, then:
+To get a local development environment:
 
-* If you're running Windows, make sure to enable [Developer Mode].
+* use [Git] to [fork and clone] the repo
+* If you're running Windows, make sure to enable [Developer Mode]
 * install [Node.Js](https://nodejs.org/en/)
+* Make sure you have a recent version of `npm` installed: `npm install -g npm`
 * `npm install` - Install dependencies
 * `npm test` - Compile typescript and run the tests
 
