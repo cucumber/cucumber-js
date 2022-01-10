@@ -7,7 +7,7 @@ docker-run:
 	[ -d '../secrets' ]  || git clone keybase://team/cucumberbdd/secrets ../secrets
 	git -C ../secrets pull
 	../secrets/update_permissions
-	docker pull cucumber/cucumber-build:latest
+	docker pull cucumber/cucumber-build:0.8.0
 	docker run \
 	  --volume "${shell pwd}":/app \
 	  --volume "${shell pwd}/../secrets/import-gpg-key.sh":/home/cukebot/import-gpg-key.sh \
@@ -18,6 +18,6 @@ docker-run:
 	  --env-file ../secrets/secrets.list \
 	  --user 1000 \
 	  --rm \
-	  -it cucumber/cucumber-build:latest \
+	  -it cucumber/cucumber-build:0.8.0 \
 	  bash
 .PHONY: docker-run
