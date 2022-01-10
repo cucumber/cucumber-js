@@ -19,6 +19,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 - Allows for parentheses in paths for developers working on cucumber's own code ([[#1735](https://github.com/cucumber/cucumber-js/issues/1735)])
 - Smoother onboarding for Windows developers ([#1863](https://github.com/cucumber/cucumber-js/pull/1863))
 - Pin `colors` to `1.4.0` to fix security vulnerability ([#1884](https://github.com/cucumber/cucumber-js/issues/1884))
+- Pin `cli-table3` to `0.6.1` to fix security vulnerability ([#251](https://github.com/cli-table/cli-table3/pull/251))
 
 ### Added
 - Export cucumber version number. It is now possible to retrieve the current version
