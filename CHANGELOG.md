@@ -19,6 +19,10 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Fixed
 
+## [7.3.2] (2022-01-10)
+
+### Fixed
+
 - Pin `colors` to `1.4.0` to fix security vulnerability ([#1884](https://github.com/cucumber/cucumber-js/issues/1884))
 - Pin `cli-table3` to `0.6.1` to fix security vulnerability ([#251](https://github.com/cli-table/cli-table3/pull/251))
 
@@ -1867,7 +1871,8 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 
 
 <!-- Releases -->
-[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.3.1...master
+[Unreleased]:   https://github.com/cucumber/cucumber-js/compare/v7.3.2...master
+[7.3.2]:        https://github.com/cucumber/cucumber-js/compare/7.3.2-rc.0...7.0.0
 [7.3.1]:        https://github.com/cucumber/cucumber-js/compare/7.3.1-rc.0...7.0.0
 [7.3.0]:        https://github.com/cucumber/cucumber-js/compare/7.3.0-rc.0...7.0.0
 [7.2.1]:        https://github.com/cucumber/cucumber-js/compare/7.2.1-rc.0...7.0.0
