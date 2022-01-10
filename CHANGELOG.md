@@ -8,24 +8,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [8.0.0-rc.2] - 2022-01-10
+### Added
+- Export cucumber version number. It is now possible to retrieve the current version
+of cucumber using `import { version } from '@cucumber/cucumber'`.
+([PR#1866](https://github.com/cucumber/cucumber-js/pull/1866)
+[Issue#1853](https://github.com/cucumber/cucumber-js/issues/1853))
+
 ### Changed
 - Switched to new `@cucumber/ci-environment` library for CI detection ([#1868](https://github.com/cucumber/cucumber-js/pull/1868))
 
 ### Fixed
 - Handles spaces in paths for developers working on cucumbers's own code ([#1845](https://github.com/cucumber/cucumber-js/issues/1845))
 - Ensure package.json can be imported by consuming projects
-  ([PR#1870](https://github.com/cucumber/cucumber-js/pull/1870)
-   [Issue#1869](https://github.com/cucumber/cucumber-js/issues/1869))
+([PR#1870](https://github.com/cucumber/cucumber-js/pull/1870)
+[Issue#1869](https://github.com/cucumber/cucumber-js/issues/1869))
 - Allows for parentheses in paths for developers working on cucumber's own code ([[#1735](https://github.com/cucumber/cucumber-js/issues/1735)])
 - Smoother onboarding for Windows developers ([#1863](https://github.com/cucumber/cucumber-js/pull/1863))
 - Pin `colors` to `1.4.0` to fix security vulnerability ([#1884](https://github.com/cucumber/cucumber-js/issues/1884))
 - Pin `cli-table3` to `0.6.1` to fix security vulnerability ([#251](https://github.com/cli-table/cli-table3/pull/251))
-
-### Added
-- Export cucumber version number. It is now possible to retrieve the current version
-  of cucumber using `import { version } from '@cucumber/cucumber'`.
-  ([PR#1866](https://github.com/cucumber/cucumber-js/pull/1866)
-   [Issue#1853](https://github.com/cucumber/cucumber-js/issues/1853))
 
 ## [8.0.0-rc.1] - 2021-10-19
 ### Added
@@ -1326,7 +1328,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.1...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.2...HEAD
+[8.0.0-rc.2]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.1...v8.0.0-rc.2
 [8.0.0-rc.1]: https://github.com/cucumber/cucumber-js/compare/v7.3.1...8.0.0-rc.1
 [7.3.1]: https://github.com/cucumber/cucumber-js/compare/v7.3.0...v7.3.1
 [7.3.0]: https://github.com/cucumber/cucumber-js/compare/v7.2.1...v7.3.0
