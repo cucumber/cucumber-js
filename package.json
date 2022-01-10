@@ -194,7 +194,7 @@
     "@cucumber/tag-expressions": "4.1.0",
     "assertion-error-formatter": "^3.0.0",
     "capital-case": "^1.0.4",
-    "cli-table3": "^0.6.0",
+    "cli-table3": "0.6.1",
     "colors": "1.4.0",
     "commander": "^8.0.0",
     "duration": "^0.2.2",
