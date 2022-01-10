@@ -19,6 +19,9 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Fixed
 
+- Pin `colors` to `1.4.0` to fix security vulnerability ([#1884](https://github.com/cucumber/cucumber-js/issues/1884))
+- Pin `cli-table3` to `0.6.1` to fix security vulnerability ([#251](https://github.com/cli-table/cli-table3/pull/251))
+
 ## [7.3.1] (2021-07-20)
 
 ### Deprecated
