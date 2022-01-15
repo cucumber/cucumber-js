@@ -1,12 +1,12 @@
-import colors from 'colors/safe'
+import chalk from 'chalk'
 import Table from 'cli-table3'
 
 const underlineBoldCyan = (x: string): string =>
-  colors.underline(colors.bold(colors.cyan(x)))
+  chalk.underline(chalk.bold(chalk.cyan(x)))
 
 const formattedReportUrl = underlineBoldCyan('https://reports.cucumber.io')
 const formattedEnv =
-  colors.cyan('CUCUMBER_PUBLISH_ENABLED') + '=' + colors.cyan('true')
+  chalk.cyan('CUCUMBER_PUBLISH_ENABLED') + '=' + chalk.cyan('true')
 const formattedMoreInfoUrl = underlineBoldCyan(
   'https://cucumber.io/docs/cucumber/environment-variables/'
 )
@@ -14,13 +14,13 @@ const formattedMoreInfoUrl = underlineBoldCyan(
 const text = `\
 Share your Cucumber Report with your team at ${formattedReportUrl}
 
-Command line option:    ${colors.cyan('--publish')}
+Command line option:    ${chalk.cyan('--publish')}
 Environment variable:   ${formattedEnv}
 
 More information at ${formattedMoreInfoUrl}
 
-To disable this message, add this to your ${colors.bold('./cucumber.js')}: 
-${colors.bold("module.exports = { default: '--publish-quiet' }")}`
+To disable this message, add this to your ${chalk.bold('./cucumber.js')}: 
+${chalk.bold("module.exports = { default: '--publish-quiet' }")}`
 
 const table = new Table({
   style: {

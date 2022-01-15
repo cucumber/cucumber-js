@@ -3,7 +3,8 @@ import { execFile } from 'child_process'
 import { expect } from 'chai'
 import toString from 'stream-to-string'
 import { PassThrough, pipeline, Writable } from 'stream'
-import colors from 'colors/safe'
+import chalk from 'chalk'
+import stripAnsi from 'strip-ansi'
 import fs from 'fs'
 import path from 'path'
 import VError from 'verror'
@@ -122,7 +123,7 @@ export class World {
       error: result.error,
       errorOutput: result.stderr,
       envelopes,
-      output: colors.strip(result.stdout),
+      output: stripAnsi(result.stdout),
     }
     this.verifiedLastRunError = false
     expect(this.lastRun.output).to.not.include('Unhandled rejection')
