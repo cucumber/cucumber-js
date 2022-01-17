@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- Switch from `colors` to `chalk` for terminal coloring ([#1895](https://github.com/cucumber/cucumber-js/pull/1895))
 
 ## [8.0.0-rc.2] - 2022-01-10
 ### Added
