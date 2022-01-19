@@ -1,6 +1,6 @@
 # Profiles
 
-If you have several permutations of running Cucumber with different CLI options in your project, it might be a bit cumbersome to manage. *Profiles* enable you to declare bundles of configuration and reference them with a single CLI option. You use multiple profiles at once and you can still supply options directly on the command line when using profiles.
+If you have several permutations of running Cucumber with different CLI options in your project, it might be a bit cumbersome to manage. *Profiles* enable you to declare bundles of configuration and reference them with a single CLI option. You can use multiple profiles at once and you can still supply options directly on the command line when using profiles.
 
 Profiles are invoked from the command line using the `--profile` option.
 
