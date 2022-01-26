@@ -63,7 +63,7 @@ $ cucumber-js --world-parameters '{"appUrl":"http://localhost:3000/"}'
 
 This option is repeatable, so you can use it multiple times and the objects will be merged with the later ones taking precedence.
 
-Using JSON literals on the command line is tedious, but you can use [profiles](profiles.md) to create aliases for them.
+Using JSON literals on the command line is tedious, but you can use [profiles](../profiles.md) to create aliases for them.
 
 
 ## Custom Worlds
