@@ -29,8 +29,8 @@ Scenario: Will fail
   Given my color is "red"
   Then my color should not be red  
 ```
-**Important Note:** The following will NOT work as [arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) do not have their own bindings to `this` and are not suitable for the [apply](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply) method Cucumber uses internally to call your [step definitions](./support_files/step_definitions.md) and
-[hooks](./support_files/hooks.md).
+**Important Note:** The following will NOT work as [arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) do not have their own bindings to `this` and are not suitable for the [apply](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply) method Cucumber uses internally to call your [step definitions](./step_definitions.md) and
+[hooks](./hooks.md).
 
 ```javascript
 // This WON'T work!!
