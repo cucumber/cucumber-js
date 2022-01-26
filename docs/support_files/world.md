@@ -49,7 +49,7 @@ Cucumber provides a number of formatting helpers that are passed into the constr
 * `this.log`: a method for [logging](./attachments.md#logging) information from hooks/steps
 * `this.parameters`: an object of parameters passed in via the [CLI](../cli.md#world-parameters)
 
-Your custom world will also receive these arguments, but it up to you to decide what to do with them and they can be safely ignored.
+Your custom world will also receive these arguments, but it's up to you to decide what to do with them and they can be safely ignored.
 
 ### World Parameters
 
