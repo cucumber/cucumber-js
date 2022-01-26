@@ -1,6 +1,6 @@
 # World
 
-*World*, or sometimes *context*, is an isolated scope for each scenario, exposed to the steps and most hooks as `this`. It allows you to set variables in one step and recall them in a later step. All variables set this way are discarded when the scenario concludes. It is managed by a world class, either the default one or one you create. Each scenario is given an new instance of the class when the test starts, even if it is a [retry run](..retry.md).
+*World*, or sometimes *context*, is an isolated scope for each scenario, exposed to the steps and most hooks as `this`. It allows you to set variables in one step and recall them in a later step. All variables set this way are discarded when the scenario concludes. It is managed by a world class, either the default one or one you create. Each scenario is given an new instance of the class when the test starts, even if it is a [retry run](../retry.md).
 
 The world is not available to the hooks `BeforeAll` or `AfterAll` as each of these executes outside any particular scenario.
 
