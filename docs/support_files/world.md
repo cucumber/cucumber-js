@@ -145,3 +145,10 @@ Given("I'm viewing the admin settings", async function(){
 ```
 
 This pattern allows for cleaner feature files. Remember that, ideally, scenarios should be between 3-5 lines and communicate **what** the user is doing clearly to the whole team without going into the details of **how** it will be done. While steps can be reused that should not come at the expense of feature clarity.
+
+## Summary
+- The *World* provides an isolated context for your tests.
+- It allows you to track test state while maintaining the isolation of each scenario.
+- Every scenario gets its own instance of the world. Even on [retry](../retry.md).
+- You can use the default world or build your own.
+- You can pass arguments to the world using the `--world-parameters` CLI option.
