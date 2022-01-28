@@ -2,7 +2,7 @@
 
 ## API Reference
 
-Each method can be destructed from the object returned by `require('@cucumber/cucumber')`. 
+Each method can be destructed from the object returned by `require('@cucumber/cucumber')`.
 
 ---
 
@@ -14,7 +14,9 @@ Define a new parameter type and optionally convert an output parameter into some
 * `regexp`: A regular expression (or array of regular expressions) that match the parameter.
 * `transformer`: An optional function which transforms the captured argument from a string into what is passed to the step definition.
   If no transform function is specified, the captured argument is left as a string.
-  The function can be synchronous or return a `Promise` of the transformed value. The value of `this` is the current world, so the function can delegate to world functions. World delegation does not work with arrow functions.
+  The function can be synchronous or return a `Promise` of the transformed value. The value of `this` is the current world, so the function can delegate to world functions.
+  Note that your transformer functions cannot reference the [world](./world.md) as `this` if you use
+  arrow functions. See [FAQ](../faq.md) for details.
 * `useForSnippets`: Defaults to `true`. That means this parameter type will be used to generate snippets for undefined steps. If the `regexp` frequently matches text you don't intend to be used as arguments, disable its use for snippets with `false`.
 * `preferForRegexpMatch`: Defaults to `false`. Set to `true` if you use regular expressions and you want this parameter type's `regexp` to take precedence over others during a match.
 
@@ -67,8 +69,9 @@ Defines a hook which is run after each step.
   * `tags`: String tag expression used to apply this hook to only specific scenarios. See [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/) for more information.
   * `timeout`: A hook-specific timeout, to override the default timeout.
 * `fn`: A function, defined as follows:
-  * The first argument will be an object of the form `{pickle, gherkinDocument, result, testCaseStartedId, testStepId}`
-    * The pickle object comes from the [gherkin](https://github.com/cucumber/cucumber/tree/gherkin/v15.0.2/gherkin) library. See `testdata/good/*.pickles.ndjson` for examples of its structure.
+  * The first argument will be an object of the form `{pickle, pickleStep, gherkinDocument, result, testCaseStartedId, testStepId}`
+    * The `pickle` object comes from the [gherkin](https://github.com/cucumber/cucumber/tree/gherkin/v15.0.2/gherkin) library. See `testdata/good/*.pickles.ndjson` for examples of its structure.
+    * The `pickleStep` is the step in the `pickle` that this hook has been invoked for
   * When using the asynchronous callback interface, have one final argument for the callback function.
 
 `options` can also be a string as a shorthand for specifying `tags`.
@@ -132,6 +135,8 @@ Set the default timeout for asynchronous steps. Defaults to `5000` milliseconds.
 
 #### `setDefinitionFunctionWrapper(wrapper)`
 
+_Note: the usage of `setDefinitionFunctionWrapper` is discouraged in favor of [BeforeStep](#beforestepoptions-fn) and [AfterStep](#afterstepoptions-fn) hooks._
+
 Set a function used to wrap step / hook definitions.
 
 The `wrapper` function is expected to take 2 arguments:
@@ -139,7 +144,7 @@ The `wrapper` function is expected to take 2 arguments:
 - `fn` is the original function defined for the step - needs to be called in order for the step to be run.
 - `options` is the step specific `wrapperOptions` and may be undefined.
 
-A common use case is attaching a screenshot on step failure - this would typically look something like (for a promise-based setup):
+Example:
 
 ```javascript
 setDefinitionFunctionWrapper(function(fn, options) {
@@ -148,8 +153,6 @@ setDefinitionFunctionWrapper(function(fn, options) {
     // ensure return value of function is returned
     return fn.apply(this, args)
       .catch(error => {
-        // call a method on world
-        this.doScreenshot();
         // rethrow error to avoid swallowing failure
         throw error;
       });

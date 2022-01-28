@@ -1,24 +1,16 @@
-import _ from 'lodash'
 import { ChildProcess, fork } from 'child_process'
 import path from 'path'
-import Status from '../../status'
-import { retriesForPickle } from '../helpers'
-import { messages } from '@cucumber/messages'
+import { retriesForPickle, shouldCauseFailure } from '../helpers'
+import * as messages from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../../formatter/helpers'
-import { IRuntimeOptions } from '..'
+import { IRuntime, IRuntimeOptions } from '..'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
-import {
-  ICoordinatorReport,
-  ICoordinatorReportSupportCodeIds,
-  IWorkerCommand,
-} from './command_types'
+import { ICoordinatorReport, IWorkerCommand } from './command_types'
 import { doesHaveValue } from '../../value_checker'
-import {
-  ITestRunStopwatch,
-  PredictableTestRunStopwatch,
-  RealTestRunStopwatch,
-} from '../stopwatch'
+import { ITestRunStopwatch, RealTestRunStopwatch } from '../stopwatch'
+import { assembleTestCases, IAssembledTestCases } from '../assemble_test_cases'
+import { IdGenerator } from '@cucumber/messages'
 
 const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
 
@@ -27,10 +19,12 @@ export interface INewCoordinatorOptions {
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   options: IRuntimeOptions
+  newId: IdGenerator.NewId
   pickleIds: string[]
   supportCodeLibrary: ISupportCodeLibrary
   supportCodePaths: string[]
   supportCodeRequiredModules: string[]
+  numberOfWorkers: number
 }
 
 const enum WorkerState {
@@ -48,23 +42,25 @@ interface IWorker {
 
 interface IPicklePlacement {
   index: number
-  pickle: messages.IPickle
+  pickle: messages.Pickle
 }
 
-export default class Coordinator {
+export default class Coordinator implements IRuntime {
   private readonly cwd: string
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
   private readonly stopwatch: ITestRunStopwatch
   private onFinish: (success: boolean) => void
   private readonly options: IRuntimeOptions
+  private readonly newId: IdGenerator.NewId
   private readonly pickleIds: string[]
-  private inProgressPickles: Record<string, messages.IPickle>
+  private assembledTestCases: IAssembledTestCases
+  private inProgressPickles: Record<string, messages.Pickle>
   private workers: Record<string, IWorker>
-  private supportCodeIdMap: Record<string, string>
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private readonly supportCodePaths: string[]
   private readonly supportCodeRequiredModules: string[]
+  private readonly numberOfWorkers: number
   private success: boolean
   private idleInterventions: number
 
@@ -74,44 +70,38 @@ export default class Coordinator {
     eventDataCollector,
     pickleIds,
     options,
+    newId,
     supportCodeLibrary,
     supportCodePaths,
     supportCodeRequiredModules,
+    numberOfWorkers,
   }: INewCoordinatorOptions) {
     this.cwd = cwd
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
-    this.stopwatch = options.predictableIds
-      ? new PredictableTestRunStopwatch()
-      : new RealTestRunStopwatch()
+    this.stopwatch = new RealTestRunStopwatch()
     this.options = options
+    this.newId = newId
     this.supportCodeLibrary = supportCodeLibrary
     this.supportCodePaths = supportCodePaths
     this.supportCodeRequiredModules = supportCodeRequiredModules
     this.pickleIds = Array.from(pickleIds)
+    this.numberOfWorkers = numberOfWorkers
     this.success = true
     this.workers = {}
     this.inProgressPickles = {}
-    this.supportCodeIdMap = {}
     this.idleInterventions = 0
   }
 
   parseWorkerMessage(worker: IWorker, message: ICoordinatorReport): void {
-    if (doesHaveValue(message.supportCodeIds)) {
-      this.saveDefinitionIdMapping(message.supportCodeIds)
-    } else if (message.ready) {
+    if (message.ready) {
       worker.state = WorkerState.idle
       this.awakenWorkers(worker)
     } else if (doesHaveValue(message.jsonEnvelope)) {
-      const envelope = messages.Envelope.fromObject(
-        JSON.parse(message.jsonEnvelope)
-      )
+      const envelope = messages.parseEnvelope(message.jsonEnvelope)
       this.eventBroadcaster.emit('envelope', envelope)
-      if (doesHaveValue(envelope.testCase)) {
-        this.remapDefinitionIds(envelope.testCase)
-      }
       if (doesHaveValue(envelope.testCaseFinished)) {
-        this.inProgressPickles = _.omit(this.inProgressPickles, worker.id)
+        delete this.inProgressPickles[worker.id]
         this.parseTestCaseResult(envelope.testCaseFinished)
       }
     } else {
@@ -121,52 +111,21 @@ export default class Coordinator {
     }
   }
 
-  saveDefinitionIdMapping(message: ICoordinatorReportSupportCodeIds): void {
-    _.each(message.stepDefinitionIds, (id: string, index: number) => {
-      this.supportCodeIdMap[id] = this.supportCodeLibrary.stepDefinitions[
-        index
-      ].id
-    })
-    _.each(
-      message.beforeTestCaseHookDefinitionIds,
-      (id: string, index: number) => {
-        this.supportCodeIdMap[
-          id
-        ] = this.supportCodeLibrary.beforeTestCaseHookDefinitions[index].id
-      }
-    )
-    _.each(
-      message.afterTestCaseHookDefinitionIds,
-      (id: string, index: number) => {
-        this.supportCodeIdMap[
-          id
-        ] = this.supportCodeLibrary.afterTestCaseHookDefinitions[index].id
-      }
-    )
-  }
-
-  remapDefinitionIds(testCase: messages.ITestCase): void {
-    for (const testStep of testCase.testSteps) {
-      if (testStep.hookId !== '') {
-        testStep.hookId = this.supportCodeIdMap[testStep.hookId]
-      }
-      if (doesHaveValue(testStep.stepDefinitionIds)) {
-        testStep.stepDefinitionIds = testStep.stepDefinitionIds.map(
-          (id) => this.supportCodeIdMap[id]
-        )
-      }
-    }
-  }
-
   awakenWorkers(triggeringWorker: IWorker): void {
-    _.each(this.workers, (worker): boolean => {
+    Object.values(this.workers).forEach((worker) => {
       if (worker.state === WorkerState.idle) {
         this.giveWork(worker)
       }
       return worker.state !== WorkerState.idle
     })
 
-    if (_.isEmpty(this.inProgressPickles) && this.pickleIds.length > 0) {
+    let wip: Boolean = false
+    for (const p in this.inProgressPickles) {
+      wip = true
+      break
+    }
+
+    if (!wip && this.pickleIds.length > 0) {
       this.giveWork(triggeringWorker, true)
       this.idleInterventions++
     }
@@ -175,11 +134,12 @@ export default class Coordinator {
   startWorker(id: string, total: number): void {
     const workerProcess = fork(runWorkerPath, [], {
       cwd: this.cwd,
-      env: _.assign({}, process.env, {
+      env: {
+        ...process.env,
         CUCUMBER_PARALLEL: 'true',
-        CUCUMBER_TOTAL_WORKERS: total,
+        CUCUMBER_TOTAL_WORKERS: total.toString(),
         CUCUMBER_WORKER_ID: id,
-      }),
+      },
       stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
     })
     const worker = { state: WorkerState.new, process: workerProcess, id }
@@ -196,6 +156,19 @@ export default class Coordinator {
         filterStacktraces: this.options.filterStacktraces,
         supportCodePaths: this.supportCodePaths,
         supportCodeRequiredModules: this.supportCodeRequiredModules,
+        supportCodeIds: {
+          stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map(
+            (s) => s.id
+          ),
+          beforeTestCaseHookDefinitionIds:
+            this.supportCodeLibrary.beforeTestCaseHookDefinitions.map(
+              (h) => h.id
+            ),
+          afterTestCaseHookDefinitionIds:
+            this.supportCodeLibrary.afterTestCaseHookDefinitions.map(
+              (h) => h.id
+            ),
+        },
         options: this.options,
       },
     }
@@ -203,56 +176,67 @@ export default class Coordinator {
   }
 
   onWorkerProcessClose(exitCode: number): void {
-    if (exitCode !== 0) {
+    const success = exitCode === 0
+    if (!success) {
       this.success = false
     }
-    if (_.every(this.workers, ({ state }) => state === WorkerState.closed)) {
-      this.eventBroadcaster.emit(
-        'envelope',
-        messages.Envelope.fromObject({
-          testRunFinished: {
-            timestamp: this.stopwatch.timestamp(),
-          },
-        })
-      )
+
+    if (
+      Object.values(this.workers).every((x) => x.state === WorkerState.closed)
+    ) {
+      const envelope: messages.Envelope = {
+        testRunFinished: {
+          timestamp: this.stopwatch.timestamp(),
+          success,
+        },
+      }
+      this.eventBroadcaster.emit('envelope', envelope)
       this.onFinish(this.success)
     }
   }
 
-  parseTestCaseResult(testCaseFinished: messages.ITestCaseFinished): void {
+  parseTestCaseResult(testCaseFinished: messages.TestCaseFinished): void {
     const { worstTestStepResult } = this.eventDataCollector.getTestCaseAttempt(
       testCaseFinished.testCaseStartedId
     )
     if (
-      !worstTestStepResult.willBeRetried &&
-      this.shouldCauseFailure(worstTestStepResult.status)
+      !testCaseFinished.willBeRetried &&
+      shouldCauseFailure(worstTestStepResult.status, this.options)
     ) {
       this.success = false
     }
   }
 
-  run(numberOfWorkers: number, done: (success: boolean) => void): void {
-    this.eventBroadcaster.emit(
-      'envelope',
-      new messages.Envelope({
-        testRunStarted: {
-          timestamp: this.stopwatch.timestamp(),
-        },
-      })
-    )
-    this.stopwatch.start()
-    _.times(numberOfWorkers, (id) =>
-      this.startWorker(id.toString(), numberOfWorkers)
-    )
-    this.onFinish = (status) => {
-      if (this.idleInterventions > 0) {
-        console.warn(
-          `WARNING: All workers went idle ${this.idleInterventions} time(s). Consider revising handler passed to setParallelCanAssign.`
-        )
-      }
-
-      done(status)
+  async start(): Promise<boolean> {
+    const envelope: messages.Envelope = {
+      testRunStarted: {
+        timestamp: this.stopwatch.timestamp(),
+      },
     }
+    this.eventBroadcaster.emit('envelope', envelope)
+    this.stopwatch.start()
+    this.assembledTestCases = await assembleTestCases({
+      eventBroadcaster: this.eventBroadcaster,
+      newId: this.newId,
+      pickles: this.pickleIds.map((pickleId) =>
+        this.eventDataCollector.getPickle(pickleId)
+      ),
+      supportCodeLibrary: this.supportCodeLibrary,
+    })
+    return await new Promise<boolean>((resolve) => {
+      for (let i = 0; i <= this.numberOfWorkers; i++) {
+        this.startWorker(i.toString(), this.numberOfWorkers)
+      }
+      this.onFinish = (status) => {
+        if (this.idleInterventions > 0) {
+          console.warn(
+            `WARNING: All workers went idle ${this.idleInterventions} time(s). Consider revising handler passed to setParallelCanAssign.`
+          )
+        }
+
+        resolve(status)
+      }
+    })
   }
 
   nextPicklePlacement(): IPicklePlacement {
@@ -261,7 +245,7 @@ export default class Coordinator {
       if (
         this.supportCodeLibrary.parallelCanAssign(
           placement.pickle,
-          _.values(this.inProgressPickles)
+          Object.values(this.inProgressPickles)
         )
       ) {
         return placement
@@ -298,6 +282,7 @@ export default class Coordinator {
 
     this.pickleIds.splice(nextPickleIndex, 1)
     this.inProgressPickles[worker.id] = pickle
+    const testCase = this.assembledTestCases[pickle.id]
     const gherkinDocument = this.eventDataCollector.getGherkinDocument(
       pickle.uri
     )
@@ -309,19 +294,11 @@ export default class Coordinator {
         skip,
         elapsed: this.stopwatch.duration().nanos(),
         pickle,
+        testCase,
         gherkinDocument,
       },
     }
     worker.state = WorkerState.running
     worker.process.send(runCommand)
-  }
-
-  shouldCauseFailure(
-    status: messages.TestStepFinished.TestStepResult.Status
-  ): boolean {
-    return (
-      _.includes([Status.AMBIGUOUS, Status.FAILED, Status.UNDEFINED], status) ||
-      (status === Status.PENDING && this.options.strict)
-    )
   }
 }

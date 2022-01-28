@@ -1,4 +1,4 @@
-import { Given, defineParameterType } from '../../..'
+import { Given, defineParameterType } from '../../../src'
 import { expect } from 'chai'
 
 class Flight {

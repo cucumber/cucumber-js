@@ -3,11 +3,14 @@ import { expect } from 'chai'
 import {
   emitMetaMessage,
   emitSupportCodeMessages,
+  isJavaScript,
   parseGherkinMessageStream,
+  PickleOrder,
 } from './helpers'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
-import { messages, IdGenerator } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
+import { IdGenerator, SourceMediaType } from '@cucumber/messages'
 import { EventDataCollector } from '../formatter/helpers'
 import { GherkinStreams } from '@cucumber/gherkin-streams'
 import { Readable } from 'stream'
@@ -29,19 +32,19 @@ const noopFunction = (): void => {
 interface ITestParseGherkinMessageStreamRequest {
   cwd: string
   gherkinMessageStream: Readable
-  order: string
+  order: PickleOrder
   pickleFilter: PickleFilter
 }
 
 interface ITestParseGherkinMessageStreamResponse {
-  envelopes: messages.IEnvelope[]
+  envelopes: messages.Envelope[]
   result: string[]
 }
 
 async function testParseGherkinMessageStream(
   options: ITestParseGherkinMessageStreamRequest
 ): Promise<ITestParseGherkinMessageStreamResponse> {
-  const envelopes: messages.IEnvelope[] = []
+  const envelopes: messages.Envelope[] = []
   const eventBroadcaster = new EventEmitter()
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
@@ -58,8 +61,8 @@ async function testParseGherkinMessageStream(
 
 function testEmitSupportCodeMessages(
   supportCode: Partial<ISupportCodeLibrary>
-): messages.IEnvelope[] {
-  const envelopes: messages.IEnvelope[] = []
+): messages.Envelope[] {
+  const envelopes: messages.Envelope[] = []
   const eventBroadcaster = new EventEmitter()
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
   emitSupportCodeMessages({
@@ -87,12 +90,22 @@ function testEmitSupportCodeMessages(
 }
 
 describe('helpers', () => {
+  describe('isJavaScript', () => {
+    it('should identify a native javascript file path that can be `import()`ed', () => {
+      expect(isJavaScript('foo/bar.js')).to.be.true()
+      expect(isJavaScript('foo/bar.mjs')).to.be.true()
+      expect(isJavaScript('foo/bar.cjs')).to.be.true()
+      expect(isJavaScript('foo/bar.ts')).to.be.false()
+      expect(isJavaScript('foo/bar.coffee')).to.be.false()
+    })
+  })
+
   describe('emitMetaMessage', () => {
     it('emits a meta message', async () => {
-      const envelopes: messages.IEnvelope[] = []
+      const envelopes: messages.Envelope[] = []
       const eventBroadcaster = new EventEmitter()
       eventBroadcaster.on('envelope', (e) => envelopes.push(e))
-      await emitMetaMessage(eventBroadcaster)
+      await emitMetaMessage(eventBroadcaster, {})
 
       expect(envelopes).to.have.length(1)
       expect(envelopes[0].meta.implementation.name).to.eq('cucumber-js')
@@ -116,8 +129,8 @@ describe('helpers', () => {
         parameterTypeRegistry,
       })
 
-      expect(envelopes).to.deep.eq([
-        messages.Envelope.fromObject({
+      const expectedEnvelopes: messages.Envelope[] = [
+        {
           parameterType: {
             id: '0',
             name: 'flight',
@@ -125,9 +138,11 @@ describe('helpers', () => {
             regularExpressions: ['([A-Z]{3})-([A-Z]{3})'],
             useForSnippets: true,
           },
-        }),
-      ])
+        },
+      ]
+      expect(envelopes).to.deep.eq(expectedEnvelopes)
     })
+
     it('emits messages for step definitions using cucumber expressions', () => {
       const envelopes = testEmitSupportCodeMessages({
         stepDefinitions: [
@@ -147,15 +162,13 @@ describe('helpers', () => {
         ],
       })
 
-      expect(envelopes).to.deep.eq([
-        messages.Envelope.fromObject({
+      const expectedEnvelopes: messages.Envelope[] = [
+        {
           stepDefinition: {
             id: '0',
             pattern: {
               source: 'I have {int} cukes in my belly',
-              type:
-                messages.StepDefinition.StepDefinitionPattern
-                  .StepDefinitionPatternType.CUCUMBER_EXPRESSION,
+              type: messages.StepDefinitionPatternType.CUCUMBER_EXPRESSION,
             },
             sourceReference: {
               uri: 'features/support/cukes.js',
@@ -164,8 +177,9 @@ describe('helpers', () => {
               },
             },
           },
-        }),
-      ])
+        },
+      ]
+      expect(envelopes).to.deep.eq(expectedEnvelopes)
     })
     it('emits messages for step definitions using regular expressions', () => {
       const envelopes = testEmitSupportCodeMessages({
@@ -186,15 +200,13 @@ describe('helpers', () => {
         ],
       })
 
-      expect(envelopes).to.deep.eq([
-        messages.Envelope.fromObject({
+      const expectedEnvelopes: messages.Envelope[] = [
+        {
           stepDefinition: {
             id: '0',
             pattern: {
               source: '/I have (\\d+) cukes in my belly/',
-              type:
-                messages.StepDefinition.StepDefinitionPattern
-                  .StepDefinitionPatternType.REGULAR_EXPRESSION,
+              type: messages.StepDefinitionPatternType.REGULAR_EXPRESSION,
             },
             sourceReference: {
               uri: 'features/support/cukes.js',
@@ -203,8 +215,9 @@ describe('helpers', () => {
               },
             },
           },
-        }),
-      ])
+        },
+      ]
+      expect(envelopes).to.deep.eq(expectedEnvelopes)
     })
     it('emits messages for test case level hooks', () => {
       const envelopes = testEmitSupportCodeMessages({
@@ -240,8 +253,8 @@ describe('helpers', () => {
         ],
       })
 
-      expect(envelopes).to.deep.eq([
-        messages.Envelope.fromObject({
+      const expectedEnvelopes: messages.Envelope[] = [
+        {
           hook: {
             id: '0',
             tagExpression: '@hooks-tho',
@@ -252,10 +265,11 @@ describe('helpers', () => {
               },
             },
           },
-        }),
-        messages.Envelope.fromObject({
+        },
+        {
           hook: {
             id: '1',
+            tagExpression: undefined,
             sourceReference: {
               uri: 'features/support/hooks.js',
               location: {
@@ -263,10 +277,11 @@ describe('helpers', () => {
               },
             },
           },
-        }),
-        messages.Envelope.fromObject({
+        },
+        {
           hook: {
             id: '2',
+            tagExpression: undefined,
             sourceReference: {
               uri: 'features/support/hooks.js',
               location: {
@@ -274,8 +289,9 @@ describe('helpers', () => {
               },
             },
           },
-        }),
-      ])
+        },
+      ]
+      expect(envelopes).to.deep.eq(expectedEnvelopes)
     })
     it('emits messages for test run level hooks', () => {
       const envelopes = testEmitSupportCodeMessages({
@@ -309,8 +325,8 @@ describe('helpers', () => {
         ],
       })
 
-      expect(envelopes).to.deep.eq([
-        messages.Envelope.fromObject({
+      const expectedEnvelopes: messages.Envelope[] = [
+        {
           hook: {
             id: '0',
             sourceReference: {
@@ -320,8 +336,8 @@ describe('helpers', () => {
               },
             },
           },
-        }),
-        messages.Envelope.fromObject({
+        },
+        {
           hook: {
             id: '1',
             sourceReference: {
@@ -331,8 +347,8 @@ describe('helpers', () => {
               },
             },
           },
-        }),
-        messages.Envelope.fromObject({
+        },
+        {
           hook: {
             id: '2',
             sourceReference: {
@@ -342,8 +358,9 @@ describe('helpers', () => {
               },
             },
           },
-        }),
-      ])
+        },
+      ]
+      expect(envelopes).to.deep.eq(expectedEnvelopes)
     })
   })
   describe('parseGherkinMessageStream', () => {
@@ -351,13 +368,13 @@ describe('helpers', () => {
       it('emits source and gherkinDocument events and returns an empty array', async function () {
         // Arrange
         const cwd = '/project'
-        const sourceEnvelope = messages.Envelope.create({
-          source: messages.Source.fromObject({
+        const sourceEnvelope: messages.Envelope = {
+          source: {
             data: '',
-            mediaType: 'text/x.cucumber.gherkin+plain',
+            mediaType: SourceMediaType.TEXT_X_CUCUMBER_GHERKIN_PLAIN,
             uri: '/project/features/a.feature',
-          }),
-        })
+          },
+        }
         const gherkinMessageStream = GherkinStreams.fromSources(
           [sourceEnvelope],
           {}
@@ -378,7 +395,11 @@ describe('helpers', () => {
         expect(envelopes).to.have.lengthOf(2)
         expect(envelopes[0]).to.eql(sourceEnvelope)
         expect(envelopes[1].gherkinDocument).to.exist()
-        expect(envelopes[1].gherkinDocument).to.have.keys(['comments', 'uri'])
+        expect(envelopes[1].gherkinDocument).to.have.keys([
+          'comments',
+          'feature',
+          'uri',
+        ])
       })
     })
 
@@ -386,13 +407,13 @@ describe('helpers', () => {
       it('emits pickle event and returns an empty array', async function () {
         // Arrange
         const cwd = '/project'
-        const sourceEnvelope = messages.Envelope.create({
-          source: messages.Source.fromObject({
+        const sourceEnvelope: messages.Envelope = {
+          source: {
             data: '@tagA\nFeature: a\nScenario: b\nGiven a step',
-            mediaType: 'text/x.cucumber.gherkin+plain',
+            mediaType: SourceMediaType.TEXT_X_CUCUMBER_GHERKIN_PLAIN,
             uri: '/project/features/a.feature',
-          }),
-        })
+          },
+        }
         const gherkinMessageStream = GherkinStreams.fromSources(
           [sourceEnvelope],
           {}
@@ -433,13 +454,13 @@ describe('helpers', () => {
       it('emits pickle and returns the pickleId', async function () {
         // Arrange
         const cwd = '/project'
-        const sourceEnvelope = messages.Envelope.create({
-          source: messages.Source.fromObject({
+        const sourceEnvelope: messages.Envelope = {
+          source: {
             data: 'Feature: a\nScenario: b\nGiven a step',
-            mediaType: 'text/x.cucumber.gherkin+plain',
+            mediaType: SourceMediaType.TEXT_X_CUCUMBER_GHERKIN_PLAIN,
             uri: '/project/features/a.feature',
-          }),
-        })
+          },
+        }
         const gherkinMessageStream = GherkinStreams.fromSources(
           [sourceEnvelope],
           {}

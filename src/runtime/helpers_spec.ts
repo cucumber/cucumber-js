@@ -70,7 +70,10 @@ describe('Helpers', () => {
     it('returns options.retry is set and the pickle tags match options.retryTagFilter', async () => {
       // Arrange
       const pickle = await getPickleWithTags(['@retry'])
-      const options = buildOptions({ retry: 1, retryTagFilter: '@retry' })
+      const options = buildOptions({
+        retry: 1,
+        retryTagFilter: '@retry',
+      })
 
       // Act
       const result = retriesForPickle(pickle, options)
@@ -82,7 +85,10 @@ describe('Helpers', () => {
     it('returns 0 if options.retry is set but the pickle tags do not match options.retryTagFilter', async () => {
       // Arrange
       const pickle = await getPickleWithTags([])
-      const options = buildOptions({ retry: 1, retryTagFilter: '@retry' })
+      const options = buildOptions({
+        retry: 1,
+        retryTagFilter: '@retry',
+      })
 
       // Act
       const result = retriesForPickle(pickle, options)

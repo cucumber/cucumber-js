@@ -93,7 +93,6 @@ Feature: Failing steps
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
       const {When} = require('@cucumber/cucumber')
-      const Promise = require('bluebird')
 
       When(/^a failing step$/, function(callback) {
         return Promise.resolve()
@@ -113,7 +112,6 @@ Feature: Failing steps
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
       const {When} = require('@cucumber/cucumber')
-      const Promise = require('bluebird')
 
       When(/^a failing step$/, function() {
         return new Promise(function() {
@@ -134,7 +132,6 @@ Feature: Failing steps
     Given a file named "features/step_definitions/failing_steps.js" with:
       """
       const {When} = require('@cucumber/cucumber')
-      const Promise = require('bluebird')
 
       When(/^a failing step$/, function() {
         return Promise.reject(new Error('my error'))

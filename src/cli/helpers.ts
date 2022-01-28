@@ -1,23 +1,21 @@
-import _ from 'lodash'
 import ArgvParser from './argv_parser'
 import ProfileLoader from './profile_loader'
 import shuffle from 'knuth-shuffle-seeded'
-import path from 'path'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
 import { EventDataCollector } from '../formatter/helpers'
 import { doesHaveValue } from '../value_checker'
 import OptionSplitter from './option_splitter'
 import { Readable } from 'stream'
-import { IdGenerator, messages } from '@cucumber/messages'
-import createMeta from '@cucumber/create-meta'
+import os from 'os'
+import * as messages from '@cucumber/messages'
+import { IdGenerator } from '@cucumber/messages'
+import detectCiEnvironment from '@cucumber/ci-environment'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { builtinParameterTypes } from '../support_code_library_builder'
-
-const StepDefinitionPatternType =
-  messages.StepDefinition.StepDefinitionPattern.StepDefinitionPatternType
+import { version } from '../version'
 
 export interface IGetExpandedArgvRequest {
   argv: string[]
@@ -30,9 +28,12 @@ export async function getExpandedArgv({
 }: IGetExpandedArgvRequest): Promise<string[]> {
   const { options } = ArgvParser.parse(argv)
   let fullArgv = argv
-  const profileArgv = await new ProfileLoader(cwd).getArgv(options.profile)
+  const profileArgv = await new ProfileLoader(cwd).getArgv(
+    options.profile,
+    options.config
+  )
   if (profileArgv.length > 0) {
-    fullArgv = _.concat(argv.slice(0, 2), profileArgv, argv.slice(2))
+    fullArgv = argv.slice(0, 2).concat(profileArgv).concat(argv.slice(2))
   }
   return fullArgv
 }
@@ -42,9 +43,11 @@ interface IParseGherkinMessageStreamRequest {
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   gherkinMessageStream: Readable
-  order: string
+  order: PickleOrder
   pickleFilter: PickleFilter
 }
+
+export type PickleOrder = 'defined' | 'random'
 
 export async function parseGherkinMessageStream({
   cwd,
@@ -56,7 +59,7 @@ export async function parseGherkinMessageStream({
 }: IParseGherkinMessageStreamRequest): Promise<string[]> {
   return await new Promise<string[]>((resolve, reject) => {
     const result: string[] = []
-    gherkinMessageStream.on('data', (envelope: messages.IEnvelope) => {
+    gherkinMessageStream.on('data', (envelope: messages.Envelope) => {
       eventBroadcaster.emit('envelope', envelope)
       if (doesHaveValue(envelope.pickle)) {
         const pickle = envelope.pickle
@@ -71,10 +74,7 @@ export async function parseGherkinMessageStream({
       if (doesHaveValue(envelope.parseError)) {
         reject(
           new Error(
-            `Parse error in '${path.relative(
-              cwd,
-              envelope.parseError.source.uri
-            )}': ${envelope.parseError.message}`
+            `Parse error in '${envelope.parseError.source.uri}': ${envelope.parseError.message}`
           )
         )
       }
@@ -88,17 +88,19 @@ export async function parseGherkinMessageStream({
 }
 
 // Orders the pickleIds in place - morphs input
-export function orderPickleIds(pickleIds: string[], order: string): void {
-  let [type, seed] = OptionSplitter.split(order)
+export function orderPickleIds(pickleIds: string[], order: PickleOrder): void {
+  const [type, seed] = OptionSplitter.split(order)
   switch (type) {
     case 'defined':
       break
     case 'random':
       if (seed === '') {
-        seed = Math.floor(Math.random() * 1000 * 1000).toString()
-        console.warn(`Random order using seed: ${seed}`)
+        const newSeed = Math.floor(Math.random() * 1000 * 1000).toString()
+        console.warn(`Random order using seed: ${newSeed}`)
+        shuffle(pickleIds, newSeed)
+      } else {
+        shuffle(pickleIds, seed)
       }
-      shuffle(pickleIds, seed)
       break
     default:
       throw new Error(
@@ -107,17 +109,40 @@ export function orderPickleIds(pickleIds: string[], order: string): void {
   }
 }
 
-export async function emitMetaMessage(
-  eventBroadcaster: EventEmitter
-): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { version } = require('../../package.json')
-  eventBroadcaster.emit(
-    'envelope',
-    new messages.Envelope({
-      meta: createMeta('cucumber-js', version, process.env),
-    })
+export function isJavaScript(filePath: string): boolean {
+  return (
+    filePath.endsWith('.js') ||
+    filePath.endsWith('.mjs') ||
+    filePath.endsWith('.cjs')
   )
+}
+
+export async function emitMetaMessage(
+  eventBroadcaster: EventEmitter,
+  env: NodeJS.ProcessEnv
+): Promise<void> {
+  const meta: messages.Meta = {
+    protocolVersion: messages.version,
+    implementation: {
+      version,
+      name: 'cucumber-js',
+    },
+    cpu: {
+      name: os.arch(),
+    },
+    os: {
+      name: os.platform(),
+      version: os.release(),
+    },
+    runtime: {
+      name: 'node.js',
+      version: process.versions.node,
+    },
+    ci: detectCiEnvironment(env),
+  }
+  eventBroadcaster.emit('envelope', {
+    meta,
+  })
 }
 
 function emitParameterTypes(
@@ -130,18 +155,16 @@ function emitParameterTypes(
     if (builtinParameterTypes.includes(parameterType.name)) {
       continue
     }
-    eventBroadcaster.emit(
-      'envelope',
-      messages.Envelope.fromObject({
-        parameterType: {
-          id: newId(),
-          name: parameterType.name,
-          preferForRegularExpressionMatch: parameterType.preferForRegexpMatch,
-          regularExpressions: parameterType.regexpStrings,
-          useForSnippets: parameterType.useForSnippets,
-        },
-      })
-    )
+    const envelope: messages.Envelope = {
+      parameterType: {
+        id: newId(),
+        name: parameterType.name,
+        preferForRegularExpressionMatch: parameterType.preferForRegexpMatch,
+        regularExpressions: parameterType.regexpStrings,
+        useForSnippets: parameterType.useForSnippets,
+      },
+    }
+    eventBroadcaster.emit('envelope', envelope)
   }
 }
 
@@ -150,12 +173,10 @@ function emitUndefinedParameterTypes(
   eventBroadcaster: EventEmitter
 ): void {
   for (const undefinedParameterType of supportCodeLibrary.undefinedParameterTypes) {
-    eventBroadcaster.emit(
-      'envelope',
-      messages.Envelope.fromObject({
-        undefinedParameterType,
-      })
-    )
+    const envelope: messages.Envelope = {
+      undefinedParameterType,
+    }
+    eventBroadcaster.emit('envelope', envelope)
   }
 }
 
@@ -164,27 +185,25 @@ function emitStepDefinitions(
   eventBroadcaster: EventEmitter
 ): void {
   supportCodeLibrary.stepDefinitions.forEach((stepDefinition) => {
-    eventBroadcaster.emit(
-      'envelope',
-      messages.Envelope.fromObject({
-        stepDefinition: {
-          id: stepDefinition.id,
-          pattern: {
-            source: stepDefinition.pattern.toString(),
-            type:
-              typeof stepDefinition.pattern === 'string'
-                ? StepDefinitionPatternType.CUCUMBER_EXPRESSION
-                : StepDefinitionPatternType.REGULAR_EXPRESSION,
-          },
-          sourceReference: {
-            uri: stepDefinition.uri,
-            location: {
-              line: stepDefinition.line,
-            },
+    const envelope: messages.Envelope = {
+      stepDefinition: {
+        id: stepDefinition.id,
+        pattern: {
+          source: stepDefinition.pattern.toString(),
+          type:
+            typeof stepDefinition.pattern === 'string'
+              ? messages.StepDefinitionPatternType.CUCUMBER_EXPRESSION
+              : messages.StepDefinitionPatternType.REGULAR_EXPRESSION,
+        },
+        sourceReference: {
+          uri: stepDefinition.uri,
+          location: {
+            line: stepDefinition.line,
           },
         },
-      })
-    )
+      },
+    }
+    eventBroadcaster.emit('envelope', envelope)
   })
 }
 
@@ -198,21 +217,19 @@ function emitTestCaseHooks(
       supportCodeLibrary.afterTestCaseHookDefinitions
     )
     .forEach((testCaseHookDefinition: TestCaseHookDefinition) => {
-      eventBroadcaster.emit(
-        'envelope',
-        messages.Envelope.fromObject({
-          hook: {
-            id: testCaseHookDefinition.id,
-            tagExpression: testCaseHookDefinition.tagExpression,
-            sourceReference: {
-              uri: testCaseHookDefinition.uri,
-              location: {
-                line: testCaseHookDefinition.line,
-              },
+      const envelope: messages.Envelope = {
+        hook: {
+          id: testCaseHookDefinition.id,
+          tagExpression: testCaseHookDefinition.tagExpression,
+          sourceReference: {
+            uri: testCaseHookDefinition.uri,
+            location: {
+              line: testCaseHookDefinition.line,
             },
           },
-        })
-      )
+        },
+      }
+      eventBroadcaster.emit('envelope', envelope)
     })
 }
 
@@ -226,20 +243,18 @@ function emitTestRunHooks(
       supportCodeLibrary.afterTestRunHookDefinitions
     )
     .forEach((testRunHookDefinition: TestRunHookDefinition) => {
-      eventBroadcaster.emit(
-        'envelope',
-        messages.Envelope.fromObject({
-          hook: {
-            id: testRunHookDefinition.id,
-            sourceReference: {
-              uri: testRunHookDefinition.uri,
-              location: {
-                line: testRunHookDefinition.line,
-              },
+      const envelope: messages.Envelope = {
+        hook: {
+          id: testRunHookDefinition.id,
+          sourceReference: {
+            uri: testRunHookDefinition.uri,
+            location: {
+              line: testRunHookDefinition.line,
             },
           },
-        })
-      )
+        },
+      }
+      eventBroadcaster.emit('envelope', envelope)
     })
 }
 

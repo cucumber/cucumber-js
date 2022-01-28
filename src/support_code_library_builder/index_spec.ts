@@ -54,6 +54,27 @@ describe('supportCodeLibraryBuilder', () => {
         expect(stepDefinition.code).to.eql(step)
         expect(stepDefinition.unwrappedCode).to.eql(step)
       })
+
+      it('uses the canonical ids provided in order', function () {
+        // Arrange
+        const step = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.defineStep('I do a thing', step)
+        supportCodeLibraryBuilder.methods.defineStep('I do another thing', step)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize({
+          stepDefinitionIds: ['one', 'two'],
+          beforeTestCaseHookDefinitionIds: [],
+          afterTestCaseHookDefinitionIds: [],
+        })
+
+        // Assert
+        expect(options.stepDefinitions).to.have.lengthOf(2)
+        expect(
+          options.stepDefinitions.map((stepDefinition) => stepDefinition.id)
+        ).to.deep.eq(['one', 'two'])
+      })
     })
 
     describe('with definition function wrapper', () => {
@@ -95,6 +116,29 @@ describe('supportCodeLibraryBuilder', () => {
         expect(options.afterTestCaseHookDefinitions).to.have.lengthOf(1)
         const testCaseHookDefinition = options.afterTestCaseHookDefinitions[0]
         expect(testCaseHookDefinition.code).to.eql(hook)
+      })
+
+      it('uses the canonical ids provided in order', function () {
+        // Arrange
+        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.After(hook)
+        supportCodeLibraryBuilder.methods.After(hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize({
+          stepDefinitionIds: [],
+          beforeTestCaseHookDefinitionIds: [],
+          afterTestCaseHookDefinitionIds: ['one', 'two'],
+        })
+
+        // Assert
+        expect(options.afterTestCaseHookDefinitions).to.have.lengthOf(2)
+        expect(
+          options.afterTestCaseHookDefinitions.map(
+            (definition) => definition.id
+          )
+        ).to.deep.eq(['one', 'two'])
       })
     })
 
@@ -168,7 +212,7 @@ describe('supportCodeLibraryBuilder', () => {
     })
   })
 
-  describe('this.Before', () => {
+  describe('Before', () => {
     describe('function only', () => {
       it('adds a scenario hook definition', function () {
         // Arrange
@@ -183,6 +227,29 @@ describe('supportCodeLibraryBuilder', () => {
         expect(options.beforeTestCaseHookDefinitions).to.have.lengthOf(1)
         const testCaseHookDefinition = options.beforeTestCaseHookDefinitions[0]
         expect(testCaseHookDefinition.code).to.eql(hook)
+      })
+
+      it('uses the canonical ids provided in order', function () {
+        // Arrange
+        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.Before(hook)
+        supportCodeLibraryBuilder.methods.Before(hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize({
+          stepDefinitionIds: [],
+          beforeTestCaseHookDefinitionIds: ['one', 'two'],
+          afterTestCaseHookDefinitionIds: [],
+        })
+
+        // Assert
+        expect(options.beforeTestCaseHookDefinitions).to.have.lengthOf(2)
+        expect(
+          options.beforeTestCaseHookDefinitions.map(
+            (definition) => definition.id
+          )
+        ).to.deep.eq(['one', 'two'])
       })
     })
 

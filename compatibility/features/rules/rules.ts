@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { Given, When, Then } from '../../..'
+import { Given, When, Then } from '../../../src'
 
 Given(
   'there are {int} {float} coins inside',

@@ -6,7 +6,14 @@ export interface IWorldOptions {
   parameters: any
 }
 
-export default class World {
+export interface IWorld {
+  readonly attach: ICreateAttachment
+  readonly log: ICreateLog
+  readonly parameters: any
+  [key: string]: any
+}
+
+export default class World implements IWorld {
   public readonly attach: ICreateAttachment
   public readonly log: ICreateLog
   public readonly parameters: any

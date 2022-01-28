@@ -9,7 +9,9 @@ import { doesHaveValue, valueOrDefault } from '../value_checker'
 
 interface TestProfileLoaderOptions {
   definitionsFileContent?: string
+  definitionsFileName?: string
   profiles?: string[]
+  configOption?: string
 }
 
 async function testProfileLoader(
@@ -18,14 +20,20 @@ async function testProfileLoader(
   const cwd = await promisify<DirOptions, string>(tmp.dir)({
     unsafeCleanup: true,
   })
+  const definitionsFileName = opts.definitionsFileName ?? 'cucumber.js'
+
   if (doesHaveValue(opts.definitionsFileContent)) {
     await fs.writeFile(
-      path.join(cwd, 'cucumber.js'),
+      path.join(cwd, definitionsFileName),
       opts.definitionsFileContent
     )
   }
+
   const profileLoader = new ProfileLoader(cwd)
-  return await profileLoader.getArgv(valueOrDefault(opts.profiles, []))
+  return await profileLoader.getArgv(
+    valueOrDefault(opts.profiles, []),
+    opts.configOption
+  )
 }
 
 describe('ProfileLoader', () => {
@@ -148,6 +156,43 @@ describe('ProfileLoader', () => {
             expect(caughtErrorMessage).to.eql('Undefined profile: profile2')
           })
         })
+      })
+    })
+
+    describe('with non-default configuration file', () => {
+      it('returns the argv for the given profile', async function () {
+        // Arrange
+        const definitionsFileContent =
+          'module.exports = {profile3: "--opt3 --opt4"}'
+
+        // Act
+        const result = await testProfileLoader({
+          definitionsFileContent,
+          definitionsFileName: '.cucumber-rc.js',
+          profiles: ['profile3'],
+          configOption: '.cucumber-rc.js',
+        })
+
+        // Assert
+        expect(result).to.eql(['--opt3', '--opt4'])
+      })
+
+      it('throws when the file doesnt exist', async () => {
+        // Arrange
+        const definitionsFileContent =
+          'module.exports = {profile3: "--opt3 --opt4"}'
+
+        // Act
+        try {
+          await testProfileLoader({
+            definitionsFileContent,
+            profiles: [],
+            configOption: 'doesntexist.js',
+          })
+          expect.fail('should throw')
+        } catch (e) {
+          expect(e.message).to.contain('Cannot find module')
+        }
       })
     })
   })

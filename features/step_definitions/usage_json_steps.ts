@@ -1,14 +1,13 @@
-import _ from 'lodash'
 import { DataTable, Then } from '../../'
 import { expect } from 'chai'
 import path from 'path'
 import { World } from '../support/world'
+import { IUsage } from '../../src/formatter/helpers/usage_helpers'
 
 Then('it outputs the usage data:', function (this: World, table: DataTable) {
-  const usageData = JSON.parse(this.lastRun.output)
+  const usageData: IUsage[] = JSON.parse(this.lastRun.output)
   table.hashes().forEach((row: any) => {
-    const rowUsage = _.find(
-      usageData,
+    const rowUsage = usageData.find(
       (datum) =>
         datum.pattern === row.PATTERN && datum.patternType === row.PATTERN_TYPE
     )

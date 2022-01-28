@@ -1,6 +1,6 @@
 # Step Definitions
 
-Step definitions (`Given`, `When`, `Then`) are the glue between features written in Gherkin and the actual tests implemenation.
+Step definitions (`Given`, `When`, `Then`) are the glue between features written in Gherkin and the actual tests implementation.
 
 Cucumber supports two types of expressions:
 
@@ -18,12 +18,15 @@ Given I have 42 cucumbers in my belly
 
 JS:
 ```js
-import { Given } from 'cucumber';
+import { Given } from '@cucumber/cucumber';
 
 Given('I have {int} cucumbers in my belly', function (cucumberCount) {
   assert.equal(this.responseStatus, cucumberCount)
 });
 ```
+
+Note that your step definition functions cannot reference the [world](./world.md) as `this` if you use
+arrow functions. See [FAQ](../faq.md) for details.
 
 ## Regular expressions
 

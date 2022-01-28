@@ -1,10 +1,5 @@
-import { messages, TimeConversion } from '@cucumber/messages'
-import { doesNotHaveValue } from './value_checker'
-import Long from 'long'
-
-export const NANOSECONDS_IN_MILLISECOND = 1e6
-export const MILLISECONDS_IN_SECOND = 1e3
-export const NANOSECONDS_IN_SECOND = 1e9
+import { performance } from 'perf_hooks'
+import * as messages from '@cucumber/messages'
 
 let previousTimestamp: number
 
@@ -20,6 +15,7 @@ const methods: any = {
   },
   setInterval: setInterval.bind(global),
   setTimeout: setTimeout.bind(global),
+  performance,
 }
 
 if (typeof setImmediate !== 'undefined') {
@@ -28,63 +24,38 @@ if (typeof setImmediate !== 'undefined') {
 }
 
 function getTimestamp(): number {
-  return new methods.Date().getTime()
-}
-
-function toNumber(x: number | Long): number {
-  return typeof x === 'number' ? x : x.toNumber()
-}
-
-export function addDurations(
-  a: messages.IDuration,
-  b: messages.IDuration
-): messages.IDuration {
-  if (doesNotHaveValue(b)) {
-    return a
-  }
-  let seconds = toNumber(a.seconds) + toNumber(b.seconds)
-  let nanos = a.nanos + b.nanos
-  if (nanos > NANOSECONDS_IN_SECOND) {
-    seconds += 1
-    nanos -= NANOSECONDS_IN_SECOND
-  }
-  return new messages.Duration({ seconds, nanos })
-}
-
-// TODO use TimeConversion methods in cucumber-messages
-//   dependent on https://github.com/cucumber/cucumber/pull/832
-export function millisecondsToDuration(
-  milliseconds: number
-): messages.IDuration {
-  const seconds = Math.floor(milliseconds / MILLISECONDS_IN_SECOND)
-  const nanos =
-    (milliseconds - seconds * MILLISECONDS_IN_SECOND) *
-    NANOSECONDS_IN_MILLISECOND
-  return new messages.Duration({ seconds, nanos })
-}
-
-export function durationToMilliseconds(duration: messages.IDuration): number {
-  const secondMillis = toNumber(duration.seconds) * MILLISECONDS_IN_SECOND
-  const nanoMillis = duration.nanos / NANOSECONDS_IN_MILLISECOND
-  return secondMillis + nanoMillis
-}
-
-export function durationToNanoseconds(duration: messages.IDuration): number {
-  return toNumber(duration.seconds) * NANOSECONDS_IN_SECOND + duration.nanos
+  return methods.performance.now()
 }
 
 export function durationBetweenTimestamps(
-  startedTimestamp: messages.ITimestamp,
-  finishedTimestamp: messages.ITimestamp
-): messages.IDuration {
+  startedTimestamp: messages.Timestamp,
+  finishedTimestamp: messages.Timestamp
+): messages.Duration {
   const durationMillis =
-    TimeConversion.timestampToMillisecondsSinceEpoch(finishedTimestamp) -
-    TimeConversion.timestampToMillisecondsSinceEpoch(startedTimestamp)
-  return TimeConversion.millisecondsToDuration(durationMillis)
+    messages.TimeConversion.timestampToMillisecondsSinceEpoch(
+      finishedTimestamp
+    ) -
+    messages.TimeConversion.timestampToMillisecondsSinceEpoch(startedTimestamp)
+  return messages.TimeConversion.millisecondsToDuration(durationMillis)
 }
 
-export function getZeroDuration(): messages.IDuration {
-  return new messages.Duration({ seconds: 0, nanos: 0 })
+export async function wrapPromiseWithTimeout<T>(
+  promise: Promise<T>,
+  timeoutInMilliseconds: number,
+  timeoutMessage: string = ''
+): Promise<T> {
+  let timeoutId: NodeJS.Timeout
+  if (timeoutMessage === '') {
+    timeoutMessage = `Action did not complete within ${timeoutInMilliseconds} milliseconds`
+  }
+  const timeoutPromise = new Promise<T>((resolve, reject) => {
+    timeoutId = methods.setTimeout(() => {
+      reject(new Error(timeoutMessage))
+    }, timeoutInMilliseconds)
+  })
+  return await Promise.race([promise, timeoutPromise]).finally(() =>
+    methods.clearTimeout(timeoutId)
+  )
 }
 
 export default methods

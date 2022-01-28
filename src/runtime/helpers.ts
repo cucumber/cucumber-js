@@ -3,7 +3,7 @@ import Table from 'cli-table3'
 import indentString from 'indent-string'
 import { PickleTagFilter } from '../pickle_filter'
 import StepDefinition from '../models/step_definition'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import { IRuntimeOptions } from '.'
 
 export function getAmbiguousStepException(
@@ -46,15 +46,18 @@ export function getAmbiguousStepException(
 }
 
 export function retriesForPickle(
-  pickle: messages.IPickle,
+  pickle: messages.Pickle,
   options: IRuntimeOptions
 ): number {
+  if (!options.retry) {
+    return 0
+  }
   const retries = options.retry
   if (retries === 0) {
     return 0
   }
   const retryTagFilter = options.retryTagFilter
-  if (retryTagFilter === '') {
+  if (!retryTagFilter) {
     return retries
   }
   const pickleTagFilter = new PickleTagFilter(retryTagFilter)
@@ -62,4 +65,22 @@ export function retriesForPickle(
     return retries
   }
   return 0
+}
+
+export function shouldCauseFailure(
+  status: messages.TestStepResultStatus,
+  options: IRuntimeOptions
+): boolean {
+  if (options.dryRun) {
+    return false
+  }
+  const failureStatuses: messages.TestStepResultStatus[] = [
+    messages.TestStepResultStatus.AMBIGUOUS,
+    messages.TestStepResultStatus.FAILED,
+    messages.TestStepResultStatus.UNDEFINED,
+  ]
+  if (options.strict) {
+    failureStatuses.push(messages.TestStepResultStatus.PENDING)
+  }
+  return failureStatuses.includes(status)
 }

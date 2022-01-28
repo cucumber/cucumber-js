@@ -1,25 +1,42 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import DataTable from './data_table'
-import { messages } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
+
+const id = 'id'
+const location: messages.Location = { line: 0 }
 
 describe('DataTable', () => {
   describe('table with headers', () => {
-    const dataTable = messages.GherkinDocument.Feature.Step.DataTable.fromObject(
-      {
-        rows: [
-          {
-            cells: [{ value: 'header 1' }, { value: 'header 2' }],
-          },
-          {
-            cells: [{ value: 'row 1 col 1' }, { value: 'row 1 col 2' }],
-          },
-          {
-            cells: [{ value: 'row 2 col 1' }, { value: 'row 2 col 2' }],
-          },
-        ],
-      }
-    )
+    const dataTable: messages.DataTable = {
+      location,
+      rows: [
+        {
+          id,
+          location,
+          cells: [
+            { value: 'header 1', location },
+            { value: 'header 2', location },
+          ],
+        },
+        {
+          id,
+          location,
+          cells: [
+            { value: 'row 1 col 1', location },
+            { value: 'row 1 col 2', location },
+          ],
+        },
+        {
+          id,
+          location,
+          cells: [
+            { value: 'row 2 col 1', location },
+            { value: 'row 2 col 2', location },
+          ],
+        },
+      ],
+    }
 
     describe('rows', () => {
       it('returns a 2-D array without the header', () => {
@@ -50,18 +67,27 @@ describe('DataTable', () => {
   })
 
   describe('table without headers', () => {
-    const dataTable = messages.GherkinDocument.Feature.Step.DataTable.fromObject(
-      {
-        rows: [
-          {
-            cells: [{ value: 'row 1 col 1' }, { value: 'row 1 col 2' }],
-          },
-          {
-            cells: [{ value: 'row 2 col 1' }, { value: 'row 2 col 2' }],
-          },
-        ],
-      }
-    )
+    const dataTable: messages.DataTable = {
+      location,
+      rows: [
+        {
+          id,
+          location,
+          cells: [
+            { value: 'row 1 col 1', location },
+            { value: 'row 1 col 2', location },
+          ],
+        },
+        {
+          id,
+          location,
+          cells: [
+            { value: 'row 2 col 1', location },
+            { value: 'row 2 col 2', location },
+          ],
+        },
+      ],
+    }
 
     describe('raw', () => {
       it('returns a 2-D array', () => {
@@ -83,21 +109,24 @@ describe('DataTable', () => {
   })
 
   describe('table with something other than 2 columns', () => {
-    const dataTable = messages.GherkinDocument.Feature.Step.DataTable.fromObject(
-      {
-        rows: [
-          {
-            cells: [{ value: 'row 1 col 1' }],
-          },
-          {
-            cells: [{ value: 'row 2 col 1' }],
-          },
-        ],
-      }
-    )
-
     describe('rowsHash', () => {
       it('throws an error if not all rows have two columns', function () {
+        const dataTable: messages.DataTable = {
+          location,
+          rows: [
+            {
+              id,
+              location,
+              cells: [{ value: 'row 1 col 1', location }],
+            },
+            {
+              id,
+              location,
+              cells: [{ value: 'row 2 col 1', location }],
+            },
+          ],
+        }
+
         expect(() => new DataTable(dataTable).rowsHash()).to.throw(
           'rowsHash can only be called on a data table where all rows have exactly two columns'
         )

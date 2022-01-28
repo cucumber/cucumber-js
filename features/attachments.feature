@@ -128,17 +128,17 @@ Feature: Attachments
     Given a file named "features/support/hooks.js" with:
       """
       const {After} = require('@cucumber/cucumber')
-      const Promise = require('bluebird')
 
       After(function() {
-        // Do not return the promise so that the attach happens after the hook completes
-        Promise.delay(100).then(() => {
+        // Do not use the callback / promise interface so that the attach happens after the hook completes
+        setTimeout(() => {
           this.attach("text")
-        })
+        }, 100)
       })
       """
     When I run cucumber-js
-    Then the error output contains the text:
+    Then it fails
+    And the error output contains the text:
       """
       Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.
       """

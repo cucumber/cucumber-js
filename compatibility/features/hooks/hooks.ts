@@ -1,4 +1,6 @@
-import { When, Before, After } from '../../..'
+import { When, Before, After, World } from '../../../src'
+import fs from 'fs'
+import path from 'path'
 
 Before(function () {
   // no-op
@@ -18,4 +20,21 @@ After(function () {
 
 After('@some-tag or @some-other-tag', function () {
   throw new Error('Exception in conditional hook')
+})
+
+After('@with-attachment', async function (this: World) {
+  await this.attach(
+    fs.createReadStream(
+      path.join(
+        process.cwd(),
+        'node_modules',
+        '@cucumber',
+        'compatibility-kit',
+        'features',
+        'hooks',
+        'cucumber.svg'
+      )
+    ),
+    'image/svg+xml'
+  )
 })

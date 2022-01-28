@@ -1,14 +1,13 @@
 import { Then } from '../../'
 import { World } from '../support/world'
-import _, { Dictionary } from 'lodash'
-import { messages } from '@cucumber/messages'
+import messages from '@cucumber/messages'
 import { expect } from 'chai'
 
 interface TestCaseParser {
-  pickles: Dictionary<messages.IPickle>
-  testCases: Dictionary<string>
+  pickles: Record<string, messages.Pickle>
+  testCases: Record<string, string>
   running: Set<string>
-  testStarts: Dictionary<string>
+  testStarts: Record<string, string>
 }
 
 function defaultHandlers({
@@ -18,7 +17,7 @@ function defaultHandlers({
   testStarts,
 }: TestCaseParser): Record<string, Function> {
   return {
-    pickle: (p: messages.IPickle) => (pickles[p.id] = p),
+    pickle: (p: messages.Pickle) => (pickles[p.id] = p),
     testCase: (t: messages.TestCase) => (testCases[t.id] = t.pickleId),
     testCaseStarted: (t: messages.TestCaseStarted) => {
       running.add(t.testCaseId)
@@ -30,24 +29,24 @@ function defaultHandlers({
 }
 
 function parse(
-  envelopes: messages.IEnvelope[],
+  envelopes: messages.Envelope[],
   handlers: Record<string, Function>
 ): void {
-  _.each(envelopes, (envelope) =>
-    _.forOwn(envelope, (value, key) => {
-      ;(handlers[key] || _.noop)(value)
-    })
-  )
+  envelopes.forEach((envelope) => {
+    for (const key in envelope) {
+      ;(handlers[key] || (() => {}))(envelope[key as keyof messages.Envelope])
+    }
+  })
 }
 
 function verifyTandem(
-  assertion: (p1: messages.IPickle, p2: messages.IPickle) => void
+  assertion: (p1: messages.Pickle, p2: messages.Pickle) => void
 ) {
   return function (this: World): void {
     const running = new Set<string>()
-    const pickles: Dictionary<messages.IPickle> = {}
-    const testCases: Dictionary<string> = {}
-    const testStarts: Dictionary<string> = {}
+    const pickles: Record<string, messages.Pickle> = {}
+    const testCases: Record<string, string> = {}
+    const testStarts: Record<string, string> = {}
 
     const handlers = defaultHandlers({
       pickles,
@@ -55,24 +54,24 @@ function verifyTandem(
       testCases,
       testStarts,
     })
-    handlers.testCaseStarted = _.wrap(
-      handlers.testCaseStarted,
-      (fn, t: messages.TestCaseStarted) => {
-        running.forEach((tcId) =>
-          assertion(pickles[testCases[tcId]], pickles[testCases[t.testCaseId]])
-        )
-        fn(t)
-      }
-    )
+
+    const originalFn = handlers.testCaseStarted
+    handlers.testCaseStarted = (t: messages.TestCaseStarted) => {
+      running.forEach((tcId) =>
+        assertion(pickles[testCases[tcId]], pickles[testCases[t.testCaseId]])
+      )
+      originalFn(t)
+    }
+
     parse(this.lastRun.envelopes, handlers)
   }
 }
 
 Then(/^it runs tests in order (.+)$/, function (this: World, order: string) {
   const running = new Set<string>()
-  const pickles: Dictionary<messages.IPickle> = {}
-  const testCases: Dictionary<string> = {}
-  const testStarts: Dictionary<string> = {}
+  const pickles: Record<string, messages.Pickle> = {}
+  const testCases: Record<string, string> = {}
+  const testStarts: Record<string, string> = {}
   const scenarioNames = order.split(/,\s*/)
   const handlers = defaultHandlers({ pickles, running, testCases, testStarts })
   handlers.testCaseStarted = (t: messages.TestCaseStarted) =>

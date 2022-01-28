@@ -1,5 +1,4 @@
-import bluebird from 'bluebird'
-import Time from './time'
+import { wrapPromiseWithTimeout } from './time'
 import UncaughtExceptionManager from './uncaught_exception_manager'
 import util from 'util'
 import { doesHaveValue } from './value_checker'
@@ -69,23 +68,22 @@ const UserCodeRunner = {
     })
     racingPromises.push(uncaughtExceptionPromise)
 
-    let timeoutId
+    let finalPromise = Promise.race(racingPromises)
     if (timeoutInMilliseconds >= 0) {
-      const timeoutPromise = new Promise((resolve, reject) => {
-        timeoutId = Time.setTimeout(() => {
-          const timeoutMessage =
-            'function timed out, ensure the ' +
-            (callbackInterface ? 'callback is executed' : 'promise resolves') +
-            ` within ${timeoutInMilliseconds.toString()} milliseconds`
-          reject(new Error(timeoutMessage))
-        }, timeoutInMilliseconds)
-      })
-      racingPromises.push(timeoutPromise)
+      const timeoutMessage =
+        'function timed out, ensure the ' +
+        (callbackInterface ? 'callback is executed' : 'promise resolves') +
+        ` within ${timeoutInMilliseconds.toString()} milliseconds`
+      finalPromise = wrapPromiseWithTimeout(
+        finalPromise,
+        timeoutInMilliseconds,
+        timeoutMessage
+      )
     }
 
     let error, result
     try {
-      result = await bluebird.race(racingPromises)
+      result = await finalPromise
     } catch (e) {
       if (e instanceof Error) {
         error = e
@@ -96,7 +94,6 @@ const UserCodeRunner = {
       }
     }
 
-    Time.clearTimeout(timeoutId)
     UncaughtExceptionManager.unregisterHandler(exceptionHandler)
 
     return { error, result }

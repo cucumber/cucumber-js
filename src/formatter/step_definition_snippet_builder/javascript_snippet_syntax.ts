@@ -29,6 +29,8 @@ export default class JavaScriptSnippetSyntax implements ISnippetSnytax {
     let implementation: string
     if (this.snippetInterface === SnippetInterface.Callback) {
       implementation = `${CALLBACK_NAME}(null, 'pending');`
+    } else if (this.snippetInterface === SnippetInterface.Promise) {
+      implementation = "return Promise.resolve('pending');"
     } else {
       implementation = "return 'pending';"
     }
@@ -36,9 +38,8 @@ export default class JavaScriptSnippetSyntax implements ISnippetSnytax {
     const definitionChoices = generatedExpressions.map(
       (generatedExpression, index) => {
         const prefix = index === 0 ? '' : '// '
-        const allParameterNames = generatedExpression.parameterNames.concat(
-          stepParameterNames
-        )
+        const allParameterNames =
+          generatedExpression.parameterNames.concat(stepParameterNames)
         if (this.snippetInterface === SnippetInterface.Callback) {
           allParameterNames.push(CALLBACK_NAME)
         }

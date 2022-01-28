@@ -2,6 +2,9 @@
 
 Hooks are used for setup and teardown the environment before and after each scenario. See the [API reference](./api_reference.md) for the specification of the first argument passed to hooks. Multiple *Before* hooks are executed in the order that they were defined. Multiple *After* hooks are executed in the **reverse** order that they were defined.
 
+Note that your hook functions cannot reference the [world](./world.md) as `this` if you use
+arrow functions. See [FAQ](../faq.md) for details.
+
 ```javascript
 var {After, Before} = require('@cucumber/cucumber');
 
@@ -121,4 +124,3 @@ AfterStep( function ({result}) {
   }
 });
 ```
-

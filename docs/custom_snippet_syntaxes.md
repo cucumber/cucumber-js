@@ -1,4 +1,4 @@
-#### Custom snippet syntaxes
+# Custom Snippet Syntaxes
 
 * See the [JavaScript syntax](/src/formatter/step_definition_snippet_builder/javascript_snippet_syntax.ts) and the [custom snippet syntax](/features/step_definition_snippets_custom_syntax.feature) for examples.
   * Arguments passed to the constructor:

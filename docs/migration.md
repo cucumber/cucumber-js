@@ -1,17 +1,89 @@
+# Migrating to cucumber-js 8.x.x
+
+## Generator step definitions
+
+Generator functions used in step definitions (`function*` with the `yield` keyword)
+are not natively supported anymore with cucumber-js.
+
+You may consider using `async`/`await` rather than generators.
+
+You can still use generators as before but you need to add your own dependencies
+to `bluebird` and `is-generator`. Cucumber-js will no display explicit error message
+anymore in case you use a generator without wrapping it properly.
+
+```javascript
+const isGenerator = require('is-generator')
+const {coroutine} = require('bluebird')
+const {setDefinitionFunctionWrapper} = require('@cucumber/cucumber')
+
+setDefinitionFunctionWrapper(function (fn) {
+  if (isGenerator.fn(fn)) {
+    return coroutine(fn)
+  } else {
+    return fn
+  }
+})
+```
+
 # Migrating to cucumber-js 7.x.x
 
 ## Package Name
 
 cucumber-js is now published at `@cucumber/cucumber` instead of `cucumber`. To upgrade, you'll need to remove the old package and add the new one:
- 
+
 ```shell
 $ npm rm cucumber
 $ npm install --save-dev @cucumber/cucumber
-``` 
- 
+```
+
 You'll need to update any `import`/`require` statements in your support code to use the new package name.
 
 (The executable is still `cucumber-js` though.)
+
+## Hooks
+
+The result object passed as the argument to your `After` hook function has a different structure.
+
+Previously in `cucumber`:
+
+```js
+{
+  "sourceLocation": {
+    "uri": "features/example.feature",
+    "line": 7
+  },
+  "pickle": {...},
+  "result": {
+    "duration": 660000000,
+    "status": "failed",
+    "exception": {
+      "name": "AssertionError",
+      "message": "...",
+      "showDiff": false,
+      "stack": "..."
+    },
+    "retried": true
+  }
+}
+```
+
+Now in `@cucumber/cucumber`:
+
+```js
+{
+  "gherkinDocument": {...}, // schema: https://github.com/cucumber/common/blob/messages/v16.0.1/messages/jsonschema/GherkinDocument.json
+  "pickle": {...}, // schema: https://github.com/cucumber/common/blob/messages/v16.0.1/messages/jsonschema/Pickle.json
+  "testCaseStartedId": "[uuid]",
+  "result": {
+    "status": "FAILED", // one of: UNKNOWN, PASSED, SKIPPED, PENDING, UNDEFINED, AMBIGUOUS, FAILED
+    "message": "...", // includes stack trace
+    "duration": {
+      "seconds": "0",
+      "nanos": 660000000
+    }
+  }
+}
+```
 
 ## Formatters
 

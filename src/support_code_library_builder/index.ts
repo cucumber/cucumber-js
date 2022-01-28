@@ -1,6 +1,7 @@
-import _ from 'lodash'
-import { buildParameterType, getDefinitionLineAndUri } from './build_helpers'
-import { IdGenerator, messages } from '@cucumber/messages'
+import { buildParameterType } from './build_parameter_type'
+import { getDefinitionLineAndUri } from './get_definition_line_and_uri'
+import { IdGenerator } from '@cucumber/messages'
+import * as messages from '@cucumber/messages'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
@@ -14,8 +15,7 @@ import {
   ParameterTypeRegistry,
   RegularExpression,
 } from '@cucumber/cucumber-expressions'
-import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { validateNoGeneratorFunctions } from './finalize_helpers'
+import { doesHaveValue } from '../value_checker'
 import {
   DefineStepPattern,
   IDefineStepOptions,
@@ -30,6 +30,7 @@ import {
   ParallelAssignmentValidator,
 } from './types'
 import World from './world'
+import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
 
 interface IStepDefinitionConfig {
   code: any
@@ -152,13 +153,19 @@ export class SupportCodeLibraryBuilder {
 
   defineTestCaseHook(
     getCollection: () => ITestCaseHookDefinitionConfig[]
-  ): (
-    options: string | IDefineTestCaseHookOptions | TestCaseHookFunction,
-    code?: TestCaseHookFunction
+  ): <WorldType>(
+    options:
+      | string
+      | IDefineTestCaseHookOptions
+      | TestCaseHookFunction<WorldType>,
+    code?: TestCaseHookFunction<WorldType>
   ) => void {
-    return (
-      options: string | IDefineTestCaseHookOptions | TestCaseHookFunction,
-      code?: TestCaseHookFunction
+    return <WorldType>(
+      options:
+        | string
+        | IDefineTestCaseHookOptions
+        | TestCaseHookFunction<WorldType>,
+      code?: TestCaseHookFunction<WorldType>
     ) => {
       if (typeof options === 'string') {
         options = { tags: options }
@@ -183,13 +190,19 @@ export class SupportCodeLibraryBuilder {
 
   defineTestStepHook(
     getCollection: () => ITestStepHookDefinitionConfig[]
-  ): (
-    options: string | IDefineTestStepHookOptions | TestStepHookFunction,
-    code?: TestStepHookFunction
+  ): <WorldType>(
+    options:
+      | string
+      | IDefineTestStepHookOptions
+      | TestStepHookFunction<WorldType>,
+    code?: TestStepHookFunction<WorldType>
   ) => void {
-    return (
-      options: string | IDefineTestStepHookOptions | TestStepHookFunction,
-      code?: TestStepHookFunction
+    return <WorldType>(
+      options:
+        | string
+        | IDefineTestStepHookOptions
+        | TestStepHookFunction<WorldType>,
+      code?: TestStepHookFunction<WorldType>
     ) => {
       if (typeof options === 'string') {
         options = { tags: options }
@@ -254,16 +267,17 @@ export class SupportCodeLibraryBuilder {
   }
 
   buildTestCaseHookDefinitions(
-    configs: ITestCaseHookDefinitionConfig[]
+    configs: ITestCaseHookDefinitionConfig[],
+    canonicalIds?: string[]
   ): TestCaseHookDefinition[] {
-    return configs.map(({ code, line, options, uri }) => {
+    return configs.map(({ code, line, options, uri }, index) => {
       const wrappedCode = this.wrapCode({
         code,
         wrapperOptions: options.wrapperOptions,
       })
       return new TestCaseHookDefinition({
         code: wrappedCode,
-        id: this.newId(),
+        id: canonicalIds ? canonicalIds[index] : this.newId(),
         line,
         options,
         unwrappedCode: code,
@@ -310,14 +324,14 @@ export class SupportCodeLibraryBuilder {
     })
   }
 
-  buildStepDefinitions(): {
+  buildStepDefinitions(canonicalIds?: string[]): {
     stepDefinitions: StepDefinition[]
-    undefinedParameterTypes: messages.IUndefinedParameterType[]
+    undefinedParameterTypes: messages.UndefinedParameterType[]
   } {
     const stepDefinitions: StepDefinition[] = []
-    const undefinedParameterTypes: messages.IUndefinedParameterType[] = []
+    const undefinedParameterTypes: messages.UndefinedParameterType[] = []
     this.stepDefinitionConfigs.forEach(
-      ({ code, line, options, pattern, uri }) => {
+      ({ code, line, options, pattern, uri }, index) => {
         let expression
         if (typeof pattern === 'string') {
           try {
@@ -350,7 +364,7 @@ export class SupportCodeLibraryBuilder {
           new StepDefinition({
             code: wrappedCode,
             expression,
-            id: this.newId(),
+            id: canonicalIds ? canonicalIds[index] : this.newId(),
             line,
             options,
             pattern,
@@ -363,23 +377,14 @@ export class SupportCodeLibraryBuilder {
     return { stepDefinitions, undefinedParameterTypes }
   }
 
-  finalize(): ISupportCodeLibrary {
-    if (doesNotHaveValue(this.definitionFunctionWrapper)) {
-      const definitionConfigs = _.chain([
-        this.afterTestCaseHookDefinitionConfigs,
-        this.afterTestRunHookDefinitionConfigs,
-        this.beforeTestCaseHookDefinitionConfigs,
-        this.beforeTestRunHookDefinitionConfigs,
-        this.stepDefinitionConfigs,
-      ])
-        .flatten()
-        .value()
-      validateNoGeneratorFunctions({ cwd: this.cwd, definitionConfigs })
-    }
-    const stepDefinitionsResult = this.buildStepDefinitions()
+  finalize(canonicalIds?: ICanonicalSupportCodeIds): ISupportCodeLibrary {
+    const stepDefinitionsResult = this.buildStepDefinitions(
+      canonicalIds?.stepDefinitionIds
+    )
     return {
       afterTestCaseHookDefinitions: this.buildTestCaseHookDefinitions(
-        this.afterTestCaseHookDefinitionConfigs
+        this.afterTestCaseHookDefinitionConfigs,
+        canonicalIds?.afterTestCaseHookDefinitionIds
       ),
       afterTestRunHookDefinitions: this.buildTestRunHookDefinitions(
         this.afterTestRunHookDefinitionConfigs
@@ -388,7 +393,8 @@ export class SupportCodeLibraryBuilder {
         this.afterTestStepHookDefinitionConfigs
       ),
       beforeTestCaseHookDefinitions: this.buildTestCaseHookDefinitions(
-        this.beforeTestCaseHookDefinitionConfigs
+        this.beforeTestCaseHookDefinitionConfigs,
+        canonicalIds?.beforeTestCaseHookDefinitionIds
       ),
       beforeTestRunHookDefinitions: this.buildTestRunHookDefinitions(
         this.beforeTestRunHookDefinitionConfigs

@@ -1,11 +1,13 @@
 import Formatter, { IFormatterOptions } from './'
-import Status from '../status'
 import { parseTestCaseAttempt } from './helpers'
 import { doesHaveValue } from '../value_checker'
-import { messages } from '@cucumber/messages'
-import IEnvelope = messages.IEnvelope
+import * as messages from '@cucumber/messages'
+import IEnvelope = messages.Envelope
 
 export default class SnippetsFormatter extends Formatter {
+  public static readonly documentation: string =
+    "The Snippets Formatter doesn't output anything regarding the test run; it just prints snippets to implement any undefined steps"
+
   constructor(options: IFormatterOptions) {
     super(options)
     options.eventBroadcaster.on('envelope', (envelope: IEnvelope) => {
@@ -25,7 +27,9 @@ export default class SnippetsFormatter extends Formatter {
         testCaseAttempt,
       })
       parsed.testSteps.forEach((testStep) => {
-        if (testStep.result.status === Status.UNDEFINED) {
+        if (
+          testStep.result.status === messages.TestStepResultStatus.UNDEFINED
+        ) {
           snippets.push(testStep.snippet)
         }
       })

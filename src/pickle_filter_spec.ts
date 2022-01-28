@@ -1,7 +1,6 @@
 import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import PickleFilter from './pickle_filter'
-import path from 'path'
 import { parse } from '../test/gherkin_helpers'
 
 describe('PickleFilter', () => {
@@ -26,7 +25,7 @@ describe('PickleFilter', () => {
           gherkinDocument,
         } = await parse({
           data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
-          uri: path.resolve(cwd, 'features/a.feature'),
+          uri: 'features/a.feature',
         })
 
         // Act
@@ -55,7 +54,7 @@ describe('PickleFilter', () => {
             gherkinDocument,
           } = await parse({
             data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -74,7 +73,7 @@ describe('PickleFilter', () => {
             gherkinDocument,
           } = await parse({
             data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
-            uri: path.resolve(cwd, 'features/b.feature'),
+            uri: 'features/b.feature',
           })
 
           // Act
@@ -84,14 +83,14 @@ describe('PickleFilter', () => {
           expect(result).to.eql(true)
         })
 
-        it('returns true if pickle line does not match', async function () {
+        it('returns false if pickle line does not match', async function () {
           // Arrange
           const {
             pickles: [pickle],
             gherkinDocument,
           } = await parse({
             data: ['Feature: a', '', 'Scenario: b', 'Given a step'].join('\n'),
-            uri: path.resolve(cwd, 'features/b.feature'),
+            uri: 'features/b.feature',
           })
 
           // Act
@@ -125,7 +124,7 @@ describe('PickleFilter', () => {
               'Scenario: nameA descriptionA',
               'Given a step',
             ].join('\n'),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -147,7 +146,7 @@ describe('PickleFilter', () => {
               'Example: nameA descriptionA',
               'Given a step',
             ].join('\n'),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -168,7 +167,7 @@ describe('PickleFilter', () => {
               'Scenario: nameB descriptionB',
               'Given a step',
             ].join('\n'),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -200,7 +199,7 @@ describe('PickleFilter', () => {
               'Scenario: startA descriptionA endA',
               'Given a step',
             ].join('\n'),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -232,7 +231,7 @@ describe('PickleFilter', () => {
               'Scenario: nameA descriptionA',
               'Given a step',
             ].join('\n'),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -253,7 +252,7 @@ describe('PickleFilter', () => {
               'Scenario: nameB descriptionB',
               'Given a step',
             ].join('\n'),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -274,7 +273,7 @@ describe('PickleFilter', () => {
               'Scenario: nameC descriptionC',
               'Given a step',
             ].join('\n'),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -306,7 +305,7 @@ describe('PickleFilter', () => {
             data: ['Feature: a', '@tagA', 'Scenario: a', 'Given a step'].join(
               '\n'
             ),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -323,7 +322,7 @@ describe('PickleFilter', () => {
             gherkinDocument,
           } = await parse({
             data: ['Feature: a', 'Scenario: a', 'Given a step'].join('\n'),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -353,7 +352,7 @@ describe('PickleFilter', () => {
             data: ['Feature: a', '@tagA', 'Scenario: a', 'Given a step'].join(
               '\n'
             ),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -370,7 +369,7 @@ describe('PickleFilter', () => {
             gherkinDocument,
           } = await parse({
             data: ['Feature: a', 'Scenario: a', 'Given a step'].join('\n'),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -403,7 +402,7 @@ describe('PickleFilter', () => {
               'Scenario: a',
               'Given a step',
             ].join('\n'),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -422,7 +421,7 @@ describe('PickleFilter', () => {
             data: ['Feature: a', '@tagA', 'Scenario: a', 'Given a step'].join(
               '\n'
             ),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -441,7 +440,7 @@ describe('PickleFilter', () => {
             data: ['Feature: a', '@tagB', 'Scenario: a', 'Given a step'].join(
               '\n'
             ),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -458,7 +457,7 @@ describe('PickleFilter', () => {
             gherkinDocument,
           } = await parse({
             data: ['Feature: a', 'Scenario: a', 'Given a step'].join('\n'),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -491,7 +490,7 @@ describe('PickleFilter', () => {
               'Scenario: a',
               'Given a step',
             ].join('\n'),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -510,7 +509,7 @@ describe('PickleFilter', () => {
             data: ['Feature: a', '@tagA', 'Scenario: a', 'Given a step'].join(
               '\n'
             ),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -529,7 +528,7 @@ describe('PickleFilter', () => {
             data: ['Feature: a', '@tagB', 'Scenario: a', 'Given a step'].join(
               '\n'
             ),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -546,7 +545,7 @@ describe('PickleFilter', () => {
             gherkinDocument,
           } = await parse({
             data: ['Feature: a', 'Scenario: a', 'Given a step'].join('\n'),
-            uri: path.resolve(cwd, 'features/a.feature'),
+            uri: 'features/a.feature',
           })
 
           // Act
@@ -580,7 +579,7 @@ describe('PickleFilter', () => {
             'Scenario: nameA descriptionA',
             'Given a step',
           ].join('\n'),
-          uri: path.resolve(cwd, 'features/b.feature'),
+          uri: 'features/b.feature',
         })
 
         // Act
@@ -602,7 +601,7 @@ describe('PickleFilter', () => {
             'Scenario: nameA descriptionA',
             'Given a step',
           ].join('\n'),
-          uri: path.resolve(cwd, 'features/b.feature'),
+          uri: 'features/b.feature',
         })
 
         // Act
@@ -619,7 +618,7 @@ describe('PickleFilter', () => {
           gherkinDocument,
         } = await parse({
           data: ['Feature: a', 'Scenario: a', 'Given a step'].join('\n'),
-          uri: path.resolve(cwd, 'features/a.feature'),
+          uri: 'features/a.feature',
         })
 
         // Act

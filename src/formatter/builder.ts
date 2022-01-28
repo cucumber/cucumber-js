@@ -1,16 +1,7 @@
 import getColorFns from './get_color_fns'
 import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascript_snippet_syntax'
-import JsonFormatter from './json_formatter'
-import MessageFormatter from './message_formatter'
 import path from 'path'
-import ProgressBarFormatter from './progress_bar_formatter'
-import ProgressFormatter from './progress_formatter'
-import RerunFormatter from './rerun_formatter'
-import SnippetsFormatter from './snippets_formatter'
 import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
-import SummaryFormatter from './summary_formatter'
-import UsageFormatter from './usage_formatter'
-import UsageJsonFormatter from './usage_json_formatter'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import Formatter, { IFormatterCleanupFn, IFormatterLogFn } from '.'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
@@ -19,8 +10,10 @@ import EventDataCollector from './helpers/event_data_collector'
 import { Writable as WritableStream } from 'stream'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
-import HtmlFormatter from './html_formatter'
-import createRequire from 'create-require'
+import { pathToFileURL } from 'url'
+import Formatters from './helpers/formatters'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { importer } = require('../importer')
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
@@ -41,18 +34,19 @@ export interface IBuildOptions {
 }
 
 const FormatterBuilder = {
-  build(type: string, options: IBuildOptions): Formatter {
-    const FormatterConstructor = FormatterBuilder.getConstructorByType(
+  async build(type: string, options: IBuildOptions): Promise<Formatter> {
+    const FormatterConstructor = await FormatterBuilder.getConstructorByType(
       type,
       options.cwd
     )
     const colorFns = getColorFns(options.parsedArgvOptions.colorsEnabled)
-    const snippetBuilder = FormatterBuilder.getStepDefinitionSnippetBuilder({
-      cwd: options.cwd,
-      snippetInterface: options.parsedArgvOptions.snippetInterface,
-      snippetSyntax: options.parsedArgvOptions.snippetSyntax,
-      supportCodeLibrary: options.supportCodeLibrary,
-    })
+    const snippetBuilder =
+      await FormatterBuilder.getStepDefinitionSnippetBuilder({
+        cwd: options.cwd,
+        snippetInterface: options.parsedArgvOptions.snippetInterface,
+        snippetSyntax: options.parsedArgvOptions.snippetSyntax,
+        supportCodeLibrary: options.supportCodeLibrary,
+      })
     return new FormatterConstructor({
       colorFns,
       snippetBuilder,
@@ -60,34 +54,19 @@ const FormatterBuilder = {
     })
   },
 
-  getConstructorByType(type: string, cwd: string): typeof Formatter {
-    switch (type) {
-      case 'json':
-        return JsonFormatter
-      case 'message':
-        return MessageFormatter
-      case 'html':
-        return HtmlFormatter
-      case 'progress':
-        return ProgressFormatter
-      case 'progress-bar':
-        return ProgressBarFormatter
-      case 'rerun':
-        return RerunFormatter
-      case 'snippets':
-        return SnippetsFormatter
-      case 'summary':
-        return SummaryFormatter
-      case 'usage':
-        return UsageFormatter
-      case 'usage-json':
-        return UsageJsonFormatter
-      default:
-        return FormatterBuilder.loadCustomFormatter(type, cwd)
-    }
+  async getConstructorByType(
+    type: string,
+    cwd: string
+  ): Promise<typeof Formatter> {
+    const formatters: Record<string, typeof Formatter> =
+      Formatters.getFormatters()
+
+    return formatters[type]
+      ? formatters[type]
+      : await FormatterBuilder.loadCustomClass('formatter', type, cwd)
   },
 
-  getStepDefinitionSnippetBuilder({
+  async getStepDefinitionSnippetBuilder({
     cwd,
     snippetInterface,
     snippetSyntax,
@@ -98,8 +77,11 @@ const FormatterBuilder = {
     }
     let Syntax = JavascriptSnippetSyntax
     if (doesHaveValue(snippetSyntax)) {
-      const fullSyntaxPath = path.resolve(cwd, snippetSyntax)
-      Syntax = require(fullSyntaxPath) // eslint-disable-line @typescript-eslint/no-var-requires
+      Syntax = await FormatterBuilder.loadCustomClass(
+        'syntax',
+        snippetSyntax,
+        cwd
+      )
     }
     return new StepDefinitionSnippetBuilder({
       snippetSyntax: new Syntax(snippetInterface),
@@ -107,20 +89,34 @@ const FormatterBuilder = {
     })
   },
 
-  loadCustomFormatter(customFormatterPath: string, cwd: string) {
-    const CustomFormatter = createRequire(cwd)(customFormatterPath)
-
-    if (typeof CustomFormatter === 'function') {
-      return CustomFormatter
-    } else if (
-      doesHaveValue(CustomFormatter) &&
-      typeof CustomFormatter.default === 'function'
-    ) {
-      return CustomFormatter.default
+  async loadCustomClass(
+    type: 'formatter' | 'syntax',
+    descriptor: string,
+    cwd: string
+  ) {
+    let CustomClass = descriptor.startsWith(`.`)
+      ? await importer(pathToFileURL(path.resolve(cwd, descriptor)))
+      : await importer(descriptor)
+    CustomClass = FormatterBuilder.resolveConstructor(CustomClass)
+    if (doesHaveValue(CustomClass)) {
+      return CustomClass
+    } else {
+      throw new Error(
+        `Custom ${type} (${descriptor}) does not export a function/class`
+      )
     }
-    throw new Error(
-      `Custom formatter (${customFormatterPath}) does not export a function`
-    )
+  },
+
+  resolveConstructor(ImportedCode: any) {
+    if (typeof ImportedCode === 'function') {
+      return ImportedCode
+    } else if (
+      doesHaveValue(ImportedCode) &&
+      typeof ImportedCode.default === 'function'
+    ) {
+      return ImportedCode.default
+    }
+    return null
   },
 }
 
