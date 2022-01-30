@@ -122,3 +122,7 @@ There are a few minor differences to be aware of:
 - `World` was typed as an interface, but it's actually a class - you should `extend` it when [building a custom formatter](./custom_formatters.md)
 
 Also, your `tsconfig.json` should have the `resolveJsonModule` compiler option switched on. Other than that, a pretty standard TypeScript setup should work as expected.
+
+## Timeouts
+
+You can no longer call `setDefaultTimeout` from within other support code e.g. a step, hook or your World class; it should be called globally.
