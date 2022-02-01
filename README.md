@@ -77,6 +77,7 @@ The following documentation is for master. See below the documentation for older
 
 #### Documentation for older versions
 
+* [`7.x`](https://github.com/cucumber/cucumber-js/tree/7.x)
 * [`6.x`](https://github.com/cucumber/cucumber-js/tree/6.x)
 * [`5.x`](https://github.com/cucumber/cucumber-js/tree/5.x)
 * [`4.x`](https://github.com/cucumber/cucumber-js/tree/4.x)
