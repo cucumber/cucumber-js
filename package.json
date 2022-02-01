@@ -267,7 +267,7 @@
     "strip-ansi": "6.0.1",
     "ts-node": "10.4.0",
     "tsd": "0.19.1",
-    "typescript": "4.5.4"
+    "typescript": "4.5.5"
   },
   "scripts": {
     "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.node.json && shx cp src/importer.js lib/ && shx cp src/wrapper.mjs lib/",
