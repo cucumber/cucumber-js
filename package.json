@@ -239,7 +239,7 @@
     "@types/verror": "1.10.5",
     "@typescript-eslint/eslint-plugin": "5.6.0",
     "@typescript-eslint/parser": "5.6.0",
-    "chai": "4.3.4",
+    "chai": "4.3.6",
     "chai-exclude": "2.1.0",
     "coffeescript": "2.6.1",
     "dependency-lint": "7.1.0",
