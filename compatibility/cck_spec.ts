@@ -58,6 +58,7 @@ describe('Cucumber Compatibility Kit', () => {
       stdout.end()
 
       const rawOutput = await toString(stdout)
+      // TODO: consider validating (at run-time) the parsed message is really an Envelope
       const actualMessages = normalize(
         rawOutput
           .split('\n')
@@ -85,7 +86,7 @@ describe('Cucumber Compatibility Kit', () => {
   })
 })
 
-function normalize(messages: any[]): any[] {
+function normalize(messages: messages.Envelope[]): messages.Envelope[] {
   messages = normalizeMessageOutput(
     messages,
     path.join(PROJECT_PATH, 'compatibility')

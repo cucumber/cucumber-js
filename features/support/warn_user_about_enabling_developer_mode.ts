@@ -1,5 +1,5 @@
 import { reindent } from 'reindent-template-literals'
-import colors from 'colors/safe'
+import chalk from 'chalk'
 
 export function warnUserAboutEnablingDeveloperMode(error: any): void {
   if (!(error?.code === 'EPERM')) {
@@ -10,7 +10,7 @@ export function warnUserAboutEnablingDeveloperMode(error: any): void {
   }
 
   console.error(
-    colors.red(
+    chalk.red(
       reindent(`
         Error: Unable to run feature tests!
         

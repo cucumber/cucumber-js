@@ -1,7 +1,5 @@
-import colors from 'colors/safe'
+import chalk from 'chalk'
 import { TestStepResultStatus } from '@cucumber/messages'
-
-colors.enable()
 
 export type IColorFn = (text: string) => string
 
@@ -20,21 +18,21 @@ export default function getColorFns(enabled: boolean): IColorFns {
     return {
       forStatus(status: TestStepResultStatus) {
         return {
-          AMBIGUOUS: colors.red.bind(colors),
-          FAILED: colors.red.bind(colors),
-          PASSED: colors.green.bind(colors),
-          PENDING: colors.yellow.bind(colors),
-          SKIPPED: colors.cyan.bind(colors),
-          UNDEFINED: colors.yellow.bind(colors),
-          UNKNOWN: colors.yellow.bind(colors),
+          AMBIGUOUS: chalk.red.bind(chalk),
+          FAILED: chalk.red.bind(chalk),
+          PASSED: chalk.green.bind(chalk),
+          PENDING: chalk.yellow.bind(chalk),
+          SKIPPED: chalk.cyan.bind(chalk),
+          UNDEFINED: chalk.yellow.bind(chalk),
+          UNKNOWN: chalk.yellow.bind(chalk),
         }[status]
       },
-      location: colors.gray.bind(colors),
-      tag: colors.cyan.bind(colors),
-      diffAdded: colors.green.bind(colors),
-      diffRemoved: colors.red.bind(colors),
-      errorMessage: colors.red.bind(colors),
-      errorStack: colors.grey.bind(colors),
+      location: chalk.gray.bind(chalk),
+      tag: chalk.cyan.bind(chalk),
+      diffAdded: chalk.green.bind(chalk),
+      diffRemoved: chalk.red.bind(chalk),
+      errorMessage: chalk.red.bind(chalk),
+      errorStack: chalk.grey.bind(chalk),
     }
   } else {
     return {
