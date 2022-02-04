@@ -1,3 +1,4 @@
+import { performance } from 'perf_hooks'
 import * as messages from '@cucumber/messages'
 
 let previousTimestamp: number
@@ -14,6 +15,7 @@ const methods: any = {
   },
   setInterval: setInterval.bind(global),
   setTimeout: setTimeout.bind(global),
+  performance,
 }
 
 if (typeof setImmediate !== 'undefined') {
@@ -22,7 +24,7 @@ if (typeof setImmediate !== 'undefined') {
 }
 
 function getTimestamp(): number {
-  return new methods.Date().getTime()
+  return methods.performance.now()
 }
 
 export function durationBetweenTimestamps(

@@ -34,7 +34,7 @@ function buildEmptyMapping(
   const mapping: Record<string, IUsage> = {}
   stepDefinitions.forEach((stepDefinition) => {
     mapping[stepDefinition.id] = {
-      code: stepDefinition.code.toString(),
+      code: stepDefinition.unwrappedCode.toString(),
       line: stepDefinition.line,
       pattern: stepDefinition.expression.source,
       patternType: stepDefinition.expression.constructor.name,

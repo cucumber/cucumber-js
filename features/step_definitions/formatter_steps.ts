@@ -1,6 +1,8 @@
 import { Then } from '../../'
-import { expect } from 'chai'
+import { expect, use } from 'chai'
+import chaiExclude from 'chai-exclude'
 import {
+  ignorableKeys,
   normalizeJsonOutput,
   normalizeMessageOutput,
   stripMetaMessages,
@@ -8,6 +10,8 @@ import {
 import fs from 'mz/fs'
 import path from 'path'
 import { World } from '../support/world'
+
+use(chaiExclude)
 
 Then(
   'the message formatter output matches the fixture {string}',
@@ -18,7 +22,7 @@ Then(
     const fixturePath = path.join(__dirname, '..', 'fixtures', filePath)
     const expected = require(fixturePath) // eslint-disable-line @typescript-eslint/no-var-requires
     try {
-      expect(actual).to.eql(expected)
+      expect(actual).excludingEvery(ignorableKeys).to.deep.eq(expected)
     } catch (e) {
       if (process.env.GOLDEN) {
         await fs.writeFile(

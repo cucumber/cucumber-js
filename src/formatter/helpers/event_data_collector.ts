@@ -4,6 +4,7 @@ import { EventEmitter } from 'events'
 
 interface ITestCaseAttemptData {
   attempt: number
+  willBeRetried: boolean
   testCaseId: string
   stepAttachments: Record<string, messages.Attachment[]>
   stepResults: Record<string, messages.TestStepResult>
@@ -12,6 +13,7 @@ interface ITestCaseAttemptData {
 
 export interface ITestCaseAttempt {
   attempt: number
+  willBeRetried: boolean
   gherkinDocument: messages.GherkinDocument
   pickle: messages.Pickle
   stepAttachments: Record<string, messages.Attachment[]>
@@ -54,6 +56,7 @@ export default class EventDataCollector {
       pickle,
       testCase,
       attempt: testCaseAttemptData.attempt,
+      willBeRetried: testCaseAttemptData.willBeRetried,
       stepAttachments: testCaseAttemptData.stepAttachments,
       stepResults: testCaseAttemptData.stepResults,
       worstTestStepResult: testCaseAttemptData.worstTestStepResult,
@@ -84,11 +87,11 @@ export default class EventDataCollector {
   private initTestCaseAttempt(testCaseStarted: messages.TestCaseStarted): void {
     this.testCaseAttemptDataMap[testCaseStarted.id] = {
       attempt: testCaseStarted.attempt,
+      willBeRetried: false,
       testCaseId: testCaseStarted.testCaseId,
       stepAttachments: {},
       stepResults: {},
       worstTestStepResult: {
-        willBeRetried: false,
         duration: { seconds: 0, nanos: 0 },
         status: messages.TestStepResultStatus.UNKNOWN,
       },
@@ -116,11 +119,15 @@ export default class EventDataCollector {
       testStepResult
   }
 
-  storeTestCaseResult({ testCaseStartedId }: messages.TestCaseFinished): void {
+  storeTestCaseResult({
+    testCaseStartedId,
+    willBeRetried,
+  }: messages.TestCaseFinished): void {
     const stepResults = Object.values(
       this.testCaseAttemptDataMap[testCaseStartedId].stepResults
     )
     this.testCaseAttemptDataMap[testCaseStartedId].worstTestStepResult =
       messages.getWorstTestStepResult(stepResults)
+    this.testCaseAttemptDataMap[testCaseStartedId].willBeRetried = willBeRetried
   }
 }

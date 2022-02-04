@@ -18,6 +18,7 @@ Feature: Dryrun mode
       Given('a step', function() {})
       """
     When I run cucumber-js with `--dry-run`
+    And it passes
     Then scenario "some scenario" step "Given a step" has status "skipped"
     And scenario "some scenario" has status "skipped"
 
@@ -30,12 +31,29 @@ Feature: Dryrun mode
       Given('a(n) step', function() {});
       """
     When I run cucumber-js with `--dry-run`
-    Then it fails
+    Then it passes
     And scenario "some scenario" step "Given a step" has status "ambiguous"
+
+  Scenario: pending step
+
+    Since steps aren't actually executed in dry run, a step that would resolve to pending
+    will still show up as skipped.
+
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+
+      Given('a step', function() {
+        return 'pending';
+      });
+      """
+    When I run cucumber-js with `--dry-run`
+    Then it passes
+    And scenario "some scenario" step "Given a step" has status "skipped"
 
   Scenario: undefined step
     When I run cucumber-js with `--dry-run`
-    Then it fails
+    Then it passes
     And scenario "some scenario" step "Given a step" has status "undefined"
 
   Scenario: hooks should not execute in dry run, serial runtime

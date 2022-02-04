@@ -1,5 +1,7 @@
 const OptionSplitter = {
   split(option: string): string[] {
+    option = option.replace(/"/g, '')
+
     const parts = option.split(/([^A-Z]):(?!\\)/)
 
     const result = parts.reduce((memo: string[], part: string, i: number) => {

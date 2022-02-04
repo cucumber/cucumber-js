@@ -78,7 +78,6 @@ export async function run({
     duration,
     status,
     message,
-    willBeRetried: false,
   }
 }
 

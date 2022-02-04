@@ -36,28 +36,17 @@ Everyone interacting in this codebase and issue tracker is expected to follow th
 
 Cucumber.js is available as an npm module.
 
-### 7.x.x and above
-
 ``` shell
 $ npm install @cucumber/cucumber
 ```
 
-If you're upgrading from 6.x.x or below, see the [migration guide](./docs/migration.md).
-
-### 6.x.x and below
-
-``` shell
-$ npm install cucumber@6
-```
-
 ## Documentation
 
-The following documentation is for master. See below the documentation for older versions.
+If you learn best by example, we have [a repo with several example projects](https://github.com/cucumber-examples/cucumber-js-examples) that might help you get going. Otherwise, read on.
+
+The following documentation is for `main`, which might contain some unreleased features. See below the documentation for older versions.
 
 * [CLI](/docs/cli.md)
-* [Custom Formatters](/docs/custom_formatters.md)
-* [Custom Snippet Syntaxes](/docs/custom_snippet_syntaxes.md)
-* [NodeJs Example](/docs/nodejs_example.md)
 * Support Files
   * [World](/docs/support_files/world.md)
   * [Step Definitions](/docs/support_files/step_definitions.md)
@@ -67,13 +56,19 @@ The following documentation is for master. See below the documentation for older
   * [Attachments](/docs/support_files/attachments.md)
   * [API Reference](/docs/support_files/api_reference.md)
 * Guides
+  * [Dry Run](./docs/dry_run.md)
+  * [ES Modules](./docs/esm.md)
+  * [Formatters](./docs/formatters.md)
   * [Running in parallel](./docs/parallel.md)
-  * [Retrying failing scenarios](./docs/retry.md)
   * [Profiles](./docs/profiles.md)
+  * [Rerunning just failures](./docs/rerun.md)
+  * [Retrying flaky scenarios](./docs/retry.md)
+  * [Snippets for undefined steps](./docs/snippets.md)
 * [FAQ](/docs/faq.md)
 
-#### Documentation for older versions
+### Documentation for older versions
 
+* [`7.x`](https://github.com/cucumber/cucumber-js/tree/7.x)
 * [`6.x`](https://github.com/cucumber/cucumber-js/tree/6.x)
 * [`5.x`](https://github.com/cucumber/cucumber-js/tree/5.x)
 * [`4.x`](https://github.com/cucumber/cucumber-js/tree/4.x)

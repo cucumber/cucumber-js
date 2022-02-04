@@ -4,6 +4,7 @@ import { capitalCase } from 'capital-case'
 
 const keywords = [
   'feature',
+  'rule',
   'background',
   'scenario',
   'scenarioOutline',

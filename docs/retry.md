@@ -1,5 +1,7 @@
 # Retry
 
+*Note: if you want a mechanism to rerun just the failed scenarios when doing TDD, take a look at [Rerun](./rerun.md) instead.*
+
 If you have a flaky scenario (e.g. failing 10% of the time for some reason), you can use *Retry* to have Cucumber attempt it multiple times until either it passes or the maximum number of attempts is reached. You enable this via the `--retry <MAXIMUM_RETRIES>` CLI option, like this:
 
 ```shell

@@ -6,18 +6,23 @@ import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { ITestCaseAttempt } from './event_data_collector'
 
-export function isFailure(result: messages.TestStepResult): boolean {
+export function isFailure(
+  result: messages.TestStepResult,
+  willBeRetried: boolean = false
+): boolean {
   return (
     result.status === 'AMBIGUOUS' ||
     result.status === 'UNDEFINED' ||
-    (result.status === 'FAILED' && !result.willBeRetried)
+    (result.status === 'FAILED' && !willBeRetried)
   )
 }
 
-export function isWarning(result: messages.TestStepResult): boolean {
+export function isWarning(
+  result: messages.TestStepResult,
+  willBeRetried: boolean = false
+): boolean {
   return (
-    result.status === 'PENDING' ||
-    (result.status === 'FAILED' && result.willBeRetried)
+    result.status === 'PENDING' || (result.status === 'FAILED' && willBeRetried)
   )
 }
 

@@ -18,6 +18,7 @@ export interface ITestCaseHookParameter {
 export interface ITestStepHookParameter {
   gherkinDocument: messages.GherkinDocument
   pickle: messages.Pickle
+  pickleStep: messages.PickleStep
   result: messages.TestStepResult
   testCaseStartedId: string
   testStepId: string
@@ -40,6 +41,7 @@ export type TestStepFunction<WorldType> = (
 
 export interface IDefineStepOptions {
   timeout?: number
+  wrapperOptions?: any
 }
 
 export interface IDefineTestCaseHookOptions {
@@ -76,6 +78,7 @@ export interface IDefineSupportCodeMethods {
       code: TestStepFunction<WorldType>
     ) => void)
   setDefaultTimeout: (milliseconds: number) => void
+  setDefinitionFunctionWrapper: (fn: Function) => void
   setWorldConstructor: (fn: any) => void
   After: (<WorldType = IWorld>(code: TestCaseHookFunction<WorldType>) => void) &
     (<WorldType = IWorld>(

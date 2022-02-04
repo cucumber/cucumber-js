@@ -69,3 +69,29 @@ Feature: default command line arguments
       1 step (1 passed)
       <duration-stat>
       """
+
+  Scenario Outline: specifying a configuration file
+    Given a file named ".cucumber-rc.js" with:
+      """
+      module.exports = {
+        'default': '--dry-run'
+      };
+      """
+    When I run cucumber-js with `<OPT> .cucumber-rc.js`
+    Then it outputs the text:
+      """
+      -
+
+      1 scenario (1 skipped)
+      1 step (1 skipped)
+      <duration-stat>
+      """
+
+    Examples:
+      | OPT      |
+      | -c       |
+      | --config |
+
+  Scenario: specifying a configuration file that doesn't exist
+    When I run cucumber-js with `--config doesntexist.js`
+    Then it fails

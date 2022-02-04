@@ -13,6 +13,7 @@ export {
 } from './runtime'
 export { default as supportCodeLibraryBuilder } from './support_code_library_builder'
 export { default as DataTable } from './models/data_table'
+export { version } from './version'
 
 // Formatters
 export { default as Formatter, IFormatterOptions } from './formatter'
@@ -38,6 +39,7 @@ export const defineParameterType = methods.defineParameterType
 export const defineStep = methods.defineStep
 export const Given = methods.Given
 export const setDefaultTimeout = methods.setDefaultTimeout
+export const setDefinitionFunctionWrapper = methods.setDefinitionFunctionWrapper
 export const setWorldConstructor = methods.setWorldConstructor
 export const Then = methods.Then
 export const When = methods.When

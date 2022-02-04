@@ -49,12 +49,15 @@ export function retriesForPickle(
   pickle: messages.Pickle,
   options: IRuntimeOptions
 ): number {
+  if (!options.retry) {
+    return 0
+  }
   const retries = options.retry
   if (retries === 0) {
     return 0
   }
   const retryTagFilter = options.retryTagFilter
-  if (retryTagFilter === '') {
+  if (!retryTagFilter) {
     return retries
   }
   const pickleTagFilter = new PickleTagFilter(retryTagFilter)
@@ -62,4 +65,22 @@ export function retriesForPickle(
     return retries
   }
   return 0
+}
+
+export function shouldCauseFailure(
+  status: messages.TestStepResultStatus,
+  options: IRuntimeOptions
+): boolean {
+  if (options.dryRun) {
+    return false
+  }
+  const failureStatuses: messages.TestStepResultStatus[] = [
+    messages.TestStepResultStatus.AMBIGUOUS,
+    messages.TestStepResultStatus.FAILED,
+    messages.TestStepResultStatus.UNDEFINED,
+  ]
+  if (options.strict) {
+    failureStatuses.push(messages.TestStepResultStatus.PENDING)
+  }
+  return failureStatuses.includes(status)
 }

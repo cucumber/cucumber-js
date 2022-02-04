@@ -3,9 +3,9 @@ import { expect } from 'chai'
 import JavascriptSnippetSyntax from './javascript_snippet_syntax'
 import { SnippetInterface } from './snippet_syntax'
 import { ISnippetSyntaxBuildOptions } from '../../../lib/formatter/step_definition_snippet_builder/snippet_syntax'
-import GeneratedExpression from '@cucumber/cucumber-expressions/dist/src/GeneratedExpression'
 import {
   CucumberExpressionGenerator,
+  GeneratedExpression,
   ParameterTypeRegistry,
 } from '@cucumber/cucumber-expressions'
 import { reindent } from 'reindent-template-literals'
@@ -89,7 +89,7 @@ describe('JavascriptSnippetSyntax', () => {
           reindent(`
             functionName('{string} def {string}', function (string, string2) {
               // comment
-              return 'pending';
+              return Promise.resolve('pending');
             });`)
         )
       })

@@ -2,9 +2,10 @@ import { Command } from 'commander'
 import path from 'path'
 import { dialects } from '@cucumber/gherkin'
 import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
-
-// Using require instead of import so compiled typescript will have the desired folder structure
-const { version } = require('../../package.json') // eslint-disable-line @typescript-eslint/no-var-requires
+import { getKeywords, getLanguages } from './i18n'
+import Formatters from '../formatter/helpers/formatters'
+import { version } from '../version'
+import { PickleOrder } from './helpers'
 
 export interface IParsedArgvFormatRerunOptions {
   separator?: string
@@ -20,6 +21,7 @@ export interface IParsedArgvFormatOptions {
 
 export interface IParsedArgvOptions {
   backtrace: boolean
+  config: string
   dryRun: boolean
   exit: boolean
   failFast: boolean
@@ -29,9 +31,8 @@ export interface IParsedArgvOptions {
   i18nLanguages: boolean
   language: string
   name: string[]
-  order: string
+  order: PickleOrder
   parallel: number
-  predictableIds: boolean
   profile: string[]
   publish: boolean
   publishQuiet: boolean
@@ -106,6 +107,7 @@ const ArgvParser = {
       .usage('[options] [<GLOB|DIR|FILE[:LINE]>...]')
       .version(version, '-v, --version')
       .option('-b, --backtrace', 'show full backtrace for errors')
+      .option('-c, --config <TYPE[:PATH]>', 'specify configuration file')
       .option(
         '-d, --dry-run',
         'invoke formatters without executing steps',
@@ -119,7 +121,8 @@ const ArgvParser = {
       .option('--fail-fast', 'abort the run on first failure', false)
       .option(
         '-f, --format <TYPE[:PATH]>',
-        'specify the output format, optionally supply PATH to redirect formatter output (repeatable)',
+        'specify the output format, optionally supply PATH to redirect formatter output (repeatable).  Available formats:\n' +
+          Formatters.buildFormattersDocumentationString(),
         ArgvParser.collect,
         []
       )
@@ -164,11 +167,6 @@ const ArgvParser = {
         'run in parallel with the given number of workers',
         (val) => ArgvParser.validateCountOption(val, '--parallel'),
         0
-      )
-      .option(
-        '--predictable-ids',
-        'Use predictable ids in messages (option ignored if using parallel)',
-        false
       )
       .option(
         '--publish',
@@ -218,13 +216,20 @@ const ArgvParser = {
         {}
       )
 
-    program.on('--help', () => {
-      /* eslint-disable no-console */
-      console.log(
-        '  For more details please visit https://github.com/cucumber/cucumber-js/blob/master/docs/cli.md\n'
-      )
-      /* eslint-enable no-console */
+    program.on('option:i18n-languages', () => {
+      console.log(getLanguages())
+      process.exit()
     })
+
+    program.on('option:i18n-keywords', function (isoCode: string) {
+      console.log(getKeywords(isoCode))
+      process.exit()
+    })
+
+    program.addHelpText(
+      'afterAll',
+      'For more details please visit https://github.com/cucumber/cucumber-js/blob/main/docs/cli.md'
+    )
 
     program.parse(argv)
     const options: IParsedArgvOptions = program.opts()

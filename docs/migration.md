@@ -1,12 +1,31 @@
-# Migrating from 7.x.x to 8.x.x
+# Migrating to cucumber-js 8.x.x
 
-## Removal of setDefinitionFunctionWrapper
+## Generator step definitions
 
-If this was used to wrap generator functions, please transition to using async / await.
-If this was used to wrap step definitions, please use `BeforeStep` / `AfterStep` hooks instead.
-If you had other use cases, please create an issue.
+Generator functions used in step definitions (`function*` with the `yield` keyword)
+are not natively supported anymore with cucumber-js.
 
-# Migrating from 6.x.x to 7.x.x
+You may consider using `async`/`await` rather than generators.
+
+You can still use generators as before but you need to add your own dependencies
+to `bluebird` and `is-generator`. Cucumber-js will no display explicit error message
+anymore in case you use a generator without wrapping it properly.
+
+```javascript
+const isGenerator = require('is-generator')
+const {coroutine} = require('bluebird')
+const {setDefinitionFunctionWrapper} = require('@cucumber/cucumber')
+
+setDefinitionFunctionWrapper(function (fn) {
+  if (isGenerator.fn(fn)) {
+    return coroutine(fn)
+  } else {
+    return fn
+  }
+})
+```
+
+# Migrating to cucumber-js 7.x.x
 
 ## Package Name
 
@@ -61,8 +80,7 @@ Now in `@cucumber/cucumber`:
     "duration": {
       "seconds": "0",
       "nanos": 660000000
-    },
-    "willBeRetried": true
+    }
   }
 }
 ```
@@ -104,3 +122,7 @@ There are a few minor differences to be aware of:
 - `World` was typed as an interface, but it's actually a class - you should `extend` it when [building a custom formatter](./custom_formatters.md)
 
 Also, your `tsconfig.json` should have the `resolveJsonModule` compiler option switched on. Other than that, a pretty standard TypeScript setup should work as expected.
+
+## Timeouts
+
+You can no longer call `setDefaultTimeout` from within other support code e.g. a step, hook or your World class; it should be called globally.
