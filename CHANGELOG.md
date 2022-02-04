@@ -61,7 +61,7 @@ See [docs/profiles.md](./docs/profiles.md#using-another-file-than-cucumberjs) fo
 - Remove validation that step definition functions are not generators
 - Remove `--predictable-ids` option (was only used for internal testing)
 
-## [7.3.2] (2022-01-10)
+## [7.3.2] - 2022-01-10
 ### Fixed
 
 - Pin `colors` to `1.4.0` to fix security vulnerability ([#1884](https://github.com/cucumber/cucumber-js/issues/1884))
