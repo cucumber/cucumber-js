@@ -11,3 +11,11 @@ async function importer(descriptor) {
 }
 
 module.exports = { importer }
+
+// None of this stuff will work on versions of Node older than v12
+const MIN_NODE_VERSION = 'v12'
+if (process.version < MIN_NODE_VERSION) {
+  throw new Error(
+    `Cucumber can't run on this version (${process.version}) of Node. Please upgrade to at least ${MIN_NODE_VERSION}.`
+  )
+}
