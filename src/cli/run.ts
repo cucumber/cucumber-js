@@ -1,6 +1,7 @@
 import Cli, { ICliRunResult } from './'
 import VError from 'verror'
 import publishBanner from './publish_banner'
+import { assertNodeEngineVersion } from './assert_node_engine_version'
 
 function exitWithError(error: Error): void {
   console.error(VError.fullStack(error)) // eslint-disable-line no-console
@@ -11,18 +12,13 @@ function displayPublishAdvertisementBanner(): void {
   console.error(publishBanner)
 }
 
-function assertNodeEngineVersion() {
-  // None of this stuff will work on versions of Node older than v12
-  const MIN_NODE_VERSION = 'v12'
-  if (process.version < MIN_NODE_VERSION) {
-    const message = `Cucumber can only run on Node.js versions ${MIN_NODE_VERSION} and greater. This Node.js version is ${process.version}`
-    console.error(message)
+export default async function run(): Promise<void> {
+  try {
+    assertNodeEngineVersion(process.version)
+  } catch (error) {
+    console.error(error.message) // eslint-disable-line no-console
     process.exit(1)
   }
-}
-
-export default async function run(): Promise<void> {
-  assertNodeEngineVersion()
 
   const cli = new Cli({
     argv: process.argv,
