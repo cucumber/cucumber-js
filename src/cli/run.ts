@@ -15,19 +15,14 @@ function assertNodeEngineVersion() {
   // None of this stuff will work on versions of Node older than v12
   const MIN_NODE_VERSION = 'v12'
   if (process.version < MIN_NODE_VERSION) {
-    throw new Error(
-      `Cucumber can only run on Node.js versions ${MIN_NODE_VERSION} and greater. This Node.js version is ${process.version}`
-    )
+    const message = `Cucumber can only run on Node.js versions ${MIN_NODE_VERSION} and greater. This Node.js version is ${process.version}`
+    console.error(message)
+    process.exit(1)
   }
 }
 
 export default async function run(): Promise<void> {
-  try {
-    assertNodeEngineVersion()
-  } catch (error) {
-    console.error(error.message)
-    process.exit(1)
-  }
+  assertNodeEngineVersion()
 
   const cli = new Cli({
     argv: process.argv,
