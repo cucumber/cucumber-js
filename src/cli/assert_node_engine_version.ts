@@ -2,13 +2,24 @@ import fs from 'fs'
 import path from 'path'
 import semver from 'semver'
 
-const raw = fs.readFileSync(path.resolve(__dirname, '..', '..', 'package.json'))
+type PackageJSON = {
+  engines: { node: string }
+}
 
-export function assertNodeEngineVersion(currentVersion: string) {
-  // None of this stuff will work on versions of Node older than v12
-  const MIN_NODE_VERSION = 'v12'
-  if (currentVersion < MIN_NODE_VERSION) {
-    const message = `Cucumber can only run on Node.js versions ${MIN_NODE_VERSION} and greater. This Node.js version is ${currentVersion}`
+const readActualPackageJSON: () => PackageJSON = () =>
+  JSON.parse(
+    fs
+      .readFileSync(path.resolve(__dirname, '..', '..', 'package.json'))
+      .toString()
+  )
+
+export function assertNodeEngineVersion(
+  currentVersion: string,
+  readPackageJSON: () => PackageJSON = readActualPackageJSON
+): void {
+  const requiredVersion = readPackageJSON().engines.node
+  if (!semver.satisfies(currentVersion, requiredVersion)) {
+    const message = `Cucumber can only run on Node.js versions ${requiredVersion}. This Node.js version is ${currentVersion}`
     throw new Error(message)
   }
 }
