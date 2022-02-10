@@ -4,12 +4,13 @@
 .nyc_output/
 @rerun.txt
 coverage/
-html-formatter.html
 lib/
-messages.ndjson
 node_modules
 tmp/
-usage.txt
+reports/*.html
+reports/*.ndjson
+reports/*.txt
 yarn-error.log
 .vscode
 .DS_Store
+src/version.ts

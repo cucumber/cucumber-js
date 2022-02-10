@@ -3,7 +3,13 @@
 
 name: Build
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
@@ -13,7 +19,7 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
-        node-version: [12.x, 14.x, 16.x]
+        node-version: [12.x, 14.x, 16.x, 17.x]
       fail-fast: false
 
     steps:
@@ -37,6 +43,10 @@ jobs:
       - uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: reports
+          path: reports
 
   audit-dependencies:
     runs-on: ubuntu-latest

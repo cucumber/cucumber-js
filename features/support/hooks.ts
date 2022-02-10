@@ -6,6 +6,7 @@ import tmp from 'tmp'
 import { doesHaveValue } from '../../src/value_checker'
 import { World } from './world'
 import { ITestCaseHookParameter } from '../../src/support_code_library_builder/types'
+import { warnUserAboutEnablingDeveloperMode } from './warn_user_about_enabling_developer_mode'
 
 const projectPath = path.join(__dirname, '..', '..')
 
@@ -39,7 +40,11 @@ Before(function (
     '@cucumber',
     'cucumber'
   )
-  fsExtra.ensureSymlinkSync(projectPath, tmpDirCucumberPath)
+  try {
+    fsExtra.ensureSymlinkSync(projectPath, tmpDirCucumberPath)
+  } catch (error) {
+    warnUserAboutEnablingDeveloperMode(error)
+  }
   this.localExecutablePath = path.join(projectPath, 'bin', 'cucumber-js')
 })
 

@@ -12,11 +12,11 @@ function displayPublishAdvertisementBanner(): void {
 }
 
 export default async function run(): Promise<void> {
-  const cwd = process.cwd()
   const cli = new Cli({
     argv: process.argv,
-    cwd,
+    cwd: process.cwd(),
     stdout: process.stdout,
+    env: process.env,
   })
 
   let result: ICliRunResult
@@ -26,8 +26,7 @@ export default async function run(): Promise<void> {
     exitWithError(error)
   }
 
-  const config = await cli.getConfiguration()
-  if (!config.publishing && !config.suppressPublishAdvertisement) {
+  if (result.shouldAdvertisePublish) {
     displayPublishAdvertisementBanner()
   }
 

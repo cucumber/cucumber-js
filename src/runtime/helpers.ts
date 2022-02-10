@@ -49,12 +49,15 @@ export function retriesForPickle(
   pickle: messages.Pickle,
   options: IRuntimeOptions
 ): number {
+  if (!options.retry) {
+    return 0
+  }
   const retries = options.retry
   if (retries === 0) {
     return 0
   }
   const retryTagFilter = options.retryTagFilter
-  if (retryTagFilter === '') {
+  if (!retryTagFilter) {
     return retries
   }
   const pickleTagFilter = new PickleTagFilter(retryTagFilter)

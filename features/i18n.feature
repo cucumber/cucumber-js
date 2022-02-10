@@ -1,3 +1,4 @@
+@spawn
 Feature: internationalization
 
   Scenario: view available languages
