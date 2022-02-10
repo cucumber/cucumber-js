@@ -12,6 +12,9 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 - Cucumber Expressions now support a wider array of parameter types (see [documentation](https://github.com/cucumber/cucumber-expressions#parameter-types))
 - Improved styling and usability on report from `html` formatter
 
+### Fixed
+- Warn users who are on an unsupported node version ([#1922](https://github.com/cucumber/cucumber-js/pull/1922))
+
 ### Changed
 - Switch from `colors` to `chalk` for terminal coloring ([#1895](https://github.com/cucumber/cucumber-js/pull/1895))
 
