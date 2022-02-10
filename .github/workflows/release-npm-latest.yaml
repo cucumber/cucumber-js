@@ -2,8 +2,9 @@ name: Release NPM (latest)
 
 on:
   push:
-    branches: [release/*]
-    branches-ignore: [release/*-rc*]
+    branches:
+      - 'release/*'
+      - '!release/*-rc*'
 
 jobs:
   publish-npm:
