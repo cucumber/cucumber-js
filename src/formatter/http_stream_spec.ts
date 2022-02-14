@@ -160,24 +160,15 @@ describe('HttpStream', () => {
     stream.end()
   })
 
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 10000; i++) {
     it(`runs race condition test ${i}`, (callback) => {
       const stream = new HttpStream(
         `http://localhost:${port}/api/reports`,
         'GET',
         {}
       )
-
-      const readerStream = new Writable({
-        objectMode: true,
-        write: function (responseBody: string, encoding, writeCallback) {
-          writeCallback()
-        },
-      })
-
-      stream.pipe(readerStream)
-      readerStream.on('error', callback)
-      readerStream.on('finish', () => {
+      stream.on('error', callback)
+      stream.on('finish', () => {
         reportServer
           .stop()
           .then(() => callback())
