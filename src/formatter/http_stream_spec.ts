@@ -11,7 +11,9 @@ describe('HttpStream', () => {
 
   beforeEach(async () => {
     reportServer = new FakeReportServer(0)
+    console.log('\nstarting server...')
     port = await reportServer.start()
+    console.log('started.')
   })
 
   it(`sends a PUT request with written data when the stream is closed`, (callback: Callback) => {
@@ -161,21 +163,30 @@ describe('HttpStream', () => {
   })
 
   for (let i = 0; i < 10000; i++) {
-    it(`runs race condition test ${i}`, (callback) => {
-      const stream = new HttpStream(
-        `http://localhost:${port}/api/reports`,
-        'GET',
-        {}
-      )
-      stream.on('error', callback)
-      stream.on('finish', () => {
-        reportServer
-          .stop()
-          .then(() => callback())
-          .catch(callback)
-      })
-      stream.write('hello')
-      stream.end()
-    })
+    it(`runs race condition test ${i}`, async () =>
+      new Promise((resolve, reject) => {
+        const stream = new HttpStream(
+          `http://localhost:${port}/api/reports`,
+          'GET',
+          {}
+        )
+        stream.on('error', reject)
+        stream.on('finish', () => {
+          console.log('stream finished')
+          console.log('stopping server...')
+          reportServer
+            .stop()
+            .then(() => {
+              console.log('server stopped')
+              resolve()
+            })
+            .catch(reject)
+        })
+        console.log('writing to stream...')
+        stream.write('hello')
+        console.log('stream written')
+        console.log('ending stream...')
+        stream.end()
+      }))
   }
 })
