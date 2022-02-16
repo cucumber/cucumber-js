@@ -15,7 +15,7 @@ describe(validateNodeEngineVersion.name, () => {
 
     // Assert
     expect(error).to.eql(
-      'Cucumber can only run on Node.js versions >=12. This Node.js version is 11.0.0'
+      'Cucumber can only run on Node.js versions >=12. This Node.js version is v11.0.0'
     )
   })
 
