@@ -34,8 +34,8 @@ Feature: Running scenarios in parallel with custom assignment
 
       setParallelCanAssign(atMostOnePicklePerTag(["@complex", "@simple"]))
 
-      Given('complex step', (done) => setTimeout(done, 125))
-      Given('simple step', (done) => setTimeout(done, 100))
+      Given('complex step', (done) => setTimeout(done, 700))
+      Given('simple step', (done) => setTimeout(done, 500))
       """
     And a file named "features/a.feature" with:
       """
@@ -69,6 +69,6 @@ Feature: Running scenarios in parallel with custom assignment
     And the following sets of pickles execute at the same time:
       | complex1, simple1 |
       | complex1, simple2 |
-      | simple2, complex2 |
+      | complex2, simple2 |
       | complex2, simple3 |
-      | simple3, complex3 |
+      | complex3, simple3 |

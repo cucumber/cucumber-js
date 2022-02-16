@@ -23,6 +23,7 @@ function getSetsOfPicklesRunningAtTheSameTime(
       if (currentRunningPickleIds.length > 1) {
         const setOfPickleNames = currentRunningPickleIds
           .map((x) => pickleIdToName[x])
+          .sort()
           .join(', ')
         result.push(setOfPickleNames)
       }
