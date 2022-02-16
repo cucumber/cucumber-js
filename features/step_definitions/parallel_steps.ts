@@ -1,92 +1,53 @@
-import { Then } from '../../'
+import { DataTable, Then } from '../../'
 import { World } from '../support/world'
 import messages from '@cucumber/messages'
 import { expect } from 'chai'
 
-interface TestCaseParser {
-  pickles: Record<string, messages.Pickle>
-  testCases: Record<string, string>
-  running: Set<string>
-  testStarts: Record<string, string>
-}
-
-function defaultHandlers({
-  pickles,
-  testCases,
-  running,
-  testStarts,
-}: TestCaseParser): Record<string, Function> {
-  return {
-    pickle: (p: messages.Pickle) => (pickles[p.id] = p),
-    testCase: (t: messages.TestCase) => (testCases[t.id] = t.pickleId),
-    testCaseStarted: (t: messages.TestCaseStarted) => {
-      running.add(t.testCaseId)
-      testStarts[t.id] = t.testCaseId
-    },
-    testCaseFinished: (t: messages.TestCaseFinished) =>
-      running.delete(testStarts[t.testCaseStartedId]),
-  }
-}
-
-function parse(
-  envelopes: messages.Envelope[],
-  handlers: Record<string, Function>
-): void {
+function getPairsOfPicklesRunningAtTheSameTime(
+  envelopes: messages.Envelope[]
+): string[][] {
+  const pickleIdToName: Record<string, string> = {}
+  const testCaseIdToPickleId: Record<string, string> = {}
+  const testCaseStarteIdToPickleId: Record<string, string> = {}
+  let currentRunningPickleIds: string[] = []
+  const result: string[][] = []
   envelopes.forEach((envelope) => {
-    for (const key in envelope) {
-      ;(handlers[key] || (() => {}))(envelope[key as keyof messages.Envelope])
+    if (envelope.pickle != null) {
+      pickleIdToName[envelope.pickle.id] = envelope.pickle.name
+    } else if (envelope.testCase != null) {
+      testCaseIdToPickleId[envelope.testCase.id] = envelope.testCase.pickleId
+    } else if (envelope.testCaseStarted != null) {
+      const pickleId = testCaseIdToPickleId[envelope.testCaseStarted.testCaseId]
+      testCaseStarteIdToPickleId[envelope.testCaseStarted.id] = pickleId
+      currentRunningPickleIds.forEach((x) => {
+        result.push([pickleIdToName[x], pickleIdToName[pickleId]])
+      })
+      currentRunningPickleIds.push(pickleId)
+    } else if (envelope.testCaseFinished != null) {
+      const pickleId =
+        testCaseStarteIdToPickleId[envelope.testCaseFinished.testCaseStartedId]
+      currentRunningPickleIds = currentRunningPickleIds.filter(
+        (x) => x != pickleId
+      )
     }
   })
+  return result
 }
 
-function verifyTandem(
-  assertion: (p1: messages.Pickle, p2: messages.Pickle) => void
-) {
-  return function (this: World): void {
-    const running = new Set<string>()
-    const pickles: Record<string, messages.Pickle> = {}
-    const testCases: Record<string, string> = {}
-    const testStarts: Record<string, string> = {}
-
-    const handlers = defaultHandlers({
-      pickles,
-      running,
-      testCases,
-      testStarts,
-    })
-
-    const originalFn = handlers.testCaseStarted
-    handlers.testCaseStarted = (t: messages.TestCaseStarted) => {
-      running.forEach((tcId) =>
-        assertion(pickles[testCases[tcId]], pickles[testCases[t.testCaseId]])
-      )
-      originalFn(t)
-    }
-
-    parse(this.lastRun.envelopes, handlers)
-  }
-}
-
-Then(/^it runs tests in order (.+)$/, function (this: World, order: string) {
-  const running = new Set<string>()
-  const pickles: Record<string, messages.Pickle> = {}
-  const testCases: Record<string, string> = {}
-  const testStarts: Record<string, string> = {}
-  const scenarioNames = order.split(/,\s*/)
-  const handlers = defaultHandlers({ pickles, running, testCases, testStarts })
-  handlers.testCaseStarted = (t: messages.TestCaseStarted) =>
-    expect(pickles[testCases[t.testCaseId]].name).to.eq(scenarioNames.shift())
-  parse(this.lastRun.envelopes, handlers)
+Then('no pickles run at the same time', function (this: World) {
+  const actualPairs = getPairsOfPicklesRunningAtTheSameTime(
+    this.lastRun.envelopes
+  )
+  expect(actualPairs).to.eql([])
 })
 
 Then(
-  /^no tests ran in tandem$/,
-  verifyTandem(() =>
-    expect.fail('No tests should have executed at the same time')
-  )
-)
-
-Then(
-  /^tandem tests have unique first tag$/,
-  verifyTandem((p1, p2) => expect(p1.tags[0].name).to.not.eq(p2.tags[0].name))
+  'the following pairs of pickles execute at the same time:',
+  function (this: World, dataTable: DataTable) {
+    const expectedPairs = dataTable.raw()
+    const actualPairs = getPairsOfPicklesRunningAtTheSameTime(
+      this.lastRun.envelopes
+    )
+    expect(actualPairs).to.eql(expectedPairs)
+  }
 )

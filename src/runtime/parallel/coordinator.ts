@@ -224,7 +224,7 @@ export default class Coordinator implements IRuntime {
       supportCodeLibrary: this.supportCodeLibrary,
     })
     return await new Promise<boolean>((resolve) => {
-      for (let i = 0; i <= this.numberOfWorkers; i++) {
+      for (let i = 0; i < this.numberOfWorkers; i++) {
         this.startWorker(i.toString(), this.numberOfWorkers)
       }
       this.onFinish = (status) => {
