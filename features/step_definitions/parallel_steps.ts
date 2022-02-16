@@ -3,14 +3,14 @@ import { World } from '../support/world'
 import messages from '@cucumber/messages'
 import { expect } from 'chai'
 
-function getPairsOfPicklesRunningAtTheSameTime(
+function getSetsOfPicklesRunningAtTheSameTime(
   envelopes: messages.Envelope[]
-): string[][] {
+): string[] {
   const pickleIdToName: Record<string, string> = {}
   const testCaseIdToPickleId: Record<string, string> = {}
   const testCaseStarteIdToPickleId: Record<string, string> = {}
   let currentRunningPickleIds: string[] = []
-  const result: string[][] = []
+  const result: string[] = []
   envelopes.forEach((envelope) => {
     if (envelope.pickle != null) {
       pickleIdToName[envelope.pickle.id] = envelope.pickle.name
@@ -19,10 +19,13 @@ function getPairsOfPicklesRunningAtTheSameTime(
     } else if (envelope.testCaseStarted != null) {
       const pickleId = testCaseIdToPickleId[envelope.testCaseStarted.testCaseId]
       testCaseStarteIdToPickleId[envelope.testCaseStarted.id] = pickleId
-      currentRunningPickleIds.forEach((x) => {
-        result.push([pickleIdToName[x], pickleIdToName[pickleId]])
-      })
       currentRunningPickleIds.push(pickleId)
+      if (currentRunningPickleIds.length > 1) {
+        const setOfPickleNames = currentRunningPickleIds
+          .map((x) => pickleIdToName[x])
+          .join(', ')
+        result.push(setOfPickleNames)
+      }
     } else if (envelope.testCaseFinished != null) {
       const pickleId =
         testCaseStarteIdToPickleId[envelope.testCaseFinished.testCaseStartedId]
@@ -35,19 +38,19 @@ function getPairsOfPicklesRunningAtTheSameTime(
 }
 
 Then('no pickles run at the same time', function (this: World) {
-  const actualPairs = getPairsOfPicklesRunningAtTheSameTime(
+  const actualSets = getSetsOfPicklesRunningAtTheSameTime(
     this.lastRun.envelopes
   )
-  expect(actualPairs).to.eql([])
+  expect(actualSets).to.eql([])
 })
 
 Then(
-  'the following pairs of pickles execute at the same time:',
+  'the following sets of pickles execute at the same time:',
   function (this: World, dataTable: DataTable) {
-    const expectedPairs = dataTable.raw()
-    const actualPairs = getPairsOfPicklesRunningAtTheSameTime(
+    const expectedSets = dataTable.raw().map((row) => row[0])
+    const actualSets = getSetsOfPicklesRunningAtTheSameTime(
       this.lastRun.envelopes
     )
-    expect(actualPairs).to.eql(expectedPairs)
+    expect(actualSets).to.eql(expectedSets)
   }
 )

@@ -66,8 +66,8 @@ Feature: Running scenarios in parallel with custom assignment
       """
     When I run cucumber-js with `--parallel 2`
     Then it passes
-    And the following pairs of pickles execute at the same time:
-      | complex1 | simple1  |
-      | complex1 | simple2  |
-      | simple2  | complex2 |
-      | complex2 | simple3  |
+    And the following sets of pickles execute at the same time:
+      | complex1, simple1 |
+      | complex1, simple2 |
+      | simple2, complex2 |
+      | complex2, simple3 |
