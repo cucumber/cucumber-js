@@ -40,7 +40,7 @@ function getStepMessage(testStep: IParsedTestStep): string {
 interface IFormatStepRequest {
   colorFns: IColorFns
   testStep: IParsedTestStep
-  printAttachments: Boolean
+  printAttachments?: Boolean
 }
 
 function formatStep({
@@ -83,7 +83,7 @@ export interface IFormatTestCaseAttemptRequest {
   testCaseAttempt: ITestCaseAttempt
   snippetBuilder: StepDefinitionSnippetBuilder
   supportCodeLibrary: ISupportCodeLibrary
-  printAttachments: Boolean
+  printAttachments?: Boolean
 }
 
 export function formatTestCaseAttempt({
