@@ -8,7 +8,7 @@ Feature: Running scenarios in parallel with custom assignment
 
       setParallelCanAssign(() => false)
 
-      Given('slow step', (done) => setTimeout(done, 100))
+      Given('slow step', (done) => setTimeout(done, 50))
       """
     And a file named "features/a.feature" with:
       """
@@ -34,8 +34,8 @@ Feature: Running scenarios in parallel with custom assignment
 
       setParallelCanAssign(atMostOnePicklePerTag(["@complex", "@simple"]))
 
-      Given('complex step', (done) => setTimeout(done, 325))
-      Given('simple step', (done) => setTimeout(done, 200))
+      Given('complex step', (done) => setTimeout(done, 125))
+      Given('simple step', (done) => setTimeout(done, 100))
       """
     And a file named "features/a.feature" with:
       """
@@ -71,3 +71,4 @@ Feature: Running scenarios in parallel with custom assignment
       | complex1, simple2 |
       | simple2, complex2 |
       | complex2, simple3 |
+      | simple3, complex3 |
