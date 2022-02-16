@@ -37,31 +37,31 @@ export default class HttpStream extends Transform {
     callback: (err?: Error | null) => void
   ): void {
     if (this.tempFile === undefined) {
-      console.log('creating temp file...')
+      console.log('HttpStream: creating temp file...')
       tmp.file((err, name, fd) => {
         if (doesHaveValue(err)) return callback(err)
-        console.log('temp file created')
+        console.log('HttpStream: temp file created')
         this.tempFilePath = name
         this.tempFile = fs.createWriteStream(name, { fd })
-        console.log('writing to temp file')
+        console.log('HttpStream: writing to temp file')
         this.tempFile.write(chunk, encoding, callback)
       })
     } else {
-      console.log('writing to temp file')
+      console.log('HttpStream: writing to temp file')
       this.tempFile.write(chunk, encoding, callback)
     }
   }
 
   _final(callback: (error?: Error | null) => void): void {
-    console.log('final: ending tempfile...')
+    console.log('HttpStream: final: ending tempfile...')
     this.tempFile.end(() => {
-      console.log('final: sending HTTP request #1...')
+      console.log('HttpStream: final: sending HTTP request #1...')
       this.sendHttpRequest(
         this.url,
         this.method,
         this.headers,
         (err1, res1) => {
-          console.log('got response')
+          console.log('HttpStream: got response')
           if (doesHaveValue(err1)) return callback(err1)
           this.pushResponseBody(res1, () => {
             this.emitErrorUnlessHttp2xx(res1, this.url, this.method)
@@ -69,7 +69,7 @@ export default class HttpStream extends Transform {
               res1.statusCode === 202 &&
               res1.headers.location !== undefined
             ) {
-              console.log('final: sending HTTP request #2...')
+              console.log('HttpStream: final: sending HTTP request #2...')
               this.sendHttpRequest(
                 res1.headers.location,
                 'PUT',
@@ -136,7 +136,7 @@ export default class HttpStream extends Transform {
       headers: allHeaders,
     })
     req.on('error', (err) => {
-      console.log('request error: ', err)
+      console.log('HttpStream: request error: ', err)
       this.emit('error', err)
     })
     req.on('response', (res) => {
@@ -151,7 +151,7 @@ export default class HttpStream extends Transform {
         }
       })
     } else {
-      console.log('ending request...')
+      console.log('HttpStream: ending request...')
       req.end()
     }
   }

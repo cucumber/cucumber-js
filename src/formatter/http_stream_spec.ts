@@ -11,9 +11,9 @@ describe('HttpStream', () => {
 
   beforeEach(async () => {
     reportServer = new FakeReportServer(0)
-    console.log('\nstarting server...')
+    console.log('\ntest beforeEach: starting fake server...')
     port = await reportServer.start()
-    console.log('started.')
+    console.log('test beforeEach: fake server started.')
   })
 
   it(`sends a PUT request with written data when the stream is closed`, (callback: Callback) => {
@@ -172,20 +172,20 @@ describe('HttpStream', () => {
         )
         stream.on('error', reject)
         stream.on('finish', () => {
-          console.log('stream finished')
-          console.log('stopping server...')
+          console.log('test: stream ended')
+          console.log('test: stopping fake server...')
           reportServer
             .stop()
             .then(() => {
-              console.log('server stopped')
+              console.log('test: server stopped')
               resolve()
             })
             .catch(reject)
         })
-        console.log('writing to stream...')
+        console.log('test: writing to stream...')
         stream.write('hello')
-        console.log('stream written')
-        console.log('ending stream...')
+        console.log('test: stream written')
+        console.log('test: ending stream...')
         stream.end()
       }))
   }
