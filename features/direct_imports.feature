@@ -55,7 +55,7 @@ Feature: Core feature elements execution using direct imports
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
-      const deepImportedThing = require('@cucumber/cucumber/lib/models/test_case_hook_definition')
+      const TestCaseHookDefinition = require('@cucumber/cucumber/lib/models/test_case_hook_definition')
 
       Given(/^a step passes$/, function() {});
       """
