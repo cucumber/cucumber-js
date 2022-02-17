@@ -45,7 +45,7 @@ Feature: Core feature elements execution using direct imports
       features/step_definitions/cucumber_steps.js:3
       """
 
-  Scenario Outline: deep imports don't break everything
+  Scenario: deep imports don't break everything
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -55,17 +55,12 @@ Feature: Core feature elements execution using direct imports
     And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
-      const deepImportedThing = require('<DEEP_PATH>')
+      const deepImportedThing = require('@cucumber/cucumber/lib/models/test_case_hook_definition')
 
       Given(/^a step passes$/, function() {});
       """
     When I run cucumber-js
     Then it passes
-    Examples:
-      | DEEP_PATH                                                  |
-      | @cucumber/cucumber/lib/models/test_case_hook_definition    |
-      | @cucumber/cucumber/lib/models/test_case_hook_definition.js |
-      | @cucumber/cucumber/lib/formatter/helpers                   |
 
   Scenario: we can import the version number from package.json and from the library
     Given a file named "features/a.feature" with:
