@@ -1,5 +1,4 @@
 Feature: Ambiguous Steps
-  
 
   Scenario:
     Given a file named "features/a.feature" with:
