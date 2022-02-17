@@ -8,7 +8,10 @@ import { reindent } from 'reindent-template-literals'
 import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
 import FormatterBuilder from '../builder'
 
-async function testFormatIssue(sourceData: string): Promise<string> {
+async function testFormatIssue(
+  sourceData: string,
+  printAttachments: boolean = true
+): Promise<string> {
   const sources = [
     {
       data: sourceData,
@@ -30,6 +33,7 @@ async function testFormatIssue(sourceData: string): Promise<string> {
     }),
     supportCodeLibrary,
     testCaseAttempt,
+    printAttachments,
   })
 }
 
@@ -265,6 +269,35 @@ describe('IssueHelpers', () => {
 
           `)
         )
+      })
+
+      describe('when it is requested to not print attachments', () => {
+        it('does not output attachment', async () => {
+          // Arrange
+          const sourceData = reindent(`
+            Feature: my feature
+              Scenario: my scenario
+                Given attachment step1
+                When attachment step2
+                Then a passing step
+          `)
+
+          // Act
+          const output = await testFormatIssue(sourceData, false)
+
+          // Assert
+          expect(output).to.eql(
+            reindent(`
+              1) Scenario: my scenario # a.feature:2
+                 ${figures.tick} Given attachment step1 # steps.ts:35
+                 ${figures.cross} When attachment step2 # steps.ts:41
+                     error
+                 - Then a passing step # steps.ts:29
+
+
+            `)
+          )
+        })
       })
     })
   })
