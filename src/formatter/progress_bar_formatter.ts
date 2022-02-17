@@ -80,6 +80,7 @@ export default class ProgressBarFormatter extends Formatter {
           snippetBuilder: this.snippetBuilder,
           supportCodeLibrary: this.supportCodeLibrary,
           testCaseAttempt,
+          printAttachments: this.printAttachments,
         })
       )
       if (testCaseFinished.willBeRetried) {

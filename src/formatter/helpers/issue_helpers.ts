@@ -37,6 +37,7 @@ export interface IFormatIssueRequest {
   snippetBuilder: StepDefinitionSnippetBuilder
   testCaseAttempt: ITestCaseAttempt
   supportCodeLibrary: ISupportCodeLibrary
+  printAttachments?: boolean
 }
 
 export function formatIssue({
@@ -46,6 +47,7 @@ export function formatIssue({
   snippetBuilder,
   testCaseAttempt,
   supportCodeLibrary,
+  printAttachments = true,
 }: IFormatIssueRequest): string {
   const prefix = `${number.toString()}) `
   const formattedTestCaseAttempt = formatTestCaseAttempt({
@@ -54,6 +56,7 @@ export function formatIssue({
     snippetBuilder,
     testCaseAttempt,
     supportCodeLibrary,
+    printAttachments,
   })
   const lines = formattedTestCaseAttempt.split('\n')
   const updatedLines = lines.map((line, index) => {

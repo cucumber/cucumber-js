@@ -8,6 +8,7 @@ import { WriteStream as TtyWriteStream } from 'tty'
 import { EventEmitter } from 'events'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import HttpStream from './http_stream'
+import { valueOrDefault } from '../value_checker'
 
 export type IFormatterStream =
   | FsWriteStream
@@ -38,6 +39,7 @@ export default class Formatter {
   protected snippetBuilder: StepDefinitionSnippetBuilder
   protected stream: WritableStream
   protected supportCodeLibrary: ISupportCodeLibrary
+  protected printAttachments: boolean
   private readonly cleanup: IFormatterCleanupFn
   static readonly documentation: string
 
@@ -50,6 +52,10 @@ export default class Formatter {
     this.stream = options.stream
     this.supportCodeLibrary = options.supportCodeLibrary
     this.cleanup = options.cleanup
+    this.printAttachments = valueOrDefault(
+      options.parsedArgvOptions.printAttachments,
+      true
+    )
   }
 
   async finished(): Promise<void> {

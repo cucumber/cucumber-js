@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Cucumber Expressions now support a wider array of parameter types (see [documentation](https://github.com/cucumber/cucumber-expressions#parameter-types))
+- Improved styling and usability on report from `html` formatter
+- Add a new option to `--format-options`: `printAttachments`.
+  See [./docs/cli.md#printing-attachments-details](https://github.com/cucumber/cucumber-js/blob/main/docs/cli.md#printing-attachments-details) for more info.
+  ([#1136](https://github.com/cucumber/cucumber-js/issues/1136)
+  [#1721](https://github.com/cucumber/cucumber-js/pull/1721))
+
+### Fixed
+- Warn users who are on an unsupported node version ([#1922](https://github.com/cucumber/cucumber-js/pull/1922))
+
 ### Changed
 - Switch from `colors` to `chalk` for terminal coloring ([#1895](https://github.com/cucumber/cucumber-js/pull/1895))
 
@@ -56,6 +67,12 @@ See [docs/profiles.md](./docs/profiles.md#using-another-file-than-cucumberjs) fo
 - Remove deprecated `--retryTagFilter` option (the correct option is `--retry-tag-filter`) ([#1713](https://github.com/cucumber/cucumber-js/pull/1713))
 - Remove validation that step definition functions are not generators
 - Remove `--predictable-ids` option (was only used for internal testing)
+
+## [7.3.2] - 2022-01-10
+### Fixed
+
+- Pin `colors` to `1.4.0` to fix security vulnerability ([#1884](https://github.com/cucumber/cucumber-js/issues/1884))
+- Pin `cli-table3` to `0.6.1` to fix security vulnerability ([#251](https://github.com/cli-table/cli-table3/pull/251))
 
 ## [7.3.1] - 2021-07-20
 ### Deprecated
@@ -1333,6 +1350,7 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 [Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.2...HEAD
 [8.0.0-rc.2]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.1...v8.0.0-rc.2
 [8.0.0-rc.1]: https://github.com/cucumber/cucumber-js/compare/v7.3.1...8.0.0-rc.1
+[7.3.2]: https://github.com/cucumber/cucumber-js/compare/v7.3.1...v7.3.2
 [7.3.1]: https://github.com/cucumber/cucumber-js/compare/v7.3.0...v7.3.1
 [7.3.0]: https://github.com/cucumber/cucumber-js/compare/v7.2.1...v7.3.0
 [7.2.1]: https://github.com/cucumber/cucumber-js/compare/v7.2.0...v7.2.1

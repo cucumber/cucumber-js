@@ -88,6 +88,7 @@ export default class SummaryFormatter extends Formatter {
           snippetBuilder: this.snippetBuilder,
           supportCodeLibrary: this.supportCodeLibrary,
           testCaseAttempt,
+          printAttachments: this.printAttachments,
         })
       )
     })

@@ -29,7 +29,8 @@ This option is repeatable, so you can use it multiple times and the objects will
 
 Some options offered by built-in formatters:
 
-- `colorsEnabled` - if set to `false`, colors in terminal output are disabled.
+- `colorsEnabled` - if set to `false`, colors in terminal output are disabled
+- `printAttachments` - if set to `false`, attachments won't be part of progress bars and summary reports
 
 ## Built-in formatters
 
