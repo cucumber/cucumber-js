@@ -10,7 +10,7 @@ import FormatterBuilder from '../builder'
 
 async function testFormatIssue(
   sourceData: string,
-  printAttachments: Boolean = true
+  printAttachments: boolean = true
 ): Promise<string> {
   const sources = [
     {

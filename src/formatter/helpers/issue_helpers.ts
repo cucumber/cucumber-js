@@ -37,7 +37,7 @@ export interface IFormatIssueRequest {
   snippetBuilder: StepDefinitionSnippetBuilder
   testCaseAttempt: ITestCaseAttempt
   supportCodeLibrary: ISupportCodeLibrary
-  printAttachments?: Boolean
+  printAttachments?: boolean
 }
 
 export function formatIssue({
