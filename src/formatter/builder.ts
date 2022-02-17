@@ -108,13 +108,21 @@ const FormatterBuilder = {
   },
 
   resolveConstructor(ImportedCode: any) {
+    if (doesNotHaveValue(ImportedCode)) {
+      return null
+    }
     if (typeof ImportedCode === 'function') {
       return ImportedCode
     } else if (
-      doesHaveValue(ImportedCode) &&
+      typeof ImportedCode === 'object' &&
       typeof ImportedCode.default === 'function'
     ) {
       return ImportedCode.default
+    } else if (
+      typeof ImportedCode.default === 'object' &&
+      typeof ImportedCode.default.default === 'function'
+    ) {
+      return ImportedCode.default.default
     }
     return null
   },
