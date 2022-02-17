@@ -77,7 +77,7 @@ See [Parallel](./parallel.md).
 ## Printing Attachments Details
 
 Printing attachments details can be disabled with
-`--fomat-options '{"printAttachmants": false}'`.
+`--fomat-options '{"printAttachments": false}'`.
 
 This option applies to the progress formatter and the summary formatter.
 
