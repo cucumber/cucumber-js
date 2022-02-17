@@ -11,6 +11,13 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Added
 - Cucumber Expressions now support a wider array of parameter types (see [documentation](https://github.com/cucumber/cucumber-expressions#parameter-types))
 - Improved styling and usability on report from `html` formatter
+- Add a new option to `--format-options`: `printAttachments`.
+  See [./docs/cli.md#printing-attachments-details](https://github.com/cucumber/cucumber-js/blob/main/docs/cli.md#printing-attachments-details) for more info.
+  ([#1136](https://github.com/cucumber/cucumber-js/issues/1136)
+  [#1721](https://github.com/cucumber/cucumber-js/pull/1721))
+
+### Fixed
+- Warn users who are on an unsupported node version ([#1922](https://github.com/cucumber/cucumber-js/pull/1922))
 
 ### Changed
 - Switch from `colors` to `chalk` for terminal coloring ([#1895](https://github.com/cucumber/cucumber-js/pull/1895))

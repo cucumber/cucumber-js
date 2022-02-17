@@ -16,6 +16,7 @@ export interface IParsedArgvFormatOptions {
   rerun?: IParsedArgvFormatRerunOptions
   snippetInterface?: SnippetInterface
   snippetSyntax?: string
+  printAttachments?: boolean
   [customKey: string]: any
 }
 
