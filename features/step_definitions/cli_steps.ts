@@ -87,9 +87,9 @@ When(
   }
 )
 
-Then(/^it passes$/, () => {}) // eslint-disable-line @typescript-eslint/no-empty-function
+Then('it passes', () => {}) // eslint-disable-line @typescript-eslint/no-empty-function
 
-Then(/^it fails$/, function (this: World) {
+Then('it fails', function (this: World) {
   const actualCode: number = doesHaveValue(this.lastRun.error)
     ? this.lastRun.error.code
     : 0
@@ -101,13 +101,13 @@ Then(/^it fails$/, function (this: World) {
   this.verifiedLastRunError = true
 })
 
-Then(/^it outputs the text:$/, function (this: World, text: string) {
+Then('it outputs the text:', function (this: World, text: string) {
   const actualOutput = normalizeText(this.lastRun.output)
   const expectedOutput = normalizeText(text)
   expect(actualOutput).to.eql(expectedOutput)
 })
 
-Then(/^the output contains the text:$/, function (this: World, text: string) {
+Then('the output contains the text:', function (this: World, text: string) {
   const actualOutput = normalizeText(this.lastRun.output)
   const expectedOutput = normalizeText(text)
   expect(actualOutput).to.include(expectedOutput)
@@ -123,7 +123,7 @@ Then(
 )
 
 Then(
-  /^the error output contains the text snippets:$/,
+  'the error output contains the text snippets:',
   function (this: World, table: DataTable) {
     const actualOutput = normalizeText(this.lastRun.errorOutput)
     table.rows().forEach((row) => {
@@ -134,7 +134,7 @@ Then(
 )
 
 Then(
-  /^the error output contains the text:$/,
+  'the error output contains the text:',
   function (this: World, text: string) {
     const actualOutput = normalizeText(this.lastRun.errorOutput)
     const expectedOutput = normalizeText(text)
@@ -151,13 +151,13 @@ Then(
   }
 )
 
-Then(/^I see the version of Cucumber$/, function (this: World) {
+Then('I see the version of Cucumber', function (this: World) {
   const actualOutput = this.lastRun.output
   const expectedOutput = `${version as string}\n`
   expect(actualOutput).to.eql(expectedOutput)
 })
 
-Then(/^I see the help text for Cucumber$/, function (this: World) {
+Then('I see the help text for Cucumber', function (this: World) {
   const actualOutput = this.lastRun.output
   const expectedOutput = 'Usage: cucumber-js'
   expect(actualOutput).to.include(expectedOutput)
