@@ -34,16 +34,13 @@ Given(
   }
 )
 
-Given(
-  /^"([^"]*)" is an absolute path$/,
-  function (this: World, filePath: string) {
-    filePath = Mustache.render(filePath, this)
-    expect(path.isAbsolute(filePath)).to.eql(true)
-  }
-)
+Given('{string} is an absolute path', function (this: World, filePath: string) {
+  filePath = Mustache.render(filePath, this)
+  expect(path.isAbsolute(filePath)).to.eql(true)
+})
 
 Then(
-  /^the file "([^"]*)" has the text:$/,
+  'the file {string} has the text:',
   async function (this: World, filePath: string, text: string) {
     filePath = Mustache.render(filePath, this)
     const absoluteFilePath = path.resolve(this.tmpDir, filePath)
