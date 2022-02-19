@@ -74,6 +74,13 @@ By default, cucumber works in _strict_ mode, meaning it will fail if there are p
 
 See [Parallel](./parallel.md).
 
+## Printing Attachments Details
+
+Printing attachments details can be disabled with
+`--fomat-options '{"printAttachments": false}'`.
+
+This option applies to the progress formatter and the summary formatter.
+
 ## Profiles
 
 See [Profiles](./profiles.md).
@@ -127,7 +134,7 @@ If you are using [ts-node](https://github.com/TypeStrong/ts-node):
 --require-module ts-node/register --require 'step-definitions/**/*.ts'
 ```
 
-> ⚠️ Some TypeScript setups use `esnext` modules by default, 
+> ⚠️ Some TypeScript setups use `esnext` modules by default,
 >   which doesn't marry well with Node. You may consider using commonjs instead.
 >   See how to add [extra configuration](#extra-configuration) below.
 

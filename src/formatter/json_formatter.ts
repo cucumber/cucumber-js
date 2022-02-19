@@ -329,7 +329,7 @@ export default class JsonFormatter extends Formatter {
     feature: messages.Feature,
     scenario: messages.Scenario
   ): IJsonTag {
-    const byAstNodeId = (tag: messages.Tag): Boolean =>
+    const byAstNodeId = (tag: messages.Tag): boolean =>
       tag.id === tagData.astNodeId
     const flatten = (
       acc: messages.Tag[],
