@@ -7,6 +7,8 @@ export const Runtime = cucumber.Runtime
 export const supportCodeLibraryBuilder = cucumber.supportCodeLibraryBuilder
 export const Status = cucumber.Status
 export const DataTable = cucumber.DataTable
+export const TestCaseHookDefinition = cucumber.TestCaseHookDefinition
+export const version = cucumber.version
 
 export const Formatter = cucumber.Formatter
 export const FormatterBuilder = cucumber.FormatterBuilder
@@ -35,4 +37,6 @@ export const Then = cucumber.Then
 export const When = cucumber.When
 
 export const World = cucumber.World
+
+export const wrapPromiseWithTimeout = cucumber.wrapPromiseWithTimeout
 

@@ -13,6 +13,7 @@ export {
 } from './runtime'
 export { default as supportCodeLibraryBuilder } from './support_code_library_builder'
 export { default as DataTable } from './models/data_table'
+export { default as TestCaseHookDefinition } from './models/test_case_hook_definition'
 export { version } from './version'
 
 // Formatters
