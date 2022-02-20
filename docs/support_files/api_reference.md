@@ -164,6 +164,21 @@ When used, the result is wrapped again to ensure it has the same length of the o
 
 ---
 
+### setParallelCanAssign(canAssignFn)
+
+Set the function used to determine if a pickle can be executed based on currently executing pickles.
+
+The `canAssignFn` function is expected to take 2 arguments:
+
+- `pickleInQuestion` is the a pickle we are checking if its okay to run
+- `picklesInProgress` is an array of pickles currently being executed
+
+And returns true if the pickle can be executed, false otherwise.
+
+See examples in our [parallel](../parallel.md) documentation.
+
+---
+
 #### `setWorldConstructor(constructor)`
 
 Set a custom world constructor, to override the default world constructor:

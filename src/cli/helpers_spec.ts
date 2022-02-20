@@ -80,6 +80,7 @@ function testEmitSupportCodeMessages(
         parameterTypeRegistry: new ParameterTypeRegistry(),
         undefinedParameterTypes: [],
         World: null,
+        parallelCanAssign: () => true,
       },
       supportCode
     ),
