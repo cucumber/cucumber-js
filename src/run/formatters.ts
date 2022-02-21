@@ -17,7 +17,7 @@ export async function initializeFormatters({
   cwd,
   stdout,
   stderr,
-  onError,
+  onStreamError,
   eventBroadcaster,
   eventDataCollector,
   configuration = {},
@@ -26,7 +26,7 @@ export async function initializeFormatters({
   cwd: string
   stdout: IFormatterStream
   stderr: IFormatterStream
-  onError: () => void,
+  onStreamError: () => void
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   configuration: IFormatterConfiguration
@@ -39,7 +39,7 @@ export async function initializeFormatters({
   ): Promise<Formatter> {
     stream.on('error', (error: Error) => {
       stderr.write(error.message)
-      onError()
+      onStreamError()
     })
     const typeOptions = {
       cwd,
