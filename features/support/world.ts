@@ -79,26 +79,32 @@ export class World {
       })
     } else {
       const stdout = new PassThrough()
+      const stderr = new PassThrough()
       const cli = new Cli({
         argv: args,
         cwd,
         stdout,
+        stderr,
         env,
       })
-      let error: any, stderr: string
+      let error: any
       try {
         const { success } = await cli.run()
         if (!success) {
           error = new Error('CLI exited with non-zero')
           error.code = 42
         }
-        stderr = ''
       } catch (err) {
         error = err
-        stderr = VError.fullStack(error)
       }
       stdout.end()
-      result = { error, stdout: await toString(stdout), stderr }
+      stderr.end()
+      const stderrSuffix = error != null ? VError.fullStack(error) : ''
+      result = {
+        error,
+        stdout: await toString(stdout),
+        stderr: (await toString(stderr)) + stderrSuffix
+      }
     }
     const envelopes: messages.Envelope[] = []
     const messageOutputPath = path.join(cwd, messageFilename)

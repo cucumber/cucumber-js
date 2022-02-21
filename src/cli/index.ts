@@ -55,7 +55,7 @@ export default class Cli {
         success: true,
       }
     }
-    if (fromArgv.options.i18nKeywords != null) {
+    if (fromArgv.options.i18nKeywords != '') {
       this.stdout.write(getKeywords(fromArgv.options.i18nKeywords))
       return {
         shouldAdvertisePublish: false,
