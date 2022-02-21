@@ -1,9 +1,10 @@
+import { Writable } from 'stream';
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 
 export interface IRunEnvironment {
   cwd: string
-  stdout: NodeJS.WriteStream
-  stderr: NodeJS.WriteStream
+  stdout: Writable
+  stderr: Writable
   env: NodeJS.ProcessEnv
 }
 

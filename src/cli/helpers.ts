@@ -6,7 +6,7 @@ import PickleFilter from '../pickle_filter'
 import { EventDataCollector } from '../formatter/helpers'
 import { doesHaveValue } from '../value_checker'
 import OptionSplitter from './option_splitter'
-import { Readable } from 'stream'
+import { Readable, Writable } from 'stream'
 import os from 'os'
 import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
@@ -39,7 +39,7 @@ export async function getExpandedArgv({
 }
 
 interface IParseGherkinMessageStreamRequest {
-  stderr: NodeJS.WriteStream
+  stderr: Writable
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   gherkinMessageStream: Readable
@@ -91,7 +91,7 @@ export async function parseGherkinMessageStream({
 export function orderPickleIds(
   pickleIds: string[],
   order: PickleOrder,
-  stderr: NodeJS.WriteStream
+  stderr: Writable
 ): void {
   const [type, seed] = OptionSplitter.split(order)
   switch (type) {

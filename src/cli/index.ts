@@ -4,6 +4,7 @@ import { buildConfiguration, isTruthyString } from './configuration_builder'
 import { runCucumber } from '../run'
 import ArgvParser from './argv_parser'
 import { getKeywords, getLanguages } from './i18n'
+import { Writable } from 'stream'
 
 export interface ICliRunResult {
   shouldAdvertisePublish: boolean
@@ -14,8 +15,8 @@ export interface ICliRunResult {
 export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
-  private readonly stdout: NodeJS.WriteStream
-  private readonly stderr: NodeJS.WriteStream
+  private readonly stdout: Writable
+  private readonly stderr: Writable
   private readonly env: NodeJS.ProcessEnv
 
   constructor({
@@ -27,13 +28,14 @@ export default class Cli {
   }: {
     argv: string[]
     cwd: string
-    stdout: NodeJS.WriteStream
-    stderr: NodeJS.WriteStream
+    stdout: Writable
+    stderr: Writable
     env: NodeJS.ProcessEnv
   }) {
     this.argv = argv
     this.cwd = cwd
     this.stdout = stdout
+    this.stderr = stderr
     this.env = env
   }
 
