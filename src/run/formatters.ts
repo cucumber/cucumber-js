@@ -16,6 +16,7 @@ import { IFormatterConfiguration } from '../configuration'
 export async function initializeFormatters({
   cwd,
   stdout,
+  stderr,
   eventBroadcaster,
   eventDataCollector,
   configuration = {},
@@ -23,6 +24,7 @@ export async function initializeFormatters({
 }: {
   cwd: string
   stdout: IFormatterStream
+  stderr: IFormatterStream
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   configuration: IFormatterConfiguration
@@ -33,9 +35,8 @@ export async function initializeFormatters({
     target: string,
     type: string
   ): Promise<Formatter> {
-    stream.on('error', (error) => {
-      console.error(error.message)
-      process.exit(1)
+    stream.on('error', (error: Error) => {
+      stderr.write(error.message)
     })
     const typeOptions = {
       cwd,
@@ -56,7 +57,7 @@ export async function initializeFormatters({
       ).isTTY
     }
     if (type === 'progress-bar' && !(stream as TtyWriteStream).isTTY) {
-      console.warn(
+      stderr.write(
         `Cannot use 'progress-bar' formatter for output to '${target}' as not a TTY. Switching to 'progress' formatter.`
       )
       type = 'progress'
@@ -93,7 +94,7 @@ export async function initializeFormatters({
     const readerStream = new Writable({
       objectMode: true,
       write: function (responseBody: string, encoding, writeCallback) {
-        console.error(responseBody)
+        stderr.write(responseBody)
         writeCallback()
       },
     })

@@ -16,6 +16,7 @@ const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
 
 export interface INewCoordinatorOptions {
   cwd: string
+  stderr: NodeJS.WriteStream
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   options: IRuntimeOptions
@@ -61,11 +62,13 @@ export default class Coordinator implements IRuntime {
   private readonly supportCodePaths: string[]
   private readonly supportCodeRequiredModules: string[]
   private readonly numberOfWorkers: number
+  private readonly stderr: NodeJS.WriteStream
   private success: boolean
   private idleInterventions: number
 
   constructor({
     cwd,
+    stderr,
     eventBroadcaster,
     eventDataCollector,
     pickleIds,
@@ -77,6 +80,7 @@ export default class Coordinator implements IRuntime {
     numberOfWorkers,
   }: INewCoordinatorOptions) {
     this.cwd = cwd
+    this.stderr = this.stderr
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
     this.stopwatch = new RealTestRunStopwatch()
@@ -229,7 +233,7 @@ export default class Coordinator implements IRuntime {
       }
       this.onFinish = (status) => {
         if (this.idleInterventions > 0) {
-          console.warn(
+          this.stderr.write(
             `WARNING: All workers went idle ${this.idleInterventions} time(s). Consider revising handler passed to setParallelCanAssign.`
           )
         }

@@ -39,7 +39,7 @@ export async function getExpandedArgv({
 }
 
 interface IParseGherkinMessageStreamRequest {
-  cwd: string
+  stderr: NodeJS.WriteStream
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   gherkinMessageStream: Readable
@@ -50,7 +50,7 @@ interface IParseGherkinMessageStreamRequest {
 export type PickleOrder = 'defined' | 'random'
 
 export async function parseGherkinMessageStream({
-  cwd,
+  stderr,
   eventBroadcaster,
   eventDataCollector,
   gherkinMessageStream,
@@ -80,7 +80,7 @@ export async function parseGherkinMessageStream({
       }
     })
     gherkinMessageStream.on('end', () => {
-      orderPickleIds(result, order)
+      orderPickleIds(result, order, stderr)
       resolve(result)
     })
     gherkinMessageStream.on('error', reject)
@@ -88,7 +88,11 @@ export async function parseGherkinMessageStream({
 }
 
 // Orders the pickleIds in place - morphs input
-export function orderPickleIds(pickleIds: string[], order: PickleOrder): void {
+export function orderPickleIds(
+  pickleIds: string[],
+  order: PickleOrder,
+  stderr: NodeJS.WriteStream
+): void {
   const [type, seed] = OptionSplitter.split(order)
   switch (type) {
     case 'defined':
@@ -96,7 +100,7 @@ export function orderPickleIds(pickleIds: string[], order: PickleOrder): void {
     case 'random':
       if (seed === '') {
         const newSeed = Math.floor(Math.random() * 1000 * 1000).toString()
-        console.warn(`Random order using seed: ${newSeed}`)
+        stderr.write(`Random order using seed: ${newSeed}`)
         shuffle(pickleIds, newSeed)
       } else {
         shuffle(pickleIds, seed)

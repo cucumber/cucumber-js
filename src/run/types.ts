@@ -4,6 +4,7 @@ import { IFormatterStream } from '../formatter'
 export interface IRunEnvironment {
   cwd: string
   stdout: IFormatterStream
+  stderr: IFormatterStream
   env: NodeJS.ProcessEnv
 }
 

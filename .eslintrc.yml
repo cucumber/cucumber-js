@@ -14,7 +14,8 @@ plugins:
   - '@typescript-eslint'
   - prettier
 rules:
-  'prettier/prettier': 2
+  'prettier/prettier': 'error'
+  'no-console': 'error'
   # requires strictNullChecks compiler option, produces many errors with messages objects
   '@typescript-eslint/strict-boolean-expressions': off
   '@typescript-eslint/no-explicit-any': off

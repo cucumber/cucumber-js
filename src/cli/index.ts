@@ -1,9 +1,9 @@
 import { getExpandedArgv } from './helpers'
 import { validateInstall } from './install_validator'
 import { buildConfiguration, isTruthyString } from './configuration_builder'
-import { IFormatterStream } from '../formatter'
 import { runCucumber } from '../run'
 import ArgvParser from './argv_parser'
+import { getKeywords, getLanguages } from './i18n'
 
 export interface ICliRunResult {
   shouldAdvertisePublish: boolean
@@ -14,18 +14,21 @@ export interface ICliRunResult {
 export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
-  private readonly stdout: IFormatterStream
+  private readonly stdout: NodeJS.WriteStream
+  private readonly stderr: NodeJS.WriteStream
   private readonly env: NodeJS.ProcessEnv
 
   constructor({
     argv,
     cwd,
     stdout,
+    stderr,
     env,
   }: {
     argv: string[]
     cwd: string
-    stdout: IFormatterStream
+    stdout: NodeJS.WriteStream
+    stderr: NodeJS.WriteStream
     env: NodeJS.ProcessEnv
   }) {
     this.argv = argv
@@ -42,10 +45,27 @@ export default class Cli {
         cwd: this.cwd,
       })
     )
+    if (fromArgv.options.i18nLanguages) {
+      this.stdout.write(getLanguages())
+      return {
+        shouldAdvertisePublish: false,
+        shouldExitImmediately: true,
+        success: true,
+      }
+    }
+    if (fromArgv.options.i18nKeywords != null) {
+      this.stdout.write(getKeywords(fromArgv.options.i18nKeywords))
+      return {
+        shouldAdvertisePublish: false,
+        shouldExitImmediately: true,
+        success: true,
+      }
+    }
     const configuration = await buildConfiguration(fromArgv, this.env)
     const { success } = await runCucumber(configuration, {
       cwd: this.cwd,
       stdout: this.stdout,
+      stderr: this.stderr,
       env: this.env,
     })
     return {

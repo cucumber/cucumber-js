@@ -14,12 +14,14 @@ import { resolvePaths } from './paths'
 import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
 import { getSupportCodeLibrary } from './support'
+import { stderr } from 'process'
 
 export async function runCucumber(
   configuration: IRunConfiguration,
   environment: IRunEnvironment = {
     cwd: process.cwd(),
     stdout: process.stdout,
+    stderr: process.stderr,
     env: process.env,
   }
 ): Promise<IRunResult> {
@@ -42,6 +44,7 @@ export async function runCucumber(
   const cleanup = await initializeFormatters({
     cwd,
     stdout,
+    stderr,
     eventBroadcaster,
     eventDataCollector,
     configuration: configuration.formats,
@@ -58,7 +61,7 @@ export async function runCucumber(
 
   if (featurePaths.length > 0) {
     pickleIds = await parseGherkinMessageStream({
-      cwd,
+      stderr,
       eventBroadcaster,
       eventDataCollector,
       gherkinMessageStream,
