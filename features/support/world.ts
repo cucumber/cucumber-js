@@ -103,7 +103,7 @@ export class World {
       result = {
         error,
         stdout: await toString(stdout),
-        stderr: (await toString(stderr)) + stderrSuffix
+        stderr: (await toString(stderr)) + stderrSuffix,
       }
     }
     const envelopes: messages.Envelope[] = []
