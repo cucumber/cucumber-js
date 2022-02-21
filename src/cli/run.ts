@@ -13,11 +13,10 @@ function displayPublishAdvertisementBanner(): void {
 }
 
 export default async function run(): Promise<void> {
-  const error = validateNodeEngineVersion(process.version)
-  if (error != null) {
+  validateNodeEngineVersion(process.version, (error) => {
     console.error(error) // eslint-disable-line no-console
     process.exit(1)
-  }
+  })
 
   const cli = new Cli({
     argv: process.argv,

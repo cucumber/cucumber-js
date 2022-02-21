@@ -15,11 +15,11 @@ const readActualPackageJSON: () => PackageJSON = () =>
 
 export function validateNodeEngineVersion(
   currentVersion: string,
+  onError: (message: string) => void,
   readPackageJSON: () => PackageJSON = readActualPackageJSON
-): string {
+): void {
   const requiredVersion = readPackageJSON().engines.node
   if (!semver.satisfies(currentVersion, requiredVersion)) {
-    return `Cucumber can only run on Node.js versions ${requiredVersion}. This Node.js version is ${currentVersion}`
+    onError(`Cucumber can only run on Node.js versions ${requiredVersion}. This Node.js version is ${currentVersion}`)
   }
-  return null
 }
