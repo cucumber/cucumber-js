@@ -8,7 +8,7 @@ import { EventDataCollector } from '../formatter/helpers'
 import { IdGenerator } from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import Coordinator from '../runtime/parallel/coordinator'
-import { Writable } from 'stream'
+import { IFormatterStream } from '../formatter'
 
 export function makeRuntime({
   cwd,
@@ -23,7 +23,7 @@ export function makeRuntime({
   options: { parallel = 0, ...runtimeOptions } = {},
 }: {
   cwd: string
-  stderr: Writable
+  stderr: IFormatterStream
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   newId: IdGenerator.NewId

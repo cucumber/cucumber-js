@@ -1,10 +1,10 @@
 import { getExpandedArgv } from './helpers'
 import { validateInstall } from './install_validator'
 import { buildConfiguration, isTruthyString } from './configuration_builder'
+import { IFormatterStream } from '../formatter'
 import { runCucumber } from '../run'
 import ArgvParser from './argv_parser'
 import { getKeywords, getLanguages } from './i18n'
-import { Writable } from 'stream'
 
 export interface ICliRunResult {
   shouldAdvertisePublish: boolean
@@ -15,8 +15,8 @@ export interface ICliRunResult {
 export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
-  private readonly stdout: Writable
-  private readonly stderr: Writable
+  private readonly stdout: IFormatterStream
+  private readonly stderr: IFormatterStream
   private readonly env: NodeJS.ProcessEnv
 
   constructor({
@@ -28,8 +28,8 @@ export default class Cli {
   }: {
     argv: string[]
     cwd: string
-    stdout: Writable
-    stderr: Writable
+    stdout: IFormatterStream
+    stderr: IFormatterStream
     env: NodeJS.ProcessEnv
   }) {
     this.argv = argv
