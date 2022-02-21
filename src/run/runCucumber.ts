@@ -40,10 +40,12 @@ export async function runCucumber(
   const eventBroadcaster = new EventEmitter()
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
 
+  let formatterError = false
   const cleanup = await initializeFormatters({
     cwd,
     stdout,
     stderr,
+    onError: () => formatterError = true,
     eventBroadcaster,
     eventDataCollector,
     configuration: configuration.formats,
@@ -95,7 +97,7 @@ export async function runCucumber(
   await cleanup()
 
   return {
-    success,
+    success: success && !formatterError,
     support: supportCodeLibrary,
   }
 }
