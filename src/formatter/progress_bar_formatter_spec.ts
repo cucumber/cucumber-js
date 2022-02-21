@@ -212,7 +212,7 @@ describe('ProgressBarFormatter', () => {
 
         // Act
         const { progressBarFormatter } = await testProgressBarFormatter({
-          shouldStopFn: (envelope) => false,
+          shouldStopFn: () => false,
           sources,
           supportCodeLibrary,
         })
@@ -376,7 +376,7 @@ describe('ProgressBarFormatter', () => {
         // Act
         const { progressBarFormatter } = await testProgressBarFormatter({
           runtimeOptions: { retry: 1 },
-          shouldStopFn: (envelope) => false,
+          shouldStopFn: () => false,
           sources,
           supportCodeLibrary,
         })
@@ -414,7 +414,7 @@ describe('ProgressBarFormatter', () => {
 
       // Act
       const { output } = await testProgressBarFormatter({
-        shouldStopFn: (envelope) => false,
+        shouldStopFn: () => false,
         sources,
         supportCodeLibrary,
       })
@@ -441,7 +441,7 @@ describe('ProgressBarFormatter', () => {
 
       // Act
       const { output } = await testProgressBarFormatter({
-        shouldStopFn: (envelope) => false,
+        shouldStopFn: () => false,
         sources,
         supportCodeLibrary,
       })
@@ -473,7 +473,7 @@ describe('ProgressBarFormatter', () => {
 
       // Act
       const { output } = await testProgressBarFormatter({
-        shouldStopFn: (envelope) => false,
+        shouldStopFn: () => false,
         sources,
         supportCodeLibrary,
       })

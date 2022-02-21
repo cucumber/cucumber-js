@@ -19,7 +19,6 @@ export default class UsageJsonFormatter extends Formatter {
 
   logUsage(): void {
     const usage = getUsage({
-      cwd: this.cwd,
       stepDefinitions: this.supportCodeLibrary.stepDefinitions,
       eventDataCollector: this.eventDataCollector,
     })
