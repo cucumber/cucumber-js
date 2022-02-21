@@ -38,7 +38,7 @@ export async function initializeFormatters({
     type: string
   ): Promise<Formatter> {
     stream.on('error', (error: Error) => {
-      stderr.write(error.message)
+      stderr.write(error.message + '\n')
       onStreamError()
     })
     const typeOptions = {
@@ -61,7 +61,7 @@ export async function initializeFormatters({
     }
     if (type === 'progress-bar' && !(stream as TtyWriteStream).isTTY) {
       stderr.write(
-        `Cannot use 'progress-bar' formatter for output to '${target}' as not a TTY. Switching to 'progress' formatter.`
+        `Cannot use 'progress-bar' formatter for output to '${target}' as not a TTY. Switching to 'progress' formatter.\n`
       )
       type = 'progress'
     }
@@ -97,7 +97,7 @@ export async function initializeFormatters({
     const readerStream = new Writable({
       objectMode: true,
       write: function (responseBody: string, encoding, writeCallback) {
-        stderr.write(responseBody)
+        stderr.write(responseBody + '\n')
         writeCallback()
       },
     })

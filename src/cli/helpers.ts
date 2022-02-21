@@ -101,7 +101,7 @@ export function orderPickleIds(
     case 'random':
       if (seed === '') {
         const newSeed = Math.floor(Math.random() * 1000 * 1000).toString()
-        stderr.write(`Random order using seed: ${newSeed}`)
+        stderr.write(`Random order using seed: ${newSeed}\n`)
         shuffle(pickleIds, newSeed)
       } else {
         shuffle(pickleIds, seed)

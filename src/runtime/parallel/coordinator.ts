@@ -235,7 +235,7 @@ export default class Coordinator implements IRuntime {
       this.onFinish = (status) => {
         if (this.idleInterventions > 0) {
           this.stderr.write(
-            `WARNING: All workers went idle ${this.idleInterventions} time(s). Consider revising handler passed to setParallelCanAssign.`
+            `WARNING: All workers went idle ${this.idleInterventions} time(s). Consider revising handler passed to setParallelCanAssign.\n`
           )
         }
 
