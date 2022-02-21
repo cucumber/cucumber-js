@@ -11,6 +11,7 @@ import Coordinator from '../runtime/parallel/coordinator'
 
 export function makeRuntime({
   cwd,
+  stderr,
   eventBroadcaster,
   eventDataCollector,
   pickleIds,
@@ -21,6 +22,7 @@ export function makeRuntime({
   options: { parallel = 0, ...runtimeOptions } = {},
 }: {
   cwd: string
+  stderr: NodeJS.WriteStream,
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   newId: IdGenerator.NewId
@@ -38,6 +40,7 @@ export function makeRuntime({
   if (parallel > 0) {
     return new Coordinator({
       cwd,
+      stderr,
       eventBroadcaster,
       eventDataCollector,
       pickleIds,

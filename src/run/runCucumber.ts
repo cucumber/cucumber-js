@@ -81,6 +81,7 @@ export async function runCucumber(
 
   const runtime = makeRuntime({
     cwd,
+    stderr,
     eventBroadcaster,
     eventDataCollector,
     pickleIds,
