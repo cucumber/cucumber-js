@@ -14,7 +14,6 @@ import { resolvePaths } from './paths'
 import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
 import { getSupportCodeLibrary } from './support'
-import { stderr } from 'process'
 
 export async function runCucumber(
   configuration: IRunConfiguration,
@@ -25,7 +24,7 @@ export async function runCucumber(
     env: process.env,
   }
 ): Promise<IRunResult> {
-  const { cwd, stdout, env } = environment
+  const { cwd, stdout, stderr, env } = environment
   const newId = IdGenerator.uuid()
 
   const { unexpandedFeaturePaths, featurePaths, supportCodePaths } =
