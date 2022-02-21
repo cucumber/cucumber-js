@@ -80,7 +80,7 @@ export default class Coordinator implements IRuntime {
     numberOfWorkers,
   }: INewCoordinatorOptions) {
     this.cwd = cwd
-    this.stderr = this.stderr
+    this.stderr = stderr
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
     this.stopwatch = new RealTestRunStopwatch()

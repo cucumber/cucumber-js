@@ -22,7 +22,7 @@ export function makeRuntime({
   options: { parallel = 0, ...runtimeOptions } = {},
 }: {
   cwd: string
-  stderr: NodeJS.WriteStream,
+  stderr: NodeJS.WriteStream
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   newId: IdGenerator.NewId
