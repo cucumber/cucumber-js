@@ -30,6 +30,7 @@ export interface IParsedArgvOptions {
   formatOptions: IParsedArgvFormatOptions
   i18nKeywords: string
   i18nLanguages: boolean
+  import: string[]
   language: string
   name: string[]
   order: PickleOrder
@@ -140,6 +141,12 @@ const ArgvParser = {
         ''
       )
       .option('--i18n-languages', 'list languages', false)
+      .option(
+        '--import <GLOB|DIR|FILE>',
+        'import files before executing features (repeatable)',
+        ArgvParser.collect,
+        []
+      )
       .option(
         '--language <ISO 639-1>',
         'provide the default language for feature files',
