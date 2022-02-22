@@ -119,13 +119,10 @@ export default class Coordinator implements IRuntime {
       return worker.state !== WorkerState.idle
     })
 
-    let wip: Boolean = false
-    for (const p in this.inProgressPickles) {
-      wip = true
-      break
-    }
-
-    if (!wip && this.pickleIds.length > 0) {
+    if (
+      Object.keys(this.inProgressPickles).length == 0 &&
+      this.pickleIds.length > 0
+    ) {
       this.giveWork(triggeringWorker, true)
       this.idleInterventions++
     }
