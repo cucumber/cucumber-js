@@ -20,7 +20,7 @@ export async function resolvePaths(
     cwd,
     unexpandedFeaturePaths
   )
-  let unexpandedSupportCodePaths = configuration.support.paths ?? []
+  let unexpandedSupportCodePaths = configuration.support.requirePaths ?? []
   if (unexpandedSupportCodePaths.length === 0) {
     unexpandedSupportCodePaths = getFeatureDirectoryPaths(cwd, featurePaths)
   }

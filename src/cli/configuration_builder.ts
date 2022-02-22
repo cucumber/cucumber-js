@@ -16,8 +16,9 @@ export async function buildConfiguration(
       order: options.order,
     },
     support: {
-      transpileWith: options.requireModule,
-      paths: options.require,
+      requireModules: options.requireModule,
+      requirePaths: options.require,
+      importPaths: options.import,
     },
     runtime: {
       dryRun: options.dryRun,

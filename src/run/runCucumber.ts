@@ -33,7 +33,7 @@ export async function runCucumber(
     cwd,
     newId,
     supportCodePaths,
-    supportCodeRequiredModules: configuration.support.transpileWith,
+    supportCodeRequiredModules: configuration.support.requireModules,
   })
 
   const eventBroadcaster = new EventEmitter()
@@ -84,7 +84,7 @@ export async function runCucumber(
     newId,
     supportCodeLibrary,
     supportCodePaths,
-    supportCodeRequiredModules: configuration.support.transpileWith,
+    supportCodeRequiredModules: configuration.support.requireModules,
     options: configuration.runtime,
   })
   const success = await runtime.start()

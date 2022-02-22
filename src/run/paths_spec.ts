@@ -34,8 +34,9 @@ describe('resolvePaths', () => {
             paths: [relativeFeaturePath],
           },
           support: {
-            paths: [],
-            transpileWith: [],
+            requireModules: [],
+            requirePaths: [],
+            importPaths: [],
           },
         })
 
@@ -57,8 +58,9 @@ describe('resolvePaths', () => {
           paths: [`${relativeFeaturePath}:3`, `${relativeFeaturePath}:4`],
         },
         support: {
-          paths: [],
-          transpileWith: [],
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
         },
       })
 
@@ -80,8 +82,9 @@ describe('resolvePaths', () => {
         await resolvePaths(cwd, {
           sources: { paths: [relativeFeaturePath] },
           support: {
-            paths: [],
-            transpileWith: [],
+            requireModules: [],
+            requirePaths: [],
+            importPaths: [],
           },
         })
 
@@ -107,8 +110,9 @@ describe('resolvePaths', () => {
         await resolvePaths(cwd, {
           sources: { paths: [relativeFeaturePath] },
           support: {
-            paths: [],
-            transpileWith: [],
+            requireModules: [],
+            requirePaths: [],
+            importPaths: [],
           },
         })
 
@@ -136,8 +140,9 @@ describe('resolvePaths', () => {
         await resolvePaths(cwd, {
           sources: { paths: [relativeFeaturePath] },
           support: {
-            paths: [],
-            transpileWith: [],
+            requireModules: [],
+            requirePaths: [],
+            importPaths: [],
           },
         })
 
@@ -161,8 +166,9 @@ describe('resolvePaths', () => {
         await resolvePaths(cwd, {
           sources: { paths: [relativeRerunPath] },
           support: {
-            paths: [],
-            transpileWith: [],
+            requireModules: [],
+            requirePaths: [],
+            importPaths: [],
           },
         })
 
@@ -186,8 +192,9 @@ describe('resolvePaths', () => {
         await resolvePaths(cwd, {
           sources: { paths: [relativeRerunPath] },
           support: {
-            paths: [],
-            transpileWith: [],
+            requireModules: [],
+            requirePaths: [],
+            importPaths: [],
           },
         })
 
@@ -212,8 +219,9 @@ describe('resolvePaths', () => {
         await resolvePaths(cwd, {
           sources: { paths: [relativeRerunPath] },
           support: {
-            paths: [],
-            transpileWith: [],
+            requireModules: [],
+            requirePaths: [],
+            importPaths: [],
           },
         })
 
