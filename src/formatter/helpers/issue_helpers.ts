@@ -32,7 +32,6 @@ export function isIssue(result: messages.TestStepResult): boolean {
 
 export interface IFormatIssueRequest {
   colorFns: IColorFns
-  cwd: string
   number: number
   snippetBuilder: StepDefinitionSnippetBuilder
   testCaseAttempt: ITestCaseAttempt
@@ -42,7 +41,6 @@ export interface IFormatIssueRequest {
 
 export function formatIssue({
   colorFns,
-  cwd,
   number,
   snippetBuilder,
   testCaseAttempt,
@@ -52,7 +50,6 @@ export function formatIssue({
   const prefix = `${number.toString()}) `
   const formattedTestCaseAttempt = formatTestCaseAttempt({
     colorFns,
-    cwd,
     snippetBuilder,
     testCaseAttempt,
     supportCodeLibrary,

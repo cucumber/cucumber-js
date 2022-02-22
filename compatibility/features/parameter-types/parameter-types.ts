@@ -18,5 +18,6 @@ Given(
   function (flight: Flight, delay: number) {
     expect(flight.from).to.eq('LHR')
     expect(flight.to).to.eq('CDG')
+    expect(delay).to.eq(45)
   }
 )
