@@ -2,6 +2,7 @@ import fs from 'mz/fs'
 import path from 'path'
 import stringArgv from 'string-argv'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
+import { pathToFileURL } from 'url'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
@@ -35,7 +36,7 @@ export default class ProfileLoader {
       definitions = require(definitionsFilePath)
     } catch (error) {
       if (error.code === 'ERR_REQUIRE_ESM') {
-        definitions = await importer(definitionsFilePath)
+        definitions = await importer(pathToFileURL(definitionsFilePath))
       }
     }
     if (typeof definitions !== 'object') {
