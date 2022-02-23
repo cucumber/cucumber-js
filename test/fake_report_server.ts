@@ -77,10 +77,6 @@ export default class FakeReportServer {
       })
     })
   }
-
-  get started(): boolean {
-    return this.server.listening
-  }
 }
 
 function extractAuthorizationToken(
