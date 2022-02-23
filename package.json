@@ -238,7 +238,6 @@
     "@types/stream-buffers": "3.0.4",
     "@types/tmp": "0.2.3",
     "@types/verror": "1.10.5",
-    "@types/wait-on": "^5.3.1",
     "@typescript-eslint/eslint-plugin": "5.10.2",
     "@typescript-eslint/parser": "5.10.2",
     "chai": "4.3.6",
@@ -255,12 +254,9 @@
     "express": "4.17.2",
     "fs-extra": "10.0.0",
     "genversion": "3.0.2",
-    "get-port": "^6.1.1",
-    "http-terminator": "^3.0.4",
     "mocha": "9.2.0",
     "mustache": "4.2.0",
     "nyc": "15.1.0",
-    "portfinder": "^1.0.28",
     "prettier": "2.5.1",
     "reindent-template-literals": "1.1.0",
     "shx": "0.3.4",
@@ -271,8 +267,7 @@
     "strip-ansi": "6.0.1",
     "ts-node": "10.4.0",
     "tsd": "0.19.1",
-    "typescript": "4.5.5",
-    "wait-on": "^6.0.1"
+    "typescript": "4.5.5"
   },
   "scripts": {
     "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.node.json && shx cp src/importer.js lib/ && shx cp src/wrapper.mjs lib/",
