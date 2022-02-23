@@ -7,44 +7,44 @@ import tmp, { DirOptions } from 'tmp'
 import { promisify } from 'util'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 
-interface TestProfileLoaderOptions {
-  definitionsFileContent?: string
-  definitionsFileName?: string
-  profiles?: string[]
-  configOption?: string
-}
-
-async function testProfileLoader(
-  opts: TestProfileLoaderOptions = {}
-): Promise<string[]> {
-  const cwd = await promisify<DirOptions, string>(tmp.dir)({
-    unsafeCleanup: true,
-  })
-  const definitionsFileName = opts.definitionsFileName ?? 'cucumber.js'
-
-  if (doesHaveValue(opts.definitionsFileContent)) {
-    await fs.writeFile(
-      path.join(cwd, definitionsFileName),
-      opts.definitionsFileContent
-    )
-  }
-
-  const profileLoader = new ProfileLoader(cwd)
-  return await profileLoader.getArgv(
-    valueOrDefault(opts.profiles, []),
-    opts.configOption
-  )
-}
-
 describe('ProfileLoader', () => {
   describe('getArgv', () => {
+    interface TestProfileLoaderOptions {
+      definitionsFileContent?: string
+      definitionsFileName?: string
+      profiles?: string[]
+      configOption?: string
+    }
+
+    async function testGetArgv(
+      opts: TestProfileLoaderOptions = {}
+    ): Promise<string[]> {
+      const cwd = await promisify<DirOptions, string>(tmp.dir)({
+        unsafeCleanup: true,
+      })
+      const definitionsFileName = opts.definitionsFileName ?? 'cucumber.js'
+
+      if (doesHaveValue(opts.definitionsFileContent)) {
+        await fs.writeFile(
+          path.join(cwd, definitionsFileName),
+          opts.definitionsFileContent
+        )
+      }
+
+      const profileLoader = new ProfileLoader(cwd)
+      return await profileLoader.getArgv(
+        valueOrDefault(opts.profiles, []),
+        opts.configOption
+      )
+    }
+
     describe('with no identifiers', () => {
       describe('no definition file', () => {
         it('returns an empty array', async function () {
           // Arrange
 
           // Act
-          const result = await testProfileLoader()
+          const result = await testGetArgv()
 
           // Assert
           expect(result).to.eql([])
@@ -59,7 +59,7 @@ describe('ProfileLoader', () => {
               'module.exports = {default: "--opt1 --opt2"}'
 
             // Act
-            const result = await testProfileLoader({ definitionsFileContent })
+            const result = await testGetArgv({ definitionsFileContent })
 
             // Assert
             expect(result).to.eql(['--opt1', '--opt2'])
@@ -73,7 +73,7 @@ describe('ProfileLoader', () => {
               'module.exports = {profile1: "--opt1 --opt2"}'
 
             // Act
-            const result = await testProfileLoader({ definitionsFileContent })
+            const result = await testGetArgv({ definitionsFileContent })
 
             // Assert
             expect(result).to.eql([])
@@ -90,7 +90,7 @@ describe('ProfileLoader', () => {
 
           // Act
           try {
-            await testProfileLoader({ profiles: ['profile1'] })
+            await testGetArgv({ profiles: ['profile1'] })
           } catch (error) {
             caughtErrorMessage = error.message
           }
@@ -108,7 +108,7 @@ describe('ProfileLoader', () => {
               'module.exports = {profile1: "--opt1 --opt2"}'
 
             // Act
-            const result = await testProfileLoader({
+            const result = await testGetArgv({
               definitionsFileContent,
               profiles: ['profile1'],
             })
@@ -125,7 +125,7 @@ describe('ProfileLoader', () => {
               'module.exports = {profile1: "--opt3 \'some value\'"}'
 
             // Act
-            const result = await testProfileLoader({
+            const result = await testGetArgv({
               definitionsFileContent,
               profiles: ['profile1'],
             })
@@ -144,7 +144,7 @@ describe('ProfileLoader', () => {
 
             // Act
             try {
-              await testProfileLoader({
+              await testGetArgv({
                 definitionsFileContent,
                 profiles: ['profile2'],
               })
@@ -166,7 +166,7 @@ describe('ProfileLoader', () => {
           'module.exports = {profile3: "--opt3 --opt4"}'
 
         // Act
-        const result = await testProfileLoader({
+        const result = await testGetArgv({
           definitionsFileContent,
           definitionsFileName: '.cucumber-rc.js',
           profiles: ['profile3'],
@@ -184,7 +184,7 @@ describe('ProfileLoader', () => {
 
         // Act
         try {
-          await testProfileLoader({
+          await testGetArgv({
             definitionsFileContent,
             profiles: [],
             configOption: 'doesntexist.js',
@@ -194,6 +194,48 @@ describe('ProfileLoader', () => {
           expect(e.message).to.contain('Cannot find module')
         }
       })
+    })
+  })
+
+  describe('getDefinitions', () => {
+    async function testGetDefinitions(opts: {
+      definitionsFileContent: string
+      definitionsFileName: string
+    }): Promise<Record<string, string>> {
+      const cwd = await promisify<DirOptions, string>(tmp.dir)({
+        unsafeCleanup: true,
+      })
+      const definitionsFileName = opts.definitionsFileName
+      await fs.writeFile(
+        path.join(cwd, definitionsFileName),
+        opts.definitionsFileContent
+      )
+      const profileLoader = new ProfileLoader(cwd)
+      return await profileLoader.getDefinitions(opts.definitionsFileName)
+    }
+
+    it('it returns the expected object from a commonjs file', async () => {
+      const definitionsFileContent =
+        'module.exports = {default: "foo", profile1: "bar"}'
+
+      const result = await testGetDefinitions({
+        definitionsFileContent,
+        definitionsFileName: 'cucumber.js',
+      })
+
+      expect(Object.keys(result)).to.deep.eq(['default', 'profile1'])
+    })
+
+    it('it returns the expected object from an esm file', async () => {
+      const definitionsFileContent =
+        'export default "foo"; export const profile1 = "bar";'
+
+      const result = await testGetDefinitions({
+        definitionsFileContent,
+        definitionsFileName: 'cucumber.mjs',
+      })
+
+      expect(Object.keys(result)).to.deep.eq(['default', 'profile1'])
     })
   })
 })

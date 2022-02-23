@@ -3,6 +3,9 @@ import path from 'path'
 import stringArgv from 'string-argv'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { importer } = require('../importer')
+
 const DEFAULT_FILENAMES = ['cucumber.cjs', 'cucumber.js']
 
 export default class ProfileLoader {
@@ -24,10 +27,9 @@ export default class ProfileLoader {
     return {}
   }
 
-  loadFile(configFile: string): Record<string, string> {
+  async loadFile(configFile: string): Promise<Record<string, string>> {
     const definitionsFilePath: string = path.join(this.directory, configFile)
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const definitions = require(definitionsFilePath)
+    const definitions = await importer(definitionsFilePath)
     if (typeof definitions !== 'object') {
       throw new Error(`${definitionsFilePath} does not export an object`)
     }
