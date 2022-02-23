@@ -161,4 +161,24 @@ describe('HttpStream', () => {
     stream.write('hello')
     stream.end()
   })
+
+  for (let i = 0; i < 10000; i++) {
+    it(`runs race condition test ${i}`, async () =>
+      new Promise((resolve, reject) => {
+        const stream = new HttpStream(
+          `http://localhost:${port}/api/reports`,
+          'GET',
+          {}
+        )
+        stream.on('error', reject)
+        stream.on('finish', () => {
+          reportServer
+            .stop()
+            .then(() => resolve())
+            .catch(reject)
+        })
+        stream.write('hello')
+        stream.end()
+      }))
+  }
 })
