@@ -23,7 +23,7 @@ describe(validateNodeEngineVersion.name, () => {
   it('calls the onError callback when the version is between our supported versions', () => {
     // Arrange
     const errorSpy = sinon.spy()
-    
+
     validateNodeEngineVersion('v13.1.2', errorSpy, () => ({
       engines: {
         node: '12 || 14 || 16 || 17',
