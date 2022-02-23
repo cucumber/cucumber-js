@@ -28,22 +28,27 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(esmSupportCodePath, '')
 
       // Act
-      const { featurePaths, unexpandedFeaturePaths, requirePaths } =
-        await resolvePaths(cwd, {
-          sources: {
-            paths: [relativeFeaturePath],
-          },
-          support: {
-            requireModules: [],
-            requirePaths: [],
-            importPaths: [],
-          },
-        })
+      const {
+        featurePaths,
+        unexpandedFeaturePaths,
+        requirePaths,
+        importPaths,
+      } = await resolvePaths(cwd, {
+        sources: {
+          paths: [relativeFeaturePath],
+        },
+        support: {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+        },
+      })
 
       // Assert
       expect(featurePaths).to.eql([featurePath])
       expect(unexpandedFeaturePaths).to.eql([relativeFeaturePath])
-      expect(requirePaths).to.eql([jsSupportCodePath, esmSupportCodePath])
+      expect(requirePaths).to.eql([jsSupportCodePath])
+      expect(importPaths).to.eql([esmSupportCodePath])
     })
 
     it('deduplicates the .feature files before returning', async function () {
