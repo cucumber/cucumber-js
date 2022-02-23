@@ -1,9 +1,9 @@
 import { expect } from 'chai'
 import * as sinon from 'sinon'
-import { validateNodeEngineVersion } from './assert_node_engine_version'
+import { validateNodeEngineVersion } from './validate_node_engine_version'
 
 describe(validateNodeEngineVersion.name, () => {
-  it('returns an error message when the version is lower than specified in package.json', () => {
+  it('calls the onError callback when the version is lower than specified in package.json', () => {
     // Arrange
     const errorSpy = sinon.spy()
 
@@ -20,7 +20,7 @@ describe(validateNodeEngineVersion.name, () => {
     )
   })
 
-  it('returns null when the version is greater than specified in package.json', () => {
+  it('does not call the onError callback when the version is greater than specified in package.json', () => {
     // Arrange
     const errorSpy = sinon.spy()
 
