@@ -21,20 +21,22 @@ export async function resolvePaths(
     cwd,
     unexpandedFeaturePaths
   )
-  const unexpandedRequirePaths = configuration.support.requirePaths
-  let unexpandedImportPaths = configuration.support.importPaths
+  let unexpandedRequirePaths = configuration.support.requirePaths
+  const unexpandedImportPaths = configuration.support.importPaths
   if (
     unexpandedRequirePaths.length === 0 &&
     unexpandedImportPaths.length === 0
   ) {
-    unexpandedImportPaths = getFeatureDirectoryPaths(cwd, featurePaths)
+    unexpandedRequirePaths = getFeatureDirectoryPaths(cwd, featurePaths)
   }
-  const requirePaths = await expandPaths(cwd, unexpandedRequirePaths, '.js')
-  const importPaths = await expandPaths(
-    cwd,
-    unexpandedImportPaths,
-    '.@(js|cjs|mjs)'
-  )
+  const requirePaths =
+    unexpandedRequirePaths.length > 0
+      ? await expandPaths(cwd, unexpandedRequirePaths, '.js')
+      : []
+  const importPaths =
+    unexpandedImportPaths.length > 0
+      ? await expandPaths(cwd, unexpandedImportPaths, '.@(js|cjs|mjs)')
+      : []
   return {
     unexpandedFeaturePaths,
     featurePaths,
