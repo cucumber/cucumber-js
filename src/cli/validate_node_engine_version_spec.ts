@@ -3,7 +3,7 @@ import * as sinon from 'sinon'
 import { validateNodeEngineVersion } from './validate_node_engine_version'
 
 describe(validateNodeEngineVersion.name, () => {
-  it('returns an error message when the version is lower than any of our supported versions', () => {
+  it('calls the onError callback when the version is lower than any of our supported versions', () => {
     // Arrange
     const errorSpy = sinon.spy()
 
@@ -20,11 +20,7 @@ describe(validateNodeEngineVersion.name, () => {
     )
   })
 
-  it('returns an error message when the version is between our supported versions', () => {
-    // Arrange
-    const errorSpy = sinon.spy()
-
-    // Act
+  it('calls the onError callback when the version is between our supported versions', () => {
     validateNodeEngineVersion('v13.1.2', errorSpy, () => ({
       engines: {
         node: '12 || 14 || 16 || 17',
@@ -37,7 +33,7 @@ describe(validateNodeEngineVersion.name, () => {
     )
   })
 
-  it('returns null when the version is one of our supported versions', () => {
+  it('does not call the onError when the version is one of our supported versions', () => {
     // Arrange
     const errorSpy = sinon.spy()
 
