@@ -10,7 +10,8 @@ export async function resolvePaths(
 ): Promise<{
   unexpandedFeaturePaths: string[]
   featurePaths: string[]
-  supportCodePaths: string[]
+  requirePaths: string[]
+  importPaths: string[]
 }> {
   const unexpandedFeaturePaths = await getUnexpandedFeaturePaths(
     cwd,
@@ -32,7 +33,8 @@ export async function resolvePaths(
   return {
     unexpandedFeaturePaths,
     featurePaths,
-    supportCodePaths,
+    requirePaths: supportCodePaths,
+    importPaths: [],
   }
 }
 

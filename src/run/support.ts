@@ -2,7 +2,6 @@ import { IdGenerator } from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
 import { pathToFileURL } from 'url'
-import { isJavaScript } from '../cli/helpers'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
@@ -10,22 +9,21 @@ const { importer } = require('../importer')
 export async function getSupportCodeLibrary({
   cwd,
   newId,
-  supportCodeRequiredModules,
-  supportCodePaths,
+  requireModules,
+  requirePaths,
+  importPaths,
 }: {
   cwd: string
   newId: IdGenerator.NewId
-  supportCodeRequiredModules: string[]
-  supportCodePaths: string[]
+  requireModules: string[]
+  requirePaths: string[]
+  importPaths: string[]
 }): Promise<ISupportCodeLibrary> {
   supportCodeLibraryBuilder.reset(cwd, newId)
-  supportCodeRequiredModules.map((module) => require(module))
-  for (const codePath of supportCodePaths) {
-    if (supportCodeRequiredModules.length || !isJavaScript(codePath)) {
-      require(codePath)
-    } else {
-      await importer(pathToFileURL(codePath))
-    }
+  requireModules.map((module) => require(module))
+  requirePaths.map((path) => require(path))
+  for (const path of importPaths) {
+    await importer(pathToFileURL(path))
   }
   return supportCodeLibraryBuilder.finalize()
 }

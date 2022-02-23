@@ -74,15 +74,9 @@ export default class Worker {
     supportCodeIds,
     options,
   }: IWorkerCommandInitialize): Promise<void> {
-    supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, this.newId)
-    for (const codePath of supportCodePaths) {
-      if (supportCodeRequiredModules.length || !isJavaScript(codePath)) {
-        require(codePath)
-      } else {
-        await importer(pathToFileURL(codePath))
-      }
-    }
+    supportCodeRequiredModules.map((module) => require(module))
+    supportCodePaths.map((module) => require(module))
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize(supportCodeIds)
 
     this.worldParameters = options.worldParameters
