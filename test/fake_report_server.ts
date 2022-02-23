@@ -16,7 +16,7 @@ export default class FakeReportServer {
   public receivedBodies = Buffer.alloc(0)
   public receivedHeaders: http.IncomingHttpHeaders = {}
 
-  constructor(private port: number) {
+  constructor(private readonly port: number) {
     const app = express()
 
     app.put('/s3', (req, res) => {
@@ -61,11 +61,9 @@ export default class FakeReportServer {
     this.server = http.createServer(app)
   }
 
-  async start(): Promise<number> {
+  async start(): Promise<void> {
     const listen = promisify(this.server.listen.bind(this.server))
     await listen(this.port)
-    this.port = (this.server.address() as AddressInfo).port
-    return this.port
   }
 
   /**
