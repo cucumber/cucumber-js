@@ -127,9 +127,7 @@ export default class HttpStream extends Transform {
       method,
       headers: allHeaders,
     })
-    req.on('error', (err) => {
-      this.emit('error', err)
-    })
+    req.on('error', (err) => this.emit('error', err))
     req.on('response', (res) => {
       res.on('error', (err) => this.emit('error', err))
       callback(null, res)
