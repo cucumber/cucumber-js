@@ -62,3 +62,23 @@ Feature: ES modules support
     When I run cucumber-js with `--import features/**/*.js' --parallel 2`
     Then it runs 2 scenarios
     And it passes
+
+  Scenario: .mjs support code files are discovered automatically if no requires or imports specified
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        Scenario: one
+          Given a step passes
+
+        Scenario: two
+          Given a step passes
+      """
+    And a file named "features/step_definitions/cucumber_steps.mjs" with:
+      """
+      import {Given} from '@cucumber/cucumber'
+
+      Given(/^a step passes$/, function() {});
+      """
+    When I run cucumber-js
+    Then it runs 2 scenarios
+    And it passes

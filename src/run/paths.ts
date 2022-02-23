@@ -21,22 +21,12 @@ export async function resolvePaths(
     cwd,
     unexpandedFeaturePaths
   )
-  let unexpandedRequirePaths = configuration.support.requirePaths
-  const unexpandedImportPaths = configuration.support.importPaths
-  if (
-    unexpandedRequirePaths.length === 0 &&
-    unexpandedImportPaths.length === 0
-  ) {
-    unexpandedRequirePaths = getFeatureDirectoryPaths(cwd, featurePaths)
-  }
-  const requirePaths =
-    unexpandedRequirePaths.length > 0
-      ? await expandPaths(cwd, unexpandedRequirePaths, '.js')
-      : []
-  const importPaths =
-    unexpandedImportPaths.length > 0
-      ? await expandPaths(cwd, unexpandedImportPaths, '.@(js|cjs|mjs)')
-      : []
+  const { requirePaths, importPaths } = await deriveSupportPaths(
+    cwd,
+    featurePaths,
+    configuration.support.requirePaths,
+    configuration.support.importPaths
+  )
   return {
     unexpandedFeaturePaths,
     featurePaths,
@@ -122,4 +112,33 @@ async function expandFeaturePaths(
   featurePaths = featurePaths.map((p) => p.replace(/(:\d+)*$/g, '')) // Strip line numbers
   featurePaths = [...new Set(featurePaths)] // Deduplicate the feature files
   return await expandPaths(cwd, featurePaths, '.feature')
+}
+
+async function deriveSupportPaths(
+  cwd: string,
+  featurePaths: string[],
+  unexpandedRequirePaths: string[],
+  unexpandedImportPaths: string[]
+): Promise<{
+  requirePaths: string[]
+  importPaths: string[]
+}> {
+  if (
+    unexpandedRequirePaths.length === 0 &&
+    unexpandedImportPaths.length === 0
+  ) {
+    const defaultPaths = getFeatureDirectoryPaths(cwd, featurePaths)
+    const requirePaths = await expandPaths(cwd, defaultPaths, '.js')
+    const importPaths = await expandPaths(cwd, defaultPaths, '.mjs')
+    return { requirePaths, importPaths }
+  }
+  const requirePaths =
+    unexpandedRequirePaths.length > 0
+      ? await expandPaths(cwd, unexpandedRequirePaths, '.js')
+      : []
+  const importPaths =
+    unexpandedImportPaths.length > 0
+      ? await expandPaths(cwd, unexpandedImportPaths, '.@(js|cjs|mjs)')
+      : []
+  return { requirePaths, importPaths }
 }
