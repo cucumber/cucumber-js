@@ -29,7 +29,15 @@ export default class ProfileLoader {
 
   async loadFile(configFile: string): Promise<Record<string, string>> {
     const definitionsFilePath: string = path.join(this.directory, configFile)
-    const definitions = await importer(definitionsFilePath)
+    let definitions
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      definitions = require(definitionsFilePath)
+    } catch (error) {
+      if (error.code === 'ERR_REQUIRE_ESM') {
+        definitions = await importer(definitionsFilePath)
+      }
+    }
     if (typeof definitions !== 'object') {
       throw new Error(`${definitionsFilePath} does not export an object`)
     }
