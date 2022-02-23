@@ -1,8 +1,7 @@
-import { AddressInfo, Server, Socket } from 'net'
+import { Server } from 'net'
 import express from 'express'
 import { pipeline, Writable } from 'stream'
 import http from 'http'
-import { promisify } from 'util'
 import { doesHaveValue } from '../src/value_checker'
 
 type Callback = (err?: Error | null) => void
@@ -62,8 +61,9 @@ export default class FakeReportServer {
   }
 
   async start(): Promise<void> {
-    const listen = promisify(this.server.listen.bind(this.server))
-    await listen(this.port)
+    return new Promise((resolve) =>
+      this.server.listen(this.port, () => resolve())
+    )
   }
 
   /**
