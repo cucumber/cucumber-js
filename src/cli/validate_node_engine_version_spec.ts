@@ -3,31 +3,47 @@ import * as sinon from 'sinon'
 import { validateNodeEngineVersion } from './validate_node_engine_version'
 
 describe(validateNodeEngineVersion.name, () => {
-  it('calls the onError callback when the version is lower than specified in package.json', () => {
+  it('calls the onError callback when the version is lower than any of our supported versions', () => {
     // Arrange
     const errorSpy = sinon.spy()
 
     // Act
-    validateNodeEngineVersion('v11.0.0', errorSpy, () => ({
+    validateNodeEngineVersion('v11.1.2', errorSpy, () => ({
       engines: {
-        node: '>=12',
+        node: '12 || 14 || 16 || 17',
       },
     }))
 
     // Assert
     expect(errorSpy).to.have.been.calledOnceWith(
-      'Cucumber can only run on Node.js versions >=12. This Node.js version is v11.0.0'
+      'Cucumber can only run on Node.js versions 12 || 14 || 16 || 17. This Node.js version is v11.1.2'
     )
   })
 
-  it('does not call the onError callback when the version is greater than specified in package.json', () => {
+  it('calls the onError callback when the version is between our supported versions', () => {
+    // Arrange
+    const errorSpy = sinon.spy()
+
+    validateNodeEngineVersion('v13.1.2', errorSpy, () => ({
+      engines: {
+        node: '12 || 14 || 16 || 17',
+      },
+    }))
+
+    // Assert
+    expect(errorSpy).to.have.been.calledOnceWith(
+      'Cucumber can only run on Node.js versions 12 || 14 || 16 || 17. This Node.js version is v13.1.2'
+    )
+  })
+
+  it('does not call the onError when the version is one of our supported versions', () => {
     // Arrange
     const errorSpy = sinon.spy()
 
     // Act
-    validateNodeEngineVersion('v17.0.0', errorSpy, () => ({
+    validateNodeEngineVersion('v17.1.2', errorSpy, () => ({
       engines: {
-        node: '>=12',
+        node: '12 || 14 || 16 || 17',
       },
     }))
 
