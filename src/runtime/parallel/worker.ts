@@ -19,7 +19,6 @@ import { IRuntimeOptions } from '../index'
 import { RealTestRunStopwatch } from '../stopwatch'
 import { duration } from 'durations'
 import { pathToFileURL } from 'url'
-import { isJavaScript } from '../../cli/helpers'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../../importer')
