@@ -2,8 +2,9 @@ import { AddressInfo, Server, Socket } from 'net'
 import express from 'express'
 import { pipeline, Writable } from 'stream'
 import http from 'http'
-import { promisify } from 'util'
 import { doesHaveValue } from '../src/value_checker'
+import * as core from 'express-serve-static-core'
+import { createHttpTerminator, HttpTerminator } from 'http-terminator'
 
 type Callback = (err?: Error | null) => void
 
@@ -12,15 +13,15 @@ type Callback = (err?: Error | null) => void
  * (https://messages.cucumber.io). Used for testing only.
  */
 export default class FakeReportServer {
-  private readonly sockets = new Set<Socket>()
-  private readonly server: Server
   private receivedBodies = Buffer.alloc(0)
+  private app: core.Express
   public receivedHeaders: http.IncomingHttpHeaders = {}
+  private terminator: HttpTerminator
 
   constructor(private port: number) {
-    const app = express()
+    this.app = express()
 
-    app.put('/s3', (req, res) => {
+    this.app.put('/s3', (req, res) => {
       this.receivedHeaders = { ...this.receivedHeaders, ...req.headers }
 
       const captureBodyStream = new Writable({
@@ -36,7 +37,8 @@ export default class FakeReportServer {
       })
     })
 
-    app.get('/api/reports', (req, res) => {
+    this.app.get('/api/reports', (req, res) => {
+      console.log('FakeReportServer: received HTTP request to /api/reports')
       this.receivedHeaders = { ...this.receivedHeaders, ...req.headers }
       const token = extractAuthorizationToken(req.headers.authorization)
       if (token && !isValidUUID(token)) {
@@ -58,19 +60,25 @@ export default class FakeReportServer {
 └──────────────────────────────────────────────────────────────────────────┘
 `)
     })
-
-    this.server = http.createServer(app)
-
-    this.server.on('connection', (socket) => {
-      this.sockets.add(socket)
-      socket.on('close', () => this.sockets.delete(socket))
-    })
   }
 
   async start(): Promise<number> {
-    const listen = promisify(this.server.listen.bind(this.server))
-    await listen(this.port)
-    this.port = (this.server.address() as AddressInfo).port
+    console.log(`FakeReportServer.start()`)
+    console.log('FakeReportServer: creating new server')
+    const server = http
+      .createServer(this.app)
+      .on('error', (err) => console.warn('SERVER ERROR: ', err))
+      .on('clientError', (err) => console.warn('SERVER CLIENT ERROR: ', err))
+    await new Promise((resolve, reject) => {
+      server.on('error', reject)
+      server.on('listening', resolve)
+      server.listen(this.port)
+    })
+    console.log(`FakeReportServer.start(): now listening on ${this.port}`)
+    this.port = (server.address() as AddressInfo).port
+    this.terminator = createHttpTerminator({
+      server,
+    })
     return this.port
   }
 
@@ -78,28 +86,8 @@ export default class FakeReportServer {
    * @return all the received request bodies
    */
   async stop(): Promise<Buffer> {
-    // Wait for all sockets to be closed
-    await Promise.all(
-      Array.from(this.sockets).map(
-        // eslint-disable-next-line @typescript-eslint/promise-function-async
-        (socket) =>
-          new Promise<void>((resolve, reject) => {
-            if (socket.destroyed) return resolve()
-            socket.on('close', resolve)
-            socket.on('error', reject)
-          })
-      )
-    )
-    return await new Promise((resolve, reject) => {
-      this.server.close((err) => {
-        if (doesHaveValue(err)) return reject(err)
-        resolve(this.receivedBodies)
-      })
-    })
-  }
-
-  get started(): boolean {
-    return this.server.listening
+    await this.terminator.terminate()
+    return this.receivedBodies
   }
 }
 

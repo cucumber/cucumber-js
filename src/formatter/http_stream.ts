@@ -56,36 +56,41 @@ export default class HttpStream extends Transform {
     console.log('HttpStream: final: ending tempfile...')
     this.tempFile.end(() => {
       console.log('HttpStream: final: sending HTTP request #1...')
-      this.sendHttpRequest(
-        this.url,
-        this.method,
-        this.headers,
-        (err1, res1) => {
-          console.log('HttpStream: got response')
-          if (doesHaveValue(err1)) return callback(err1)
-          this.pushResponseBody(res1, () => {
-            this.emitErrorUnlessHttp2xx(res1, this.url, this.method)
-            if (
-              res1.statusCode === 202 &&
-              res1.headers.location !== undefined
-            ) {
-              console.log('HttpStream: final: sending HTTP request #2...')
-              this.sendHttpRequest(
-                res1.headers.location,
-                'PUT',
-                {},
-                (err2, res2) => {
-                  if (doesHaveValue(err2)) return callback(err2)
-                  this.emitErrorUnlessHttp2xx(res2, this.url, this.method)
-                  callback()
-                }
-              )
-            } else {
-              callback()
+      setTimeout(() => {
+        this.sendHttpRequest(
+          this.url,
+          this.method,
+          this.headers,
+          (err1, res1) => {
+            console.log('HttpStream: got response')
+            if (doesHaveValue(err1)) {
+              console.log('HttpStream: got an error actually:', err1)
+              return callback(err1)
             }
-          })
-        }
-      )
+            this.pushResponseBody(res1, () => {
+              this.emitErrorUnlessHttp2xx(res1, this.url, this.method)
+              if (
+                res1.statusCode === 202 &&
+                res1.headers.location !== undefined
+              ) {
+                console.log('HttpStream: final: sending HTTP request #2...')
+                this.sendHttpRequest(
+                  res1.headers.location,
+                  'PUT',
+                  {},
+                  (err2, res2) => {
+                    if (doesHaveValue(err2)) return callback(err2)
+                    this.emitErrorUnlessHttp2xx(res2, this.url, this.method)
+                    callback()
+                  }
+                )
+              } else {
+                callback()
+              }
+            })
+          }
+        )
+      }, 0)
     })
   }
 

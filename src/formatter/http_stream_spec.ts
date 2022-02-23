@@ -2,6 +2,8 @@ import assert from 'assert'
 import HttpStream from './http_stream'
 import FakeReportServer from '../../test/fake_report_server'
 import { Writable } from 'stream'
+import waitOn from 'wait-on'
+import { getPortPromise as getPort } from 'portfinder'
 
 type Callback = (err?: Error | null) => void
 
@@ -10,9 +12,15 @@ describe('HttpStream', () => {
   let port: number
 
   beforeEach(async () => {
-    reportServer = new FakeReportServer(0)
+    reportServer = new FakeReportServer(await getPort())
     console.log('\ntest beforeEach: starting fake server...')
     port = await reportServer.start()
+    console.log('test beforeEech: waiting for server to be responsive...')
+    await waitOn({
+      timeout: 2000,
+      resources: [`http://localhost:${port}/api/reports`],
+    })
+    // await new Promise((resolve) => setTimeout(resolve, 50))
     console.log('test beforeEach: fake server started.')
   })
 
