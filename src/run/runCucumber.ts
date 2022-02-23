@@ -84,8 +84,9 @@ export async function runCucumber(
     pickleIds,
     newId,
     supportCodeLibrary,
-    supportCodePaths: requirePaths,
-    supportCodeRequiredModules: configuration.support.requireModules,
+    requireModules: configuration.support.requireModules,
+    requirePaths,
+    importPaths,
     options: configuration.runtime,
   })
   const success = await runtime.start()

@@ -68,14 +68,18 @@ export default class Worker {
 
   async initialize({
     filterStacktraces,
-    supportCodeRequiredModules,
-    supportCodePaths,
+    requireModules,
+    requirePaths,
+    importPaths,
     supportCodeIds,
     options,
   }: IWorkerCommandInitialize): Promise<void> {
     supportCodeLibraryBuilder.reset(this.cwd, this.newId)
-    supportCodeRequiredModules.map((module) => require(module))
-    supportCodePaths.map((module) => require(module))
+    requireModules.map((module) => require(module))
+    requirePaths.map((module) => require(module))
+    for (const path of importPaths) {
+      await importer(pathToFileURL(path))
+    }
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize(supportCodeIds)
 
     this.worldParameters = options.worldParameters
