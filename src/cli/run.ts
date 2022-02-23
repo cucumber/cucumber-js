@@ -1,7 +1,7 @@
 import Cli, { ICliRunResult } from './'
 import VError from 'verror'
 import publishBanner from './publish_banner'
-import { validateNodeEngineVersion } from './assert_node_engine_version'
+import { validateNodeEngineVersion } from './validate_node_engine_version'
 
 function exitWithError(error: Error): void {
   console.error(VError.fullStack(error)) // eslint-disable-line no-console
