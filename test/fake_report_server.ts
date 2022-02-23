@@ -12,9 +12,8 @@ type Callback = (err?: Error | null) => void
  * (https://messages.cucumber.io). Used for testing only.
  */
 export default class FakeReportServer {
-  private readonly sockets = new Set<Socket>()
   private readonly server: Server
-  private receivedBodies = Buffer.alloc(0)
+  public receivedBodies = Buffer.alloc(0)
   public receivedHeaders: http.IncomingHttpHeaders = {}
 
   constructor(private port: number) {
@@ -60,11 +59,6 @@ export default class FakeReportServer {
     })
 
     this.server = http.createServer(app)
-
-    this.server.on('connection', (socket) => {
-      this.sockets.add(socket)
-      socket.on('close', () => this.sockets.delete(socket))
-    })
   }
 
   async start(): Promise<number> {
@@ -78,19 +72,7 @@ export default class FakeReportServer {
    * @return all the received request bodies
    */
   async stop(): Promise<Buffer> {
-    // Wait for all sockets to be closed
-    await Promise.all(
-      Array.from(this.sockets).map(
-        // eslint-disable-next-line @typescript-eslint/promise-function-async
-        (socket) =>
-          new Promise<void>((resolve, reject) => {
-            if (socket.destroyed) return resolve()
-            socket.on('close', resolve)
-            socket.on('error', reject)
-          })
-      )
-    )
-    return await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.server.close((err) => {
         if (doesHaveValue(err)) return reject(err)
         resolve(this.receivedBodies)
