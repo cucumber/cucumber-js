@@ -58,7 +58,6 @@ export async function runCucumber(
 
   if (featurePaths.length > 0) {
     pickleIds = await parseGherkinMessageStream({
-      cwd,
       eventBroadcaster,
       eventDataCollector,
       gherkinMessageStream,

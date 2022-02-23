@@ -1,7 +1,7 @@
 import Cli, { ICliRunResult } from './'
 import VError from 'verror'
 import publishBanner from './publish_banner'
-import { assertNodeEngineVersion } from './assert_node_engine_version'
+import { validateNodeEngineVersion } from './assert_node_engine_version'
 
 function exitWithError(error: Error): void {
   console.error(VError.fullStack(error)) // eslint-disable-line no-console
@@ -13,12 +13,10 @@ function displayPublishAdvertisementBanner(): void {
 }
 
 export default async function run(): Promise<void> {
-  try {
-    assertNodeEngineVersion(process.version)
-  } catch (error) {
-    console.error(error.message) // eslint-disable-line no-console
+  validateNodeEngineVersion(process.version, (error) => {
+    console.error(error) // eslint-disable-line no-console
     process.exit(1)
-  }
+  })
 
   const cli = new Cli({
     argv: process.argv,

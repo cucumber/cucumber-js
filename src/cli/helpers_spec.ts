@@ -30,7 +30,6 @@ const noopFunction = (): void => {
 }
 
 interface ITestParseGherkinMessageStreamRequest {
-  cwd: string
   gherkinMessageStream: Readable
   order: PickleOrder
   pickleFilter: PickleFilter
@@ -49,7 +48,6 @@ async function testParseGherkinMessageStream(
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
   const result = await parseGherkinMessageStream({
-    cwd: options.cwd,
     eventBroadcaster,
     eventDataCollector,
     gherkinMessageStream: options.gherkinMessageStream,
@@ -80,6 +78,7 @@ function testEmitSupportCodeMessages(
         parameterTypeRegistry: new ParameterTypeRegistry(),
         undefinedParameterTypes: [],
         World: null,
+        parallelCanAssign: () => true,
       },
       supportCode
     ),
@@ -383,7 +382,6 @@ describe('helpers', () => {
 
         // Act
         const { envelopes, result } = await testParseGherkinMessageStream({
-          cwd,
           gherkinMessageStream,
           order,
           pickleFilter,
@@ -425,7 +423,6 @@ describe('helpers', () => {
 
         // Act
         const { envelopes, result } = await testParseGherkinMessageStream({
-          cwd,
           gherkinMessageStream,
           order,
           pickleFilter,
@@ -469,7 +466,6 @@ describe('helpers', () => {
 
         // Act
         const { envelopes, result } = await testParseGherkinMessageStream({
-          cwd,
           gherkinMessageStream,
           order,
           pickleFilter,

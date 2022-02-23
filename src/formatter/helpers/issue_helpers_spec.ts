@@ -24,7 +24,6 @@ async function testFormatIssue(
     supportCodeLibrary,
   })
   return formatIssue({
-    cwd: 'project/',
     colorFns: getColorFns(false),
     number: 1,
     snippetBuilder: await FormatterBuilder.getStepDefinitionSnippetBuilder({

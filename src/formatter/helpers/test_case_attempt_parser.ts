@@ -117,7 +117,6 @@ function parseStep({
 }
 
 export interface IParseTestCaseAttemptRequest {
-  cwd: string
   testCaseAttempt: ITestCaseAttempt
   snippetBuilder: StepDefinitionSnippetBuilder
   supportCodeLibrary: ISupportCodeLibrary
@@ -126,7 +125,6 @@ export interface IParseTestCaseAttemptRequest {
 // Converts a testCaseAttempt into a json object with all data needed for
 // displaying it in a pretty format
 export function parseTestCaseAttempt({
-  cwd,
   testCaseAttempt,
   snippetBuilder,
   supportCodeLibrary,
