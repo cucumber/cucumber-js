@@ -140,6 +140,7 @@ export default class Worker {
       skip,
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.worldParameters,
+      testRunContext: {} // TODO: decide what this needs to be 
     })
     await testCaseRunner.run()
     this.sendMessage({ ready: true })

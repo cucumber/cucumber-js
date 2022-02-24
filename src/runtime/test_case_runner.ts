@@ -27,6 +27,7 @@ export interface INewTestCaseRunnerOptions {
   skip: boolean
   supportCodeLibrary: ISupportCodeLibrary
   worldParameters: any
+  testRunContext: object 
 }
 
 export default class TestCaseRunner {

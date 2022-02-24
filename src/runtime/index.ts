@@ -55,6 +55,7 @@ export default class Runtime implements IRuntime {
   private readonly pickleIds: string[]
   private readonly stackTraceFilter: StackTraceFilter
   private readonly supportCodeLibrary: ISupportCodeLibrary
+  private readonly testRunContext: object // TODO: is this the right type to use?
   private success: boolean
 
   constructor({
@@ -74,6 +75,7 @@ export default class Runtime implements IRuntime {
     this.stackTraceFilter = new StackTraceFilter()
     this.supportCodeLibrary = supportCodeLibrary
     this.success = true
+    this.testRunContext = {}
   }
 
   async runTestRunHooks(
@@ -87,7 +89,7 @@ export default class Runtime implements IRuntime {
       const { error } = await UserCodeRunner.run({
         argsArray: [],
         fn: hookDefinition.code,
-        thisArg: null,
+        thisArg: this.testRunContext,
         timeoutInMilliseconds: valueOrDefault(
           hookDefinition.options.timeout,
           this.supportCodeLibrary.defaultTimeout
@@ -121,6 +123,7 @@ export default class Runtime implements IRuntime {
       skip,
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.options.worldParameters,
+      testRunContext: this.testRunContext,
     })
     const status = await testCaseRunner.run()
     if (shouldCauseFailure(status, this.options)) {
