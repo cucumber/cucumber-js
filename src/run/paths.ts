@@ -129,7 +129,7 @@ async function deriveSupportPaths(
   ) {
     const defaultPaths = getFeatureDirectoryPaths(cwd, featurePaths)
     const requirePaths = await expandPaths(cwd, defaultPaths, '.js')
-    const importPaths = await expandPaths(cwd, defaultPaths, '.mjs')
+    const importPaths = await expandPaths(cwd, defaultPaths, '.@(cjs|mjs)')
     return { requirePaths, importPaths }
   }
   const requirePaths =

@@ -24,6 +24,8 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(featurePath, '')
       const jsSupportCodePath = path.join(cwd, 'features', 'a.js')
       await fsExtra.outputFile(jsSupportCodePath, '')
+      const cjsSupportCodePath = path.join(cwd, 'features', 'a.cjs')
+      await fsExtra.outputFile(cjsSupportCodePath, '')
       const esmSupportCodePath = path.join(cwd, 'features', 'a.mjs')
       await fsExtra.outputFile(esmSupportCodePath, '')
 
@@ -48,7 +50,7 @@ describe('resolvePaths', () => {
       expect(featurePaths).to.eql([featurePath])
       expect(unexpandedFeaturePaths).to.eql([relativeFeaturePath])
       expect(requirePaths).to.eql([jsSupportCodePath])
-      expect(importPaths).to.eql([esmSupportCodePath])
+      expect(importPaths).to.eql([cjsSupportCodePath, esmSupportCodePath])
     })
 
     it('deduplicates the .feature files before returning', async function () {
