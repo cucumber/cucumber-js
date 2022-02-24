@@ -46,6 +46,7 @@ export default class TestCaseRunner {
   private testStepResults: messages.TestStepResult[]
   private world: any
   private readonly worldParameters: any
+  private readonly testRunContext: object
 
   constructor({
     eventBroadcaster,
@@ -58,6 +59,7 @@ export default class TestCaseRunner {
     skip,
     supportCodeLibrary,
     worldParameters,
+    testRunContext,
   }: INewTestCaseRunnerOptions) {
     this.attachmentManager = new AttachmentManager(({ data, media }) => {
       if (doesNotHaveValue(this.currentTestStepId)) {
@@ -86,6 +88,7 @@ export default class TestCaseRunner {
     this.skip = skip
     this.supportCodeLibrary = supportCodeLibrary
     this.worldParameters = worldParameters
+    this.testRunContext = testRunContext
     this.resetTestProgressData()
   }
 
@@ -133,7 +136,7 @@ export default class TestCaseRunner {
       hookParameter,
       step,
       stepDefinition,
-      world: this.world,
+      world: Object.assign(this.world, this.testRunContext) // TODO: should we show the user an error if there are duplicate keys?
     })
   }
 
