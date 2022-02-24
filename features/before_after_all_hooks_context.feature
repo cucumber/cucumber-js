@@ -22,9 +22,10 @@ Feature: Before / After All Hooks Context
 
       BeforeAll(function() {
         this.myVar = {foo: 1}
-      })
+      }) 
 
       Given('first step', function() {
+        expect(this.myVar).to.not.be.undefined;
         expect(this.myVar.foo).to.eql(1) 
       })
 
