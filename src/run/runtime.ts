@@ -49,12 +49,12 @@ export function makeRuntime({
       numberOfWorkers: parallel,
     })
   }
-  return new Runtime({
+  return new Runtime(
     eventBroadcaster,
     eventDataCollector,
     newId,
     pickleIds,
     supportCodeLibrary,
-    options,
-  })
+    options
+  )
 }

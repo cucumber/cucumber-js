@@ -79,14 +79,14 @@ export async function testFormatter({
     })
     pickleIds = pickleIds.concat(pickles.map((p) => p.id))
   }
-  const runtime = new Runtime({
+  const runtime = new Runtime(
     eventBroadcaster,
     eventDataCollector,
-    newId: uuid(),
-    options: buildOptions(runtimeOptions),
+    uuid(),
     pickleIds,
     supportCodeLibrary,
-  })
+    buildOptions(runtimeOptions)
+  )
 
   await runtime.start()
 
@@ -112,14 +112,14 @@ export async function getTestCaseAttempts({
     })
     pickleIds = pickleIds.concat(pickles.map((p) => p.id))
   }
-  const runtime = new Runtime({
+  const runtime = new Runtime(
     eventBroadcaster,
     eventDataCollector,
-    newId: uuid(),
-    options: buildOptions(runtimeOptions),
+    uuid(),
     pickleIds,
     supportCodeLibrary,
-  })
+    buildOptions(runtimeOptions)
+  )
 
   await runtime.start()
 
@@ -153,14 +153,14 @@ export async function getEnvelopesAndEventDataCollector({
     })
     pickleIds = pickleIds.concat(pickles.filter(pickleFilter).map((p) => p.id))
   }
-  const runtime = new Runtime({
+  const runtime = new Runtime(
     eventBroadcaster,
     eventDataCollector,
-    newId: uuid(),
-    options: buildOptions(runtimeOptions),
+    uuid(),
     pickleIds,
     supportCodeLibrary,
-  })
+    buildOptions(runtimeOptions)
+  )
 
   await runtime.start()
 

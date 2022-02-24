@@ -17,15 +17,6 @@ export interface IRuntime {
   start: () => Promise<boolean>
 }
 
-export interface INewRuntimeOptions {
-  eventBroadcaster: EventEmitter
-  eventDataCollector: EventDataCollector
-  newId: IdGenerator.NewId
-  options: IRuntimeOptions
-  pickleIds: string[]
-  supportCodeLibrary: ISupportCodeLibrary
-}
-
 export interface IRuntimeOptions {
   dryRun: boolean
   failFast: boolean
@@ -47,32 +38,20 @@ export const DEFAULT_RUNTIME_OPTIONS: IRuntimeOptions = {
 }
 
 export default class Runtime implements IRuntime {
-  private readonly eventBroadcaster: EventEmitter
-  private readonly eventDataCollector: EventDataCollector
   private readonly stopwatch: ITestRunStopwatch
-  private readonly newId: IdGenerator.NewId
-  private readonly options: IRuntimeOptions
-  private readonly pickleIds: string[]
   private readonly stackTraceFilter: StackTraceFilter
-  private readonly supportCodeLibrary: ISupportCodeLibrary
   private success: boolean
 
-  constructor({
-    eventBroadcaster,
-    eventDataCollector,
-    newId,
-    options,
-    pickleIds,
-    supportCodeLibrary,
-  }: INewRuntimeOptions) {
-    this.eventBroadcaster = eventBroadcaster
-    this.eventDataCollector = eventDataCollector
+  constructor(
+    private readonly eventBroadcaster: EventEmitter,
+    private readonly eventDataCollector: EventDataCollector,
+    private readonly newId: IdGenerator.NewId,
+    private readonly pickleIds: string[],
+    private readonly supportCodeLibrary: ISupportCodeLibrary,
+    private readonly options: IRuntimeOptions
+  ) {
     this.stopwatch = new RealTestRunStopwatch()
-    this.newId = newId
-    this.options = options
-    this.pickleIds = pickleIds
     this.stackTraceFilter = new StackTraceFilter()
-    this.supportCodeLibrary = supportCodeLibrary
     this.success = true
   }
 
