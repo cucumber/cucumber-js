@@ -10,7 +10,6 @@ import { getTestCaseAttempts } from '../../../test/formatter_helpers'
 
 describe('TestCaseAttemptParser', () => {
   describe('parseTestCaseAttempt', () => {
-    const cwd = ''
     const supportCodeLibrary = getBaseSupportCodeLibrary()
     const snippetSyntax = {
       build: () => 'snippet',
@@ -42,7 +41,6 @@ describe('TestCaseAttemptParser', () => {
 
         // Act
         const output = parseTestCaseAttempt({
-          cwd,
           testCaseAttempt,
           snippetBuilder,
           supportCodeLibrary,
@@ -65,7 +63,6 @@ describe('TestCaseAttemptParser', () => {
 
         // Act
         const output = parseTestCaseAttempt({
-          cwd,
           testCaseAttempt,
           snippetBuilder,
           supportCodeLibrary,
