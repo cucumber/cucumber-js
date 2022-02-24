@@ -26,19 +26,24 @@ needs to be required in your support files and globally installed modules cannot
   * To escape special regex characters in scenario name, use backslash e.g., `\(Scenario Name\)`
 * Use [Tags](#tags)
 
-## Requiring support files
+## Loading support files
 
-By default, the following files are required:
+By default, the following files are loaded:
 * If the features live in a `features` directory (at any level)
-  * `features/**/*.js`
+  * `features/**/*.(js|cjs|mjs)`
 * Otherwise
-  * `<DIR>/**/*.js` for each directory containing the selected features
+  * `<DIR>/**/*.(js|cjs|mjs)` for each directory containing the selected features
 
-Alternatively, you can use `--require <GLOB|DIR|FILE>` to explicitly require support files before executing the features. Uses [glob](https://github.com/isaacs/node-glob) patterns.
+With the defaults described above, `.js` files are loaded via `require()`, whereas `.cjs` and `.mjs` files are loaded via `import()`.
 
-This option may be used multiple times in order to e.g. require files from several different locations.
+Alternatively, you can use either or both of these options to explicitly load support files before executing the features:
 
-_Note that once you specify any `--require` options, the defaults described above are no longer applied._
+- `--require <GLOB|DIR|FILE>` - loads via `require()` (legacy)
+- `--import <GLOB|DIR|FILE>` - loads via `import()`
+
+Both options use [glob](https://github.com/isaacs/node-glob) patterns and may be used multiple times in order to e.g. load files from several different locations.
+
+_Note that once you specify any `--require` or `--import` options, the defaults described above are no longer applied._
 
 ## Formats
 
