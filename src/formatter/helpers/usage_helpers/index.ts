@@ -23,7 +23,6 @@ export interface IUsage {
 }
 
 export interface IGetUsageRequest {
-  cwd: string
   eventDataCollector: EventDataCollector
   stepDefinitions: StepDefinition[]
 }
@@ -52,7 +51,6 @@ const unexecutedStatuses: readonly messages.TestStepResultStatus[] = [
 ]
 
 function buildMapping({
-  cwd,
   stepDefinitions,
   eventDataCollector,
 }: IGetUsageRequest): Record<string, IUsage> {
@@ -125,10 +123,9 @@ function buildResult(mapping: Record<string, IUsage>): IUsage[] {
 }
 
 export function getUsage({
-  cwd,
   stepDefinitions,
   eventDataCollector,
 }: IGetUsageRequest): IUsage[] {
-  const mapping = buildMapping({ cwd, stepDefinitions, eventDataCollector })
+  const mapping = buildMapping({ stepDefinitions, eventDataCollector })
   return buildResult(mapping)
 }

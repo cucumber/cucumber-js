@@ -39,7 +39,6 @@ export async function getExpandedArgv({
 }
 
 interface IParseGherkinMessageStreamRequest {
-  cwd: string
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   gherkinMessageStream: Readable
@@ -50,7 +49,6 @@ interface IParseGherkinMessageStreamRequest {
 export type PickleOrder = 'defined' | 'random'
 
 export async function parseGherkinMessageStream({
-  cwd,
   eventBroadcaster,
   eventDataCollector,
   gherkinMessageStream,

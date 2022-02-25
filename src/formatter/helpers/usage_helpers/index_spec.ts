@@ -21,7 +21,6 @@ describe('Usage Helpers', () => {
 
           // Act
           const output = getUsage({
-            cwd: '/project',
             eventDataCollector,
             stepDefinitions: supportCodeLibrary.stepDefinitions,
           })
@@ -41,15 +40,12 @@ describe('Usage Helpers', () => {
           const supportCodeLibrary = buildSupportCodeLibrary(
             ({ Given, setDefinitionFunctionWrapper }) => {
               Given('a step', code)
-              setDefinitionFunctionWrapper(
-                (fn: Function) =>
-                  function (fn: Function) {
-                    if (fn.length === 1) {
-                      return fn
-                    }
-                    return fn
-                  }
-              )
+              setDefinitionFunctionWrapper((fn: Function) => {
+                if (fn.length === 1) {
+                  return fn
+                }
+                return fn
+              })
             }
           )
           const { eventDataCollector } =
@@ -57,7 +53,6 @@ describe('Usage Helpers', () => {
 
           // Act
           const output = getUsage({
-            cwd: '/project',
             eventDataCollector,
             stepDefinitions: supportCodeLibrary.stepDefinitions,
           })

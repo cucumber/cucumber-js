@@ -21,7 +21,6 @@ export default class SnippetsFormatter extends Formatter {
     const snippets: string[] = []
     this.eventDataCollector.getTestCaseAttempts().forEach((testCaseAttempt) => {
       const parsed = parseTestCaseAttempt({
-        cwd: this.cwd,
         snippetBuilder: this.snippetBuilder,
         supportCodeLibrary: this.supportCodeLibrary,
         testCaseAttempt,
