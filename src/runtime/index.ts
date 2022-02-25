@@ -17,6 +17,36 @@ export interface IRuntime {
   start: () => Promise<boolean>
 }
 
+const runTestRunHooks = (
+  { dryRun }: { dryRun: boolean },
+  { defaultTimeout }: { defaultTimeout: number }
+) =>
+  dryRun
+    ? async () => {}
+    : async (
+        definitions: TestRunHookDefinition[],
+        name: string
+      ): Promise<void> => {
+        for (const hookDefinition of definitions) {
+          const { error } = await UserCodeRunner.run({
+            argsArray: [],
+            fn: hookDefinition.code,
+            thisArg: null,
+            timeoutInMilliseconds: valueOrDefault(
+              hookDefinition.options.timeout,
+              defaultTimeout
+            ),
+          })
+          if (doesHaveValue(error)) {
+            const location = formatLocation(hookDefinition)
+            throw new VError(
+              error,
+              `${name} hook errored, process exiting: ${location}`
+            )
+          }
+        }
+      }
+
 export interface INewRuntimeOptions {
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
@@ -56,6 +86,10 @@ export default class Runtime implements IRuntime {
   private readonly stackTraceFilter: StackTraceFilter
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private success: boolean
+  public runTestRunHooks: (
+    definitions: TestRunHookDefinition[],
+    name: string
+  ) => Promise<void>
 
   constructor({
     eventBroadcaster,
@@ -74,33 +108,10 @@ export default class Runtime implements IRuntime {
     this.stackTraceFilter = new StackTraceFilter()
     this.supportCodeLibrary = supportCodeLibrary
     this.success = true
-  }
-
-  async runTestRunHooks(
-    definitions: TestRunHookDefinition[],
-    name: string
-  ): Promise<void> {
-    if (this.options.dryRun) {
-      return
-    }
-    for (const hookDefinition of definitions) {
-      const { error } = await UserCodeRunner.run({
-        argsArray: [],
-        fn: hookDefinition.code,
-        thisArg: null,
-        timeoutInMilliseconds: valueOrDefault(
-          hookDefinition.options.timeout,
-          this.supportCodeLibrary.defaultTimeout
-        ),
-      })
-      if (doesHaveValue(error)) {
-        const location = formatLocation(hookDefinition)
-        throw new VError(
-          error,
-          `${name} hook errored, process exiting: ${location}`
-        )
-      }
-    }
+    this.runTestRunHooks = runTestRunHooks(
+      this.options,
+      this.supportCodeLibrary
+    )
   }
 
   async runTestCase(
