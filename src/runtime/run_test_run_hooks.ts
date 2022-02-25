@@ -4,16 +4,19 @@ import { formatLocation } from '../formatter/helpers'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 
-export const runTestRunHooks = (
-  { dryRun }: { dryRun: boolean },
-  { defaultTimeout }: { defaultTimeout: number }
-) =>
+export type RunsTestRunHooks = (
+  definitions: TestRunHookDefinition[],
+  name: string
+) => Promise<void>
+
+export const makeRunTestRunHooks = (
+  dryRun: boolean,
+  defaultTimeout: number,
+  errorMessage: (name: string, location: string) => string
+): RunsTestRunHooks =>
   dryRun
     ? async () => {}
-    : async (
-        definitions: TestRunHookDefinition[],
-        name: string
-      ): Promise<void> => {
+    : async (definitions, name) => {
         for (const hookDefinition of definitions) {
           const { error } = await UserCodeRunner.run({
             argsArray: [],
@@ -26,10 +29,7 @@ export const runTestRunHooks = (
           })
           if (doesHaveValue(error)) {
             const location = formatLocation(hookDefinition)
-            throw new VError(
-              error,
-              `${name} hook errored, process exiting: ${location}`
-            )
+            throw new VError(error, errorMessage(name, location))
           }
         }
       }
