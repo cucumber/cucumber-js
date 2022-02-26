@@ -8,7 +8,7 @@ import Mustache from 'mustache'
 import { World } from '../support/world'
 
 Given(
-  /^a file named "(.*)" with:$/,
+  'a file named {string} with:',
   async function (this: World, filePath: string, fileContent: string) {
     const absoluteFilePath = path.join(this.tmpDir, filePath)
     if (filePath === '@rerun.txt') {
@@ -19,7 +19,7 @@ Given(
 )
 
 Given(
-  /^an empty file named "(.*)"$/,
+  'an empty file named {string}',
   async function (this: World, filePath: string) {
     const absoluteFilePath = path.join(this.tmpDir, filePath)
     await fsExtra.outputFile(absoluteFilePath, '')
@@ -27,23 +27,20 @@ Given(
 )
 
 Given(
-  /^a directory named "(.*)"$/,
+  'a directory named {string}',
   async function (this: World, filePath: string) {
     const absoluteFilePath = path.join(this.tmpDir, filePath)
     await fsExtra.mkdirp(absoluteFilePath)
   }
 )
 
-Given(
-  /^"([^"]*)" is an absolute path$/,
-  function (this: World, filePath: string) {
-    filePath = Mustache.render(filePath, this)
-    expect(path.isAbsolute(filePath)).to.eql(true)
-  }
-)
+Given('{string} is an absolute path', function (this: World, filePath: string) {
+  filePath = Mustache.render(filePath, this)
+  expect(path.isAbsolute(filePath)).to.eql(true)
+})
 
 Then(
-  /^the file "([^"]*)" has the text:$/,
+  'the file {string} has the text:',
   async function (this: World, filePath: string, text: string) {
     filePath = Mustache.render(filePath, this)
     const absoluteFilePath = path.resolve(this.tmpDir, filePath)
