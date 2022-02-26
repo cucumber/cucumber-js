@@ -30,11 +30,11 @@ needs to be required in your support files and globally installed modules cannot
 
 By default, the following files are loaded:
 * If the features live in a `features` directory (at any level)
-  * `features/**/*.(js|cjs|mjs)`
+  * `features/**/*.(js|mjs)`
 * Otherwise
-  * `<DIR>/**/*.(js|cjs|mjs)` for each directory containing the selected features
+  * `<DIR>/**/*.(js|mjs)` for each directory containing the selected features
 
-With the defaults described above, `.js` files are loaded via `require()`, whereas `.cjs` and `.mjs` files are loaded via `import()`.
+With the defaults described above, `.js` files are loaded via `require()`, whereas `.mjs` files are loaded via `import()`.
 
 Alternatively, you can use either or both of these options to explicitly load support files before executing the features:
 
