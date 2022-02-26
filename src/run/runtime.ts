@@ -16,8 +16,9 @@ export function makeRuntime({
   pickleIds,
   newId,
   supportCodeLibrary,
-  supportCodePaths,
-  supportCodeRequiredModules,
+  requireModules,
+  requirePaths,
+  importPaths,
   options: { parallel = 0, ...runtimeOptions } = {},
 }: {
   cwd: string
@@ -26,8 +27,9 @@ export function makeRuntime({
   newId: IdGenerator.NewId
   pickleIds: string[]
   supportCodeLibrary: ISupportCodeLibrary
-  supportCodePaths: string[]
-  supportCodeRequiredModules: string[]
+  requireModules: string[]
+  requirePaths: string[]
+  importPaths: string[]
   options: Partial<IRuntimeOptions> & { parallel?: number }
 }): IRuntime {
   // sprinkle specified runtime options over the defaults
@@ -44,8 +46,9 @@ export function makeRuntime({
       options,
       newId,
       supportCodeLibrary,
-      supportCodePaths,
-      supportCodeRequiredModules,
+      requireModules,
+      requirePaths,
+      importPaths,
       numberOfWorkers: parallel,
     })
   }
