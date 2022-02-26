@@ -77,12 +77,17 @@ When(
 )
 
 When(
-  /^I run cucumber-js \(installed (locally|globally)\)$/,
+  'I run cucumber-js \\(installed locally\\)',
   { timeout: 10000 },
-  async function (this: World, location: string) {
-    if (location === 'locally') {
-      return await this.run(this.localExecutablePath, [])
-    }
+  async function (this: World) {
+    return await this.run(this.localExecutablePath, [])
+  }
+)
+
+When(
+  'I run cucumber-js \\(installed globally\\)',
+  { timeout: 10000 },
+  async function (this: World) {
     return await this.run(this.globalExecutablePath, [])
   }
 )

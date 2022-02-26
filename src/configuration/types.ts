@@ -11,8 +11,9 @@ export interface IRunConfiguration {
     order?: PickleOrder
   }
   support: {
-    transpileWith: string[]
-    paths: string[]
+    requireModules: string[]
+    requirePaths: string[]
+    importPaths: string[]
   }
   runtime?: Partial<IRuntimeOptions> & { parallel?: number }
   formats?: IFormatterConfiguration

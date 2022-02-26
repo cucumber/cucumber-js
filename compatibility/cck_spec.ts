@@ -37,8 +37,11 @@ describe('Cucumber Compatibility Kit', () => {
           paths: [`${CCK_FEATURES_PATH}/${suiteName}/${suiteName}${extension}`],
         },
         support: {
-          transpileWith: ['ts-node/register'],
-          paths: [`${CCK_IMPLEMENTATIONS_PATH}/${suiteName}/${suiteName}.ts`],
+          requireModules: ['ts-node/register'],
+          requirePaths: [
+            `${CCK_IMPLEMENTATIONS_PATH}/${suiteName}/${suiteName}.ts`,
+          ],
+          importPaths: [],
         },
         formats: {
           stdout: 'message',

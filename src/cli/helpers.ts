@@ -114,14 +114,6 @@ export function orderPickleIds(
   }
 }
 
-export function isJavaScript(filePath: string): boolean {
-  return (
-    filePath.endsWith('.js') ||
-    filePath.endsWith('.mjs') ||
-    filePath.endsWith('.cjs')
-  )
-}
-
 export async function emitMetaMessage(
   eventBroadcaster: EventEmitter,
   env: NodeJS.ProcessEnv

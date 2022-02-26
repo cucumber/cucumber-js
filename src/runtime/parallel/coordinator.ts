@@ -24,8 +24,9 @@ export interface INewCoordinatorOptions {
   newId: IdGenerator.NewId
   pickleIds: string[]
   supportCodeLibrary: ISupportCodeLibrary
-  supportCodePaths: string[]
-  supportCodeRequiredModules: string[]
+  requireModules: string[]
+  requirePaths: string[]
+  importPaths: string[]
   numberOfWorkers: number
 }
 
@@ -60,8 +61,9 @@ export default class Coordinator implements IRuntime {
   private inProgressPickles: Record<string, messages.Pickle>
   private workers: Record<string, IWorker>
   private readonly supportCodeLibrary: ISupportCodeLibrary
-  private readonly supportCodePaths: string[]
-  private readonly supportCodeRequiredModules: string[]
+  private readonly requireModules: string[]
+  private readonly requirePaths: string[]
+  private readonly importPaths: string[]
   private readonly numberOfWorkers: number
   private readonly stderr: IFormatterStream
   private success: boolean
@@ -76,8 +78,9 @@ export default class Coordinator implements IRuntime {
     options,
     newId,
     supportCodeLibrary,
-    supportCodePaths,
-    supportCodeRequiredModules,
+    requireModules,
+    requirePaths,
+    importPaths,
     numberOfWorkers,
   }: INewCoordinatorOptions) {
     this.cwd = cwd
@@ -88,8 +91,9 @@ export default class Coordinator implements IRuntime {
     this.options = options
     this.newId = newId
     this.supportCodeLibrary = supportCodeLibrary
-    this.supportCodePaths = supportCodePaths
-    this.supportCodeRequiredModules = supportCodeRequiredModules
+    this.requireModules = requireModules
+    this.requirePaths = requirePaths
+    this.importPaths = importPaths
     this.pickleIds = Array.from(pickleIds)
     this.numberOfWorkers = numberOfWorkers
     this.success = true
@@ -124,13 +128,10 @@ export default class Coordinator implements IRuntime {
       return worker.state !== WorkerState.idle
     })
 
-    let wip: Boolean = false
-    for (const p in this.inProgressPickles) {
-      wip = true
-      break
-    }
-
-    if (!wip && this.pickleIds.length > 0) {
+    if (
+      Object.keys(this.inProgressPickles).length == 0 &&
+      this.pickleIds.length > 0
+    ) {
       this.giveWork(triggeringWorker, true)
       this.idleInterventions++
     }
@@ -159,8 +160,9 @@ export default class Coordinator implements IRuntime {
     const initializeCommand: IWorkerCommand = {
       initialize: {
         filterStacktraces: this.options.filterStacktraces,
-        supportCodePaths: this.supportCodePaths,
-        supportCodeRequiredModules: this.supportCodeRequiredModules,
+        requireModules: this.requireModules,
+        requirePaths: this.requirePaths,
+        importPaths: this.importPaths,
         supportCodeIds: {
           stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map(
             (s) => s.id

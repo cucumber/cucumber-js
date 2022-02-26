@@ -36,7 +36,7 @@ export default function getColorFns(enabled: boolean): IColorFns {
     }
   } else {
     return {
-      forStatus(status: TestStepResultStatus) {
+      forStatus(_status: TestStepResultStatus) {
         return (x) => x
       },
       location: (x) => x,
