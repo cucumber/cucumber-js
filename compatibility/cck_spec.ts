@@ -5,11 +5,7 @@ import glob from 'glob'
 import fs from 'fs'
 import path from 'path'
 import { PassThrough, pipeline, Writable } from 'stream'
-import toString from 'stream-to-string'
-import {
-  ignorableKeys,
-  normalizeMessageOutput,
-} from '../features/support/formatter_output_helpers'
+import { ignorableKeys } from '../features/support/formatter_output_helpers'
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
 import util from 'util'
