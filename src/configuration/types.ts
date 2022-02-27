@@ -3,14 +3,16 @@ import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { PickleOrder } from '../cli/helpers'
 import { ISupportCodeCoordinates } from '../support_code_library_builder/types'
 
+export interface ISourcesCoordinates {
+  defaultDialect?: string
+  paths?: string[]
+  names?: string[]
+  tagExpression?: string
+  order?: PickleOrder
+}
+
 export interface IRunConfiguration {
-  sources: {
-    defaultDialect?: string
-    paths?: string[]
-    names?: string[]
-    tagExpression?: string
-    order?: PickleOrder
-  }
+  sources: ISourcesCoordinates
   support: ISupportCodeCoordinates
   runtime?: Partial<IRuntimeOptions> & { parallel?: number }
   formats?: IFormatterConfiguration
