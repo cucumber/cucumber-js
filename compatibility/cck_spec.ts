@@ -9,7 +9,7 @@ import { ignorableKeys } from '../features/support/formatter_output_helpers'
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
 import util from 'util'
-import { runCucumber } from '../src/run'
+import { runCucumber } from '../src/api'
 import { IRunConfiguration } from '../src/configuration'
 import { Envelope } from '@cucumber/messages'
 
