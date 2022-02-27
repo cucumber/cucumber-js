@@ -1,6 +1,7 @@
 import { IRuntimeOptions } from '../runtime'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { PickleOrder } from '../cli/helpers'
+import { ISupportCodeCoordinates } from '../support_code_library_builder/types'
 
 export interface IRunConfiguration {
   sources: {
@@ -10,11 +11,7 @@ export interface IRunConfiguration {
     tagExpression?: string
     order?: PickleOrder
   }
-  support: {
-    requireModules: string[]
-    requirePaths: string[]
-    importPaths: string[]
-  }
+  support: ISupportCodeCoordinates
   runtime?: Partial<IRuntimeOptions> & { parallel?: number }
   formats?: IFormatterConfiguration
 }
