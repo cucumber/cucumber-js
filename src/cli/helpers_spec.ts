@@ -66,6 +66,11 @@ function testEmitSupportCodeMessages(
     eventBroadcaster,
     supportCodeLibrary: Object.assign(
       {
+        originalCoordinates: {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+        },
         stepDefinitions: [],
         beforeTestRunHookDefinitions: [],
         beforeTestCaseHookDefinitions: [],

@@ -1,7 +1,10 @@
 import { IRuntimeOptions } from '../runtime'
 import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { PickleOrder } from '../cli/helpers'
-import { ISupportCodeCoordinates } from '../support_code_library_builder/types'
+import {
+  ISupportCodeCoordinates,
+  ISupportCodeLibrary,
+} from '../support_code_library_builder/types'
 
 export interface ISourcesCoordinates {
   defaultDialect?: string
@@ -13,7 +16,7 @@ export interface ISourcesCoordinates {
 
 export interface IRunConfiguration {
   sources: ISourcesCoordinates
-  support: ISupportCodeCoordinates
+  support: ISupportCodeCoordinates | ISupportCodeLibrary
   runtime?: Partial<IRuntimeOptions> & { parallel?: number }
   formats?: IFormatterConfiguration
 }

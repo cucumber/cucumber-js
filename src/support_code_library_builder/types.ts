@@ -166,6 +166,7 @@ export interface ISupportCodeCoordinates {
 }
 
 export interface ISupportCodeLibrary {
+  readonly originalCoordinates: ISupportCodeCoordinates
   readonly afterTestCaseHookDefinitions: TestCaseHookDefinition[]
   readonly afterTestStepHookDefinitions: TestStepHookDefinition[]
   readonly afterTestRunHookDefinitions: TestRunHookDefinition[]

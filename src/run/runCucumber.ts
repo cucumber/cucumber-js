@@ -15,6 +15,8 @@ import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
 import { getSupportCodeLibrary } from './support'
 
+const newId = IdGenerator.uuid()
+
 export async function runCucumber(
   configuration: IRunConfiguration,
   {
@@ -24,18 +26,24 @@ export async function runCucumber(
   }: Partial<IRunEnvironment>,
   onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
-  const newId = IdGenerator.uuid()
+  const supportCoordinates =
+    'World' in configuration.support
+      ? configuration.support.originalCoordinates
+      : configuration.support
 
   const { unexpandedFeaturePaths, featurePaths, requirePaths, importPaths } =
-    await resolvePaths(cwd, configuration)
+    await resolvePaths(cwd, configuration.sources, supportCoordinates)
 
-  const supportCodeLibrary = await getSupportCodeLibrary({
-    cwd,
-    newId,
-    requirePaths,
-    importPaths,
-    requireModules: configuration.support.requireModules,
-  })
+  const supportCodeLibrary =
+    'World' in configuration.support
+      ? configuration.support
+      : await getSupportCodeLibrary({
+          cwd,
+          newId,
+          requirePaths,
+          importPaths,
+          requireModules: supportCoordinates.requireModules,
+        })
 
   const eventBroadcaster = new EventEmitter()
   if (onMessage) {
@@ -87,7 +95,7 @@ export async function runCucumber(
     pickleIds,
     newId,
     supportCodeLibrary,
-    requireModules: configuration.support.requireModules,
+    requireModules: supportCoordinates.requireModules,
     requirePaths,
     importPaths,
     options: configuration.runtime,

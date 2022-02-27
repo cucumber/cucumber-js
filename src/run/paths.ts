@@ -2,11 +2,13 @@ import { promisify } from 'util'
 import glob from 'glob'
 import path from 'path'
 import fs from 'mz/fs'
-import { IRunConfiguration } from '../configuration'
+import { ISourcesCoordinates } from '../configuration'
+import { ISupportCodeCoordinates } from '../support_code_library_builder/types'
 
 export async function resolvePaths(
   cwd: string,
-  configuration: Pick<IRunConfiguration, 'sources' | 'support'>
+  sources: ISourcesCoordinates,
+  support: ISupportCodeCoordinates
 ): Promise<{
   unexpandedFeaturePaths: string[]
   featurePaths: string[]
@@ -15,7 +17,7 @@ export async function resolvePaths(
 }> {
   const unexpandedFeaturePaths = await getUnexpandedFeaturePaths(
     cwd,
-    configuration.sources.paths
+    sources.paths
   )
   const featurePaths: string[] = await expandFeaturePaths(
     cwd,
@@ -24,8 +26,8 @@ export async function resolvePaths(
   const { requirePaths, importPaths } = await deriveSupportPaths(
     cwd,
     featurePaths,
-    configuration.support.requirePaths,
-    configuration.support.importPaths
+    support.requirePaths,
+    support.importPaths
   )
   return {
     unexpandedFeaturePaths,
