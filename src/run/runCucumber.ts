@@ -15,8 +15,6 @@ import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
 import { getSupportCodeLibrary } from './support'
 
-const newId = IdGenerator.uuid()
-
 export async function runCucumber(
   configuration: IRunConfiguration,
   {
@@ -26,6 +24,8 @@ export async function runCucumber(
   }: Partial<IRunEnvironment>,
   onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
+  const newId = IdGenerator.uuid()
+
   const supportCoordinates =
     'World' in configuration.support
       ? configuration.support.originalCoordinates
