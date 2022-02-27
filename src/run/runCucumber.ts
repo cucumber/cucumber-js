@@ -1,4 +1,4 @@
-import { IdGenerator } from '@cucumber/messages'
+import { Envelope, IdGenerator } from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../formatter/helpers'
 import {
@@ -17,13 +17,13 @@ import { getSupportCodeLibrary } from './support'
 
 export async function runCucumber(
   configuration: IRunConfiguration,
-  environment: IRunEnvironment = {
-    cwd: process.cwd(),
-    stdout: process.stdout,
-    env: process.env,
-  }
+  {
+    cwd = process.cwd(),
+    stdout = process.stdout,
+    env = process.env,
+  }: Partial<IRunEnvironment>,
+  onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
-  const { cwd, stdout, env } = environment
   const newId = IdGenerator.uuid()
 
   const { unexpandedFeaturePaths, featurePaths, requirePaths, importPaths } =
@@ -38,6 +38,9 @@ export async function runCucumber(
   })
 
   const eventBroadcaster = new EventEmitter()
+  if (onMessage) {
+    eventBroadcaster.on('envelope', onMessage)
+  }
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
 
   const cleanup = await initializeFormatters({

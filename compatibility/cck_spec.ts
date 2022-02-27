@@ -15,6 +15,7 @@ import * as messageStreams from '@cucumber/message-streams'
 import util from 'util'
 import { runCucumber } from '../src/run'
 import { IRunConfiguration } from '../src/configuration'
+import { Envelope } from '@cucumber/messages'
 
 const asyncPipeline = util.promisify(pipeline)
 const PROJECT_PATH = path.join(__dirname, '..')
@@ -30,6 +31,7 @@ describe('Cucumber Compatibility Kit', () => {
     const suiteName = match[1]
     const extension = match[2]
     it(`passes the cck suite for '${suiteName}'`, async () => {
+      const actualMessages: Envelope[] = []
       const stdout = new PassThrough()
       const runConfiguration: IRunConfiguration = {
         sources: {
@@ -42,32 +44,19 @@ describe('Cucumber Compatibility Kit', () => {
           ],
           importPaths: [],
         },
-        formats: {
-          stdout: 'message',
-        },
         runtime: {
           retry: suiteName === 'retry' ? 2 : 0,
         },
       }
-      try {
-        await runCucumber(runConfiguration, {
+      await runCucumber(
+        runConfiguration,
+        {
           cwd: PROJECT_PATH,
           stdout,
-          env: process.env,
-        })
-      } catch (ignored) {
-        console.error(ignored)
-      }
-      stdout.end()
-
-      const rawOutput = await toString(stdout)
-      // TODO: consider validating (at run-time) the parsed message is really an Envelope
-      const actualMessages = normalize(
-        rawOutput
-          .split('\n')
-          .filter((line) => line.trim() !== '')
-          .map((line) => JSON.parse(line))
+        },
+        (message) => actualMessages.push(JSON.parse(JSON.stringify(message)))
       )
+      stdout.end()
 
       const expectedMessages: messages.Envelope[] = []
       await asyncPipeline(
@@ -88,11 +77,3 @@ describe('Cucumber Compatibility Kit', () => {
     })
   })
 })
-
-function normalize(messages: messages.Envelope[]): messages.Envelope[] {
-  messages = normalizeMessageOutput(
-    messages,
-    path.join(PROJECT_PATH, 'compatibility')
-  )
-  return messages
-}
