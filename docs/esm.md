@@ -1,6 +1,8 @@
 # ES Modules (experimental)
 
-You can optionally write your support code (steps, hooks, etc) with native ES modules syntax - i.e. using `import` and `export` statements without transpiling. This is enabled without any additional configuration, and you can use either of the `.js` or `.mjs` file extensions.
+You can optionally write your support code (steps, hooks, etc) with native ES modules syntax - i.e. using `import` and `export` statements without transpiling.
+
+If your support code is written as ESM, you'll need to use the `--import` option to specify your files, rather than the `--require` option.
 
 **Important**: please note that your configuration file referenced for [Profiles](./profiles.md) - aka `cucumber.js` file - must remain a CommonJS file. In a project with `type=module`, you can name the file `cucumber.cjs`, since Node expects `.js` files to be in ESM syntax in such projects.
 

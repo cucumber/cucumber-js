@@ -33,8 +33,9 @@ describe('buildConfiguration', () => {
         tagExpression: '',
       },
       support: {
-        paths: [],
-        transpileWith: [],
+        requireModules: [],
+        requirePaths: [],
+        importPaths: [],
       },
     })
   })
