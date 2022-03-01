@@ -14,6 +14,13 @@ export interface ISourcesCoordinates {
   order?: PickleOrder
 }
 
+export interface IUserConfiguration {
+  sources: ISourcesCoordinates
+  support: ISupportCodeCoordinates
+  runtime?: Partial<IRuntimeOptions> & { parallel?: number }
+  formats?: IFormatterConfiguration
+}
+
 export interface IRunConfiguration {
   sources: ISourcesCoordinates
   support: ISupportCodeCoordinates | ISupportCodeLibrary
