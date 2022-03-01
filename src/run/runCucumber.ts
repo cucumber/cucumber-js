@@ -26,14 +26,15 @@ export async function runCucumber(
   const { cwd, stdout, env } = environment
   const newId = IdGenerator.uuid()
 
-  const { unexpandedFeaturePaths, featurePaths, supportCodePaths } =
+  const { unexpandedFeaturePaths, featurePaths, requirePaths, importPaths } =
     await resolvePaths(cwd, configuration)
 
   const supportCodeLibrary = await getSupportCodeLibrary({
     cwd,
     newId,
-    supportCodePaths,
-    supportCodeRequiredModules: configuration.support.transpileWith,
+    requirePaths,
+    importPaths,
+    requireModules: configuration.support.requireModules,
   })
 
   const eventBroadcaster = new EventEmitter()
@@ -83,8 +84,9 @@ export async function runCucumber(
     pickleIds,
     newId,
     supportCodeLibrary,
-    supportCodePaths,
-    supportCodeRequiredModules: configuration.support.transpileWith,
+    requireModules: configuration.support.requireModules,
+    requirePaths,
+    importPaths,
     options: configuration.runtime,
   })
   const success = await runtime.start()

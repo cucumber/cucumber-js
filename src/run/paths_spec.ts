@@ -28,21 +28,27 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(esmSupportCodePath, '')
 
       // Act
-      const { featurePaths, unexpandedFeaturePaths, supportCodePaths } =
-        await resolvePaths(cwd, {
-          sources: {
-            paths: [relativeFeaturePath],
-          },
-          support: {
-            paths: [],
-            transpileWith: [],
-          },
-        })
+      const {
+        featurePaths,
+        unexpandedFeaturePaths,
+        requirePaths,
+        importPaths,
+      } = await resolvePaths(cwd, {
+        sources: {
+          paths: [relativeFeaturePath],
+        },
+        support: {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+        },
+      })
 
       // Assert
       expect(featurePaths).to.eql([featurePath])
       expect(unexpandedFeaturePaths).to.eql([relativeFeaturePath])
-      expect(supportCodePaths).to.eql([jsSupportCodePath, esmSupportCodePath])
+      expect(requirePaths).to.eql([jsSupportCodePath])
+      expect(importPaths).to.eql([esmSupportCodePath])
     })
 
     it('deduplicates the .feature files before returning', async function () {
@@ -57,8 +63,9 @@ describe('resolvePaths', () => {
           paths: [`${relativeFeaturePath}:3`, `${relativeFeaturePath}:4`],
         },
         support: {
-          paths: [],
-          transpileWith: [],
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
         },
       })
 
@@ -76,19 +83,20 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(supportCodePath, '')
 
       // Act
-      const { featurePaths, unexpandedFeaturePaths, supportCodePaths } =
+      const { featurePaths, unexpandedFeaturePaths, requirePaths } =
         await resolvePaths(cwd, {
           sources: { paths: [relativeFeaturePath] },
           support: {
-            paths: [],
-            transpileWith: [],
+            requireModules: [],
+            requirePaths: [],
+            importPaths: [],
           },
         })
 
       // Assert
       expect(featurePaths).to.eql([featurePath])
       expect(unexpandedFeaturePaths).to.eql([relativeFeaturePath])
-      expect(supportCodePaths).to.eql([supportCodePath])
+      expect(requirePaths).to.eql([supportCodePath])
     })
   })
 
@@ -103,19 +111,20 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(supportCodePath, '')
 
       // Act
-      const { featurePaths, unexpandedFeaturePaths, supportCodePaths } =
+      const { featurePaths, unexpandedFeaturePaths, requirePaths } =
         await resolvePaths(cwd, {
           sources: { paths: [relativeFeaturePath] },
           support: {
-            paths: [],
-            transpileWith: [],
+            requireModules: [],
+            requirePaths: [],
+            importPaths: [],
           },
         })
 
       // Assert
       expect(featurePaths).to.eql([featurePath])
       expect(unexpandedFeaturePaths).to.eql([relativeFeaturePath])
-      expect(supportCodePaths).to.eql([supportCodePath])
+      expect(requirePaths).to.eql([supportCodePath])
     })
 
     it('returns the appropriate .md and support code paths', async function () {
@@ -132,19 +141,20 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(supportCodePath, '')
 
       // Act
-      const { featurePaths, unexpandedFeaturePaths, supportCodePaths } =
+      const { featurePaths, unexpandedFeaturePaths, requirePaths } =
         await resolvePaths(cwd, {
           sources: { paths: [relativeFeaturePath] },
           support: {
-            paths: [],
-            transpileWith: [],
+            requireModules: [],
+            requirePaths: [],
+            importPaths: [],
           },
         })
 
       // Assert
       expect(featurePaths).to.eql([featurePath])
       expect(unexpandedFeaturePaths).to.eql([relativeFeaturePath])
-      expect(supportCodePaths).to.eql([supportCodePath])
+      expect(requirePaths).to.eql([supportCodePath])
     })
   })
 
@@ -157,19 +167,20 @@ describe('resolvePaths', () => {
       const rerunPath = path.join(cwd, '@empty_rerun.txt')
       await fsExtra.outputFile(rerunPath, '')
       // Act
-      const { featurePaths, unexpandedFeaturePaths, supportCodePaths } =
+      const { featurePaths, unexpandedFeaturePaths, requirePaths } =
         await resolvePaths(cwd, {
           sources: { paths: [relativeRerunPath] },
           support: {
-            paths: [],
-            transpileWith: [],
+            requireModules: [],
+            requirePaths: [],
+            importPaths: [],
           },
         })
 
       // Assert
       expect(featurePaths).to.eql([])
       expect(unexpandedFeaturePaths).to.eql([])
-      expect(supportCodePaths).to.eql([])
+      expect(requirePaths).to.eql([])
     })
   })
 
@@ -182,19 +193,20 @@ describe('resolvePaths', () => {
       const rerunPath = path.join(cwd, '@empty_rerun.txt')
       await fsExtra.outputFile(rerunPath, '\n')
       // Act
-      const { featurePaths, unexpandedFeaturePaths, supportCodePaths } =
+      const { featurePaths, unexpandedFeaturePaths, requirePaths } =
         await resolvePaths(cwd, {
           sources: { paths: [relativeRerunPath] },
           support: {
-            paths: [],
-            transpileWith: [],
+            requireModules: [],
+            requirePaths: [],
+            importPaths: [],
           },
         })
 
       // Assert
       expect(featurePaths).to.eql([])
       expect(unexpandedFeaturePaths).to.eql([])
-      expect(supportCodePaths).to.eql([])
+      expect(requirePaths).to.eql([])
     })
   })
 
@@ -208,19 +220,20 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(rerunPath, '\n\n')
 
       // Act
-      const { featurePaths, unexpandedFeaturePaths, supportCodePaths } =
+      const { featurePaths, unexpandedFeaturePaths, requirePaths } =
         await resolvePaths(cwd, {
           sources: { paths: [relativeRerunPath] },
           support: {
-            paths: [],
-            transpileWith: [],
+            requireModules: [],
+            requirePaths: [],
+            importPaths: [],
           },
         })
 
       // Assert
       expect(featurePaths).to.eql([])
       expect(unexpandedFeaturePaths).to.eql([])
-      expect(supportCodePaths).to.eql([])
+      expect(requirePaths).to.eql([])
     })
   })
 })
