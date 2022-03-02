@@ -12,7 +12,7 @@ import { loadSupport } from './loadSupport'
 const newId = IdGenerator.uuid()
 
 async function setupEnvironment(): Promise<Partial<IRunEnvironment>> {
-  const cwd = path.join(__dirname, 'fixtures', newId())
+  const cwd = path.join(__dirname, '..', '..', 'tmp', `runCucumber_${newId()}`)
   await fs.mkdir(path.join(cwd, 'features'), { recursive: true })
   await fs.writeFile(
     path.join(cwd, 'features', 'test.feature'),
@@ -23,7 +23,7 @@ async function setupEnvironment(): Promise<Partial<IRunEnvironment>> {
   )
   await fs.writeFile(
     path.join(cwd, 'features', 'steps.ts'),
-    reindent(`import { Given, Then } from '../../../../../src'
+    reindent(`import { Given, Then } from '../../../src'
     Given('a step', function () {})
     Then('another step', function () {})`)
   )
