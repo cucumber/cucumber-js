@@ -24,8 +24,8 @@ async function setupEnvironment(): Promise<Partial<IRunEnvironment>> {
   await fs.writeFile(
     path.join(cwd, 'features', 'steps.ts'),
     reindent(`import { Given, Then } from '../../../../../src'
-      Given('a step', function () {})
-      Then('another step', function () {})`)
+    Given('a step', function () {})
+    Then('another step', function () {})`)
   )
   const stdout = new PassThrough()
   return { cwd, stdout }
