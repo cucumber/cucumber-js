@@ -1,25 +1,55 @@
-import { IRunConfiguration, IUserConfiguration } from '../configuration'
+import { Envelope, TestStepResultStatus, IdGenerator } from '@cucumber/messages'
+import fs from 'mz/fs'
+import path from 'path'
+import { reindent } from 'reindent-template-literals'
+import { expect } from 'chai'
+import { IUserConfiguration } from '../configuration'
 import { runCucumber } from './runCucumber'
 import { IRunEnvironment } from './types'
-import { Envelope, TestStepResultStatus } from '@cucumber/messages'
-import { expect } from 'chai'
 import { loadSupport } from './loadSupport'
 
-const environment: Partial<IRunEnvironment> = {
-  cwd: __dirname,
+const newId = IdGenerator.uuid()
+
+async function setupEnvironment(): Promise<Partial<IRunEnvironment>> {
+  const cwd = path.join(__dirname, 'fixtures', newId())
+  await fs.mkdir(path.join(cwd, 'features'), { recursive: true })
+  await fs.writeFile(
+    path.join(cwd, 'features', 'test.feature'),
+    reindent(`Feature: test fixture
+      Scenario: one
+        Given a step
+        Then another step`)
+  )
+  await fs.writeFile(
+    path.join(cwd, 'features', 'steps.ts'),
+    reindent(`import { Given, Then } from '../../../../../src'
+      Given('a step', function () {})
+      Then('another step', function () {})`)
+  )
+  return { cwd }
+}
+
+function teardownEnvironment(environment: Partial<IRunEnvironment>) {
+  fs.rmSync(environment.cwd, { recursive: true })
 }
 
 describe('runCucumber', () => {
   describe('preloading support code', () => {
-    it('should work when ', async () => {
+    let environment: Partial<IRunEnvironment>
+    beforeEach(async () => {
+      environment = await setupEnvironment()
+    })
+    afterEach(async () => teardownEnvironment(environment))
+
+    it('should be able to load support code upfront and supply it to runCucumber', async () => {
       const messages: Envelope[] = []
       const configuration: IUserConfiguration = {
         sources: {
-          paths: ['fixtures/fixture.feature'],
+          paths: ['features/test.feature'],
         },
         support: {
           requireModules: ['ts-node/register'],
-          requirePaths: ['fixtures/steps.ts'],
+          requirePaths: ['features/steps.ts'],
           importPaths: [],
         },
       }
@@ -44,15 +74,21 @@ describe('runCucumber', () => {
   })
 
   describe('reusing support code across runs', () => {
+    let environment: Partial<IRunEnvironment>
+    beforeEach(async () => {
+      environment = await setupEnvironment()
+    })
+    afterEach(async () => teardownEnvironment(environment))
+
     it('successfully executes 2 test runs', async () => {
       const messages: Envelope[] = []
       const configuration: IUserConfiguration = {
         sources: {
-          paths: ['fixtures/fixture.feature'],
+          paths: ['features/test.feature'],
         },
         support: {
           requireModules: ['ts-node/register'],
-          requirePaths: ['fixtures/steps.ts'],
+          requirePaths: ['features/steps.ts'],
           importPaths: [],
         },
       }
