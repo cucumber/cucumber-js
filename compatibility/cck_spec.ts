@@ -24,7 +24,9 @@ const CCK_IMPLEMENTATIONS_PATH = 'compatibility/features'
 config.truncateThreshold = 100
 use(chaiExclude)
 
-describe('Cucumber Compatibility Kit', () => {
+describe('Cucumber Compatibility Kit', function () {
+  this.timeout(5000)
+
   glob.sync(`${CCK_FEATURES_PATH}/**/*.ndjson`).forEach((fixturePath) => {
     const match = /^.+\/(.+)(\.feature(?:\.md)?)\.ndjson$/.exec(fixturePath)
     const suiteName = match[1]
