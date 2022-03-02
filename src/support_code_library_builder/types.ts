@@ -159,7 +159,14 @@ export interface IDefineSupportCodeMethods {
     ) => void)
 }
 
+export interface ISupportCodeCoordinates {
+  requireModules: string[]
+  requirePaths: string[]
+  importPaths: string[]
+}
+
 export interface ISupportCodeLibrary {
+  readonly originalCoordinates: ISupportCodeCoordinates
   readonly afterTestCaseHookDefinitions: TestCaseHookDefinition[]
   readonly afterTestStepHookDefinitions: TestStepHookDefinition[]
   readonly afterTestRunHookDefinitions: TestRunHookDefinition[]
