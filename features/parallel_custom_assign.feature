@@ -1,3 +1,4 @@
+@flaky
 Feature: Running scenarios in parallel with custom assignment
 
   @spawn
