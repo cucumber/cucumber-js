@@ -17,6 +17,7 @@ jobs:
     strategy:
       matrix:
         os:
+          - macos-latest
           - ubuntu-latest
           - windows-latest
         node-version: [12.x, 14.x, 16.x, 17.x]
@@ -28,7 +29,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm i -g npm@7
+    - run: npm i -g npm@8
     - run: npm install-test
 
   coverage:
