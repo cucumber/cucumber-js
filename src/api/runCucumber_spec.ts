@@ -2,6 +2,7 @@ import { Envelope, TestStepResultStatus, IdGenerator } from '@cucumber/messages'
 import fs from 'mz/fs'
 import path from 'path'
 import { reindent } from 'reindent-template-literals'
+import { PassThrough } from 'stream'
 import { expect } from 'chai'
 import { IUserConfiguration } from '../configuration'
 import { runCucumber } from './runCucumber'
@@ -26,11 +27,13 @@ async function setupEnvironment(): Promise<Partial<IRunEnvironment>> {
       Given('a step', function () {})
       Then('another step', function () {})`)
   )
-  return { cwd }
+  const stdout = new PassThrough()
+  return { cwd, stdout }
 }
 
 function teardownEnvironment(environment: Partial<IRunEnvironment>) {
   fs.rmSync(environment.cwd, { recursive: true })
+  environment.stdout.end()
 }
 
 describe('runCucumber', () => {
