@@ -2,37 +2,38 @@ import { promisify } from 'util'
 import glob from 'glob'
 import path from 'path'
 import fs from 'mz/fs'
-import { IRunConfiguration } from '../configuration'
+import { ISourcesCoordinates } from '../configuration'
+import { ISupportCodeCoordinates } from '../support_code_library_builder/types'
 
 export async function resolvePaths(
   cwd: string,
-  configuration: Pick<IRunConfiguration, 'sources' | 'support'>
+  sources: ISourcesCoordinates,
+  support: ISupportCodeCoordinates
 ): Promise<{
   unexpandedFeaturePaths: string[]
   featurePaths: string[]
-  supportCodePaths: string[]
+  requirePaths: string[]
+  importPaths: string[]
 }> {
   const unexpandedFeaturePaths = await getUnexpandedFeaturePaths(
     cwd,
-    configuration.sources.paths
+    sources.paths
   )
   const featurePaths: string[] = await expandFeaturePaths(
     cwd,
     unexpandedFeaturePaths
   )
-  let unexpandedSupportCodePaths = configuration.support.paths ?? []
-  if (unexpandedSupportCodePaths.length === 0) {
-    unexpandedSupportCodePaths = getFeatureDirectoryPaths(cwd, featurePaths)
-  }
-  const supportCodePaths = await expandPaths(
+  const { requirePaths, importPaths } = await deriveSupportPaths(
     cwd,
-    unexpandedSupportCodePaths,
-    '.@(js|mjs)'
+    featurePaths,
+    support.requirePaths,
+    support.importPaths
   )
   return {
     unexpandedFeaturePaths,
     featurePaths,
-    supportCodePaths,
+    requirePaths,
+    importPaths,
   }
 }
 
@@ -113,4 +114,33 @@ async function expandFeaturePaths(
   featurePaths = featurePaths.map((p) => p.replace(/(:\d+)*$/g, '')) // Strip line numbers
   featurePaths = [...new Set(featurePaths)] // Deduplicate the feature files
   return await expandPaths(cwd, featurePaths, '.feature')
+}
+
+async function deriveSupportPaths(
+  cwd: string,
+  featurePaths: string[],
+  unexpandedRequirePaths: string[],
+  unexpandedImportPaths: string[]
+): Promise<{
+  requirePaths: string[]
+  importPaths: string[]
+}> {
+  if (
+    unexpandedRequirePaths.length === 0 &&
+    unexpandedImportPaths.length === 0
+  ) {
+    const defaultPaths = getFeatureDirectoryPaths(cwd, featurePaths)
+    const requirePaths = await expandPaths(cwd, defaultPaths, '.js')
+    const importPaths = await expandPaths(cwd, defaultPaths, '.mjs')
+    return { requirePaths, importPaths }
+  }
+  const requirePaths =
+    unexpandedRequirePaths.length > 0
+      ? await expandPaths(cwd, unexpandedRequirePaths, '.js')
+      : []
+  const importPaths =
+    unexpandedImportPaths.length > 0
+      ? await expandPaths(cwd, unexpandedImportPaths, '.@(js|cjs|mjs)')
+      : []
+  return { requirePaths, importPaths }
 }

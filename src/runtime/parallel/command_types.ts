@@ -11,8 +11,9 @@ export interface IWorkerCommand {
 
 export interface IWorkerCommandInitialize {
   filterStacktraces: boolean
-  supportCodePaths: string[]
-  supportCodeRequiredModules: string[]
+  requireModules: string[]
+  requirePaths: string[]
+  importPaths: string[]
   supportCodeIds?: ICanonicalSupportCodeIds
   options: IRuntimeOptions
 }
