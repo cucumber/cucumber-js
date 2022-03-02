@@ -30,13 +30,13 @@ describe('wrapPromiseWithTimeout()', () => {
     it('rejects the promise', async () => {
       // Arrange
       const promise = new Promise((resolve) => {
-        setTimeout(resolve, 50)
+        setTimeout(resolve, 100)
       })
 
       // Act
       let error: Error = null
       try {
-        await wrapPromiseWithTimeout(promise, 25, 'custom timeout message')
+        await wrapPromiseWithTimeout(promise, 50, 'custom timeout message')
       } catch (e) {
         error = e
       }
@@ -51,11 +51,11 @@ describe('wrapPromiseWithTimeout()', () => {
     it('resolves the promise', async () => {
       // Arrange
       const promise = new Promise<string>((resolve) => {
-        setTimeout(() => resolve('value'), 10)
+        setTimeout(() => resolve('value'), 50)
       })
 
       // Act
-      const result = await wrapPromiseWithTimeout(promise, 25)
+      const result = await wrapPromiseWithTimeout(promise, 100)
 
       // Assert
       expect(result).to.eql('value')
