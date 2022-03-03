@@ -73,6 +73,22 @@ Feature: Publish reports
     And the server should receive an "Authorization" header with value "Bearer f318d9ec-5a3d-4727-adec-bd7b69e2edd3"
 
   @spawn
+  Scenario: users can supply a custom handler for the published url
+    Given a file named "features/step_definitions/publish.js" with:
+      """
+      const {setPublishedHandler} = require('@cucumber/cucumber')
+
+      setPublishedHandler(({url}) => {
+        console.error(`Our handler worked: ${url}`)
+      })
+      """
+    When I run cucumber-js with arguments `--publish` and env ``
+    Then the error output contains the text:
+      """
+      Our handler worked: https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3
+      """
+
+  @spawn
   Scenario: a banner is displayed after publication
     When I run cucumber-js with arguments `--publish` and env ``
     Then the error output contains the text:
@@ -124,11 +140,11 @@ Feature: Publish reports
       Share your Cucumber Report with your team at https://reports.cucumber.io
       """
 
-  Examples:
-    | args      | env                                                         |
-    | --publish |                                                             |
-    |           | CUCUMBER_PUBLISH_ENABLED=true                               |
-    |           | CUCUMBER_PUBLISH_TOKEN=f318d9ec-5a3d-4727-adec-bd7b69e2edd3 |
+    Examples:
+      | args      | env                                                         |
+      | --publish |                                                             |
+      |           | CUCUMBER_PUBLISH_ENABLED=true                               |
+      |           | CUCUMBER_PUBLISH_TOKEN=f318d9ec-5a3d-4727-adec-bd7b69e2edd3 |
 
   @spawn
   Scenario: the publication banner is not shown when publication is disabled
@@ -138,7 +154,7 @@ Feature: Publish reports
       Share your Cucumber Report with your team at https://reports.cucumber.io
       """
 
-  Examples:
-    | args            | env                         |
-    | --publish-quiet |                             |
-    |                 | CUCUMBER_PUBLISH_QUIET=true |
+    Examples:
+      | args            | env                         |
+      | --publish-quiet |                             |
+      |                 | CUCUMBER_PUBLISH_QUIET=true |
