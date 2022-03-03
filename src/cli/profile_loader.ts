@@ -37,6 +37,8 @@ export default class ProfileLoader {
     } catch (error) {
       if (error.code === 'ERR_REQUIRE_ESM') {
         definitions = await importer(pathToFileURL(definitionsFilePath))
+      } else {
+        throw error
       }
     }
     if (typeof definitions !== 'object') {
