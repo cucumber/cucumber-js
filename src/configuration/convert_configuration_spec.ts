@@ -1,12 +1,20 @@
 import { describe, it } from 'mocha'
+import ArgvParser from '../cli/argv_parser'
 import { expect } from 'chai'
-import { buildConfiguration } from './configuration_builder'
-import ArgvParser from './argv_parser'
+import { convertConfiguration } from './convert_configuration'
+
 const baseArgv = ['/path/to/node', '/path/to/cucumber-js']
 
-describe('buildConfiguration', () => {
+describe('convertConfiguration', () => {
   it('should derive correct defaults', async () => {
-    const result = await buildConfiguration(ArgvParser.parse([...baseArgv]), {})
+    const fromArgv = ArgvParser.parse([...baseArgv])
+    const result = await convertConfiguration(
+      {
+        ...fromArgv.options,
+        paths: fromArgv.args,
+      },
+      {}
+    )
 
     expect(result).to.eql({
       formats: {
@@ -41,16 +49,20 @@ describe('buildConfiguration', () => {
   })
 
   it('should map formatters', async () => {
-    const result = await buildConfiguration(
-      ArgvParser.parse([
-        ...baseArgv,
-        '--format',
-        'message',
-        '--format',
-        'json:./report.json',
-        '--format',
-        'html:./report.html',
-      ]),
+    const fromArgv = ArgvParser.parse([
+      ...baseArgv,
+      '--format',
+      'message',
+      '--format',
+      'json:./report.json',
+      '--format',
+      'html:./report.html',
+    ])
+    const result = await convertConfiguration(
+      {
+        ...fromArgv.options,
+        paths: fromArgv.args,
+      },
       {}
     )
 
