@@ -4,6 +4,7 @@ import fs from 'fs'
 import http from 'http'
 import https from 'https'
 import { doesHaveValue } from '../value_checker'
+import { IPublishedHandler } from '../support_code_library_builder/types'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT'
 
@@ -24,7 +25,8 @@ export default class HttpStream extends Transform {
   constructor(
     private readonly url: string,
     private readonly method: HttpMethod,
-    private readonly headers: http.OutgoingHttpHeaders
+    private readonly headers: http.OutgoingHttpHeaders,
+    private readonly handler: IPublishedHandler
   ) {
     super({
       readableObjectMode: true,
@@ -69,6 +71,7 @@ export default class HttpStream extends Transform {
                 (err2, res2) => {
                   if (doesHaveValue(err2)) return callback(err2)
                   this.emitErrorUnlessHttp2xx(res2, this.url, this.method)
+                  this.callHandlerIfHttp2xx(res2, res1.headers.location)
                   callback()
                 }
               )
@@ -104,6 +107,19 @@ export default class HttpStream extends Transform {
           `Unexpected http status ${res.statusCode} from ${method} ${url}`
         )
       )
+  }
+
+  private callHandlerIfHttp2xx(
+    res: http.IncomingMessage,
+    putUrl: string
+  ): void {
+    if (res.statusCode < 300) {
+      const { pathname } = new URL(putUrl)
+      const reportIdentifier = pathname.split('/').at(-1)
+      this.handler({
+        url: `https://reports.cucumber.io/reports/${reportIdentifier}`,
+      })
+    }
   }
 
   private sendHttpRequest(

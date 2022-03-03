@@ -7,6 +7,8 @@ import { doesHaveValue } from '../src/value_checker'
 
 type Callback = (err?: Error | null) => void
 
+export const FAKE_IDENTIFIER = 'f318d9ec-5a3d-4727-adec-bd7b69e2edd3'
+
 /**
  * Fake implementation of the same report server that backs Cucumber Reports
  * (https://messages.cucumber.io). Used for testing only.
@@ -20,7 +22,7 @@ export default class FakeReportServer {
   constructor(private port: number) {
     const app = express()
 
-    app.put('/s3', (req, res) => {
+    app.put(`/s3/${FAKE_IDENTIFIER}`, (req, res) => {
       this.receivedHeaders = { ...this.receivedHeaders, ...req.headers }
 
       const captureBodyStream = new Writable({
@@ -51,12 +53,15 @@ export default class FakeReportServer {
         return
       }
 
-      res.setHeader('Location', `http://localhost:${this.port}/s3`)
+      res.setHeader(
+        'Location',
+        `http://localhost:${this.port}/s3/${FAKE_IDENTIFIER}`
+      )
       res.status(202)
 
       res.end(`┌──────────────────────────────────────────────────────────────────────────┐
 │ View your Cucumber Report at:                                            │
-│ https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3 │
+│ https://reports.cucumber.io/reports/${FAKE_IDENTIFIER} │
 │                                                                          │
 │ This report will self-destruct in 24h unless it is claimed or deleted.   │
 └──────────────────────────────────────────────────────────────────────────┘

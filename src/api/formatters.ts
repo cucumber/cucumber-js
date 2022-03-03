@@ -93,7 +93,12 @@ export async function initializeFormatters({
     if (token !== undefined) {
       headers.Authorization = `Bearer ${token}`
     }
-    const stream = new HttpStream(url, 'GET', headers)
+    const stream = new HttpStream(
+      url,
+      'GET',
+      headers,
+      supportCodeLibrary.publishedHandler
+    )
     const readerStream = new Writable({
       objectMode: true,
       write: function (responseBody: string, encoding, writeCallback) {

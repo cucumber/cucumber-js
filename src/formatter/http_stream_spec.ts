@@ -1,6 +1,10 @@
 import assert from 'assert'
+import { expect } from 'chai'
+import sinon from 'sinon'
 import HttpStream from './http_stream'
-import FakeReportServer from '../../test/fake_report_server'
+import FakeReportServer, {
+  FAKE_IDENTIFIER,
+} from '../../test/fake_report_server'
 import { Writable } from 'stream'
 
 type Callback = (err?: Error | null) => void
@@ -15,7 +19,12 @@ describe('HttpStream', () => {
   })
 
   it(`sends a PUT request with written data when the stream is closed`, (callback: Callback) => {
-    const stream = new HttpStream(`http://localhost:${port}/s3`, 'PUT', {})
+    const stream = new HttpStream(
+      `http://localhost:${port}/s3/${FAKE_IDENTIFIER}`,
+      'PUT',
+      {},
+      () => undefined
+    )
 
     stream.on('error', callback)
     stream.on('finish', () => {
@@ -43,7 +52,8 @@ describe('HttpStream', () => {
     const stream = new HttpStream(
       `http://localhost:${port}/api/reports`,
       'GET',
-      { Authorization: `Bearer ${bearerToken}` }
+      { Authorization: `Bearer ${bearerToken}` },
+      () => undefined
     )
 
     stream.on('error', callback)
@@ -81,7 +91,8 @@ describe('HttpStream', () => {
     const stream = new HttpStream(
       `http://localhost:${port}/api/reports`,
       'GET',
-      {}
+      {},
+      () => undefined
     )
 
     const readerStream = new Writable({
@@ -122,13 +133,55 @@ describe('HttpStream', () => {
     stream.end()
   })
 
-  it('reports the body provided by the server even when an error is returned by the server and still fail', (callback: Callback) => {
-    let reported: string
-
+  it('calls the handler with the url', (callback: Callback) => {
+    const handler = sinon.spy()
     const stream = new HttpStream(
       `http://localhost:${port}/api/reports`,
       'GET',
-      { Authorization: `Bearer an-invalid-token` }
+      {},
+      handler
+    )
+
+    const readerStream = new Writable({
+      objectMode: true,
+      write: function (responseBody: string, encoding, writeCallback) {
+        writeCallback()
+      },
+    })
+
+    stream.pipe(readerStream)
+
+    stream.on('error', callback)
+    readerStream.on('error', callback)
+
+    readerStream.on('finish', () => {
+      reportServer
+        .stop()
+        .then(() => {
+          try {
+            expect(handler).to.have.been.calledOnceWith({
+              url: `https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3`,
+            })
+            callback()
+          } catch (err) {
+            callback(err)
+          }
+        })
+        .catch(callback)
+    })
+
+    stream.write('hello')
+    stream.end()
+  })
+
+  it('reports the body provided by the server but doesnt call handler when an error is returned by the server and still fail', (callback: Callback) => {
+    let reported: string
+    const handler = sinon.spy()
+    const stream = new HttpStream(
+      `http://localhost:${port}/api/reports`,
+      'GET',
+      { Authorization: `Bearer an-invalid-token` },
+      handler
     )
 
     const readerStream = new Writable({
@@ -150,6 +203,7 @@ describe('HttpStream', () => {
 └─────────────────────┘
 `
           assert.deepStrictEqual(reported, expectedResult)
+          expect(handler).not.to.have.been.called()
           callback()
         })
         .catch(callback)

@@ -84,6 +84,7 @@ function testEmitSupportCodeMessages(
         undefinedParameterTypes: [],
         World: null,
         parallelCanAssign: () => true,
+        publishedHandler: () => undefined,
       },
       supportCode
     ),
