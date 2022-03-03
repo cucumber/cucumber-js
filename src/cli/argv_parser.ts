@@ -1,24 +1,11 @@
 import { Command } from 'commander'
 import path from 'path'
 import { dialects } from '@cucumber/gherkin'
-import { SnippetInterface } from '../formatter/step_definition_snippet_builder/snippet_syntax'
 import { getKeywords, getLanguages } from './i18n'
 import Formatters from '../formatter/helpers/formatters'
 import { version } from '../version'
-import { PickleOrder } from './helpers'
-
-export interface IParsedArgvFormatRerunOptions {
-  separator?: string
-}
-
-export interface IParsedArgvFormatOptions {
-  colorsEnabled?: boolean
-  rerun?: IParsedArgvFormatRerunOptions
-  snippetInterface?: SnippetInterface
-  snippetSyntax?: string
-  printAttachments?: boolean
-  [customKey: string]: any
-}
+import { FormatOptions } from '../formatter'
+import { PickleOrder } from '../models/pickle_order'
 
 export interface IParsedArgvOptions {
   backtrace: boolean
@@ -27,7 +14,7 @@ export interface IParsedArgvOptions {
   exit: boolean
   failFast: boolean
   format: string[]
-  formatOptions: IParsedArgvFormatOptions
+  formatOptions: FormatOptions
   i18nKeywords: string
   i18nLanguages: boolean
   import: string[]

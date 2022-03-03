@@ -6,9 +6,22 @@ import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { WriteStream as FsWriteStream } from 'fs'
 import { WriteStream as TtyWriteStream } from 'tty'
 import { EventEmitter } from 'events'
-import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import HttpStream from './http_stream'
 import { valueOrDefault } from '../value_checker'
+import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
+
+export interface FormatRerunOptions {
+  separator?: string
+}
+
+export interface FormatOptions {
+  colorsEnabled?: boolean
+  rerun?: FormatRerunOptions
+  snippetInterface?: SnippetInterface
+  snippetSyntax?: string
+  printAttachments?: boolean
+  [customKey: string]: any
+}
 
 export type IFormatterStream =
   | FsWriteStream
@@ -24,7 +37,7 @@ export interface IFormatterOptions {
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   log: IFormatterLogFn
-  parsedArgvOptions: IParsedArgvFormatOptions
+  parsedArgvOptions: FormatOptions
   snippetBuilder: StepDefinitionSnippetBuilder
   stream: WritableStream
   cleanup: IFormatterCleanupFn

@@ -1,10 +1,10 @@
 import { IRuntimeOptions } from '../runtime'
-import { IParsedArgvFormatOptions } from '../cli/argv_parser'
-import { PickleOrder } from '../cli/helpers'
 import {
   ISupportCodeCoordinates,
   ISupportCodeLibrary,
 } from '../support_code_library_builder/types'
+import { FormatOptions } from '../formatter'
+import { PickleOrder } from '../models/pickle_order'
 
 export interface ISourcesCoordinates {
   defaultDialect?: string
@@ -37,5 +37,5 @@ export interface IFormatterConfiguration {
         token?: string
       }
     | false
-  options?: IParsedArgvFormatOptions
+  options?: FormatOptions
 }

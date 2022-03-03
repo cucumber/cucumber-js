@@ -14,6 +14,7 @@ import detectCiEnvironment from '@cucumber/ci-environment'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
+import { PickleOrder } from '../models/pickle_order'
 import { builtinParameterTypes } from '../support_code_library_builder'
 import { version } from '../version'
 
@@ -45,8 +46,6 @@ interface IParseGherkinMessageStreamRequest {
   order: PickleOrder
   pickleFilter: PickleFilter
 }
-
-export type PickleOrder = 'defined' | 'random'
 
 export async function parseGherkinMessageStream({
   eventBroadcaster,
