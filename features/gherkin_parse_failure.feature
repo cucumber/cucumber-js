@@ -16,5 +16,5 @@ Feature: Gherkin parse failure
     Then it fails
     And the error output contains the text:
       """
-      Parse error in 'features/a.feature'
+      Parse error in "features/a.feature" (4:5)
       """

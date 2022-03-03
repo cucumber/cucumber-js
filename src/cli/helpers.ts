@@ -71,13 +71,6 @@ export async function parseGherkinMessageStream({
           result.push(pickleId)
         }
       }
-      if (doesHaveValue(envelope.parseError)) {
-        reject(
-          new Error(
-            `Parse error in '${envelope.parseError.source.uri}': ${envelope.parseError.message}`
-          )
-        )
-      }
     })
     gherkinMessageStream.on('end', () => {
       orderPickleIds(result, order, logger)
