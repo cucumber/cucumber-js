@@ -1,20 +1,24 @@
+/* eslint-disable no-console */
+/* It's fine to use process and console directly here,
+ * but other code abstracts to remain composable
+ * and testable. */
 import Cli, { ICliRunResult } from './'
 import VError from 'verror'
 import publishBanner from './publish_banner'
 import { validateNodeEngineVersion } from './validate_node_engine_version'
 
 function logErrorMessageAndExit(message: string): void {
-  console.error(message) // eslint-disable-line no-console
+  console.error(message)
   process.exit(1)
 }
 
 function displayPublishAdvertisementBanner(): void {
-  console.error(publishBanner) // eslint-disable-line no-console
+  console.error(publishBanner)
 }
 
 export default async function run(): Promise<void> {
   validateNodeEngineVersion(process.version, (error) => {
-    console.error(error) // eslint-disable-line no-console
+    console.error(error)
     process.exit(1)
   })
 
