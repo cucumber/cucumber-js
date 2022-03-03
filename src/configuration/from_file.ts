@@ -11,8 +11,10 @@ export async function fromFile(
   profiles: string[]
 ): Promise<Partial<IConfiguration>> {
   const definitions = await loadFile(cwd, file)
-  profiles.forEach(console.log)
-  return definitions['default'] as Partial<IConfiguration>
+  if (profiles.length === 0) {
+    return definitions['default'] as Partial<IConfiguration>
+  }
+  return {}
 }
 
 async function loadFile(
