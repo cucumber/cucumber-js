@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
-/* It's fine to use process and console directly here,
- * but other code abstracts to remain composable
- * and testable. */
+/* This is one rare place where we're fine to use process/console directly,
+ * but other code abstracts those to remain composable and testable. */
 import Cli, { ICliRunResult } from './'
 import VError from 'verror'
 import publishBanner from './publish_banner'
