@@ -16,7 +16,6 @@ import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { builtinParameterTypes } from '../support_code_library_builder'
 import { version } from '../version'
-import { IFormatterStream } from '../formatter'
 
 export interface IGetExpandedArgvRequest {
   argv: string[]
@@ -40,7 +39,7 @@ export async function getExpandedArgv({
 }
 
 interface IParseGherkinMessageStreamRequest {
-  stderr: IFormatterStream
+  logger: Console
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   gherkinMessageStream: Readable
@@ -51,7 +50,7 @@ interface IParseGherkinMessageStreamRequest {
 export type PickleOrder = 'defined' | 'random'
 
 export async function parseGherkinMessageStream({
-  stderr,
+  logger,
   eventBroadcaster,
   eventDataCollector,
   gherkinMessageStream,
@@ -81,7 +80,7 @@ export async function parseGherkinMessageStream({
       }
     })
     gherkinMessageStream.on('end', () => {
-      orderPickleIds(result, order, stderr)
+      orderPickleIds(result, order, logger)
       resolve(result)
     })
     gherkinMessageStream.on('error', reject)
@@ -92,7 +91,7 @@ export async function parseGherkinMessageStream({
 export function orderPickleIds(
   pickleIds: string[],
   order: PickleOrder,
-  stderr: IFormatterStream
+  logger: Console
 ): void {
   const [type, seed] = OptionSplitter.split(order)
   switch (type) {
@@ -101,7 +100,7 @@ export function orderPickleIds(
     case 'random':
       if (seed === '') {
         const newSeed = Math.floor(Math.random() * 1000 * 1000).toString()
-        stderr.write(`Random order using seed: ${newSeed}\n`)
+        logger.warn(`Random order using seed: ${newSeed}`)
         shuffle(pickleIds, newSeed)
       } else {
         shuffle(pickleIds, seed)

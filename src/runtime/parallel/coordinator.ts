@@ -11,13 +11,12 @@ import { doesHaveValue } from '../../value_checker'
 import { ITestRunStopwatch, RealTestRunStopwatch } from '../stopwatch'
 import { assembleTestCases, IAssembledTestCases } from '../assemble_test_cases'
 import { IdGenerator } from '@cucumber/messages'
-import { IFormatterStream } from '../../formatter'
 
 const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
 
 export interface INewCoordinatorOptions {
   cwd: string
-  stderr: IFormatterStream
+  logger: Console
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   options: IRuntimeOptions
@@ -65,13 +64,13 @@ export default class Coordinator implements IRuntime {
   private readonly requirePaths: string[]
   private readonly importPaths: string[]
   private readonly numberOfWorkers: number
-  private readonly stderr: IFormatterStream
+  private readonly logger: Console
   private success: boolean
   private idleInterventions: number
 
   constructor({
     cwd,
-    stderr,
+    logger,
     eventBroadcaster,
     eventDataCollector,
     pickleIds,
@@ -84,7 +83,7 @@ export default class Coordinator implements IRuntime {
     numberOfWorkers,
   }: INewCoordinatorOptions) {
     this.cwd = cwd
-    this.stderr = stderr
+    this.logger = logger
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
     this.stopwatch = new RealTestRunStopwatch()
@@ -236,8 +235,8 @@ export default class Coordinator implements IRuntime {
       }
       this.onFinish = (status) => {
         if (this.idleInterventions > 0) {
-          this.stderr.write(
-            `WARNING: All workers went idle ${this.idleInterventions} time(s). Consider revising handler passed to setParallelCanAssign.\n`
+          this.logger.warn(
+            `WARNING: All workers went idle ${this.idleInterventions} time(s). Consider revising handler passed to setParallelCanAssign.`
           )
         }
 
