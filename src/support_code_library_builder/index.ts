@@ -28,6 +28,7 @@ import {
   TestCaseHookFunction,
   TestStepHookFunction,
   ParallelAssignmentValidator,
+  ISupportCodeCoordinates,
 } from './types'
 import World from './world'
 import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
@@ -78,6 +79,7 @@ export const builtinParameterTypes = [
 export class SupportCodeLibraryBuilder {
   public readonly methods: IDefineSupportCodeMethods
 
+  private originalCoordinates: ISupportCodeCoordinates
   private afterTestCaseHookDefinitionConfigs: ITestCaseHookDefinitionConfig[]
   private afterTestRunHookDefinitionConfigs: ITestRunHookDefinitionConfig[]
   private afterTestStepHookDefinitionConfigs: ITestStepHookDefinitionConfig[]
@@ -394,6 +396,7 @@ export class SupportCodeLibraryBuilder {
       canonicalIds?.stepDefinitionIds
     )
     return {
+      originalCoordinates: this.originalCoordinates,
       afterTestCaseHookDefinitions: this.buildTestCaseHookDefinitions(
         this.afterTestCaseHookDefinitionConfigs,
         canonicalIds?.afterTestCaseHookDefinitionIds
@@ -423,9 +426,18 @@ export class SupportCodeLibraryBuilder {
     }
   }
 
-  reset(cwd: string, newId: IdGenerator.NewId): void {
+  reset(
+    cwd: string,
+    newId: IdGenerator.NewId,
+    originalCoordinates: ISupportCodeCoordinates = {
+      requireModules: [],
+      requirePaths: [],
+      importPaths: [],
+    }
+  ): void {
     this.cwd = cwd
     this.newId = newId
+    this.originalCoordinates = originalCoordinates
     this.afterTestCaseHookDefinitionConfigs = []
     this.afterTestRunHookDefinitionConfigs = []
     this.afterTestStepHookDefinitionConfigs = []
