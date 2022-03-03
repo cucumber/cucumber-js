@@ -79,14 +79,6 @@ const ArgvParser = {
     return value
   },
 
-  validateRetryOptions(options: IParsedArgvOptions): void {
-    if (options.retryTagFilter !== '' && options.retry === 0) {
-      throw new Error(
-        'a positive --retry count must be specified when setting --retry-tag-filter'
-      )
-    }
-  },
-
   parse(argv: string[]): IParsedArgv {
     const program = new Command(path.basename(argv[1]))
 
@@ -217,7 +209,6 @@ const ArgvParser = {
 
     program.parse(argv)
     const options: IParsedArgvOptions = program.opts()
-    ArgvParser.validateRetryOptions(options)
 
     return {
       options,
