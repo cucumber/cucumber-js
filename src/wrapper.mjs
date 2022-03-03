@@ -33,6 +33,7 @@ export const Given = cucumber.Given
 export const setDefaultTimeout = cucumber.setDefaultTimeout
 export const setDefinitionFunctionWrapper = cucumber.setDefinitionFunctionWrapper
 export const setWorldConstructor = cucumber.setWorldConstructor
+export const setPublishedHandler = cucumber.setPublishedHandler
 export const Then = cucumber.Then
 export const When = cucumber.When
 

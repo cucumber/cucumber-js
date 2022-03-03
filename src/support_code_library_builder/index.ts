@@ -29,6 +29,7 @@ import {
   TestStepHookFunction,
   ParallelAssignmentValidator,
   ISupportCodeCoordinates,
+  IPublishedHandler,
 } from './types'
 import World from './world'
 import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
@@ -94,6 +95,7 @@ export class SupportCodeLibraryBuilder {
   private stepDefinitionConfigs: IStepDefinitionConfig[]
   private World: any
   private parallelCanAssign: ParallelAssignmentValidator
+  private publishedHandler: IPublishedHandler
 
   constructor() {
     const defineStep = this.defineStep.bind(this)
@@ -130,6 +132,9 @@ export class SupportCodeLibraryBuilder {
       },
       setParallelCanAssign: (fn: ParallelAssignmentValidator): void => {
         this.parallelCanAssign = fn
+      },
+      setPublishedHandler: (fn: IPublishedHandler): void => {
+        this.publishedHandler = fn
       },
       Then: defineStep,
       When: defineStep,
@@ -423,6 +428,7 @@ export class SupportCodeLibraryBuilder {
       stepDefinitions: stepDefinitionsResult.stepDefinitions,
       World: this.World,
       parallelCanAssign: this.parallelCanAssign,
+      publishedHandler: this.publishedHandler,
     }
   }
 
@@ -449,6 +455,7 @@ export class SupportCodeLibraryBuilder {
     this.parameterTypeRegistry = new ParameterTypeRegistry()
     this.stepDefinitionConfigs = []
     this.parallelCanAssign = () => true
+    this.publishedHandler = () => undefined
     this.World = World
   }
 }

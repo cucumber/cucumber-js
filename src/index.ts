@@ -43,6 +43,7 @@ export const setDefaultTimeout = methods.setDefaultTimeout
 export const setDefinitionFunctionWrapper = methods.setDefinitionFunctionWrapper
 export const setWorldConstructor = methods.setWorldConstructor
 export const setParallelCanAssign = methods.setParallelCanAssign
+export const setPublishedHandler = methods.setPublishedHandler
 export const Then = methods.Then
 export const When = methods.When
 export {

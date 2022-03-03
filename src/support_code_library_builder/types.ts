@@ -69,6 +69,8 @@ export interface IParameterTypeDefinition<T> {
   preferForRegexpMatch?: boolean
 }
 
+export type IPublishedHandler = (report: { url: string }) => void
+
 export interface IDefineSupportCodeMethods {
   defineParameterType: (options: IParameterTypeDefinition<any>) => void
   defineStep: (<WorldType = IWorld>(
@@ -83,6 +85,7 @@ export interface IDefineSupportCodeMethods {
   setDefaultTimeout: (milliseconds: number) => void
   setDefinitionFunctionWrapper: (fn: Function) => void
   setParallelCanAssign: (fn: ParallelAssignmentValidator) => void
+  setPublishedHandler: (fn: IPublishedHandler) => void
   setWorldConstructor: (fn: any) => void
   After: (<WorldType = IWorld>(code: TestCaseHookFunction<WorldType>) => void) &
     (<WorldType = IWorld>(
@@ -179,4 +182,5 @@ export interface ISupportCodeLibrary {
   readonly parameterTypeRegistry: ParameterTypeRegistry
   readonly World: any
   readonly parallelCanAssign: ParallelAssignmentValidator
+  readonly publishedHandler: IPublishedHandler
 }
