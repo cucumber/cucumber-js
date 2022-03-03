@@ -24,6 +24,17 @@ describe('fromFile', () => {
     expect(result).to.deep.eq({ paths: ['some/path/*.feature'] })
   })
 
+  it('should throw when a requested profile doesnt exist', async () => {
+    const { cwd } = await setup()
+
+    try {
+      await fromFile(cwd, 'cucumber.js', ['nope'])
+      expect.fail('should have thrown')
+    } catch (error) {
+      expect(error.message).to.eq(`Requested profile "nope" doesn't exist`)
+    }
+  })
+
   it('should get single profile config from file', async () => {
     const { cwd } = await setup()
 
