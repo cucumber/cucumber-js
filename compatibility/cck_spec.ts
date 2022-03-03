@@ -55,6 +55,7 @@ describe('Cucumber Compatibility Kit', () => {
         (message) => actualMessages.push(JSON.parse(JSON.stringify(message)))
       )
       stdout.end()
+      stderr.end()
 
       const expectedMessages: messages.Envelope[] = []
       await asyncPipeline(
