@@ -1,4 +1,4 @@
-const OptionSplitter = {
+export const OptionSplitter = {
   split(option: string): string[] {
     option = option.replace(/"/g, '')
 
@@ -23,5 +23,3 @@ const OptionSplitter = {
 function partNeedsRecombined(i: number): boolean {
   return i % 2 === 0
 }
-
-export default OptionSplitter

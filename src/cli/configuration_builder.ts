@@ -1,6 +1,5 @@
 import { IParsedArgv, IParsedArgvOptions } from './argv_parser'
-import OptionSplitter from './option_splitter'
-import { IRunConfiguration } from '../configuration'
+import { IRunConfiguration, OptionSplitter } from '../configuration'
 
 export async function buildConfiguration(
   fromArgv: IParsedArgv,
