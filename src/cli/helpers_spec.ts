@@ -47,6 +47,7 @@ async function testParseGherkinMessageStream(
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
   const result = await parseGherkinMessageStream({
+    logger: console,
     eventBroadcaster,
     eventDataCollector,
     gherkinMessageStream: options.gherkinMessageStream,

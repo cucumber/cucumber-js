@@ -14,16 +14,19 @@ import { resolvePaths } from './paths'
 import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
 import { getSupportCodeLibrary } from './support'
+import { Console } from 'console'
 
 export async function runCucumber(
   configuration: IRunConfiguration,
   {
     cwd = process.cwd(),
     stdout = process.stdout,
+    stderr = process.stderr,
     env = process.env,
   }: Partial<IRunEnvironment>,
   onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
+  const logger = new Console(stdout, stderr)
   const newId = IdGenerator.uuid()
 
   const supportCoordinates =
@@ -51,9 +54,12 @@ export async function runCucumber(
   }
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
 
+  let formatterStreamError = false
   const cleanup = await initializeFormatters({
     cwd,
     stdout,
+    logger,
+    onStreamError: () => (formatterStreamError = true),
     eventBroadcaster,
     eventDataCollector,
     configuration: configuration.formats,
@@ -70,6 +76,7 @@ export async function runCucumber(
 
   if (featurePaths.length > 0) {
     pickleIds = await parseGherkinMessageStream({
+      logger,
       eventBroadcaster,
       eventDataCollector,
       gherkinMessageStream,
@@ -90,6 +97,7 @@ export async function runCucumber(
 
   const runtime = makeRuntime({
     cwd,
+    logger,
     eventBroadcaster,
     eventDataCollector,
     pickleIds,
@@ -104,7 +112,7 @@ export async function runCucumber(
   await cleanup()
 
   return {
-    success,
+    success: success && !formatterStreamError,
     support: supportCodeLibrary,
   }
 }

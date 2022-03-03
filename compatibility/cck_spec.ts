@@ -29,6 +29,7 @@ describe('Cucumber Compatibility Kit', () => {
     it(`passes the cck suite for '${suiteName}'`, async () => {
       const actualMessages: Envelope[] = []
       const stdout = new PassThrough()
+      const stderr = new PassThrough()
       const runConfiguration: IRunConfiguration = {
         sources: {
           paths: [`${CCK_FEATURES_PATH}/${suiteName}/${suiteName}${extension}`],
@@ -49,10 +50,12 @@ describe('Cucumber Compatibility Kit', () => {
         {
           cwd: PROJECT_PATH,
           stdout,
+          stderr,
         },
         (message) => actualMessages.push(JSON.parse(JSON.stringify(message)))
       )
       stdout.end()
+      stderr.end()
 
       const expectedMessages: messages.Envelope[] = []
       await asyncPipeline(

@@ -1,7 +1,6 @@
 import { Command } from 'commander'
 import path from 'path'
 import { dialects } from '@cucumber/gherkin'
-import { getKeywords, getLanguages } from './i18n'
 import Formatters from '../formatter/helpers/formatters'
 import { version } from '../version'
 import { FormatOptions } from '../formatter'
@@ -210,16 +209,6 @@ const ArgvParser = {
         ArgvParser.mergeJson('--world-parameters'),
         {}
       )
-
-    program.on('option:i18n-languages', () => {
-      console.log(getLanguages())
-      process.exit()
-    })
-
-    program.on('option:i18n-keywords', function (isoCode: string) {
-      console.log(getKeywords(isoCode))
-      process.exit()
-    })
 
     program.addHelpText(
       'afterAll',

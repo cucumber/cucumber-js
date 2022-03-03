@@ -4,6 +4,7 @@ import { convertConfiguration, isTruthyString } from '../configuration'
 import { IFormatterStream } from '../formatter'
 import { runCucumber } from '../api'
 import ArgvParser from './argv_parser'
+import { getKeywords, getLanguages } from './i18n'
 
 export interface ICliRunResult {
   shouldAdvertisePublish: boolean
@@ -15,22 +16,26 @@ export default class Cli {
   private readonly argv: string[]
   private readonly cwd: string
   private readonly stdout: IFormatterStream
+  private readonly stderr: IFormatterStream
   private readonly env: NodeJS.ProcessEnv
 
   constructor({
     argv,
     cwd,
     stdout,
+    stderr,
     env,
   }: {
     argv: string[]
     cwd: string
     stdout: IFormatterStream
+    stderr: IFormatterStream
     env: NodeJS.ProcessEnv
   }) {
     this.argv = argv
     this.cwd = cwd
     this.stdout = stdout
+    this.stderr = stderr
     this.env = env
   }
 
@@ -42,6 +47,22 @@ export default class Cli {
         cwd: this.cwd,
       })
     )
+    if (fromArgv.options.i18nLanguages) {
+      this.stdout.write(getLanguages())
+      return {
+        shouldAdvertisePublish: false,
+        shouldExitImmediately: true,
+        success: true,
+      }
+    }
+    if (fromArgv.options.i18nKeywords != '') {
+      this.stdout.write(getKeywords(fromArgv.options.i18nKeywords))
+      return {
+        shouldAdvertisePublish: false,
+        shouldExitImmediately: true,
+        success: true,
+      }
+    }
     const configuration = await convertConfiguration(
       {
         ...fromArgv.options,
@@ -52,6 +73,7 @@ export default class Cli {
     const { success } = await runCucumber(configuration, {
       cwd: this.cwd,
       stdout: this.stdout,
+      stderr: this.stderr,
       env: this.env,
     })
     return {
