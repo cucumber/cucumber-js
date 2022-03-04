@@ -12,7 +12,7 @@ Feature: Gherkin parse failure
           Given a step
           Parse Error
       """
-    When I run cucumber-js with `--format message`
+    When I run cucumber-js
     Then it fails
     And the error output contains the text:
       """
