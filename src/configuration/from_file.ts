@@ -30,6 +30,7 @@ async function loadFile(
   cwd: string,
   file: string
 ): Promise<Record<string, Partial<IConfiguration>>> {
+  // TODO strings too!
   const filePath: string = path.join(cwd, file)
   let definitions
   try {
