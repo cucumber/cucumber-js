@@ -2,17 +2,48 @@ import { expect } from 'chai'
 import { mergeConfigurations } from './merge_configurations'
 
 describe('mergeConfigurations', () => {
-  it('should merge two arrays correctly', () => {
-    const result = mergeConfigurations({ paths: ['a'] }, { paths: ['b'] })
-    expect(result).to.deep.eq({
-      paths: ['a', 'b'],
+  describe('additive arrays', () => {
+    it('should merge two arrays correctly', () => {
+      const result = mergeConfigurations({ paths: ['a'] }, { paths: ['b'] })
+      expect(result).to.deep.eq({
+        paths: ['a', 'b'],
+      })
+    })
+
+    it('should handle one array and one undefined correctly', () => {
+      const result = mergeConfigurations({ paths: ['a'] }, { paths: undefined })
+      expect(result).to.deep.eq({
+        paths: ['a'],
+      })
+    })
+
+    it('should handle one undefined and one array correctly', () => {
+      const result = mergeConfigurations({ paths: undefined }, { paths: ['b'] })
+      expect(result).to.deep.eq({
+        paths: ['b'],
+      })
     })
   })
 
-  it('should merge one array and one nullish correctly', () => {
-    const result = mergeConfigurations({ paths: ['a'] }, { paths: undefined })
-    expect(result).to.deep.eq({
-      paths: ['a'],
+  describe('booleans', () => {
+    it('should handle two booleans correctly', () => {
+      const result = mergeConfigurations(
+        { failFast: true },
+        { failFast: false }
+      )
+      expect(result).to.deep.eq({
+        failFast: false,
+      })
+    })
+
+    it('should handle one boolean and one undefined correctly', () => {
+      const result = mergeConfigurations(
+        { failFast: true },
+        { failFast: undefined }
+      )
+      expect(result).to.deep.eq({
+        failFast: true,
+      })
     })
   })
 })
