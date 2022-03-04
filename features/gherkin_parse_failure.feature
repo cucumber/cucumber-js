@@ -7,8 +7,8 @@ Feature: Gherkin parse failure
   Scenario: URI, line and column are called out in output
     Given a file named "features/a.feature" with:
       """
-      Feature: a feature name a
-        Scenario: a scenario name b
+      Feature: a feature name
+        Scenario: a scenario name
           Given a step
           Parse Error
       """
@@ -26,8 +26,8 @@ Feature: Gherkin parse failure
       """
     Given a file named "features/b.feature" with:
       """
-      Feature: a feature name b
-        Scenario: a scenario name b
+      Feature: a feature name
+        Scenario: a scenario name
           Given a step
       """
     Given a file named "features/c.feature" with:
