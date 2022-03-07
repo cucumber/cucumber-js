@@ -3,7 +3,7 @@ import { validateInstall } from './install_validator'
 import { convertConfiguration, isTruthyString } from '../configuration'
 import { IFormatterStream } from '../formatter'
 import { runCucumber } from '../api'
-import ArgvParser from './argv_parser'
+import ArgvParser from '../configuration/argv_parser'
 import { getKeywords, getLanguages } from './i18n'
 
 export interface ICliRunResult {

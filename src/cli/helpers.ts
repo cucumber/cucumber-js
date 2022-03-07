@@ -1,4 +1,4 @@
-import ArgvParser from './argv_parser'
+import ArgvParser from '../configuration/argv_parser'
 import ProfileLoader from './profile_loader'
 import shuffle from 'knuth-shuffle-seeded'
 import { EventEmitter } from 'events'

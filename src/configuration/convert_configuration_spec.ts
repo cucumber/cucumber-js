@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha'
-import ArgvParser from '../cli/argv_parser'
+import ArgvParser from './argv_parser'
 import { expect } from 'chai'
 import { convertConfiguration } from './convert_configuration'
 
