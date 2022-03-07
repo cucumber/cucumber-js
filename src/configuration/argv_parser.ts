@@ -1,4 +1,5 @@
 import { Command } from 'commander'
+import merge from 'lodash.merge'
 import path from 'path'
 import { dialects } from '@cucumber/gherkin'
 import Formatters from '../formatter/helpers/formatters'
@@ -28,8 +29,8 @@ const ArgvParser = {
     return undefined
   },
 
-  mergeJson(option: string): (str: string, memo: object) => object {
-    return function (str: string, memo: object) {
+  mergeJson(option: string): (str: string, memo?: object) => object {
+    return function (str: string, memo: object = {}) {
       let val: object
       try {
         val = JSON.parse(str)
@@ -40,7 +41,7 @@ const ArgvParser = {
       if (typeof val !== 'object' || Array.isArray(val)) {
         throw new Error(`${option} must be passed JSON of an object: ${str}`)
       }
-      return { ...memo, ...val }
+      return merge(memo, val)
     }
   },
 

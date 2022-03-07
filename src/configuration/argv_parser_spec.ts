@@ -38,5 +38,20 @@ describe('ArgvParser', () => {
         tags: '(@foo) and (@bar)',
       })
     })
+
+    it('should handle mergeable json objects', () => {
+      const params1 = { foo: 1, bar: { stuff: 3 } }
+      const params2 = { foo: 2, bar: { things: 4 } }
+      const { configuration } = ArgvParser.parse([
+        ...baseArgv,
+        '--world-parameters',
+        JSON.stringify(params1),
+        '--world-parameters',
+        JSON.stringify(params2),
+      ])
+      expect(configuration).to.deep.eq({
+        worldParameters: { foo: 2, bar: { stuff: 3, things: 4 } },
+      })
+    })
   })
 })
