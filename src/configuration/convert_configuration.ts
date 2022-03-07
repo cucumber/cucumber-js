@@ -29,8 +29,9 @@ export async function convertConfiguration(
       worldParameters: flatConfiguration.worldParameters,
     },
     formats: {
-      // TODO it should be the last one found, not the first!
-      stdout: flatConfiguration.format.find((option) => !option.includes(':')),
+      stdout: [...flatConfiguration.format]
+        .reverse()
+        .find((option) => !option.includes(':')),
       files: flatConfiguration.format
         .filter((option) => option.includes(':'))
         .reduce((mapped, item) => {
