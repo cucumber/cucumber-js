@@ -1,7 +1,8 @@
 Feature: default command line arguments
 
   In order to prevent users from having to enter the options they use every time
-  Users can define cucumber.js with profiles which are groups of command line arguments.
+  Users can define cucumber.js with profiles which are groups of command line arguments
+  or partial configuration objects.
 
   Background:
     Given a file named "features/a.feature" with:
@@ -20,7 +21,9 @@ Feature: default command line arguments
       """
       module.exports = {
         'default': '--format summary',
-        dry: '--dry-run',
+        dry: {
+          dryRun: true
+        },
         progress: '--format progress'
       };
       """
