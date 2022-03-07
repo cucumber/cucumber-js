@@ -6,12 +6,12 @@ const baseArgv = ['/path/to/node', '/path/to/cucumber-js']
 describe('ArgvParser', () => {
   describe('parse', () => {
     it('should resolve to an empty object when no arguments', () => {
-      const result = ArgvParser.parse(baseArgv)
-      expect(result).to.deep.eq({})
+      const { configuration } = ArgvParser.parse(baseArgv)
+      expect(configuration).to.deep.eq({})
     })
 
     it('should support repeatable arguments', () => {
-      const result = ArgvParser.parse([
+      const { configuration } = ArgvParser.parse([
         ...baseArgv,
         'features/hello.feature',
         'features/world.feature',
@@ -20,8 +20,8 @@ describe('ArgvParser', () => {
         '--require',
         'steps/**/*.js',
       ])
-      expect(result).to.deep.eq({
-        paths: ['features/hello.feature'],
+      expect(configuration).to.deep.eq({
+        paths: ['features/hello.feature', 'features/world.feature'],
         require: ['hooks/**/*.js', 'steps/**/*.js'],
       })
     })

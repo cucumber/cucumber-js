@@ -3,45 +3,30 @@ import path from 'path'
 import { dialects } from '@cucumber/gherkin'
 import Formatters from '../formatter/helpers/formatters'
 import { version } from '../version'
-import { FormatOptions } from '../formatter'
-import { PickleOrder } from '../models/pickle_order'
+import { IConfiguration } from './types'
 
 export interface IParsedArgvOptions {
-  backtrace: boolean
-  config: string
-  dryRun: boolean
-  exit: boolean
-  failFast: boolean
-  format: string[]
-  formatOptions: FormatOptions
-  i18nKeywords: string
-  i18nLanguages: boolean
-  import: string[]
-  language: string
-  name: string[]
-  order: PickleOrder
-  parallel: number
-  profile: string[]
-  publish: boolean
-  publishQuiet: boolean
-  require: string[]
-  requireModule: string[]
-  retry: number
-  retryTagFilter: string
-  strict: boolean
-  tags: string
-  worldParameters: object
+  config?: string
+  i18nKeywords?: string
+  i18nLanguages?: boolean
+  profile?: string[]
 }
 
 export interface IParsedArgv {
-  args: string[]
   options: IParsedArgvOptions
+  configuration: Partial<IConfiguration>
 }
 
+type IRawArgvOptions = Partial<Omit<IConfiguration, 'paths'>> &
+  IParsedArgvOptions
+
 const ArgvParser = {
-  collect<T>(val: T, memo: T[]): T[] {
-    memo.push(val)
-    return memo
+  collect<T>(val: T, memo: T[] = []): T[] {
+    if (val) {
+      memo.push(val)
+      return memo
+    }
+    return undefined
   },
 
   mergeJson(option: string): (str: string, memo: object) => object {
@@ -87,119 +72,96 @@ const ArgvParser = {
       .usage('[options] [<GLOB|DIR|FILE[:LINE]>...]')
       .version(version, '-v, --version')
       .option('-b, --backtrace', 'show full backtrace for errors')
-      .option('-c, --config <TYPE[:PATH]>', 'specify configuration file')
-      .option(
-        '-d, --dry-run',
-        'invoke formatters without executing steps',
-        false
-      )
+      .option('-c, --config <PATH>', 'specify configuration file')
+      .option('-d, --dry-run', 'invoke formatters without executing steps')
       .option(
         '--exit',
-        'force shutdown of the event loop when the test run has finished: cucumber will call process.exit',
-        false
+        'force shutdown of the event loop when the test run has finished: cucumber will call process.exit'
       )
-      .option('--fail-fast', 'abort the run on first failure', false)
+      .option('--fail-fast', 'abort the run on first failure')
       .option(
         '-f, --format <TYPE[:PATH]>',
         'specify the output format, optionally supply PATH to redirect formatter output (repeatable).  Available formats:\n' +
           Formatters.buildFormattersDocumentationString(),
-        ArgvParser.collect,
-        []
+        ArgvParser.collect
       )
       .option(
         '--format-options <JSON>',
         'provide options for formatters (repeatable)',
-        ArgvParser.mergeJson('--format-options'),
-        {}
+        ArgvParser.mergeJson('--format-options')
       )
       .option(
         '--i18n-keywords <ISO 639-1>',
         'list language keywords',
-        ArgvParser.validateLanguage,
-        ''
+        ArgvParser.validateLanguage
       )
-      .option('--i18n-languages', 'list languages', false)
+      .option('--i18n-languages', 'list languages')
       .option(
         '--import <GLOB|DIR|FILE>',
         'import files before executing features (repeatable)',
-        ArgvParser.collect,
-        []
+        ArgvParser.collect
       )
       .option(
         '--language <ISO 639-1>',
-        'provide the default language for feature files',
-        'en'
+        'provide the default language for feature files'
       )
       .option(
         '--name <REGEXP>',
         'only execute the scenarios with name matching the expression (repeatable)',
-        ArgvParser.collect,
-        []
+        ArgvParser.collect
       )
-      .option('--no-strict', 'succeed even if there are pending steps')
+
       .option(
         '--order <TYPE[:SEED]>',
-        'run scenarios in the specified order. Type should be `defined` or `random`',
-        'defined'
+        'run scenarios in the specified order. Type should be `defined` or `random`'
       )
       .option(
         '-p, --profile <NAME>',
         'specify the profile to use (repeatable)',
-        ArgvParser.collect,
-        []
+        ArgvParser.collect
       )
       .option(
         '--parallel <NUMBER_OF_WORKERS>',
         'run in parallel with the given number of workers',
-        (val) => ArgvParser.validateCountOption(val, '--parallel'),
-        0
+        (val) => ArgvParser.validateCountOption(val, '--parallel')
       )
-      .option(
-        '--publish',
-        'Publish a report to https://reports.cucumber.io',
-        false
-      )
+      .option('--publish', 'Publish a report to https://reports.cucumber.io')
       .option(
         '--publish-quiet',
-        "Don't print information banner about publishing reports",
-        false
+        "Don't print information banner about publishing reports"
       )
       .option(
         '-r, --require <GLOB|DIR|FILE>',
         'require files before executing features (repeatable)',
-        ArgvParser.collect,
-        []
+        ArgvParser.collect
       )
       .option(
         '--require-module <NODE_MODULE>',
         'require node modules before requiring files (repeatable)',
-        ArgvParser.collect,
-        []
+        ArgvParser.collect
       )
       .option(
         '--retry <NUMBER_OF_RETRIES>',
         'specify the number of times to retry failing test cases (default: 0)',
-        (val) => ArgvParser.validateCountOption(val, '--retry'),
-        0
+        (val) => ArgvParser.validateCountOption(val, '--retry')
       )
       .option(
         '--retry-tag-filter <EXPRESSION>',
         `only retries the features or scenarios with tags matching the expression (repeatable).
         This option requires '--retry' to be specified.`,
-        ArgvParser.mergeTags,
-        ''
+        ArgvParser.mergeTags
       )
+      .option('--strict', 'fail if there are pending steps')
+      .option('--no-strict', 'succeed even if there are pending steps')
       .option(
         '-t, --tags <EXPRESSION>',
         'only execute the features or scenarios with tags matching the expression (repeatable)',
-        ArgvParser.mergeTags,
-        ''
+        ArgvParser.mergeTags
       )
       .option(
         '--world-parameters <JSON>',
         'provide parameters that will be passed to the world constructor (repeatable)',
-        ArgvParser.mergeJson('--world-parameters'),
-        {}
+        ArgvParser.mergeJson('--world-parameters')
       )
 
     program.addHelpText(
@@ -208,11 +170,26 @@ const ArgvParser = {
     )
 
     program.parse(argv)
-    const options: IParsedArgvOptions = program.opts()
+    const {
+      config,
+      i18nKeywords,
+      i18nLanguages,
+      profile,
+      ...regularStuff
+    }: IRawArgvOptions = program.opts()
+    const configuration: Partial<IConfiguration> = regularStuff
+    if (program.args.length > 0) {
+      configuration.paths = program.args
+    }
 
     return {
-      options,
-      args: program.args,
+      options: {
+        config,
+        i18nKeywords,
+        i18nLanguages,
+        profile,
+      },
+      configuration,
     }
   },
 }
