@@ -44,8 +44,8 @@ const ArgvParser = {
     }
   },
 
-  mergeTags(value: string, memo: string): string {
-    return memo === '' ? `(${value})` : `${memo} and (${value})`
+  mergeTags(value: string, memo?: string): string {
+    return memo ? `${memo} and (${value})` : `(${value})`
   },
 
   validateCountOption(value: string, optionName: string): number {
