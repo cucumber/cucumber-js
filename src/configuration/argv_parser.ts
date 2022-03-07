@@ -23,8 +23,7 @@ type IRawArgvOptions = Partial<Omit<IConfiguration, 'paths'>> &
 const ArgvParser = {
   collect<T>(val: T, memo: T[] = []): T[] {
     if (val) {
-      memo.push(val)
-      return memo
+      return [...memo, val]
     }
     return undefined
   },
