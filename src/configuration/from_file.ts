@@ -22,6 +22,7 @@ export async function fromFile(
     }
   })
   return mergeConfigurations(
+    {},
     ...profiles.map((profileKey) => definitions[profileKey])
   )
 }

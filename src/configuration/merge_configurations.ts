@@ -6,14 +6,16 @@ function mergeArrays(objValue: any[], srcValue: any[]) {
 }
 
 function customizer(objValue: any, srcValue: any, key: any): any {
+  // TODO others too!
   if (key === 'paths') {
     return mergeArrays(objValue, srcValue)
   }
   return undefined
 }
 
-export function mergeConfigurations(
+export function mergeConfigurations<T = Partial<IConfiguration>>(
+  source: T,
   ...configurations: Partial<IConfiguration>[]
-): Partial<IConfiguration> {
-  return mergeWith({}, ...configurations, customizer)
+): T {
+  return mergeWith({}, source, ...configurations, customizer)
 }

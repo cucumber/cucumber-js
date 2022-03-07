@@ -10,7 +10,7 @@ export interface IParsedArgvOptions {
   config?: string
   i18nKeywords?: string
   i18nLanguages?: boolean
-  profile?: string[]
+  profile: string[]
 }
 
 export interface IParsedArgv {
@@ -118,7 +118,8 @@ const ArgvParser = {
       .option(
         '-p, --profile <NAME>',
         'specify the profile to use (repeatable)',
-        ArgvParser.collect
+        ArgvParser.collect,
+        []
       )
       .option(
         '--parallel <NUMBER_OF_WORKERS>',

@@ -1,10 +1,15 @@
 import { getExpandedArgv } from './helpers'
 import { validateInstall } from './install_validator'
-import { convertConfiguration, isTruthyString } from '../configuration'
 import { IFormatterStream } from '../formatter'
 import { runCucumber } from '../api'
-import ArgvParser from '../configuration/argv_parser'
 import { getKeywords, getLanguages } from './i18n'
+import {
+  ArgvParser,
+  convertConfiguration,
+  mergeConfigurations,
+  isTruthyString,
+  DEFAULT_CONFIGURATION,
+} from '../configuration'
 
 export interface ICliRunResult {
   shouldAdvertisePublish: boolean
@@ -41,13 +46,18 @@ export default class Cli {
 
   async run(): Promise<ICliRunResult> {
     await validateInstall(this.cwd)
-    const fromArgv = ArgvParser.parse(
+    // TODO do process.argv first, then load config file and merge that in, then merge defaults
+    const { options, configuration: argvConfiguration } = ArgvParser.parse(
       await getExpandedArgv({
         argv: this.argv,
         cwd: this.cwd,
       })
     )
-    if (fromArgv.options.i18nLanguages) {
+    const configuration = mergeConfigurations(
+      DEFAULT_CONFIGURATION,
+      argvConfiguration
+    )
+    if (options.i18nLanguages) {
       this.stdout.write(getLanguages())
       return {
         shouldAdvertisePublish: false,
@@ -55,22 +65,16 @@ export default class Cli {
         success: true,
       }
     }
-    if (fromArgv.options.i18nKeywords != '') {
-      this.stdout.write(getKeywords(fromArgv.options.i18nKeywords))
+    if (options.i18nKeywords) {
+      this.stdout.write(getKeywords(options.i18nKeywords))
       return {
         shouldAdvertisePublish: false,
         shouldExitImmediately: true,
         success: true,
       }
     }
-    const configuration = await convertConfiguration(
-      {
-        ...fromArgv.options,
-        paths: fromArgv.args,
-      },
-      this.env
-    )
-    const { success } = await runCucumber(configuration, {
+    const runConfiguration = await convertConfiguration(configuration, this.env)
+    const { success } = await runCucumber(runConfiguration, {
       cwd: this.cwd,
       stdout: this.stdout,
       stderr: this.stderr,
@@ -78,10 +82,10 @@ export default class Cli {
     })
     return {
       shouldAdvertisePublish:
-        !configuration.formats.publish &&
-        !fromArgv.options.publishQuiet &&
+        !runConfiguration.formats.publish &&
+        !configuration.publishQuiet &&
         !isTruthyString(this.env.CUCUMBER_PUBLISH_QUIET),
-      shouldExitImmediately: fromArgv.options.exit,
+      shouldExitImmediately: configuration.exit,
       success,
     }
   }

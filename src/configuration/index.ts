@@ -1,3 +1,6 @@
+export { default as ArgvParser } from './argv_parser'
 export * from './convert_configuration'
+export * from './default_configuration'
+export * from './merge_configurations'
 export * from './option_splitter'
 export * from './types'
