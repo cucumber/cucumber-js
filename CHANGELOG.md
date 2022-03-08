@@ -20,6 +20,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ### Fixed
 - Warn users who are on an unsupported node version ([#1922](https://github.com/cucumber/cucumber-js/pull/1922))
+- Allow formatters to finish when a Gherkin parse error is encountered ([#1404](https://github.com/cucumber/cucumber-js/issues/1404) [#1951](https://github.com/cucumber/cucumber-js/pull/1951))
 
 ### Changed
 - Switch from `colors` to `chalk` for terminal coloring ([#1895](https://github.com/cucumber/cucumber-js/pull/1895))
