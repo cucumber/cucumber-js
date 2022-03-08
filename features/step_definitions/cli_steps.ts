@@ -119,7 +119,7 @@ Then('the output contains the text:', function (this: World, text: string) {
 })
 
 Then(
-  'the output contains these messages:',
+  'the output contains these types and quantities of message:',
   function (this: World, expectedMessages: DataTable) {
     const envelopes = this.lastRun.output
       .split('\n')

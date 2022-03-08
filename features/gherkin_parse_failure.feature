@@ -36,7 +36,7 @@ Feature: Gherkin parse failure
       """
     When I run cucumber-js with `--format message`
     Then it fails
-    And the output contains these messages:
+    And the output contains these types and quantities of message:
       | TYPE            | COUNT |
       | source          | 3     |
       | gherkinDocument | 1     |
