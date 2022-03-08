@@ -1,7 +1,7 @@
 import { IConfiguration } from './types'
 import mergeWith from 'lodash.mergewith'
 
-const MERGEABLE_ARRAYS = [
+const ADDITIVE_ARRAYS = [
   'format',
   'import',
   'name',
@@ -15,7 +15,7 @@ function mergeArrays(objValue: any[], srcValue: any[]) {
 }
 
 function customizer(objValue: any, srcValue: any, key: any): any {
-  if (MERGEABLE_ARRAYS.includes(key)) {
+  if (ADDITIVE_ARRAYS.includes(key)) {
     return mergeArrays(objValue, srcValue)
   }
   return undefined
