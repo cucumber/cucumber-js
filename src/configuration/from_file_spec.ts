@@ -7,7 +7,7 @@ import { fromFile } from './from_file'
 
 async function setup(
   file: string = 'cucumber.js',
-  content: string = `module.exports = {default: {paths: ['some/path/*.feature']}, p1: {paths: ['other/path/*.feature']}, p2: {paths: ['other/other/path/*.feature']}}`
+  content: string = `module.exports = {default: {paths: ['some/path/*.feature']}, p1: {paths: ['other/path/*.feature']}, p2: 'other/other/path/*.feature --no-strict'}`
 ) {
   const cwd = await promisify<DirOptions, string>(tmp.dir)({
     unsafeCleanup: true,
@@ -48,6 +48,7 @@ describe('fromFile', () => {
     const result = await fromFile(cwd, 'cucumber.js', ['p1', 'p2'])
     expect(result).to.deep.eq({
       paths: ['other/path/*.feature', 'other/other/path/*.feature'],
+      strict: false,
     })
   })
 })

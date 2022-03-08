@@ -1,7 +1,9 @@
+import stringArgv from 'string-argv'
 import path from 'path'
 import { pathToFileURL } from 'url'
 import { IConfiguration } from './types'
 import { mergeConfigurations } from './merge_configurations'
+import ArgvParser from './argv_parser'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
@@ -13,7 +15,7 @@ export async function fromFile(
 ): Promise<Partial<IConfiguration>> {
   const definitions = await loadFile(cwd, file)
   if (profiles.length === 0) {
-    return definitions['default'] as Partial<IConfiguration>
+    return extractConfiguration(definitions['default'])
   }
   const definedKeys = Object.keys(definitions)
   profiles.forEach((profileKey) => {
@@ -23,15 +25,16 @@ export async function fromFile(
   })
   return mergeConfigurations(
     {},
-    ...profiles.map((profileKey) => definitions[profileKey])
+    ...profiles
+      .map((profileKey) => definitions[profileKey])
+      .map((definition) => extractConfiguration(definition))
   )
 }
 
 async function loadFile(
   cwd: string,
   file: string
-): Promise<Record<string, Partial<IConfiguration>>> {
-  // TODO strings too!
+): Promise<Record<string, string | Partial<IConfiguration>>> {
   const filePath: string = path.join(cwd, file)
   let definitions
   try {
@@ -48,4 +51,18 @@ async function loadFile(
     throw new Error(`${filePath} does not export an object`)
   }
   return definitions
+}
+
+function extractConfiguration(
+  raw: string | Partial<IConfiguration>
+): Partial<IConfiguration> {
+  if (typeof raw === 'string') {
+    const { configuration } = ArgvParser.parse([
+      'node',
+      'cucumber-js',
+      ...stringArgv(raw),
+    ])
+    return configuration
+  }
+  return raw
 }

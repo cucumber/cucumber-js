@@ -1,15 +1,16 @@
-import { getExpandedArgv } from './helpers'
-import { validateInstall } from './install_validator'
-import { IFormatterStream } from '../formatter'
-import { runCucumber } from '../api'
-import { getKeywords, getLanguages } from './i18n'
 import {
   ArgvParser,
   convertConfiguration,
   mergeConfigurations,
   isTruthyString,
   DEFAULT_CONFIGURATION,
+  fromFile,
 } from '../configuration'
+import { IFormatterStream } from '../formatter'
+import { runCucumber } from '../api'
+import { getKeywords, getLanguages } from './i18n'
+import { validateInstall } from './install_validator'
+import { locateFile } from '../configuration/locate_file'
 
 export interface ICliRunResult {
   shouldAdvertisePublish: boolean
@@ -46,16 +47,8 @@ export default class Cli {
 
   async run(): Promise<ICliRunResult> {
     await validateInstall(this.cwd)
-    // TODO do process.argv first, then load config file and merge that in, then merge defaults
     const { options, configuration: argvConfiguration } = ArgvParser.parse(
-      await getExpandedArgv({
-        argv: this.argv,
-        cwd: this.cwd,
-      })
-    )
-    const configuration = mergeConfigurations(
-      DEFAULT_CONFIGURATION,
-      argvConfiguration
+      this.argv
     )
     if (options.i18nLanguages) {
       this.stdout.write(getLanguages())
@@ -73,6 +66,15 @@ export default class Cli {
         success: true,
       }
     }
+    const configFile = options.config ?? locateFile(this.cwd)
+    const profileConfiguration = configFile
+      ? await fromFile(this.cwd, configFile, options.profile)
+      : {}
+    const configuration = mergeConfigurations(
+      DEFAULT_CONFIGURATION,
+      profileConfiguration,
+      argvConfiguration
+    )
     const runConfiguration = await convertConfiguration(configuration, this.env)
     const { success } = await runCucumber(runConfiguration, {
       cwd: this.cwd,
