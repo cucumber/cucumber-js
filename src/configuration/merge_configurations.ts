@@ -1,13 +1,21 @@
 import { IConfiguration } from './types'
 import mergeWith from 'lodash.mergewith'
 
+const MERGEABLE_ARRAYS = [
+  'format',
+  'import',
+  'name',
+  'paths',
+  'require',
+  'requireModule',
+]
+
 function mergeArrays(objValue: any[], srcValue: any[]) {
   return [].concat(objValue, srcValue).filter((item) => item !== undefined)
 }
 
 function customizer(objValue: any, srcValue: any, key: any): any {
-  // TODO others too!
-  if (key === 'paths') {
+  if (MERGEABLE_ARRAYS.includes(key)) {
     return mergeArrays(objValue, srcValue)
   }
   return undefined
