@@ -119,6 +119,22 @@ Then('the output contains the text:', function (this: World, text: string) {
 })
 
 Then(
+  'the output contains these types and quantities of message:',
+  function (this: World, expectedMessages: DataTable) {
+    const envelopes = this.lastRun.output
+      .split('\n')
+      .filter((line) => !!line)
+      .map((line) => JSON.parse(line))
+    expectedMessages.rows().forEach(([type, count]) => {
+      expect(envelopes.filter((envelope) => !!envelope[type])).to.have.length(
+        Number(count),
+        `Didn't find expected number of ${type} messages`
+      )
+    })
+  }
+)
+
+Then(
   'the output does not contain the text:',
   function (this: World, text: string) {
     const actualOutput = normalizeText(this.lastRun.output)

@@ -1,4 +1,4 @@
-import { Envelope, IdGenerator } from '@cucumber/messages'
+import { Envelope, IdGenerator, ParseError } from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../formatter/helpers'
 import {
@@ -15,6 +15,8 @@ import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
 import { getSupportCodeLibrary } from './support'
 import { Console } from 'console'
+import * as messages from '@cucumber/messages'
+import { doesHaveValue } from '../value_checker'
 
 export async function runCucumber(
   configuration: IRunConfiguration,
@@ -73,6 +75,12 @@ export async function runCucumber(
     relativeTo: cwd,
   })
   let pickleIds: string[] = []
+  const parseErrors: ParseError[] = []
+  gherkinMessageStream.on('data', (envelope: messages.Envelope) => {
+    if (doesHaveValue(envelope.parseError)) {
+      parseErrors.push(envelope.parseError)
+    }
+  })
 
   if (featurePaths.length > 0) {
     pickleIds = await parseGherkinMessageStream({
@@ -89,6 +97,20 @@ export async function runCucumber(
       }),
     })
   }
+
+  if (parseErrors.length) {
+    parseErrors.forEach((parseError) => {
+      logger.error(
+        `Parse error in "${parseError.source.uri}" ${parseError.message}`
+      )
+    })
+    await cleanup()
+    return {
+      success: false,
+      support: supportCodeLibrary,
+    }
+  }
+
   emitSupportCodeMessages({
     eventBroadcaster,
     supportCodeLibrary,
