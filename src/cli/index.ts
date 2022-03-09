@@ -11,6 +11,7 @@ import { runCucumber } from '../api'
 import { getKeywords, getLanguages } from './i18n'
 import { validateInstall } from './install_validator'
 import { locateFile } from '../configuration/locate_file'
+import { validateConfiguration } from '../configuration/validate_configuration'
 
 export interface ICliRunResult {
   shouldAdvertisePublish: boolean
@@ -75,6 +76,7 @@ export default class Cli {
       profileConfiguration,
       argvConfiguration
     )
+    validateConfiguration(configuration)
     const runConfiguration = await convertConfiguration(configuration, this.env)
     const { success } = await runCucumber(runConfiguration, {
       cwd: this.cwd,
