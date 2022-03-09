@@ -1,5 +1,5 @@
-import { IConfiguration, IRunConfiguration } from './types'
-import { OptionSplitter } from './option_splitter'
+import { IConfiguration, OptionSplitter } from '../configuration'
+import { IRunConfiguration } from './types'
 
 export async function convertConfiguration(
   flatConfiguration: IConfiguration,

@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { convertConfiguration } from './convert_configuration'
+import { convertConfiguration } from '../api/convert_configuration'
 import { DEFAULT_CONFIGURATION } from './default_configuration'
 
 describe('convertConfiguration', () => {

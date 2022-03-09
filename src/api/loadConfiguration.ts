@@ -1,5 +1,5 @@
-import { IUserConfiguration } from '../configuration'
+import { IRunConfiguration } from './types'
 
-export async function loadConfiguration(): Promise<IUserConfiguration> {
-  return {} as IUserConfiguration
+export async function loadConfiguration(): Promise<IRunConfiguration> {
+  return {} as IRunConfiguration
 }
