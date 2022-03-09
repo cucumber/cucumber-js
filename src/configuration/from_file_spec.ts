@@ -17,6 +17,16 @@ async function setup(
 }
 
 describe('fromFile', () => {
+  it('should return empty config if no default provide and no profiles requested', async () => {
+    const { cwd } = await setup(
+      'cucumber.js',
+      `module.exports = {p1: {paths: ['other/path/*.feature']}}`
+    )
+
+    const result = await fromFile(cwd, 'cucumber.js', [])
+    expect(result).to.deep.eq({})
+  })
+
   it('should get default config from file if no profiles requested', async () => {
     const { cwd } = await setup()
 
@@ -50,5 +60,20 @@ describe('fromFile', () => {
       paths: ['other/path/*.feature', 'other/other/path/*.feature'],
       strict: false,
     })
+  })
+
+  it('should throw when an object doesnt conform to the schema', async () => {
+    const { cwd } = await setup(
+      'cucumber.js',
+      `module.exports = {p1: {paths: 4, things: 8, requireModule: 'aardvark'}}`
+    )
+    try {
+      await fromFile(cwd, 'cucumber.js', ['p1'])
+      expect.fail('should have thrown')
+    } catch (error) {
+      expect(error.message).to.eq(
+        'Requested profile "p1" failed schema validation: paths must be a `array` type, but the final value was: `4`. requireModule must be a `array` type, but the final value was: `"aardvark"`.'
+      )
+    }
   })
 })

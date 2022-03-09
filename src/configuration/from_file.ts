@@ -4,6 +4,7 @@ import { pathToFileURL } from 'url'
 import { IConfiguration } from './types'
 import { mergeConfigurations } from './merge_configurations'
 import ArgvParser from './argv_parser'
+import { checkSchema } from './check_schema'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
@@ -14,8 +15,11 @@ export async function fromFile(
   profiles: string[]
 ): Promise<Partial<IConfiguration>> {
   const definitions = await loadFile(cwd, file)
-  if (profiles.length === 0) {
-    return extractConfiguration(definitions['default'])
+  if (!definitions.default) {
+    definitions.default = {}
+  }
+  if (profiles.length < 1) {
+    profiles = ['default']
   }
   const definedKeys = Object.keys(definitions)
   profiles.forEach((profileKey) => {
@@ -25,16 +29,16 @@ export async function fromFile(
   })
   return mergeConfigurations(
     {},
-    ...profiles
-      .map((profileKey) => definitions[profileKey])
-      .map((definition) => extractConfiguration(definition))
+    ...profiles.map((profileKey) =>
+      extractConfiguration(profileKey, definitions[profileKey])
+    )
   )
 }
 
 async function loadFile(
   cwd: string,
   file: string
-): Promise<Record<string, string | Partial<IConfiguration>>> {
+): Promise<Record<string, any>> {
   const filePath: string = path.join(cwd, file)
   let definitions
   try {
@@ -48,21 +52,30 @@ async function loadFile(
     }
   }
   if (typeof definitions !== 'object') {
-    throw new Error(`${filePath} does not export an object`)
+    throw new Error(`Configuration file ${filePath} does not export an object`)
   }
   return definitions
 }
 
 function extractConfiguration(
-  raw: string | Partial<IConfiguration>
+  name: string,
+  definition: any
 ): Partial<IConfiguration> {
-  if (typeof raw === 'string') {
+  if (typeof definition === 'string') {
     const { configuration } = ArgvParser.parse([
       'node',
       'cucumber-js',
-      ...stringArgv(raw),
+      ...stringArgv(definition),
     ])
     return configuration
   }
-  return raw
+  try {
+    return checkSchema(definition)
+  } catch (error) {
+    throw new Error(
+      `Requested profile "${name}" failed schema validation: ${error.errors.join(
+        ' '
+      )}`
+    )
+  }
 }
