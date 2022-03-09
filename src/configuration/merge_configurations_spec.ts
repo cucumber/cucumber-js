@@ -29,4 +29,38 @@ describe('mergeConfigurations', () => {
       })
     })
   })
+
+  describe('tag expressions', () => {
+    it('should merge two tag expressions correctly', () => {
+      const result = mergeConfigurations({ tags: '@foo' }, { tags: '@bar' })
+      expect(result).to.deep.eq({
+        tags: '(@foo) and (@bar)',
+      })
+    })
+
+    it('should handle one tag and one undefined correctly', () => {
+      const result = mergeConfigurations({ tags: '@foo' }, { tags: undefined })
+      expect(result).to.deep.eq({
+        tags: '@foo',
+      })
+    })
+
+    it('should handle one undefined and one tag correctly', () => {
+      const result = mergeConfigurations({ tags: undefined }, { tags: '@foo' })
+      expect(result).to.deep.eq({
+        tags: '@foo',
+      })
+    })
+
+    it('should merge three tag expressions correctly', () => {
+      const result = mergeConfigurations(
+        { tags: '@foo' },
+        { tags: '@bar' },
+        { tags: '@baz' }
+      )
+      expect(result).to.deep.eq({
+        tags: '(@foo) and (@bar) and (@baz)',
+      })
+    })
+  })
 })
