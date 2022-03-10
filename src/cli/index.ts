@@ -1,17 +1,16 @@
 import {
   ArgvParser,
-  convertConfiguration,
   mergeConfigurations,
-  isTruthyString,
   DEFAULT_CONFIGURATION,
   fromFile,
 } from '../configuration'
 import { IFormatterStream } from '../formatter'
-import { runCucumber } from '../api'
+import { convertConfiguration, runCucumber } from '../api'
 import { getKeywords, getLanguages } from './i18n'
 import { validateInstall } from './install_validator'
 import { locateFile } from '../configuration/locate_file'
 import { validateConfiguration } from '../configuration/validate_configuration'
+import { isTruthyString } from './helpers'
 
 export interface ICliRunResult {
   shouldAdvertisePublish: boolean

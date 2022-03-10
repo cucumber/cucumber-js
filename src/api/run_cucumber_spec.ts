@@ -5,9 +5,9 @@ import { reindent } from 'reindent-template-literals'
 import { PassThrough } from 'stream'
 import { expect } from 'chai'
 import { IUserConfiguration } from '../configuration'
-import { runCucumber } from './runCucumber'
+import { runCucumber } from './run_cucumber'
 import { IRunEnvironment } from './types'
-import { loadSupport } from './loadSupport'
+import { loadSupport } from './load_support'
 
 const newId = IdGenerator.uuid()
 
