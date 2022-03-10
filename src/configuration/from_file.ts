@@ -12,7 +12,7 @@ const { importer } = require('../importer')
 export async function fromFile(
   cwd: string,
   file: string,
-  profiles: string[]
+  profiles: string[] = []
 ): Promise<Partial<IConfiguration>> {
   const definitions = await loadFile(cwd, file)
   if (!definitions.default) {

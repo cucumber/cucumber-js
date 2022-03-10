@@ -5,8 +5,9 @@ import { reindent } from 'reindent-template-literals'
 import { PassThrough } from 'stream'
 import { expect } from 'chai'
 import { runCucumber } from './run_cucumber'
-import { IRunConfiguration, IRunEnvironment } from './types'
+import { IRunEnvironment } from './types'
 import { loadSupport } from './load_support'
+import { loadConfiguration } from './load_configuration'
 
 const newId = IdGenerator.uuid()
 
@@ -26,6 +27,12 @@ async function setupEnvironment(): Promise<Partial<IRunEnvironment>> {
     Given('a step', function () {})
     Then('another step', function () {})`)
   )
+  await fs.writeFile(
+    path.join(cwd, 'cucumber.mjs'),
+    reindent(
+      `export default {paths: ['features/test.feature'], requireModule: ['ts-node/register'], require: ['features/steps.ts']}`
+    )
+  )
   const stdout = new PassThrough()
   return { cwd, stdout }
 }
@@ -36,37 +43,6 @@ async function teardownEnvironment(environment: Partial<IRunEnvironment>) {
 }
 
 describe('runCucumber', () => {
-  const configuration: IRunConfiguration = {
-    sources: {
-      defaultDialect: 'en',
-      paths: ['features/test.feature'],
-      names: [],
-      tagExpression: '',
-      order: 'defined',
-    },
-    support: {
-      requireModules: ['ts-node/register'],
-      requirePaths: ['features/steps.ts'],
-      importPaths: [],
-    },
-    runtime: {
-      dryRun: false,
-      failFast: false,
-      filterStacktraces: true,
-      parallel: 0,
-      retry: 0,
-      retryTagFilter: '',
-      strict: true,
-      worldParameters: {},
-    },
-    formats: {
-      stdout: 'summary',
-      files: {},
-      options: {},
-      publish: false,
-    },
-  }
-
   describe('preloading support code', () => {
     let environment: Partial<IRunEnvironment>
     beforeEach(async () => {
@@ -76,6 +52,7 @@ describe('runCucumber', () => {
 
     it('should be able to load support code upfront and supply it to runCucumber', async () => {
       const messages: Envelope[] = []
+      const configuration = await loadConfiguration({}, environment)
       const support = await loadSupport(configuration, environment)
       await runCucumber(
         { ...configuration, support },
@@ -105,6 +82,7 @@ describe('runCucumber', () => {
 
     it('successfully executes 2 test runs', async () => {
       const messages: Envelope[] = []
+      const configuration = await loadConfiguration({}, environment)
       const { support } = await runCucumber(
         configuration,
         environment,

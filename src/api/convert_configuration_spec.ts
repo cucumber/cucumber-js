@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { convertConfiguration } from '../api/convert_configuration'
-import { DEFAULT_CONFIGURATION } from './default_configuration'
+import { convertConfiguration } from './convert_configuration'
+import { DEFAULT_CONFIGURATION } from '../configuration'
 
 describe('convertConfiguration', () => {
   it('should convert defaults correctly', async () => {
@@ -12,7 +12,7 @@ describe('convertConfiguration', () => {
         files: {},
         options: {},
         publish: false,
-        stdout: undefined,
+        stdout: 'progress',
       },
       runtime: {
         dryRun: false,

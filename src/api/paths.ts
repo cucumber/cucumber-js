@@ -7,7 +7,7 @@ import { ISupportCodeCoordinates } from '../support_code_library_builder/types'
 
 export async function resolvePaths(
   cwd: string,
-  sources: ISourcesCoordinates,
+  sources: Pick<ISourcesCoordinates, 'paths'>,
   support: ISupportCodeCoordinates
 ): Promise<{
   unexpandedFeaturePaths: string[]
