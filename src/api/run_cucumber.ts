@@ -8,7 +8,7 @@ import {
 } from '../cli/helpers'
 import { GherkinStreams } from '@cucumber/gherkin-streams'
 import PickleFilter from '../pickle_filter'
-import { IRunConfiguration, IRunEnvironment, IRunResult } from './types'
+import { IDynamicRunConfiguration, IRunEnvironment, IRunResult } from './types'
 import { resolvePaths } from './paths'
 import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
@@ -18,7 +18,7 @@ import * as messages from '@cucumber/messages'
 import { doesHaveValue } from '../value_checker'
 
 export async function runCucumber(
-  configuration: IRunConfiguration,
+  configuration: IDynamicRunConfiguration,
   {
     cwd = process.cwd(),
     stdout = process.stdout,

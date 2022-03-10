@@ -29,9 +29,10 @@ export async function convertConfiguration(
       worldParameters: flatConfiguration.worldParameters,
     },
     formats: {
-      stdout: [...flatConfiguration.format]
-        .reverse()
-        .find((option) => !option.includes(':')),
+      stdout:
+        [...flatConfiguration.format]
+          .reverse()
+          .find((option) => !option.includes(':')) ?? 'progress',
       files: flatConfiguration.format
         .filter((option) => option.includes(':'))
         .reduce((mapped, item) => {

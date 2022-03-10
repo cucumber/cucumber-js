@@ -9,8 +9,7 @@ import { ignorableKeys } from '../features/support/formatter_output_helpers'
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
 import util from 'util'
-import { runCucumber } from '../src/api'
-import { IRunConfiguration } from '../src/configuration'
+import { runCucumber, IRunConfiguration } from '../src/api'
 import { Envelope } from '@cucumber/messages'
 
 const asyncPipeline = util.promisify(pipeline)
@@ -32,7 +31,11 @@ describe('Cucumber Compatibility Kit', () => {
       const stderr = new PassThrough()
       const runConfiguration: IRunConfiguration = {
         sources: {
+          defaultDialect: 'en',
           paths: [`${CCK_FEATURES_PATH}/${suiteName}/${suiteName}${extension}`],
+          names: [],
+          tagExpression: '',
+          order: 'defined',
         },
         support: {
           requireModules: ['ts-node/register'],
@@ -42,7 +45,20 @@ describe('Cucumber Compatibility Kit', () => {
           importPaths: [],
         },
         runtime: {
+          dryRun: false,
+          failFast: false,
+          filterStacktraces: true,
+          parallel: 0,
           retry: suiteName === 'retry' ? 2 : 0,
+          retryTagFilter: '',
+          strict: true,
+          worldParameters: {},
+        },
+        formats: {
+          stdout: 'summary',
+          files: {},
+          options: {},
+          publish: false,
         },
       }
       await runCucumber(

@@ -33,16 +33,6 @@ export interface IRuntimeOptions {
   worldParameters: any
 }
 
-export const DEFAULT_RUNTIME_OPTIONS: IRuntimeOptions = {
-  dryRun: false,
-  failFast: false,
-  filterStacktraces: true,
-  retry: 0,
-  retryTagFilter: '',
-  strict: true,
-  worldParameters: {},
-}
-
 export default class Runtime implements IRuntime {
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector

@@ -7,30 +7,39 @@ import { PickleOrder } from '../models/pickle_order'
 import { IRuntimeOptions } from '../runtime'
 
 export interface ISourcesCoordinates {
-  defaultDialect?: string
-  paths?: string[]
-  names?: string[]
-  tagExpression?: string
-  order?: PickleOrder
+  defaultDialect: string
+  paths: string[]
+  names: string[]
+  tagExpression: string
+  order: PickleOrder
 }
 
+export type IRuntimeConfiguration = IRuntimeOptions & { parallel: number }
+
 export interface IFormatterConfiguration {
-  stdout?: string
-  files?: Record<string, string>
-  publish?:
+  stdout: string
+  files: Record<string, string>
+  publish:
     | {
         url?: string
         token?: string
       }
     | false
-  options?: FormatOptions
+  options: FormatOptions
 }
 
 export interface IRunConfiguration {
   sources: ISourcesCoordinates
+  support: ISupportCodeCoordinates
+  runtime: IRuntimeConfiguration
+  formats: IFormatterConfiguration
+}
+
+export interface IDynamicRunConfiguration {
+  sources: ISourcesCoordinates
   support: ISupportCodeCoordinates | ISupportCodeLibrary
-  runtime?: Partial<IRuntimeOptions> & { parallel?: number }
-  formats?: IFormatterConfiguration
+  runtime: IRuntimeConfiguration
+  formats: IFormatterConfiguration
 }
 
 export interface IRunEnvironment {

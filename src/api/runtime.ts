@@ -1,13 +1,10 @@
-import Runtime, {
-  DEFAULT_RUNTIME_OPTIONS,
-  IRuntime,
-  IRuntimeOptions,
-} from '../runtime'
+import Runtime, { IRuntime } from '../runtime'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../formatter/helpers'
 import { IdGenerator } from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import Coordinator from '../runtime/parallel/coordinator'
+import { IRuntimeConfiguration } from './types'
 
 export function makeRuntime({
   cwd,
@@ -20,7 +17,7 @@ export function makeRuntime({
   requireModules,
   requirePaths,
   importPaths,
-  options: { parallel = 0, ...runtimeOptions } = {},
+  options: { parallel, ...options },
 }: {
   cwd: string
   logger: Console
@@ -32,13 +29,8 @@ export function makeRuntime({
   requireModules: string[]
   requirePaths: string[]
   importPaths: string[]
-  options: Partial<IRuntimeOptions> & { parallel?: number }
+  options: IRuntimeConfiguration
 }): IRuntime {
-  // sprinkle specified runtime options over the defaults
-  const options = {
-    ...DEFAULT_RUNTIME_OPTIONS,
-    ...runtimeOptions,
-  }
   if (parallel > 0) {
     return new Coordinator({
       cwd,
