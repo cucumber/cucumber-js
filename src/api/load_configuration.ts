@@ -1,8 +1,9 @@
-import { IRunConfiguration, IRunEnvironment } from './types'
+import { IRunEnvironment, IResolvedConfiguration } from './types'
 import { locateFile } from '../configuration/locate_file'
 import {
   DEFAULT_CONFIGURATION,
   fromFile,
+  IConfiguration,
   mergeConfigurations,
 } from '../configuration'
 import { validateConfiguration } from '../configuration/validate_configuration'
@@ -12,17 +13,23 @@ export async function loadConfiguration(
   options: {
     file?: string
     profiles?: string[]
+    provided?: Partial<IConfiguration>
   },
   { cwd = process.cwd(), env = process.env }: Partial<IRunEnvironment>
-): Promise<IRunConfiguration> {
+): Promise<IResolvedConfiguration> {
   const configFile = options.file ?? locateFile(cwd)
   const profileConfiguration = configFile
     ? await fromFile(cwd, configFile, options.profiles)
     : {}
-  const configuration = mergeConfigurations(
+  const original = mergeConfigurations(
     DEFAULT_CONFIGURATION,
-    profileConfiguration
+    profileConfiguration,
+    options.provided
   )
-  validateConfiguration(configuration)
-  return await convertConfiguration(configuration, env)
+  validateConfiguration(original)
+  const runnable = await convertConfiguration(original, env)
+  return {
+    original,
+    runnable,
+  }
 }

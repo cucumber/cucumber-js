@@ -1,10 +1,10 @@
 import { IConfiguration, OptionSplitter } from '../configuration'
-import { IRunConfiguration } from './types'
+import { IRunnableConfiguration } from './types'
 
 export async function convertConfiguration(
   flatConfiguration: IConfiguration,
   env: NodeJS.ProcessEnv
-): Promise<IRunConfiguration> {
+): Promise<IRunnableConfiguration> {
   return {
     sources: {
       paths: flatConfiguration.paths,

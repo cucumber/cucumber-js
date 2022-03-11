@@ -1,15 +1,8 @@
-import {
-  ArgvParser,
-  mergeConfigurations,
-  DEFAULT_CONFIGURATION,
-  fromFile,
-} from '../configuration'
+import { ArgvParser } from '../configuration'
 import { IFormatterStream } from '../formatter'
-import { convertConfiguration, runCucumber } from '../api'
+import { loadConfiguration, runCucumber } from '../api'
 import { getKeywords, getLanguages } from './i18n'
 import { validateInstall } from './install_validator'
-import { locateFile } from '../configuration/locate_file'
-import { validateConfiguration } from '../configuration/validate_configuration'
 import { isTruthyString } from './helpers'
 
 export interface ICliRunResult {
@@ -66,29 +59,27 @@ export default class Cli {
         success: true,
       }
     }
-    const configFile = options.config ?? locateFile(this.cwd)
-    const profileConfiguration = configFile
-      ? await fromFile(this.cwd, configFile, options.profile)
-      : {}
-    const configuration = mergeConfigurations(
-      DEFAULT_CONFIGURATION,
-      profileConfiguration,
-      argvConfiguration
-    )
-    validateConfiguration(configuration)
-    const runConfiguration = await convertConfiguration(configuration, this.env)
-    const { success } = await runCucumber(runConfiguration, {
+    const environment = {
       cwd: this.cwd,
       stdout: this.stdout,
       stderr: this.stderr,
       env: this.env,
-    })
+    }
+    const { original, runnable } = await loadConfiguration(
+      {
+        file: options.config,
+        profiles: options.profile,
+        provided: argvConfiguration,
+      },
+      environment
+    )
+    const { success } = await runCucumber(runnable, environment)
     return {
       shouldAdvertisePublish:
-        !runConfiguration.formats.publish &&
-        !configuration.publishQuiet &&
+        !runnable.formats.publish &&
+        !original.publishQuiet &&
         !isTruthyString(this.env.CUCUMBER_PUBLISH_QUIET),
-      shouldExitImmediately: configuration.exit,
+      shouldExitImmediately: original.exit,
       success,
     }
   }

@@ -9,7 +9,7 @@ import { ignorableKeys } from '../features/support/formatter_output_helpers'
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
 import util from 'util'
-import { runCucumber, IRunConfiguration } from '../src/api'
+import { runCucumber, IRunnableConfiguration } from '../src/api'
 import { Envelope } from '@cucumber/messages'
 
 const asyncPipeline = util.promisify(pipeline)
@@ -29,7 +29,7 @@ describe('Cucumber Compatibility Kit', () => {
       const actualMessages: Envelope[] = []
       const stdout = new PassThrough()
       const stderr = new PassThrough()
-      const runConfiguration: IRunConfiguration = {
+      const runConfiguration: IRunnableConfiguration = {
         sources: {
           defaultDialect: 'en',
           paths: [`${CCK_FEATURES_PATH}/${suiteName}/${suiteName}${extension}`],

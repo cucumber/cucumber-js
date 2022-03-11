@@ -11,7 +11,7 @@ import path from 'path'
 import { DEFAULT_CUCUMBER_PUBLISH_URL } from '../formatter/publish'
 import HttpStream from '../formatter/http_stream'
 import { Writable } from 'stream'
-import { IFormatterConfiguration } from './types'
+import { IRunOptionsFormats } from './types'
 
 export async function initializeFormatters({
   cwd,
@@ -29,7 +29,7 @@ export async function initializeFormatters({
   onStreamError: () => void
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
-  configuration: IFormatterConfiguration
+  configuration: IRunOptionsFormats
   supportCodeLibrary: ISupportCodeLibrary
 }): Promise<() => Promise<void>> {
   async function initializeFormatter(

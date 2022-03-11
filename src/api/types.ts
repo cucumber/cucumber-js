@@ -5,6 +5,7 @@ import {
 import { FormatOptions, IFormatterStream } from '../formatter'
 import { PickleOrder } from '../models/pickle_order'
 import { IRuntimeOptions } from '../runtime'
+import { IConfiguration } from '../configuration'
 
 export interface ISourcesCoordinates {
   defaultDialect: string
@@ -14,9 +15,9 @@ export interface ISourcesCoordinates {
   order: PickleOrder
 }
 
-export type IRuntimeConfiguration = IRuntimeOptions & { parallel: number }
+export type IRunOptionsRuntime = IRuntimeOptions & { parallel: number }
 
-export interface IFormatterConfiguration {
+export interface IRunOptionsFormats {
   stdout: string
   files: Record<string, string>
   publish:
@@ -28,18 +29,18 @@ export interface IFormatterConfiguration {
   options: FormatOptions
 }
 
-export interface IRunConfiguration {
+export interface IRunnableConfiguration {
   sources: ISourcesCoordinates
   support: ISupportCodeCoordinates
-  runtime: IRuntimeConfiguration
-  formats: IFormatterConfiguration
+  runtime: IRunOptionsRuntime
+  formats: IRunOptionsFormats
 }
 
-export interface IDynamicRunConfiguration {
+export interface IRunConfiguration {
   sources: ISourcesCoordinates
   support: ISupportCodeCoordinates | ISupportCodeLibrary
-  runtime: IRuntimeConfiguration
-  formats: IFormatterConfiguration
+  runtime: IRunOptionsRuntime
+  formats: IRunOptionsFormats
 }
 
 export interface IRunEnvironment {
@@ -47,6 +48,11 @@ export interface IRunEnvironment {
   stdout: IFormatterStream
   stderr: IFormatterStream
   env: NodeJS.ProcessEnv
+}
+
+export interface IResolvedConfiguration {
+  original: IConfiguration
+  runnable: IRunnableConfiguration
 }
 
 export interface IRunResult {

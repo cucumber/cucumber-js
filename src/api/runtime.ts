@@ -4,7 +4,7 @@ import { EventDataCollector } from '../formatter/helpers'
 import { IdGenerator } from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import Coordinator from '../runtime/parallel/coordinator'
-import { IRuntimeConfiguration } from './types'
+import { IRunOptionsRuntime } from './types'
 
 export function makeRuntime({
   cwd,
@@ -29,7 +29,7 @@ export function makeRuntime({
   requireModules: string[]
   requirePaths: string[]
   importPaths: string[]
-  options: IRuntimeConfiguration
+  options: IRunOptionsRuntime
 }): IRuntime {
   if (parallel > 0) {
     return new Coordinator({
