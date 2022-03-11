@@ -97,7 +97,7 @@ const ArgvParser = {
       )
       .option('--i18n-languages', 'list languages')
       .option(
-        '--import <GLOB|DIR|FILE>',
+        '-i, --import <GLOB|DIR|FILE>',
         'import files before executing features (repeatable)',
         ArgvParser.collect
       )
