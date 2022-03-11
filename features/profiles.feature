@@ -98,3 +98,22 @@ Feature: default command line arguments
   Scenario: specifying a configuration file that doesn't exist
     When I run cucumber-js with `--config doesntexist.js`
     Then it fails
+
+  Scenario: using a JSON file
+    Given a file named ".cucumber-rc.json" with:
+      """
+      {
+        "default": {
+          "dryRun": true
+        }
+      }
+      """
+    When I run cucumber-js with `--config .cucumber-rc.json`
+    Then it outputs the text:
+      """
+      -
+
+      1 scenario (1 skipped)
+      1 step (1 skipped)
+      <duration-stat>
+      """
