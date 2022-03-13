@@ -1,14 +1,10 @@
 import { IdGenerator } from '@cucumber/messages'
-import { IRunEnvironment, ISourcesCoordinates } from './types'
+import { IRunEnvironment, IRunnableConfiguration } from './types'
 import { resolvePaths } from './paths'
 import { getSupportCodeLibrary } from './support'
-import { ISupportCodeCoordinates } from '../support_code_library_builder/types'
 
 export async function loadSupport(
-  configuration: {
-    sources: ISourcesCoordinates
-    support: ISupportCodeCoordinates
-  },
+  configuration: Pick<IRunnableConfiguration, 'sources' | 'support'>,
   { cwd = process.cwd() }: Partial<IRunEnvironment>
 ) {
   const newId = IdGenerator.uuid()
