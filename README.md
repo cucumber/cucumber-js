@@ -47,6 +47,7 @@ If you learn best by example, we have [a repo with several example projects](htt
 The following documentation is for `main`, which might contain some unreleased features. See below the documentation for older versions.
 
 * [CLI](/docs/cli.md)
+* [Configuration](/docs/configuration.md)
 * Support Files
   * [World](/docs/support_files/world.md)
   * [Step Definitions](/docs/support_files/step_definitions.md)
@@ -56,14 +57,17 @@ The following documentation is for `main`, which might contain some unreleased f
   * [Attachments](/docs/support_files/attachments.md)
   * [API Reference](/docs/support_files/api_reference.md)
 * Guides
-  * [Dry Run](./docs/dry_run.md)
+  * [Dry run](./docs/dry_run.md)
   * [ES Modules](./docs/esm.md)
+  * [Failing fast](./docs/fail_fast.md)
+  * [Filtering](./docs/filtering.md)
   * [Formatters](./docs/formatters.md)
   * [Running in parallel](./docs/parallel.md)
   * [Profiles](./docs/profiles.md)
   * [Rerunning just failures](./docs/rerun.md)
   * [Retrying flaky scenarios](./docs/retry.md)
   * [Snippets for undefined steps](./docs/snippets.md)
+  * [Transpiling (from TypeScript etc)](./docs/transpiling.md)
 * [FAQ](/docs/faq.md)
 
 ### Documentation for older versions

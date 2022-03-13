@@ -4,13 +4,23 @@ In cucumber-js, Formatters ingest data about your test run in real time and then
 
 cucumber-js provides many built-in Formatters, plus building blocks with which you can [write your own](./custom_formatters.md).
 
-You can specify one or more formats via the `--format <TYPE[:PATH]>` CLI option, where `TYPE` is one of:
+You can specify one or more formats via the `format` configuration option:
+
+- In a configuration file `{ format: ['<TYPE[:PATH]>'] }`
+- On the CLI `$ cucumber-js --format <TYPE[:PATH]>`
+
+For each value you provide, `TYPE` should be one of:
 
 * The name of one of the built-in formatters (below) e.g. `progress`
 * A module/package name e.g. `@cucumber/pretty-formatter`
 * A relative path to a local formatter implementation e.g. `./my-customer-formatter.js`
 
 If `PATH` is supplied, the formatter prints to the given file, otherwise it prints to `stdout`.
+
+For example, this configuration would give you a progress bar as you run, plus JSON and HTML report files:
+
+- In a configuration file `{ format: ['progress-bar', 'json:cucumber-report.json', 'html:cucumber-report.html'] }`
+- On the CLI `$ cucumber-js --format progress-bar --format json:cucumber-report.json --format html:cucumber-report.html`
 
 Some notes on specifying Formatters:
 
@@ -19,11 +29,10 @@ Some notes on specifying Formatters:
 
 ## Options
 
-Many formatters, including the built-in ones, support some configurability via options. You can provide this data as a JSON literal via the `--format-options` CLI option, like this:
+Many formatters, including the built-in ones, support some configurability via options. You can provide this data as an object literal via the `formatOptions` configuration option, like this:
 
-```shell
-$ cucumber-js --format-options '{"someOption":true}'
-```
+- In a configuration file `{ formatOptions: { someOption: true } }`
+- On the CLI `$ cucumber-js --format-options '{"someOption":true}'`
 
 This option is repeatable, so you can use it multiple times and the objects will be merged with the later ones taking precedence.
 
