@@ -65,7 +65,7 @@ export default class Cli {
       stderr: this.stderr,
       env: this.env,
     }
-    const { original, runnable } = await loadConfiguration(
+    const { original: configuration, runnable } = await loadConfiguration(
       {
         file: options.config,
         profiles: options.profile,
@@ -76,10 +76,10 @@ export default class Cli {
     const { success } = await runCucumber(runnable, environment)
     return {
       shouldAdvertisePublish:
-        !runnable.formats.publish &&
-        !original.publishQuiet &&
+        !configuration.publish &&
+        !configuration.publishQuiet &&
         !isTruthyString(this.env.CUCUMBER_PUBLISH_QUIET),
-      shouldExitImmediately: original.exit,
+      shouldExitImmediately: configuration.exit,
       success,
     }
   }
