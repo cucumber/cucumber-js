@@ -76,7 +76,7 @@ export default class Cli {
     const { success } = await runCucumber(runnable, environment)
     return {
       shouldAdvertisePublish:
-        !configuration.publish &&
+        !runnable.formats.publish &&
         !configuration.publishQuiet &&
         !isTruthyString(this.env.CUCUMBER_PUBLISH_QUIET),
       shouldExitImmediately: configuration.exit,
