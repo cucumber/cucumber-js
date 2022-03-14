@@ -3,7 +3,7 @@ import { IConfiguration } from './types'
 export const DEFAULT_CONFIGURATION: IConfiguration = {
   backtrace: false,
   dryRun: false,
-  exit: false,
+  forceExit: false,
   failFast: false,
   format: [],
   formatOptions: {},

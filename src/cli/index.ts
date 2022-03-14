@@ -79,7 +79,7 @@ export default class Cli {
         !runnable.formats.publish &&
         !configuration.publishQuiet &&
         !isTruthyString(this.env.CUCUMBER_PUBLISH_QUIET),
-      shouldExitImmediately: configuration.exit,
+      shouldExitImmediately: configuration.forceExit,
       success,
     }
   }

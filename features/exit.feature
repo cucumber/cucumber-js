@@ -31,9 +31,13 @@ Feature: Exit
       external process done
       """
 
-  Scenario: exit immediately without waiting for the even loop to drain
-    When I run cucumber-js with `--exit`
+  Scenario Outline: exit immediately without waiting for the even loop to drain
+    When I run cucumber-js with `<FLAG>`
     Then the output does not contain the text:
       """
       external process done
       """
+    Examples:
+      | FLAG         |
+      | --exit       |
+      | --force-exit |

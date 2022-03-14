@@ -68,7 +68,7 @@ These options can be used in a configuration file (see [above](#files)) or on th
 | `paths`           | `string[]` | Yes        | (as arguments)            | Paths to where your feature files are - see [below](#finding-your-features)                                       | []      |
 | `backtrace`       | `boolean`  | No         | `--backtrace`, `-b`       | Show the full backtrace for errors                                                                                | false   |
 | `dryRun`          | `boolean`  | No         | `--dry-run`, `-d`         | Prepare a test run but don't run it - see [Dry Run](./dry_run.md)                                                 | false   |    
-| `exit`            | `boolean`  | No         | `--exit`                  | Explicitly call `process.exit()` after the test run (when run via CLI) - see [CLI](./cli.md)                      | false   |
+| `forceExit`       | `boolean`  | No         | `--exit`, `--force-exit`  | Explicitly call `process.exit()` after the test run (when run via CLI) - see [CLI](./cli.md)                      | false   |
 | `failFast`        | `boolean`  | No         | `--fail-fast`             | Stop running tests when a test fails - see [Fail Fast](./fail_fast.md)                                            | false   |
 | `format`          | `string[]` | Yes        | `--format`, `-f`          | Name/path and (optionally) output file path of each formatter to use - see [Formatters](./formatters.md)          | []      |
 | `formatOptions`   | `object`   | Yes        | `--format-options`        | Options to be provided to formatters - see [Formatters](./formatters.md)                                          | {}      |

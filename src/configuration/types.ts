@@ -4,7 +4,7 @@ import { PickleOrder } from '../models/pickle_order'
 export interface IConfiguration {
   backtrace: boolean
   dryRun: boolean
-  exit: boolean
+  forceExit: boolean
   failFast: boolean
   format: string[]
   formatOptions: FormatOptions

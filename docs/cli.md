@@ -47,10 +47,10 @@ $ cucumber-js --help
 
 ## Exiting
 
-By default, cucumber exits when the event loop drains. Use the `exit` configuration option in order to force shutdown of the event loop when the test run has finished:
+By default, cucumber exits when the event loop drains. Use the `forceExit` configuration option in order to force shutdown of the event loop when the test run has finished:
 
-- In a configuration file `{ exit: true }`
-- On the CLI `$ cucumber-js --exit`
+- In a configuration file `{ forceExit: true }`
+- On the CLI `$ cucumber-js --force-exit`
 
 This is discouraged, as fixing the issues that causes the hang is a better long term solution. Some potential resources for that are:
 * [Node.js guide to debugging](https://nodejs.org/en/docs/inspector/)

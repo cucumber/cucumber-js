@@ -75,7 +75,7 @@ const ArgvParser = {
       .option('-c, --config <PATH>', 'specify configuration file')
       .option('-d, --dry-run', 'invoke formatters without executing steps')
       .option(
-        '--exit',
+        '--exit, --force-exit',
         'force shutdown of the event loop when the test run has finished: cucumber will call process.exit'
       )
       .option('--fail-fast', 'abort the run on first failure')
