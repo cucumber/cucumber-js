@@ -29,9 +29,7 @@ async function setupEnvironment(): Promise<Partial<IRunEnvironment>> {
   )
   await fs.writeFile(
     path.join(cwd, 'cucumber.mjs'),
-    reindent(
-      `export default {paths: ['features/test.feature'], requireModule: ['ts-node/register'], require: ['features/steps.ts']}`
-    )
+    `export default {paths: ['features/test.feature'], requireModule: ['ts-node/register'], require: ['features/steps.ts']}`
   )
   const stdout = new PassThrough()
   return { cwd, stdout }
