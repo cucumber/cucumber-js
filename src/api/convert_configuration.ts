@@ -1,4 +1,8 @@
-import { IConfiguration, OptionSplitter } from '../configuration'
+import {
+  IConfiguration,
+  isTruthyString,
+  OptionSplitter,
+} from '../configuration'
 import { IRunnableConfiguration } from './types'
 
 export async function convertConfiguration(
@@ -46,13 +50,6 @@ export async function convertConfiguration(
       options: flatConfiguration.formatOptions,
     },
   }
-}
-
-export function isTruthyString(s: string | undefined): boolean {
-  if (s === undefined) {
-    return false
-  }
-  return s.match(/^(false|no|0)$/i) === null
 }
 
 function isPublishing(
