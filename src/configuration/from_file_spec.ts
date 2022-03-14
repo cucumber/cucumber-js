@@ -76,4 +76,26 @@ describe('fromFile', () => {
       )
     }
   })
+
+  describe('other formats', () => {
+    it('should work with esm', async () => {
+      const { cwd } = await setup(
+        'cucumber.mjs',
+        `export default {}; export const p1 = {paths: ['other/path/*.feature']}`
+      )
+
+      const result = await fromFile(cwd, 'cucumber.mjs', ['p1'])
+      expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
+    })
+
+    it('should work with json', async () => {
+      const { cwd } = await setup(
+        'cucumber.json',
+        `{ "default": {}, "p1": { "paths": ["other/path/*.feature"] } }`
+      )
+
+      const result = await fromFile(cwd, 'cucumber.json', ['p1'])
+      expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
+    })
+  })
 })
