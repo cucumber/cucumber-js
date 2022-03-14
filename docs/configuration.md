@@ -35,7 +35,7 @@ export default {
 }
 ```
 
-And the same in CommonJS format:
+And the same in JSON format:
 
 ```json
 {
