@@ -8,6 +8,7 @@ import {
 } from '../configuration'
 import { validateConfiguration } from '../configuration/validate_configuration'
 import { convertConfiguration } from './convert_configuration'
+import { mergeEnvironment } from './environment'
 
 export async function loadConfiguration(
   options: {
@@ -15,8 +16,9 @@ export async function loadConfiguration(
     profiles?: string[]
     provided?: Partial<IConfiguration>
   },
-  { cwd = process.cwd(), env = process.env }: Partial<IRunEnvironment>
+  environment: IRunEnvironment
 ): Promise<IResolvedConfiguration> {
+  const { cwd, env } = mergeEnvironment(environment)
   const configFile = options.file ?? locateFile(cwd)
   const profileConfiguration = configFile
     ? await fromFile(cwd, configFile, options.profiles)

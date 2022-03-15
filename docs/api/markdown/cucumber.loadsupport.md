@@ -7,7 +7,7 @@
 <b>Signature:</b>
 
 ```typescript
-export declare function loadSupport(configuration: Pick<IRunnableConfiguration, 'sources' | 'support'>, { cwd }: Partial<IRunEnvironment>): Promise<import("../support_code_library_builder/types").ISupportCodeLibrary>;
+export declare function loadSupport(configuration: Pick<IRunnableConfiguration, 'sources' | 'support'>, environment: IRunEnvironment): Promise<import("../support_code_library_builder/types").ISupportCodeLibrary>;
 ```
 
 ## Parameters
@@ -15,7 +15,7 @@ export declare function loadSupport(configuration: Pick<IRunnableConfiguration, 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  configuration | Pick&lt;[IRunnableConfiguration](./cucumber.irunnableconfiguration.md)<!-- -->, 'sources' \| 'support'&gt; |  |
-|  { cwd } | Partial&lt;[IRunEnvironment](./cucumber.irunenvironment.md)<!-- -->&gt; |  |
+|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) |  |
 
 <b>Returns:</b>
 

@@ -14,9 +14,9 @@ These docs cover the API used for running Cucumber programmatically. The entry p
 
 |  Function | Description |
 |  --- | --- |
-|  [loadConfiguration(options, { cwd, env })](./cucumber.loadconfiguration.md) |  |
-|  [loadSupport(configuration, { cwd })](./cucumber.loadsupport.md) |  |
-|  [runCucumber(configuration, { cwd, stdout, stderr, env, }, onMessage)](./cucumber.runcucumber.md) |  |
+|  [loadConfiguration(options, environment)](./cucumber.loadconfiguration.md) |  |
+|  [loadSupport(configuration, environment)](./cucumber.loadsupport.md) |  |
+|  [runCucumber(configuration, environment, onMessage)](./cucumber.runcucumber.md) |  |
 
 ## Interfaces
 

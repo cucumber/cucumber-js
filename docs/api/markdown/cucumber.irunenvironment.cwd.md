@@ -4,8 +4,10 @@
 
 ## IRunEnvironment.cwd property
 
+Working directory for the project (defaults to `process.cwd()` if omitted)
+
 <b>Signature:</b>
 
 ```typescript
-cwd: string;
+cwd?: string;
 ```

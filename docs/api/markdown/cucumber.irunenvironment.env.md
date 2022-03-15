@@ -4,8 +4,10 @@
 
 ## IRunEnvironment.env property
 
+Environment variables (defaults to `process.env` if omitted)
+
 <b>Signature:</b>
 
 ```typescript
-env: NodeJS.ProcessEnv;
+env?: NodeJS.ProcessEnv;
 ```

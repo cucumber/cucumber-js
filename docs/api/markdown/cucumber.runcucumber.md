@@ -7,7 +7,7 @@
 <b>Signature:</b>
 
 ```typescript
-export declare function runCucumber(configuration: IRunConfiguration, { cwd, stdout, stderr, env, }: Partial<IRunEnvironment>, onMessage?: (message: Envelope) => void): Promise<IRunResult>;
+export declare function runCucumber(configuration: IRunConfiguration, environment: IRunEnvironment, onMessage?: (message: Envelope) => void): Promise<IRunResult>;
 ```
 
 ## Parameters
@@ -15,7 +15,7 @@ export declare function runCucumber(configuration: IRunConfiguration, { cwd, std
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  configuration | [IRunConfiguration](./cucumber.irunconfiguration.md) |  |
-|  { cwd, stdout, stderr, env, } | Partial&lt;[IRunEnvironment](./cucumber.irunenvironment.md)<!-- -->&gt; |  |
+|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) |  |
 |  onMessage | (message: Envelope) =&gt; void |  |
 
 <b>Returns:</b>

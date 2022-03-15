@@ -11,7 +11,7 @@ export declare function loadConfiguration(options: {
     file?: string;
     profiles?: string[];
     provided?: Partial<IConfiguration>;
-}, { cwd, env }: Partial<IRunEnvironment>): Promise<IResolvedConfiguration>;
+}, environment: IRunEnvironment): Promise<IResolvedConfiguration>;
 ```
 
 ## Parameters
@@ -19,7 +19,7 @@ export declare function loadConfiguration(options: {
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  options | { file?: string; profiles?: string\[\]; provided?: Partial&lt;IConfiguration&gt;; } |  |
-|  { cwd, env } | Partial&lt;[IRunEnvironment](./cucumber.irunenvironment.md)<!-- -->&gt; |  |
+|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) |  |
 
 <b>Returns:</b>
 

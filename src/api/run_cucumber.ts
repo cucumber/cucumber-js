@@ -16,17 +16,14 @@ import { getSupportCodeLibrary } from './support'
 import { Console } from 'console'
 import * as messages from '@cucumber/messages'
 import { doesHaveValue } from '../value_checker'
+import { mergeEnvironment } from './environment'
 
 export async function runCucumber(
   configuration: IRunConfiguration,
-  {
-    cwd = process.cwd(),
-    stdout = process.stdout,
-    stderr = process.stderr,
-    env = process.env,
-  }: Partial<IRunEnvironment>,
+  environment: IRunEnvironment,
   onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
+  const { cwd, stdout, stderr, env } = mergeEnvironment(environment)
   const logger = new Console(stdout, stderr)
   const newId = IdGenerator.uuid()
 

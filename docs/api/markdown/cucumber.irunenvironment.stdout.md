@@ -4,8 +4,10 @@
 
 ## IRunEnvironment.stdout property
 
+Writable stream where the test run's main output is written (defaults to `process.stdout` if omitted)
+
 <b>Signature:</b>
 
 ```typescript
-stdout: IFormatterStream;
+stdout?: IFormatterStream;
 ```

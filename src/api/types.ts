@@ -44,10 +44,22 @@ export interface IRunConfiguration {
 }
 
 export interface IRunEnvironment {
-  cwd: string
-  stdout: IFormatterStream
-  stderr: IFormatterStream
-  env: NodeJS.ProcessEnv
+  /**
+   * Working directory for the project (defaults to `process.cwd()` if omitted)
+   */
+  cwd?: string
+  /**
+   * Writable stream where the test run's main output is written (defaults to `process.stdout` if omitted)
+   */
+  stdout?: IFormatterStream
+  /**
+   * Writable stream where the test run's warning/error output is written (defaults to `process.stderr` if omitted)
+   */
+  stderr?: IFormatterStream
+  /**
+   * Environment variables (defaults to `process.env` if omitted)
+   */
+  env?: NodeJS.ProcessEnv
 }
 
 export interface IResolvedConfiguration {

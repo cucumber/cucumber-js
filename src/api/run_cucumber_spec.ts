@@ -35,14 +35,14 @@ async function setupEnvironment(): Promise<Partial<IRunEnvironment>> {
   return { cwd, stdout }
 }
 
-async function teardownEnvironment(environment: Partial<IRunEnvironment>) {
+async function teardownEnvironment(environment: IRunEnvironment) {
   await fs.rmdir(environment.cwd, { recursive: true })
   environment.stdout.end()
 }
 
 describe('runCucumber', () => {
   describe('preloading support code', () => {
-    let environment: Partial<IRunEnvironment>
+    let environment: IRunEnvironment
     beforeEach(async () => {
       environment = await setupEnvironment()
     })
@@ -70,7 +70,7 @@ describe('runCucumber', () => {
   })
 
   describe('reusing support code across runs', () => {
-    let environment: Partial<IRunEnvironment>
+    let environment: IRunEnvironment
     beforeEach(async () => {
       environment = await setupEnvironment()
     })
