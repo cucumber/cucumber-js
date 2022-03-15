@@ -277,10 +277,11 @@
     "typescript": "4.6.2"
   },
   "scripts": {
-    "docs:extract:api": "api-extractor run --local --verbose",
-    "docs:generate": "api-documenter markdown --input-folder ./docs/temp --output-folder ./docs/api",
     "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.node.json && shx cp src/importer.js lib/ && shx cp src/wrapper.mjs lib/",
     "cck-test": "mocha 'compatibility/**/*_spec.ts'",
+    "docs": "npm run docs:extract && npm run docs:generate",
+    "docs:extract": "api-extractor run --local --verbose",
+    "docs:generate": "api-documenter markdown --input-folder ./docs/temp --output-folder ./docs/api",
     "feature-test": "node ./bin/cucumber-js",
     "lint-autofix": "eslint --fix \"{compatibility,example,features,scripts,src,test}/**/*.ts\"",
     "lint-code": "eslint \"{compatibility,example,features,scripts,src,test}/**/*.ts\"",
