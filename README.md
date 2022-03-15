@@ -1,10 +1,18 @@
 <h1 align="center">
-  <img src="https://raw.githubusercontent.com/cucumber/cucumber-js/main/docs/images/logo.svg" alt="" />
+  <img src="https://raw.githubusercontent.com/cucumber/cucumber-js/main/docs/images/logo.svg" alt="">
+  <br>
   Cucumber
 </h1>
 <p align="center">
-  <b>Automated tests written in plain language, for Node.js</b>
+  <b>Automated tests in plain language, for Node.js</b>
 </p>
+
+[![GitHub Actions](https://github.com/cucumber/cucumber-js/workflows/Build/badge.svg)](https://github.com/cucumber/cucumber-js/actions)
+[![OpenCollective](https://opencollective.com/cucumber/backers/badge.svg)](https://opencollective.com/cucumber)
+[![OpenCollective](https://opencollective.com/cucumber/sponsors/badge.svg)](https://opencollective.com/cucumber)
+[![pull requests](https://oselvar.com/api/badge?label=pull%20requests&csvUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fcucumber%2Foselvar-github-metrics%2Fmain%2Fdata%2Fcucumber%2Fcucumber-js%2FpullRequests.csv)](https://oselvar.com/github/cucumber/oselvar-github-metrics/main/cucumber/cucumber-js)
+[![issues](https://oselvar.com/api/badge?label=issues&csvUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fcucumber%2Foselvar-github-metrics%2Fmain%2Fdata%2Fcucumber%2Fcucumber-js%2Fissues.csv)](https://oselvar.com/github/cucumber/oselvar-github-metrics/main/cucumber/cucumber-js)
+[![Coverage Status](https://coveralls.io/repos/github/cucumber/cucumber-js/badge.svg?branch=master)](https://coveralls.io/github/cucumber/cucumber-js?branch=master)
 
 [Cucumber](https://cucumber.io) is a tool for running automated tests written in plain language. Because they're
 written in plain language, they can be read by anyone on your team. Because they can be
@@ -15,15 +23,27 @@ This is the JavaScript implementation of Cucumber. It runs on the [maintained No
 
 You can [quickly try it in your browser](https://codesandbox.io/s/cucumber-js-demo-2p3vrl?file=/features/greeting.feature), or read on to get started locally in a couple of minutes.
 
-## Get Started
+## Install
 
-First, install Cucumber:
+Cucumber is available via npm:
 
 ```shell
 $ npm install @cucumber/cucumber
 ```
 
-Next, write your feature in `features/greeting.feature`:
+## Quick Start
+
+Let's take this example of something to test:
+
+```js
+class Greeter {
+  sayHello() {
+    return 'hello'
+  }
+}
+```
+
+First, write your feature in `features/greeting.feature`:
 
 ```gherkin
 Feature: Greeting
@@ -36,16 +56,16 @@ Feature: Greeting
 Next, implement your steps in `features/support/steps.js`:
 
 ```js
-const assert = require("assert");
-const { When, Then } = require("@cucumber/cucumber");
-const { sayHello } = require("../../src");
+const assert = require('assert')
+const { When, Then } = require('@cucumber/cucumber')
+const { Greeter } = require('../../src')
 
-When("the greeter says hello", function () {
-  this.whatIHeard = sayHello();
+When('the greeter says hello', function () {
+  this.whatIHeard = new Greeter().sayHello()
 });
 
-Then("I should have heard {string}", function (expectedResponse) {
-  assert.equal(this.whatIHeard, expectedResponse);
+Then('I should have heard {string}', function (expectedResponse) {
+  assert.equal(this.whatIHeard, expectedResponse)
 });
 ```
 
