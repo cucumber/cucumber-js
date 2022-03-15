@@ -7,6 +7,7 @@
   <b>Automated tests in plain language, for Node.js</b>
 </p>
 
+[![npm](https://img.shields.io/npm/v/@cucumber/cucumber.svg)](https://www.npmjs.com/package/@cucumber/cucumber)
 [![GitHub Actions](https://github.com/cucumber/cucumber-js/workflows/Build/badge.svg)](https://github.com/cucumber/cucumber-js/actions)
 [![OpenCollective](https://opencollective.com/cucumber/backers/badge.svg)](https://opencollective.com/cucumber)
 [![OpenCollective](https://opencollective.com/cucumber/sponsors/badge.svg)](https://opencollective.com/cucumber)
