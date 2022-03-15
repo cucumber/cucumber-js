@@ -1,10 +1,9 @@
 # Parallel
 
-Cucumber supports running scenarios in parallel. The main process becomes a "coordinator" and spins up several separate Node processes to be the "workers". You can enable this with the `--parallel <NUMBER_OF_WORKERS>` CLI option:
+Cucumber supports running scenarios in parallel. The main process becomes a "coordinator" and spins up several separate Node.js processes to be the "workers". You can enable this with the `parallel` configuration option:
 
-```shell
-$ cucumber-js --parallel 3
-```
+- In a configuration file `{ parallel: 3 }`
+- On the CLI `$ cucumber-js --parallel 3`
 
 The number you provide is the number of workers that will run scenarios in parallel.
 

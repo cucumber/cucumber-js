@@ -6,6 +6,7 @@
  * @packageDocumentation
  */
 
-export * from './loadSupport'
-export * from './runCucumber'
+export * from './load_configuration'
+export * from './load_support'
+export * from './run_cucumber'
 export * from './types'

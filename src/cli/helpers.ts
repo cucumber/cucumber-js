@@ -1,11 +1,9 @@
-import ArgvParser from './argv_parser'
-import ProfileLoader from './profile_loader'
 import shuffle from 'knuth-shuffle-seeded'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
 import { EventDataCollector } from '../formatter/helpers'
 import { doesHaveValue } from '../value_checker'
-import OptionSplitter from './option_splitter'
+import { OptionSplitter } from '../configuration'
 import { Readable } from 'stream'
 import os from 'os'
 import * as messages from '@cucumber/messages'
@@ -14,29 +12,9 @@ import detectCiEnvironment from '@cucumber/ci-environment'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
+import { PickleOrder } from '../models/pickle_order'
 import { builtinParameterTypes } from '../support_code_library_builder'
 import { version } from '../version'
-
-export interface IGetExpandedArgvRequest {
-  argv: string[]
-  cwd: string
-}
-
-export async function getExpandedArgv({
-  argv,
-  cwd,
-}: IGetExpandedArgvRequest): Promise<string[]> {
-  const { options } = ArgvParser.parse(argv)
-  let fullArgv = argv
-  const profileArgv = await new ProfileLoader(cwd).getArgv(
-    options.profile,
-    options.config
-  )
-  if (profileArgv.length > 0) {
-    fullArgv = argv.slice(0, 2).concat(profileArgv).concat(argv.slice(2))
-  }
-  return fullArgv
-}
 
 interface IParseGherkinMessageStreamRequest {
   logger: Console
@@ -46,8 +24,6 @@ interface IParseGherkinMessageStreamRequest {
   order: PickleOrder
   pickleFilter: PickleFilter
 }
-
-export type PickleOrder = 'defined' | 'random'
 
 export async function parseGherkinMessageStream({
   logger,

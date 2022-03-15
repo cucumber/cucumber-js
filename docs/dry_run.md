@@ -1,12 +1,11 @@
-# Dry Run
+# Dry run
 
-You can run cucumber-js in "Dry Run" mode like this:
+You can run cucumber-js in "Dry Run" mode:
 
-```shell
-$ cucumber-js --dry-run
-```
+- In a configuration file `{ dryRun: true }`
+- On the CLI `$ cucumber-js --dry-run`
 
-The effect is that cucumber-js will still do all the aggregation work of looking at your feature files, loading your support code etc but without actually executing the tests. Specifically:
+The effect is that Cucumber will still do all the aggregation work of looking at your feature files, loading your support code etc but without actually executing the tests. Specifically:
 
 - No [hooks](./support_files/hooks.md) are executed
 - Steps are reported as "skipped" instead of being executed

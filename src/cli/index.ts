@@ -1,10 +1,8 @@
-import { getExpandedArgv } from './helpers'
-import { validateInstall } from './install_validator'
-import { buildConfiguration, isTruthyString } from './configuration_builder'
+import { ArgvParser, isTruthyString } from '../configuration'
 import { IFormatterStream } from '../formatter'
-import { runCucumber } from '../api'
-import ArgvParser from './argv_parser'
+import { loadConfiguration, runCucumber } from '../api'
 import { getKeywords, getLanguages } from './i18n'
+import { validateInstall } from './install_validator'
 
 export interface ICliRunResult {
   shouldAdvertisePublish: boolean
@@ -41,13 +39,10 @@ export default class Cli {
 
   async run(): Promise<ICliRunResult> {
     await validateInstall(this.cwd)
-    const fromArgv = ArgvParser.parse(
-      await getExpandedArgv({
-        argv: this.argv,
-        cwd: this.cwd,
-      })
+    const { options, configuration: argvConfiguration } = ArgvParser.parse(
+      this.argv
     )
-    if (fromArgv.options.i18nLanguages) {
+    if (options.i18nLanguages) {
       this.stdout.write(getLanguages())
       return {
         shouldAdvertisePublish: false,
@@ -55,27 +50,35 @@ export default class Cli {
         success: true,
       }
     }
-    if (fromArgv.options.i18nKeywords != '') {
-      this.stdout.write(getKeywords(fromArgv.options.i18nKeywords))
+    if (options.i18nKeywords) {
+      this.stdout.write(getKeywords(options.i18nKeywords))
       return {
         shouldAdvertisePublish: false,
         shouldExitImmediately: true,
         success: true,
       }
     }
-    const configuration = await buildConfiguration(fromArgv, this.env)
-    const { success } = await runCucumber(configuration, {
+    const environment = {
       cwd: this.cwd,
       stdout: this.stdout,
       stderr: this.stderr,
       env: this.env,
-    })
+    }
+    const { original: configuration, runnable } = await loadConfiguration(
+      {
+        file: options.config,
+        profiles: options.profile,
+        provided: argvConfiguration,
+      },
+      environment
+    )
+    const { success } = await runCucumber(runnable, environment)
     return {
       shouldAdvertisePublish:
-        !configuration.formats.publish &&
-        !fromArgv.options.publishQuiet &&
+        !runnable.formats.publish &&
+        !configuration.publishQuiet &&
         !isTruthyString(this.env.CUCUMBER_PUBLISH_QUIET),
-      shouldExitImmediately: fromArgv.options.exit,
+      shouldExitImmediately: configuration.forceExit,
       success,
     }
   }

@@ -55,16 +55,12 @@ Your custom world will also receive these arguments, but it's up to you to decid
 
 Tests often require configuration and environment information. One of the most frequent cases is web page tests that are using a browser driver; things like viewport, browser to use, application URL and so on.
 
-The world parameters argument allows you to provide this information from the command line.  It takes the data in the form of a JSON literal after the `--world-parameters` CLI option, like this:
+The `worldParameters` configuration option allows you to provide this information to Cucumber. It takes the data in the form of an object literal, like this:
 
-```shell
-$ cucumber-js --world-parameters '{"appUrl":"http://localhost:3000/"}'
-```
+- In a configuration file `{ worldParameters: { appUrl: 'http://localhost:3000/' } }`
+- On the CLI `$ cucumber-js --world-parameters '{"appUrl":"http://localhost:3000/"}'`
 
 This option is repeatable, so you can use it multiple times and the objects will be merged with the later ones taking precedence.
-
-Using JSON literals on the command line is tedious, but you can use [profiles](../profiles.md) to create aliases for them.
-
 
 ## Custom Worlds
 
@@ -151,4 +147,4 @@ This pattern allows for cleaner feature files. Remember that, ideally, scenarios
 - It allows you to track test state while maintaining the isolation of each scenario.
 - Every scenario gets its own instance of the world. Even on [retry](../retry.md).
 - You can use the default world or build your own.
-- You can pass arguments to the world using the `--world-parameters` CLI option.
+- You can pass parameters to the world using the `worldParamerers` configuration option.

@@ -3,12 +3,15 @@ import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascrip
 import path from 'path'
 import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import Formatter, { IFormatterCleanupFn, IFormatterLogFn } from '.'
+import Formatter, {
+  FormatOptions,
+  IFormatterCleanupFn,
+  IFormatterLogFn,
+} from '.'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { EventEmitter } from 'events'
 import EventDataCollector from './helpers/event_data_collector'
 import { Writable as WritableStream } from 'stream'
-import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 import { pathToFileURL } from 'url'
 import Formatters from './helpers/formatters'
@@ -27,7 +30,7 @@ export interface IBuildOptions {
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   log: IFormatterLogFn
-  parsedArgvOptions: IParsedArgvFormatOptions
+  parsedArgvOptions: FormatOptions
   stream: WritableStream
   cleanup: IFormatterCleanupFn
   supportCodeLibrary: ISupportCodeLibrary

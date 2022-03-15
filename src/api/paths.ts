@@ -2,12 +2,12 @@ import { promisify } from 'util'
 import glob from 'glob'
 import path from 'path'
 import fs from 'mz/fs'
-import { ISourcesCoordinates } from '../configuration'
+import { ISourcesCoordinates } from './types'
 import { ISupportCodeCoordinates } from '../support_code_library_builder/types'
 
 export async function resolvePaths(
   cwd: string,
-  sources: ISourcesCoordinates,
+  sources: Pick<ISourcesCoordinates, 'paths'>,
   support: ISupportCodeCoordinates
 ): Promise<{
   unexpandedFeaturePaths: string[]

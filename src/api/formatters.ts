@@ -11,7 +11,7 @@ import path from 'path'
 import { DEFAULT_CUCUMBER_PUBLISH_URL } from '../formatter/publish'
 import HttpStream from '../formatter/http_stream'
 import { Writable } from 'stream'
-import { IFormatterConfiguration } from '../configuration'
+import { IRunOptionsFormats } from './types'
 
 export async function initializeFormatters({
   cwd,
@@ -20,7 +20,7 @@ export async function initializeFormatters({
   onStreamError,
   eventBroadcaster,
   eventDataCollector,
-  configuration = {},
+  configuration,
   supportCodeLibrary,
 }: {
   cwd: string
@@ -29,7 +29,7 @@ export async function initializeFormatters({
   onStreamError: () => void
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
-  configuration: IFormatterConfiguration
+  configuration: IRunOptionsFormats
   supportCodeLibrary: ISupportCodeLibrary
 }): Promise<() => Promise<void>> {
   async function initializeFormatter(
@@ -46,7 +46,7 @@ export async function initializeFormatters({
       eventBroadcaster,
       eventDataCollector,
       log: stream.write.bind(stream),
-      parsedArgvOptions: configuration.options ?? {},
+      parsedArgvOptions: configuration.options,
       stream,
       cleanup:
         stream === stdout
@@ -54,7 +54,7 @@ export async function initializeFormatters({
           : promisify<any>(stream.end.bind(stream)),
       supportCodeLibrary,
     }
-    if (doesNotHaveValue(configuration.options?.colorsEnabled)) {
+    if (doesNotHaveValue(configuration.options.colorsEnabled)) {
       typeOptions.parsedArgvOptions.colorsEnabled = (
         stream as TtyWriteStream
       ).isTTY
@@ -71,20 +71,14 @@ export async function initializeFormatters({
   const formatters: Formatter[] = []
 
   formatters.push(
-    await initializeFormatter(
-      stdout,
-      'stdout',
-      configuration.stdout ?? 'progress'
-    )
+    await initializeFormatter(stdout, 'stdout', configuration.stdout)
   )
 
-  if (configuration.files) {
-    for (const [target, type] of Object.entries(configuration.files)) {
-      const stream: IFormatterStream = fs.createWriteStream(null, {
-        fd: await fs.open(path.resolve(cwd, target), 'w'),
-      })
-      formatters.push(await initializeFormatter(stream, target, type))
-    }
+  for (const [target, type] of Object.entries(configuration.files)) {
+    const stream: IFormatterStream = fs.createWriteStream(null, {
+      fd: await fs.open(path.resolve(cwd, target), 'w'),
+    })
+    formatters.push(await initializeFormatter(stream, target, type))
   }
 
   if (configuration.publish) {
