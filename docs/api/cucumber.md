@@ -4,7 +4,7 @@
 
 ## cucumber package
 
-Cucumber for JavaScript.
+Cucumber for JavaScript
 
 ## Remarks
 
@@ -14,6 +14,7 @@ These docs cover the API used for running Cucumber programmatically. The entry p
 
 |  Function | Description |
 |  --- | --- |
+|  [loadConfiguration(options, { cwd, env })](./cucumber.loadconfiguration.md) |  |
 |  [loadSupport(configuration, { cwd })](./cucumber.loadsupport.md) |  |
 |  [runCucumber(configuration, { cwd, stdout, stderr, env, }, onMessage)](./cucumber.runcucumber.md) |  |
 
@@ -21,6 +22,17 @@ These docs cover the API used for running Cucumber programmatically. The entry p
 
 |  Interface | Description |
 |  --- | --- |
+|  [IResolvedConfiguration](./cucumber.iresolvedconfiguration.md) |  |
+|  [IRunConfiguration](./cucumber.irunconfiguration.md) |  |
 |  [IRunEnvironment](./cucumber.irunenvironment.md) |  |
+|  [IRunnableConfiguration](./cucumber.irunnableconfiguration.md) |  |
+|  [IRunOptionsFormats](./cucumber.irunoptionsformats.md) |  |
 |  [IRunResult](./cucumber.irunresult.md) |  |
+|  [ISourcesCoordinates](./cucumber.isourcescoordinates.md) |  |
+
+## Type Aliases
+
+|  Type Alias | Description |
+|  --- | --- |
+|  [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md) |  |
 

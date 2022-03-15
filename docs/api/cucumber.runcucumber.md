@@ -14,7 +14,7 @@ export declare function runCucumber(configuration: IRunConfiguration, { cwd, std
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  configuration | IRunConfiguration |  |
+|  configuration | [IRunConfiguration](./cucumber.irunconfiguration.md) |  |
 |  { cwd, stdout, stderr, env, } | Partial&lt;[IRunEnvironment](./cucumber.irunenvironment.md)<!-- -->&gt; |  |
 |  onMessage | (message: Envelope) =&gt; void |  |
 

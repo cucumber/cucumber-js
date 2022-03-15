@@ -8,5 +8,5 @@
 
 |  Package | Description |
 |  --- | --- |
-|  [@cucumber/cucumber](./cucumber.md) | Cucumber for JavaScript. |
+|  [@cucumber/cucumber](./cucumber.md) | Cucumber for JavaScript |
 

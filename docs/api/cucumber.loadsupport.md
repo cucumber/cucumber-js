@@ -7,14 +7,14 @@
 <b>Signature:</b>
 
 ```typescript
-export declare function loadSupport(configuration: Pick<IUserConfiguration, 'sources' | 'support'>, { cwd }: Partial<IRunEnvironment>): Promise<import("../support_code_library_builder/types").ISupportCodeLibrary>;
+export declare function loadSupport(configuration: Pick<IRunnableConfiguration, 'sources' | 'support'>, { cwd }: Partial<IRunEnvironment>): Promise<import("../support_code_library_builder/types").ISupportCodeLibrary>;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  configuration | Pick&lt;IUserConfiguration, 'sources' \| 'support'&gt; |  |
+|  configuration | Pick&lt;[IRunnableConfiguration](./cucumber.irunnableconfiguration.md)<!-- -->, 'sources' \| 'support'&gt; |  |
 |  { cwd } | Partial&lt;[IRunEnvironment](./cucumber.irunenvironment.md)<!-- -->&gt; |  |
 
 <b>Returns:</b>
