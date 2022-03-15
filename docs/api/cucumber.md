@@ -4,6 +4,12 @@
 
 ## cucumber package
 
+Cucumber for JavaScript.
+
+## Remarks
+
+These docs cover the API used for running Cucumber programmatically. The entry point is `@cucumber/cucumber/api`<!-- -->.
+
 ## Functions
 
 |  Function | Description |
