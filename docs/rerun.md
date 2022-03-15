@@ -13,9 +13,8 @@ Rerun makes this kind of workflow convenient, so you don't have to hand-craft co
 
 First, enable the `rerun` formatter every time you run cucumber-js:
 
-```shell
---format rerun:@rerun.txt
-```
+- In a configuration file `{ format: ['rerun:@rerun.txt'] }`
+- On the CLI `$ cucumber-js --format rerun:@rerun.txt`
 
 You can do this via the CLI, or more likely via a [default profile](./profiles.md).
 
@@ -51,8 +50,7 @@ In other words, the one we fixed has passed and thus dropped off. We can repeat 
 
 By default, entries in the rerun file are separated by newlines. This can be overwritten via a [format option](./formatters.md#options):
 
-```
---format-options '{"rerun": {"separator": "<separator>"}}'
-```
+- In a configuration file `{ formatOptions: { rerun: { separator: '<separator>' } } }`
+- On the CLI `$ cucumber-js --format-options '{"rerun": {"separator": "<separator>"}}'`
 
 This is useful when one needs to rerun failed tests locally by copying a line from a CI log while using a space character as a separator. Note that the rerun file parser can only work with the default separator for now.

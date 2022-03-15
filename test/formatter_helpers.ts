@@ -9,10 +9,10 @@ import * as messages from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../src/support_code_library_builder/types'
 import { ITestCaseAttempt } from '../src/formatter/helpers/event_data_collector'
 import { doesNotHaveValue } from '../src/value_checker'
-import { IParsedArgvFormatOptions } from '../src/cli/argv_parser'
 import { PassThrough } from 'stream'
 import { emitSupportCodeMessages } from '../src/cli/helpers'
 import { promisify } from 'util'
+import { FormatOptions } from '../src/formatter'
 
 const { uuid } = IdGenerator
 
@@ -29,7 +29,7 @@ export interface ITestRunOptions {
 }
 
 export interface ITestFormatterOptions extends ITestRunOptions {
-  parsedArgvOptions?: IParsedArgvFormatOptions
+  parsedArgvOptions?: FormatOptions
   type: string
 }
 

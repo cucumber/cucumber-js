@@ -1,19 +1,18 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { buildConfiguration } from './configuration_builder'
-import ArgvParser from './argv_parser'
-const baseArgv = ['/path/to/node', '/path/to/cucumber-js']
+import { convertConfiguration } from './convert_configuration'
+import { DEFAULT_CONFIGURATION } from '../configuration'
 
-describe('buildConfiguration', () => {
-  it('should derive correct defaults', async () => {
-    const result = await buildConfiguration(ArgvParser.parse([...baseArgv]), {})
+describe('convertConfiguration', () => {
+  it('should convert defaults correctly', async () => {
+    const result = await convertConfiguration(DEFAULT_CONFIGURATION, {})
 
     expect(result).to.eql({
       formats: {
         files: {},
         options: {},
         publish: false,
-        stdout: undefined,
+        stdout: 'progress',
       },
       runtime: {
         dryRun: false,
@@ -40,17 +39,17 @@ describe('buildConfiguration', () => {
     })
   })
 
-  it('should map formatters', async () => {
-    const result = await buildConfiguration(
-      ArgvParser.parse([
-        ...baseArgv,
-        '--format',
-        'message',
-        '--format',
-        'json:./report.json',
-        '--format',
-        'html:./report.html',
-      ]),
+  it('should map multiple formatters', async () => {
+    const result = await convertConfiguration(
+      {
+        ...DEFAULT_CONFIGURATION,
+        format: [
+          'summary',
+          'message',
+          'json:./report.json',
+          'html:./report.html',
+        ],
+      },
       {}
     )
 

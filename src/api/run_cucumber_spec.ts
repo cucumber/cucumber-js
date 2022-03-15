@@ -4,10 +4,10 @@ import path from 'path'
 import { reindent } from 'reindent-template-literals'
 import { PassThrough } from 'stream'
 import { expect } from 'chai'
-import { IUserConfiguration } from '../configuration'
-import { runCucumber } from './runCucumber'
+import { runCucumber } from './run_cucumber'
 import { IRunEnvironment } from './types'
-import { loadSupport } from './loadSupport'
+import { loadSupport } from './load_support'
+import { loadConfiguration } from './load_configuration'
 
 const newId = IdGenerator.uuid()
 
@@ -26,6 +26,10 @@ async function setupEnvironment(): Promise<Partial<IRunEnvironment>> {
     reindent(`import { Given, Then } from '../../../src'
     Given('a step', function () {})
     Then('another step', function () {})`)
+  )
+  await fs.writeFile(
+    path.join(cwd, 'cucumber.mjs'),
+    `export default {paths: ['features/test.feature'], requireModule: ['ts-node/register'], require: ['features/steps.ts']}`
   )
   const stdout = new PassThrough()
   return { cwd, stdout }
@@ -46,21 +50,10 @@ describe('runCucumber', () => {
 
     it('should be able to load support code upfront and supply it to runCucumber', async () => {
       const messages: Envelope[] = []
-      const configuration: IUserConfiguration = {
-        sources: {
-          paths: ['features/test.feature'],
-        },
-        support: {
-          requireModules: ['ts-node/register'],
-          requirePaths: ['features/steps.ts'],
-          importPaths: [],
-        },
-      }
-      const support = await loadSupport(configuration, environment)
-      await runCucumber(
-        { ...configuration, support },
-        environment,
-        (envelope) => messages.push(envelope)
+      const { runnable } = await loadConfiguration({}, environment)
+      const support = await loadSupport(runnable, environment)
+      await runCucumber({ ...runnable, support }, environment, (envelope) =>
+        messages.push(envelope)
       )
       const testStepFinishedEnvelopes = messages.filter(
         (envelope) => envelope.testStepFinished
@@ -85,25 +78,12 @@ describe('runCucumber', () => {
 
     it('successfully executes 2 test runs', async () => {
       const messages: Envelope[] = []
-      const configuration: IUserConfiguration = {
-        sources: {
-          paths: ['features/test.feature'],
-        },
-        support: {
-          requireModules: ['ts-node/register'],
-          requirePaths: ['features/steps.ts'],
-          importPaths: [],
-        },
-      }
-      const { support } = await runCucumber(
-        configuration,
-        environment,
-        (envelope) => messages.push(envelope)
+      const { runnable } = await loadConfiguration({}, environment)
+      const { support } = await runCucumber(runnable, environment, (envelope) =>
+        messages.push(envelope)
       )
-      await runCucumber(
-        { ...configuration, support },
-        environment,
-        (envelope) => messages.push(envelope)
+      await runCucumber({ ...runnable, support }, environment, (envelope) =>
+        messages.push(envelope)
       )
 
       const testStepFinishedEnvelopes = messages.filter(

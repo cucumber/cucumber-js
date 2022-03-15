@@ -1,11 +1,10 @@
 import { IdGenerator } from '@cucumber/messages'
-import { IUserConfiguration } from '../configuration'
-import { IRunEnvironment } from './types'
+import { IRunEnvironment, IRunnableConfiguration } from './types'
 import { resolvePaths } from './paths'
 import { getSupportCodeLibrary } from './support'
 
 export async function loadSupport(
-  configuration: Pick<IUserConfiguration, 'sources' | 'support'>,
+  configuration: Pick<IRunnableConfiguration, 'sources' | 'support'>,
   { cwd = process.cwd() }: Partial<IRunEnvironment>
 ) {
   const newId = IdGenerator.uuid()
