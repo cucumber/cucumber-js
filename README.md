@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/cucumber/cucumber-js/main/docs/logo.png" alt="Cucumber Open - Supported by Smartbear" width="500" />
+  <img src="https://raw.githubusercontent.com/cucumber/cucumber-js/main/docs/images/logo.svg" alt="" />
 </div>
 <h1 align="center">Cucumber</h1>
 <p align="center">
