@@ -1,7 +1,7 @@
-<div align="center">
+<h1 align="center">
   <img src="https://raw.githubusercontent.com/cucumber/cucumber-js/main/docs/images/logo.svg" alt="" />
-</div>
-<h1 align="center">Cucumber</h1>
+  Cucumber
+</h1>
 <p align="center">
   <b>Automated tests written in plain language, for Node.js</b>
 </p>
