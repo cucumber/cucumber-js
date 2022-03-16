@@ -291,7 +291,7 @@
                 {
                   "kind": "Reference",
                   "text": "IRunOptionsRuntime",
-                  "canonicalReference": "@cucumber/cucumber!IRunOptionsRuntime:type"
+                  "canonicalReference": "@cucumber/cucumber!IRunOptionsRuntime:interface"
                 },
                 {
                   "kind": "Content",
@@ -547,7 +547,7 @@
                 {
                   "kind": "Reference",
                   "text": "IRunOptionsRuntime",
-                  "canonicalReference": "@cucumber/cucumber!IRunOptionsRuntime:type"
+                  "canonicalReference": "@cucumber/cucumber!IRunOptionsRuntime:interface"
                 },
                 {
                   "kind": "Content",
@@ -746,13 +746,13 @@
           "extendsTokenRanges": []
         },
         {
-          "kind": "TypeAlias",
-          "canonicalReference": "@cucumber/cucumber!IRunOptionsRuntime:type",
+          "kind": "Interface",
+          "canonicalReference": "@cucumber/cucumber!IRunOptionsRuntime:interface",
           "docComment": "",
           "excerptTokens": [
             {
               "kind": "Content",
-              "text": "export declare type IRunOptionsRuntime = "
+              "text": "export interface IRunOptionsRuntime extends "
             },
             {
               "kind": "Reference",
@@ -761,19 +761,45 @@
             },
             {
               "kind": "Content",
-              "text": " & {\n    parallel: number;\n}"
-            },
-            {
-              "kind": "Content",
-              "text": ";"
+              "text": " "
             }
           ],
           "releaseTag": "Public",
           "name": "IRunOptionsRuntime",
-          "typeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 3
-          }
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "@cucumber/cucumber!IRunOptionsRuntime#parallel:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "parallel: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "parallel",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 1,
+              "endIndex": 3
+            }
+          ]
         },
         {
           "kind": "Interface",

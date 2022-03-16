@@ -27,12 +27,7 @@ These docs cover the API used for running Cucumber programmatically. The entry p
 |  [IRunEnvironment](./cucumber.irunenvironment.md) |  |
 |  [IRunnableConfiguration](./cucumber.irunnableconfiguration.md) |  |
 |  [IRunOptionsFormats](./cucumber.irunoptionsformats.md) |  |
+|  [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md) |  |
 |  [IRunResult](./cucumber.irunresult.md) |  |
 |  [ISourcesCoordinates](./cucumber.isourcescoordinates.md) |  |
-
-## Type Aliases
-
-|  Type Alias | Description |
-|  --- | --- |
-|  [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md) |  |
 

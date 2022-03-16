@@ -2,12 +2,18 @@
 
 [Home](./index.md) &gt; [@cucumber/cucumber](./cucumber.md) &gt; [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md)
 
-## IRunOptionsRuntime type
+## IRunOptionsRuntime interface
 
 <b>Signature:</b>
 
 ```typescript
-export declare type IRunOptionsRuntime = IRuntimeOptions & {
-    parallel: number;
-};
+export interface IRunOptionsRuntime extends IRuntimeOptions 
 ```
+<b>Extends:</b> IRuntimeOptions
+
+## Properties
+
+|  Property | Type | Description |
+|  --- | --- | --- |
+|  [parallel](./cucumber.irunoptionsruntime.parallel.md) | number |  |
+

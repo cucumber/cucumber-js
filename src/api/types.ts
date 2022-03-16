@@ -15,7 +15,9 @@ export interface ISourcesCoordinates {
   order: PickleOrder
 }
 
-export type IRunOptionsRuntime = IRuntimeOptions & { parallel: number }
+export interface IRunOptionsRuntime extends IRuntimeOptions {
+  parallel: number
+}
 
 export interface IRunOptionsFormats {
   stdout: string
