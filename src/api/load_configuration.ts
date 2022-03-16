@@ -16,6 +16,7 @@ import { mergeEnvironment } from './environment'
 /**
  * Load user-authored configuration to be used in a test run.
  *
+ * @beta
  * @param options - Coordinates required to find configuration.
  * @param environment - Project environment.
  */

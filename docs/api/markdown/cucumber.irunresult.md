@@ -4,6 +4,9 @@
 
 ## IRunResult interface
 
+> This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
+> 
+
 Result of a Cucumber test run.
 
 <b>Signature:</b>
@@ -16,6 +19,6 @@ export interface IRunResult
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [success](./cucumber.irunresult.success.md) | boolean | Whether the test run was overall successful i.e. no failed scenarios. The exact meaning can vary based on the <code>strict</code> configuration option. |
-|  [support](./cucumber.irunresult.support.md) | ISupportCodeLibrary | The support code library that was used in the test run; can be reused in subsequent <code>runCucumber</code> calls. |
+|  [success](./cucumber.irunresult.success.md) | boolean | <b><i>(BETA)</i></b> Whether the test run was overall successful i.e. no failed scenarios. The exact meaning can vary based on the <code>strict</code> configuration option. |
+|  [support](./cucumber.irunresult.support.md) | ISupportCodeLibrary | <b><i>(BETA)</i></b> The support code library that was used in the test run; can be reused in subsequent <code>runCucumber</code> calls. |
 

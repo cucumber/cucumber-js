@@ -14,29 +14,29 @@ These docs cover the API used for running Cucumber programmatically. The entry p
 
 |  Function | Description |
 |  --- | --- |
-|  [loadConfiguration(options, environment)](./cucumber.loadconfiguration.md) | Load user-authored configuration to be used in a test run. |
-|  [loadSupport(options, environment)](./cucumber.loadsupport.md) | Load support code for use in test runs. |
-|  [runCucumber(configuration, environment, onMessage)](./cucumber.runcucumber.md) | Execute a Cucumber test run. |
+|  [loadConfiguration(options, environment)](./cucumber.loadconfiguration.md) | <b><i>(BETA)</i></b> Load user-authored configuration to be used in a test run. |
+|  [loadSupport(options, environment)](./cucumber.loadsupport.md) | <b><i>(BETA)</i></b> Load support code for use in test runs. |
+|  [runCucumber(configuration, environment, onMessage)](./cucumber.runcucumber.md) | <b><i>(BETA)</i></b> Execute a Cucumber test run. |
 
 ## Interfaces
 
 |  Interface | Description |
 |  --- | --- |
-|  [ILoadConfigurationOptions](./cucumber.iloadconfigurationoptions.md) |  |
-|  [ILoadSupportOptions](./cucumber.iloadsupportoptions.md) |  |
-|  [IResolvedConfiguration](./cucumber.iresolvedconfiguration.md) |  |
-|  [IRunEnvironment](./cucumber.irunenvironment.md) | Contextual data about the project environment. |
-|  [IRunnableConfiguration](./cucumber.irunnableconfiguration.md) |  |
-|  [IRunOptions](./cucumber.irunoptions.md) |  |
-|  [IRunOptionsFormats](./cucumber.irunoptionsformats.md) |  |
-|  [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md) |  |
-|  [IRunResult](./cucumber.irunresult.md) | Result of a Cucumber test run. |
-|  [ISourcesCoordinates](./cucumber.isourcescoordinates.md) |  |
-|  [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md) |  |
+|  [ILoadConfigurationOptions](./cucumber.iloadconfigurationoptions.md) | <b><i>(BETA)</i></b> |
+|  [ILoadSupportOptions](./cucumber.iloadsupportoptions.md) | <b><i>(BETA)</i></b> |
+|  [IResolvedConfiguration](./cucumber.iresolvedconfiguration.md) | <b><i>(BETA)</i></b> |
+|  [IRunEnvironment](./cucumber.irunenvironment.md) | <b><i>(BETA)</i></b> Contextual data about the project environment. |
+|  [IRunnableConfiguration](./cucumber.irunnableconfiguration.md) | <b><i>(BETA)</i></b> |
+|  [IRunOptions](./cucumber.irunoptions.md) | <b><i>(BETA)</i></b> |
+|  [IRunOptionsFormats](./cucumber.irunoptionsformats.md) | <b><i>(BETA)</i></b> |
+|  [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md) | <b><i>(BETA)</i></b> |
+|  [IRunResult](./cucumber.irunresult.md) | <b><i>(BETA)</i></b> Result of a Cucumber test run. |
+|  [ISourcesCoordinates](./cucumber.isourcescoordinates.md) | <b><i>(BETA)</i></b> |
+|  [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md) | <b><i>(BETA)</i></b> |
 
 ## Type Aliases
 
 |  Type Alias | Description |
 |  --- | --- |
-|  [ISupportCodeCoordinatesOrLibrary](./cucumber.isupportcodecoordinatesorlibrary.md) |  |
+|  [ISupportCodeCoordinatesOrLibrary](./cucumber.isupportcodecoordinatesorlibrary.md) | <b><i>(BETA)</i></b> |
 

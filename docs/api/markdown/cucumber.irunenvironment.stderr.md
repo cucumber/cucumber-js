@@ -4,6 +4,9 @@
 
 ## IRunEnvironment.stderr property
 
+> This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
+> 
+
 Writable stream where the test run's warning/error output is written (defaults to `process.stderr` if omitted).
 
 <b>Signature:</b>

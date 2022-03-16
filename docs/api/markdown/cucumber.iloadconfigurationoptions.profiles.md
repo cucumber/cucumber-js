@@ -4,6 +4,9 @@
 
 ## ILoadConfigurationOptions.profiles property
 
+> This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
+> 
+
 Zero or more profile names from which to source configuration (if omitted or empty, the `default` profile will be used).
 
 <b>Signature:</b>

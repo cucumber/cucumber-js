@@ -4,6 +4,10 @@
 
 ## IRunnableConfiguration interface
 
+> This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
+> 
+
+
 <b>Signature:</b>
 
 ```typescript
@@ -14,8 +18,8 @@ export interface IRunnableConfiguration
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [formats](./cucumber.irunnableconfiguration.formats.md) | [IRunOptionsFormats](./cucumber.irunoptionsformats.md) |  |
-|  [runtime](./cucumber.irunnableconfiguration.runtime.md) | [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md) |  |
-|  [sources](./cucumber.irunnableconfiguration.sources.md) | [ISourcesCoordinates](./cucumber.isourcescoordinates.md) |  |
-|  [support](./cucumber.irunnableconfiguration.support.md) | [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md) |  |
+|  [formats](./cucumber.irunnableconfiguration.formats.md) | [IRunOptionsFormats](./cucumber.irunoptionsformats.md) | <b><i>(BETA)</i></b> |
+|  [runtime](./cucumber.irunnableconfiguration.runtime.md) | [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md) | <b><i>(BETA)</i></b> |
+|  [sources](./cucumber.irunnableconfiguration.sources.md) | [ISourcesCoordinates](./cucumber.isourcescoordinates.md) | <b><i>(BETA)</i></b> |
+|  [support](./cucumber.irunnableconfiguration.support.md) | [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md) | <b><i>(BETA)</i></b> |
 

@@ -4,6 +4,9 @@
 
 ## ILoadConfigurationOptions.provided property
 
+> This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
+> 
+
 Ad-hoc configuration options to be applied over the top of whatever is loaded from the configuration file/profiles.
 
 <b>Signature:</b>

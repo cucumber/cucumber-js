@@ -4,6 +4,9 @@
 
 ## IRunResult.success property
 
+> This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
+> 
+
 Whether the test run was overall successful i.e. no failed scenarios. The exact meaning can vary based on the `strict` configuration option.
 
 <b>Signature:</b>

@@ -4,6 +4,9 @@ import { PickleOrder } from '../models/pickle_order'
 import { IRuntimeOptions } from '../runtime'
 import { IConfiguration } from '../configuration'
 
+/**
+ * @beta
+ */
 export interface ILoadConfigurationOptions {
   /**
    * Path to load configuration file from (defaults to `cucumber.(js|cjs|mjs|json)` if omitted).
@@ -19,6 +22,9 @@ export interface ILoadConfigurationOptions {
   provided?: Partial<IConfiguration>
 }
 
+/**
+ * @beta
+ */
 export interface IResolvedConfiguration {
   /**
    * The final flat configuration object resolved from the configuration file/profiles plus any extra provided.
@@ -30,6 +36,9 @@ export interface IResolvedConfiguration {
   runnable: IRunnableConfiguration
 }
 
+/**
+ * @beta
+ */
 export interface ISourcesCoordinates {
   defaultDialect: string
   paths: string[]
@@ -38,21 +47,33 @@ export interface ISourcesCoordinates {
   order: PickleOrder
 }
 
+/**
+ * @beta
+ */
 export interface ISupportCodeCoordinates {
   requireModules: string[]
   requirePaths: string[]
   importPaths: string[]
 }
 
+/**
+ * @beta
+ */
 export interface ILoadSupportOptions {
   sources: ISourcesCoordinates
   support: ISupportCodeCoordinates
 }
 
+/**
+ * @beta
+ */
 export interface IRunOptionsRuntime extends IRuntimeOptions {
   parallel: number
 }
 
+/**
+ * @beta
+ */
 export interface IRunOptionsFormats {
   stdout: string
   files: Record<string, string>
@@ -65,6 +86,9 @@ export interface IRunOptionsFormats {
   options: FormatOptions
 }
 
+/**
+ * @beta
+ */
 export interface IRunnableConfiguration {
   sources: ISourcesCoordinates
   support: ISupportCodeCoordinates
@@ -72,10 +96,16 @@ export interface IRunnableConfiguration {
   formats: IRunOptionsFormats
 }
 
+/**
+ * @beta
+ */
 export type ISupportCodeCoordinatesOrLibrary =
   | ISupportCodeCoordinates
   | ISupportCodeLibrary
 
+/**
+ * @beta
+ */
 export interface IRunOptions {
   sources: ISourcesCoordinates
   support: ISupportCodeCoordinatesOrLibrary
@@ -85,6 +115,8 @@ export interface IRunOptions {
 
 /**
  * Contextual data about the project environment.
+ *
+ * @beta
  */
 export interface IRunEnvironment {
   /**
@@ -107,6 +139,8 @@ export interface IRunEnvironment {
 
 /**
  * Result of a Cucumber test run.
+ *
+ * @beta
  */
 export interface IRunResult {
   /**

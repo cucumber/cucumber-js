@@ -4,6 +4,10 @@
 
 ## IRunOptions interface
 
+> This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
+> 
+
+
 <b>Signature:</b>
 
 ```typescript
@@ -14,8 +18,8 @@ export interface IRunOptions
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [formats](./cucumber.irunoptions.formats.md) | [IRunOptionsFormats](./cucumber.irunoptionsformats.md) |  |
-|  [runtime](./cucumber.irunoptions.runtime.md) | [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md) |  |
-|  [sources](./cucumber.irunoptions.sources.md) | [ISourcesCoordinates](./cucumber.isourcescoordinates.md) |  |
-|  [support](./cucumber.irunoptions.support.md) | [ISupportCodeCoordinatesOrLibrary](./cucumber.isupportcodecoordinatesorlibrary.md) |  |
+|  [formats](./cucumber.irunoptions.formats.md) | [IRunOptionsFormats](./cucumber.irunoptionsformats.md) | <b><i>(BETA)</i></b> |
+|  [runtime](./cucumber.irunoptions.runtime.md) | [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md) | <b><i>(BETA)</i></b> |
+|  [sources](./cucumber.irunoptions.sources.md) | [ISourcesCoordinates](./cucumber.isourcescoordinates.md) | <b><i>(BETA)</i></b> |
+|  [support](./cucumber.irunoptions.support.md) | [ISupportCodeCoordinatesOrLibrary](./cucumber.isupportcodecoordinatesorlibrary.md) | <b><i>(BETA)</i></b> |
 

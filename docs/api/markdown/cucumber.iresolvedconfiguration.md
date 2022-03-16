@@ -4,6 +4,10 @@
 
 ## IResolvedConfiguration interface
 
+> This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
+> 
+
+
 <b>Signature:</b>
 
 ```typescript
@@ -14,6 +18,6 @@ export interface IResolvedConfiguration
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [original](./cucumber.iresolvedconfiguration.original.md) | IConfiguration | The final flat configuration object resolved from the configuration file/profiles plus any extra provided. |
-|  [runnable](./cucumber.iresolvedconfiguration.runnable.md) | [IRunnableConfiguration](./cucumber.irunnableconfiguration.md) | The format that can be passed into <code>runCucumber</code>. |
+|  [original](./cucumber.iresolvedconfiguration.original.md) | IConfiguration | <b><i>(BETA)</i></b> The final flat configuration object resolved from the configuration file/profiles plus any extra provided. |
+|  [runnable](./cucumber.iresolvedconfiguration.runnable.md) | [IRunnableConfiguration](./cucumber.irunnableconfiguration.md) | <b><i>(BETA)</i></b> The format that can be passed into <code>runCucumber</code>. |
 
