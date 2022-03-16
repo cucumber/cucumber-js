@@ -4,7 +4,7 @@
 
 ## IRunEnvironment.env property
 
-Environment variables (defaults to `process.env` if omitted)
+Environment variables (defaults to `process.env` if omitted).
 
 <b>Signature:</b>
 

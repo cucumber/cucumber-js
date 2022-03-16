@@ -4,19 +4,21 @@
 
 ## runCucumber() function
 
+Execute a Cucumber test run.
+
 <b>Signature:</b>
 
 ```typescript
-export declare function runCucumber(configuration: IRunConfiguration, environment: IRunEnvironment, onMessage?: (message: Envelope) => void): Promise<IRunResult>;
+export declare function runCucumber(configuration: IRunOptions, environment: IRunEnvironment, onMessage?: (message: Envelope) => void): Promise<IRunResult>;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  configuration | [IRunConfiguration](./cucumber.irunconfiguration.md) |  |
-|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) |  |
-|  onMessage | (message: Envelope) =&gt; void |  |
+|  configuration | [IRunOptions](./cucumber.irunoptions.md) | Configuration loaded from <code>loadConfiguration</code>. |
+|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) | Project environment. |
+|  onMessage | (message: Envelope) =&gt; void | Callback fired each time Cucumber emits a message. |
 
 <b>Returns:</b>
 

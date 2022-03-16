@@ -4,20 +4,22 @@
 
 ## loadSupport() function
 
+Load support code for use in test runs.
+
 <b>Signature:</b>
 
 ```typescript
-export declare function loadSupport(configuration: Pick<IRunnableConfiguration, 'sources' | 'support'>, environment: IRunEnvironment): Promise<import("../support_code_library_builder/types").ISupportCodeLibrary>;
+export declare function loadSupport(options: ILoadSupportOptions, environment: IRunEnvironment): Promise<ISupportCodeLibrary>;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  configuration | Pick&lt;[IRunnableConfiguration](./cucumber.irunnableconfiguration.md)<!-- -->, 'sources' \| 'support'&gt; |  |
-|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) |  |
+|  options | [ILoadSupportOptions](./cucumber.iloadsupportoptions.md) | Subset of <code>IRunnableConfiguration</code> required to find the support code. |
+|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) | Project environment. |
 
 <b>Returns:</b>
 
-Promise&lt;import("../support\_code\_library\_builder/types").ISupportCodeLibrary&gt;
+Promise&lt;ISupportCodeLibrary&gt;
 

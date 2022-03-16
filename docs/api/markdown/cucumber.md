@@ -14,20 +14,29 @@ These docs cover the API used for running Cucumber programmatically. The entry p
 
 |  Function | Description |
 |  --- | --- |
-|  [loadConfiguration(options, environment)](./cucumber.loadconfiguration.md) |  |
-|  [loadSupport(configuration, environment)](./cucumber.loadsupport.md) |  |
-|  [runCucumber(configuration, environment, onMessage)](./cucumber.runcucumber.md) |  |
+|  [loadConfiguration(options, environment)](./cucumber.loadconfiguration.md) | Load user-authored configuration to be used in a test run. |
+|  [loadSupport(options, environment)](./cucumber.loadsupport.md) | Load support code for use in test runs. |
+|  [runCucumber(configuration, environment, onMessage)](./cucumber.runcucumber.md) | Execute a Cucumber test run. |
 
 ## Interfaces
 
 |  Interface | Description |
 |  --- | --- |
+|  [ILoadConfigurationOptions](./cucumber.iloadconfigurationoptions.md) |  |
+|  [ILoadSupportOptions](./cucumber.iloadsupportoptions.md) |  |
 |  [IResolvedConfiguration](./cucumber.iresolvedconfiguration.md) |  |
-|  [IRunConfiguration](./cucumber.irunconfiguration.md) |  |
-|  [IRunEnvironment](./cucumber.irunenvironment.md) |  |
+|  [IRunEnvironment](./cucumber.irunenvironment.md) | Contextual data about the project environment. |
 |  [IRunnableConfiguration](./cucumber.irunnableconfiguration.md) |  |
+|  [IRunOptions](./cucumber.irunoptions.md) |  |
 |  [IRunOptionsFormats](./cucumber.irunoptionsformats.md) |  |
 |  [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md) |  |
-|  [IRunResult](./cucumber.irunresult.md) |  |
+|  [IRunResult](./cucumber.irunresult.md) | Result of a Cucumber test run. |
 |  [ISourcesCoordinates](./cucumber.isourcescoordinates.md) |  |
+|  [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md) |  |
+
+## Type Aliases
+
+|  Type Alias | Description |
+|  --- | --- |
+|  [ISupportCodeCoordinatesOrLibrary](./cucumber.isupportcodecoordinatesorlibrary.md) |  |
 

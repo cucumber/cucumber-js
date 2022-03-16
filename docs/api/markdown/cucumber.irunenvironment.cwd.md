@@ -4,7 +4,7 @@
 
 ## IRunEnvironment.cwd property
 
-Working directory for the project (defaults to `process.cwd()` if omitted)
+Working directory for the project (defaults to `process.cwd()` if omitted).
 
 <b>Signature:</b>
 

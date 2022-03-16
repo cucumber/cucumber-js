@@ -4,6 +4,8 @@
 
 ## IRunResult.support property
 
+The support code library that was used in the test run; can be reused in subsequent `runCucumber` calls.
+
 <b>Signature:</b>
 
 ```typescript

@@ -4,6 +4,8 @@
 
 ## IResolvedConfiguration.runnable property
 
+The format that can be passed into `runCucumber`<!-- -->.
+
 <b>Signature:</b>
 
 ```typescript

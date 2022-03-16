@@ -1,11 +1,34 @@
-import {
-  ISupportCodeCoordinates,
-  ISupportCodeLibrary,
-} from '../support_code_library_builder/types'
+import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { FormatOptions, IFormatterStream } from '../formatter'
 import { PickleOrder } from '../models/pickle_order'
 import { IRuntimeOptions } from '../runtime'
 import { IConfiguration } from '../configuration'
+
+export interface ILoadConfigurationOptions {
+  /**
+   * Path to load configuration file from (defaults to `cucumber.(js|cjs|mjs|json)` if omitted).
+   */
+  file?: string
+  /**
+   * Zero or more profile names from which to source configuration (if omitted or empty, the `default` profile will be used).
+   */
+  profiles?: string[]
+  /**
+   * Ad-hoc configuration options to be applied over the top of whatever is loaded from the configuration file/profiles.
+   */
+  provided?: Partial<IConfiguration>
+}
+
+export interface IResolvedConfiguration {
+  /**
+   * The final flat configuration object resolved from the configuration file/profiles plus any extra provided.
+   */
+  original: IConfiguration
+  /**
+   * The format that can be passed into `runCucumber`.
+   */
+  runnable: IRunnableConfiguration
+}
 
 export interface ISourcesCoordinates {
   defaultDialect: string
@@ -13,6 +36,17 @@ export interface ISourcesCoordinates {
   names: string[]
   tagExpression: string
   order: PickleOrder
+}
+
+export interface ISupportCodeCoordinates {
+  requireModules: string[]
+  requirePaths: string[]
+  importPaths: string[]
+}
+
+export interface ILoadSupportOptions {
+  sources: ISourcesCoordinates
+  support: ISupportCodeCoordinates
 }
 
 export interface IRunOptionsRuntime extends IRuntimeOptions {
@@ -38,38 +72,49 @@ export interface IRunnableConfiguration {
   formats: IRunOptionsFormats
 }
 
-export interface IRunConfiguration {
+export type ISupportCodeCoordinatesOrLibrary =
+  | ISupportCodeCoordinates
+  | ISupportCodeLibrary
+
+export interface IRunOptions {
   sources: ISourcesCoordinates
-  support: ISupportCodeCoordinates | ISupportCodeLibrary
+  support: ISupportCodeCoordinatesOrLibrary
   runtime: IRunOptionsRuntime
   formats: IRunOptionsFormats
 }
 
+/**
+ * Contextual data about the project environment.
+ */
 export interface IRunEnvironment {
   /**
-   * Working directory for the project (defaults to `process.cwd()` if omitted)
+   * Working directory for the project (defaults to `process.cwd()` if omitted).
    */
   cwd?: string
   /**
-   * Writable stream where the test run's main output is written (defaults to `process.stdout` if omitted)
+   * Writable stream where the test run's main output is written (defaults to `process.stdout` if omitted).
    */
   stdout?: IFormatterStream
   /**
-   * Writable stream where the test run's warning/error output is written (defaults to `process.stderr` if omitted)
+   * Writable stream where the test run's warning/error output is written (defaults to `process.stderr` if omitted).
    */
   stderr?: IFormatterStream
   /**
-   * Environment variables (defaults to `process.env` if omitted)
+   * Environment variables (defaults to `process.env` if omitted).
    */
   env?: NodeJS.ProcessEnv
 }
 
-export interface IResolvedConfiguration {
-  original: IConfiguration
-  runnable: IRunnableConfiguration
-}
-
+/**
+ * Result of a Cucumber test run.
+ */
 export interface IRunResult {
+  /**
+   * Whether the test run was overall successful i.e. no failed scenarios. The exact meaning can vary based on the `strict` configuration option.
+   */
   success: boolean
+  /**
+   * The support code library that was used in the test run; can be reused in subsequent `runCucumber` calls.
+   */
   support: ISupportCodeLibrary
 }

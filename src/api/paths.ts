@@ -2,8 +2,7 @@ import { promisify } from 'util'
 import glob from 'glob'
 import path from 'path'
 import fs from 'mz/fs'
-import { ISourcesCoordinates } from './types'
-import { ISupportCodeCoordinates } from '../support_code_library_builder/types'
+import { ISourcesCoordinates, ISupportCodeCoordinates } from './types'
 
 export async function resolvePaths(
   cwd: string,

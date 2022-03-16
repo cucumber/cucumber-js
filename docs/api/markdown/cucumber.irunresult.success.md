@@ -4,6 +4,8 @@
 
 ## IRunResult.success property
 
+Whether the test run was overall successful i.e. no failed scenarios. The exact meaning can vary based on the `strict` configuration option.
+
 <b>Signature:</b>
 
 ```typescript

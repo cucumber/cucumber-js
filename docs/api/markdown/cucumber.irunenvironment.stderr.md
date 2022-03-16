@@ -4,7 +4,7 @@
 
 ## IRunEnvironment.stderr property
 
-Writable stream where the test run's warning/error output is written (defaults to `process.stderr` if omitted)
+Writable stream where the test run's warning/error output is written (defaults to `process.stderr` if omitted).
 
 <b>Signature:</b>
 

@@ -17,5 +17,5 @@ export interface IRunnableConfiguration
 |  [formats](./cucumber.irunnableconfiguration.formats.md) | [IRunOptionsFormats](./cucumber.irunoptionsformats.md) |  |
 |  [runtime](./cucumber.irunnableconfiguration.runtime.md) | [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md) |  |
 |  [sources](./cucumber.irunnableconfiguration.sources.md) | [ISourcesCoordinates](./cucumber.isourcescoordinates.md) |  |
-|  [support](./cucumber.irunnableconfiguration.support.md) | ISupportCodeCoordinates |  |
+|  [support](./cucumber.irunnableconfiguration.support.md) | [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md) |  |
 

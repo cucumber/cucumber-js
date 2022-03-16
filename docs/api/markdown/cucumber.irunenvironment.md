@@ -4,6 +4,8 @@
 
 ## IRunEnvironment interface
 
+Contextual data about the project environment.
+
 <b>Signature:</b>
 
 ```typescript
@@ -14,8 +16,8 @@ export interface IRunEnvironment
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [cwd?](./cucumber.irunenvironment.cwd.md) | string | <i>(Optional)</i> Working directory for the project (defaults to <code>process.cwd()</code> if omitted) |
-|  [env?](./cucumber.irunenvironment.env.md) | NodeJS.ProcessEnv | <i>(Optional)</i> Environment variables (defaults to <code>process.env</code> if omitted) |
-|  [stderr?](./cucumber.irunenvironment.stderr.md) | IFormatterStream | <i>(Optional)</i> Writable stream where the test run's warning/error output is written (defaults to <code>process.stderr</code> if omitted) |
-|  [stdout?](./cucumber.irunenvironment.stdout.md) | IFormatterStream | <i>(Optional)</i> Writable stream where the test run's main output is written (defaults to <code>process.stdout</code> if omitted) |
+|  [cwd?](./cucumber.irunenvironment.cwd.md) | string | <i>(Optional)</i> Working directory for the project (defaults to <code>process.cwd()</code> if omitted). |
+|  [env?](./cucumber.irunenvironment.env.md) | NodeJS.ProcessEnv | <i>(Optional)</i> Environment variables (defaults to <code>process.env</code> if omitted). |
+|  [stderr?](./cucumber.irunenvironment.stderr.md) | IFormatterStream | <i>(Optional)</i> Writable stream where the test run's warning/error output is written (defaults to <code>process.stderr</code> if omitted). |
+|  [stdout?](./cucumber.irunenvironment.stdout.md) | IFormatterStream | <i>(Optional)</i> Writable stream where the test run's main output is written (defaults to <code>process.stdout</code> if omitted). |
 

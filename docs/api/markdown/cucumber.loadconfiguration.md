@@ -4,22 +4,20 @@
 
 ## loadConfiguration() function
 
+Load user-authored configuration to be used in a test run.
+
 <b>Signature:</b>
 
 ```typescript
-export declare function loadConfiguration(options: {
-    file?: string;
-    profiles?: string[];
-    provided?: Partial<IConfiguration>;
-}, environment: IRunEnvironment): Promise<IResolvedConfiguration>;
+export declare function loadConfiguration(options: ILoadConfigurationOptions, environment: IRunEnvironment): Promise<IResolvedConfiguration>;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  options | { file?: string; profiles?: string\[\]; provided?: Partial&lt;IConfiguration&gt;; } |  |
-|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) |  |
+|  options | [ILoadConfigurationOptions](./cucumber.iloadconfigurationoptions.md) | Coordinates required to find configuration. |
+|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) | Project environment. |
 
 <b>Returns:</b>
 
