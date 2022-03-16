@@ -4,11 +4,13 @@
   "compiler": {
   },
   "apiReport": {
-    "enabled": false
+    "enabled": true,
+    "reportFolder": "<projectFolder>/docs/api/",
+    "reportTempFolder": "<projectFolder>/tmp/api-extractor/"
   },
   "docModel": {
     "enabled": true,
-    "apiJsonFilePath": "<projectFolder>/docs/api/model/cucumber.api.json"
+    "apiJsonFilePath": "<projectFolder>/tmp/api-extractor/<unscopedPackageName>.api.json"
   },
   "dtsRollup": {
     "enabled": false
