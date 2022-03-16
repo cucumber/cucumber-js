@@ -284,7 +284,7 @@
     "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.node.json && shx cp src/importer.js lib/ && shx cp src/wrapper.mjs lib/ && shx cp src/api/wrapper.mjs lib/api/",
     "cck-test": "mocha 'compatibility/**/*_spec.ts'",
     "docs:ci": "api-extractor run --verbose",
-    "docs:local": "api-extractor run --verbose --local && api-documenter markdown --input-folder ./tmp/api-extractor --output-folder ./docs/api/markdown",
+    "docs:local": "api-extractor run --verbose --local && api-documenter markdown --input-folder ./tmp/api-extractor --output-folder ./docs/api",
     "feature-test": "node ./bin/cucumber-js",
     "lint-autofix": "eslint --fix \"{compatibility,example,features,scripts,src,test}/**/*.ts\"",
     "lint-code": "eslint \"{compatibility,example,features,scripts,src,test}/**/*.ts\"",
