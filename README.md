@@ -76,9 +76,9 @@ Finally, run Cucumber:
 $ npx cucumber-js
 ```
 
-## Documentation
+If you learn best by example, we have [a repo with several example projects](https://github.com/cucumber-examples/cucumber-js-examples), that might help you get going.
 
-If you learn best by example, we have [a repo with several example projects](https://github.com/cucumber-examples/cucumber-js-examples), including for browser-based and command-line applications, that might help you get going. Otherwise, read on.
+## Documentation
 
 The following documentation is for `main`, which might contain some unreleased features. See [documentation for older versions](./docs/older_versions.md) if you need it.
 
