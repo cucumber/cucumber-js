@@ -9,7 +9,7 @@ Load support code for use in test runs.
 <b>Signature:</b>
 
 ```typescript
-export declare function loadSupport(options: ILoadSupportOptions, environment: IRunEnvironment): Promise<ISupportCodeLibrary>;
+export declare function loadSupport(options: ILoadSupportOptions, environment?: IRunEnvironment): Promise<ISupportCodeLibrary>;
 ```
 
 ## Parameters

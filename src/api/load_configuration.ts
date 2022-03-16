@@ -21,8 +21,8 @@ import { mergeEnvironment } from './environment'
  * @param environment - Project environment.
  */
 export async function loadConfiguration(
-  options: ILoadConfigurationOptions,
-  environment: IRunEnvironment
+  options: ILoadConfigurationOptions = {},
+  environment: IRunEnvironment = {}
 ): Promise<IResolvedConfiguration> {
   const { cwd, env } = mergeEnvironment(environment)
   const configFile = options.file ?? locateFile(cwd)

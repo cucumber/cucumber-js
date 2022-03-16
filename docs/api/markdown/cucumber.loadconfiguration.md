@@ -9,7 +9,7 @@ Load user-authored configuration to be used in a test run.
 <b>Signature:</b>
 
 ```typescript
-export declare function loadConfiguration(options: ILoadConfigurationOptions, environment: IRunEnvironment): Promise<IResolvedConfiguration>;
+export declare function loadConfiguration(options?: ILoadConfigurationOptions, environment?: IRunEnvironment): Promise<IResolvedConfiguration>;
 ```
 
 ## Parameters

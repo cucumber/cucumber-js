@@ -9,7 +9,7 @@ Execute a Cucumber test run.
 <b>Signature:</b>
 
 ```typescript
-export declare function runCucumber(configuration: IRunOptions, environment: IRunEnvironment, onMessage?: (message: Envelope) => void): Promise<IRunResult>;
+export declare function runCucumber(configuration: IRunOptions, environment?: IRunEnvironment, onMessage?: (message: Envelope) => void): Promise<IRunResult>;
 ```
 
 ## Parameters

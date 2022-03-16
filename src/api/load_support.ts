@@ -14,7 +14,7 @@ import { ISupportCodeLibrary } from '../support_code_library_builder/types'
  */
 export async function loadSupport(
   options: ILoadSupportOptions,
-  environment: IRunEnvironment
+  environment: IRunEnvironment = {}
 ): Promise<ISupportCodeLibrary> {
   const { cwd } = mergeEnvironment(environment)
   const newId = IdGenerator.uuid()

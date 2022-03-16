@@ -133,12 +133,12 @@ export interface ISupportCodeCoordinates {
 export type ISupportCodeCoordinatesOrLibrary = ISupportCodeCoordinates | ISupportCodeLibrary;
 
 // @public
-export function loadConfiguration(options: ILoadConfigurationOptions, environment: IRunEnvironment): Promise<IResolvedConfiguration>;
+export function loadConfiguration(options?: ILoadConfigurationOptions, environment?: IRunEnvironment): Promise<IResolvedConfiguration>;
 
 // @public
-export function loadSupport(options: ILoadSupportOptions, environment: IRunEnvironment): Promise<ISupportCodeLibrary>;
+export function loadSupport(options: ILoadSupportOptions, environment?: IRunEnvironment): Promise<ISupportCodeLibrary>;
 
 // @public
-export function runCucumber(configuration: IRunOptions, environment: IRunEnvironment, onMessage?: (message: Envelope) => void): Promise<IRunResult>;
+export function runCucumber(configuration: IRunOptions, environment?: IRunEnvironment, onMessage?: (message: Envelope) => void): Promise<IRunResult>;
 
 ```

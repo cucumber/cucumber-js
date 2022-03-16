@@ -28,7 +28,7 @@ import { mergeEnvironment } from './environment'
  */
 export async function runCucumber(
   configuration: IRunOptions,
-  environment: IRunEnvironment,
+  environment: IRunEnvironment = {},
   onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
   const { cwd, stdout, stderr, env } = mergeEnvironment(environment)
