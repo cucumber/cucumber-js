@@ -4,9 +4,6 @@
 
 ## ILoadConfigurationOptions interface
 
-> This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
-> 
-
 
 <b>Signature:</b>
 
@@ -18,7 +15,7 @@ export interface ILoadConfigurationOptions
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [file?](./cucumber.iloadconfigurationoptions.file.md) | string | <b><i>(BETA)</i></b> <i>(Optional)</i> Path to load configuration file from (defaults to <code>cucumber.(js&#124;cjs&#124;mjs&#124;json)</code> if omitted). |
-|  [profiles?](./cucumber.iloadconfigurationoptions.profiles.md) | string\[\] | <b><i>(BETA)</i></b> <i>(Optional)</i> Zero or more profile names from which to source configuration (if omitted or empty, the <code>default</code> profile will be used). |
-|  [provided?](./cucumber.iloadconfigurationoptions.provided.md) | Partial&lt;IConfiguration&gt; | <b><i>(BETA)</i></b> <i>(Optional)</i> Ad-hoc configuration options to be applied over the top of whatever is loaded from the configuration file/profiles. |
+|  [file?](./cucumber.iloadconfigurationoptions.file.md) | string | <i>(Optional)</i> Path to load configuration file from (defaults to <code>cucumber.(js&#124;cjs&#124;mjs&#124;json)</code> if omitted). |
+|  [profiles?](./cucumber.iloadconfigurationoptions.profiles.md) | string\[\] | <i>(Optional)</i> Zero or more profile names from which to source configuration (if omitted or empty, the <code>default</code> profile will be used). |
+|  [provided?](./cucumber.iloadconfigurationoptions.provided.md) | Partial&lt;IConfiguration&gt; | <i>(Optional)</i> Ad-hoc configuration options to be applied over the top of whatever is loaded from the configuration file/profiles. |
 

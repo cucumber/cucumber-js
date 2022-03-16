@@ -172,14 +172,14 @@
         {
           "kind": "Interface",
           "canonicalReference": "@cucumber/cucumber!ILoadConfigurationOptions:interface",
-          "docComment": "/**\n * @beta\n */\n",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
               "text": "export interface ILoadConfigurationOptions "
             }
           ],
-          "releaseTag": "Beta",
+          "releaseTag": "Public",
           "name": "ILoadConfigurationOptions",
           "members": [
             {
@@ -201,7 +201,7 @@
                 }
               ],
               "isOptional": true,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "file",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -227,7 +227,7 @@
                 }
               ],
               "isOptional": true,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "profiles",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -267,7 +267,7 @@
                 }
               ],
               "isOptional": true,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "provided",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -280,14 +280,14 @@
         {
           "kind": "Interface",
           "canonicalReference": "@cucumber/cucumber!ILoadSupportOptions:interface",
-          "docComment": "/**\n * @beta\n */\n",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
               "text": "export interface ILoadSupportOptions "
             }
           ],
-          "releaseTag": "Beta",
+          "releaseTag": "Public",
           "name": "ILoadSupportOptions",
           "members": [
             {
@@ -310,7 +310,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "sources",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -337,7 +337,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "support",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -350,14 +350,14 @@
         {
           "kind": "Interface",
           "canonicalReference": "@cucumber/cucumber!IResolvedConfiguration:interface",
-          "docComment": "/**\n * @beta\n */\n",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
               "text": "export interface IResolvedConfiguration "
             }
           ],
-          "releaseTag": "Beta",
+          "releaseTag": "Public",
           "name": "IResolvedConfiguration",
           "members": [
             {
@@ -380,7 +380,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "original",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -407,7 +407,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "runnable",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -420,14 +420,14 @@
         {
           "kind": "Interface",
           "canonicalReference": "@cucumber/cucumber!IRunEnvironment:interface",
-          "docComment": "/**\n * Contextual data about the project environment.\n *\n * @beta\n */\n",
+          "docComment": "/**\n * Contextual data about the project environment.\n *\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
               "text": "export interface IRunEnvironment "
             }
           ],
-          "releaseTag": "Beta",
+          "releaseTag": "Public",
           "name": "IRunEnvironment",
           "members": [
             {
@@ -449,7 +449,7 @@
                 }
               ],
               "isOptional": true,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "cwd",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -476,7 +476,7 @@
                 }
               ],
               "isOptional": true,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "env",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -503,7 +503,7 @@
                 }
               ],
               "isOptional": true,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "stderr",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -530,7 +530,7 @@
                 }
               ],
               "isOptional": true,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "stdout",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -543,14 +543,14 @@
         {
           "kind": "Interface",
           "canonicalReference": "@cucumber/cucumber!IRunnableConfiguration:interface",
-          "docComment": "/**\n * @beta\n */\n",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
               "text": "export interface IRunnableConfiguration "
             }
           ],
-          "releaseTag": "Beta",
+          "releaseTag": "Public",
           "name": "IRunnableConfiguration",
           "members": [
             {
@@ -573,7 +573,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "formats",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -600,7 +600,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "runtime",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -627,7 +627,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "sources",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -654,7 +654,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "support",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -667,14 +667,14 @@
         {
           "kind": "Interface",
           "canonicalReference": "@cucumber/cucumber!IRunOptions:interface",
-          "docComment": "/**\n * @beta\n */\n",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
               "text": "export interface IRunOptions "
             }
           ],
-          "releaseTag": "Beta",
+          "releaseTag": "Public",
           "name": "IRunOptions",
           "members": [
             {
@@ -697,7 +697,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "formats",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -724,7 +724,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "runtime",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -751,7 +751,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "sources",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -778,7 +778,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "support",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -791,14 +791,14 @@
         {
           "kind": "Interface",
           "canonicalReference": "@cucumber/cucumber!IRunOptionsFormats:interface",
-          "docComment": "/**\n * @beta\n */\n",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
               "text": "export interface IRunOptionsFormats "
             }
           ],
-          "releaseTag": "Beta",
+          "releaseTag": "Public",
           "name": "IRunOptionsFormats",
           "members": [
             {
@@ -825,7 +825,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "files",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -852,7 +852,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "options",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -878,7 +878,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "publish",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -904,7 +904,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "stdout",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -917,7 +917,7 @@
         {
           "kind": "Interface",
           "canonicalReference": "@cucumber/cucumber!IRunOptionsRuntime:interface",
-          "docComment": "/**\n * @beta\n */\n",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -933,7 +933,7 @@
               "text": " "
             }
           ],
-          "releaseTag": "Beta",
+          "releaseTag": "Public",
           "name": "IRunOptionsRuntime",
           "members": [
             {
@@ -955,7 +955,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "parallel",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -973,14 +973,14 @@
         {
           "kind": "Interface",
           "canonicalReference": "@cucumber/cucumber!IRunResult:interface",
-          "docComment": "/**\n * Result of a Cucumber test run.\n *\n * @beta\n */\n",
+          "docComment": "/**\n * Result of a Cucumber test run.\n *\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
               "text": "export interface IRunResult "
             }
           ],
-          "releaseTag": "Beta",
+          "releaseTag": "Public",
           "name": "IRunResult",
           "members": [
             {
@@ -1002,7 +1002,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "success",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -1029,7 +1029,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "support",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -1042,14 +1042,14 @@
         {
           "kind": "Interface",
           "canonicalReference": "@cucumber/cucumber!ISourcesCoordinates:interface",
-          "docComment": "/**\n * @beta\n */\n",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
               "text": "export interface ISourcesCoordinates "
             }
           ],
-          "releaseTag": "Beta",
+          "releaseTag": "Public",
           "name": "ISourcesCoordinates",
           "members": [
             {
@@ -1071,7 +1071,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "defaultDialect",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -1097,7 +1097,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "names",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -1124,7 +1124,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "order",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -1150,7 +1150,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "paths",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -1176,7 +1176,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "tagExpression",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -1189,14 +1189,14 @@
         {
           "kind": "Interface",
           "canonicalReference": "@cucumber/cucumber!ISupportCodeCoordinates:interface",
-          "docComment": "/**\n * @beta\n */\n",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
               "text": "export interface ISupportCodeCoordinates "
             }
           ],
-          "releaseTag": "Beta",
+          "releaseTag": "Public",
           "name": "ISupportCodeCoordinates",
           "members": [
             {
@@ -1218,7 +1218,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "importPaths",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -1244,7 +1244,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "requireModules",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -1270,7 +1270,7 @@
                 }
               ],
               "isOptional": false,
-              "releaseTag": "Beta",
+              "releaseTag": "Public",
               "name": "requirePaths",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
@@ -1283,7 +1283,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "@cucumber/cucumber!ISupportCodeCoordinatesOrLibrary:type",
-          "docComment": "/**\n * @beta\n */\n",
+          "docComment": "/**\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1308,7 +1308,7 @@
               "text": ";"
             }
           ],
-          "releaseTag": "Beta",
+          "releaseTag": "Public",
           "name": "ISupportCodeCoordinatesOrLibrary",
           "typeTokenRange": {
             "startIndex": 1,
@@ -1318,7 +1318,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@cucumber/cucumber!loadConfiguration:function(1)",
-          "docComment": "/**\n * Load user-authored configuration to be used in a test run.\n *\n * @param options - Coordinates required to find configuration.\n *\n * @param environment - Project environment.\n *\n * @beta\n */\n",
+          "docComment": "/**\n * Load user-authored configuration to be used in a test run.\n *\n * @param options - Coordinates required to find configuration.\n *\n * @param environment - Project environment.\n *\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1369,7 +1369,7 @@
             "startIndex": 5,
             "endIndex": 9
           },
-          "releaseTag": "Beta",
+          "releaseTag": "Public",
           "overloadIndex": 1,
           "parameters": [
             {
@@ -1392,7 +1392,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@cucumber/cucumber!loadSupport:function(1)",
-          "docComment": "/**\n * Load support code for use in test runs.\n *\n * @param options - Subset of `IRunnableConfiguration` required to find the support code.\n *\n * @param environment - Project environment.\n *\n * @beta\n */\n",
+          "docComment": "/**\n * Load support code for use in test runs.\n *\n * @param options - Subset of `IRunnableConfiguration` required to find the support code.\n *\n * @param environment - Project environment.\n *\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1443,7 +1443,7 @@
             "startIndex": 5,
             "endIndex": 9
           },
-          "releaseTag": "Beta",
+          "releaseTag": "Public",
           "overloadIndex": 1,
           "parameters": [
             {
@@ -1466,7 +1466,7 @@
         {
           "kind": "Function",
           "canonicalReference": "@cucumber/cucumber!runCucumber:function(1)",
-          "docComment": "/**\n * Execute a Cucumber test run.\n *\n * @param configuration - Configuration loaded from `loadConfiguration`.\n *\n * @param environment - Project environment.\n *\n * @param onMessage - Callback fired each time Cucumber emits a message.\n *\n * @beta\n */\n",
+          "docComment": "/**\n * Execute a Cucumber test run.\n *\n * @param configuration - Configuration loaded from `loadConfiguration`.\n *\n * @param environment - Project environment.\n *\n * @param onMessage - Callback fired each time Cucumber emits a message.\n *\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -1534,7 +1534,7 @@
             "startIndex": 9,
             "endIndex": 13
           },
-          "releaseTag": "Beta",
+          "releaseTag": "Public",
           "overloadIndex": 1,
           "parameters": [
             {

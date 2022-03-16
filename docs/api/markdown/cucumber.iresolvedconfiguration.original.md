@@ -4,9 +4,6 @@
 
 ## IResolvedConfiguration.original property
 
-> This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
-> 
-
 The final flat configuration object resolved from the configuration file/profiles plus any extra provided.
 
 <b>Signature:</b>

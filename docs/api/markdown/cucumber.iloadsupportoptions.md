@@ -4,9 +4,6 @@
 
 ## ILoadSupportOptions interface
 
-> This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
-> 
-
 
 <b>Signature:</b>
 
@@ -18,6 +15,6 @@ export interface ILoadSupportOptions
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [sources](./cucumber.iloadsupportoptions.sources.md) | [ISourcesCoordinates](./cucumber.isourcescoordinates.md) | <b><i>(BETA)</i></b> |
-|  [support](./cucumber.iloadsupportoptions.support.md) | [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md) | <b><i>(BETA)</i></b> |
+|  [sources](./cucumber.iloadsupportoptions.sources.md) | [ISourcesCoordinates](./cucumber.isourcescoordinates.md) |  |
+|  [support](./cucumber.iloadsupportoptions.support.md) | [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md) |  |
 

@@ -5,7 +5,7 @@ import { IRuntimeOptions } from '../runtime'
 import { IConfiguration } from '../configuration'
 
 /**
- * @beta
+ * @public
  */
 export interface ILoadConfigurationOptions {
   /**
@@ -23,7 +23,7 @@ export interface ILoadConfigurationOptions {
 }
 
 /**
- * @beta
+ * @public
  */
 export interface IResolvedConfiguration {
   /**
@@ -37,7 +37,7 @@ export interface IResolvedConfiguration {
 }
 
 /**
- * @beta
+ * @public
  */
 export interface ISourcesCoordinates {
   defaultDialect: string
@@ -48,7 +48,7 @@ export interface ISourcesCoordinates {
 }
 
 /**
- * @beta
+ * @public
  */
 export interface ISupportCodeCoordinates {
   requireModules: string[]
@@ -57,7 +57,7 @@ export interface ISupportCodeCoordinates {
 }
 
 /**
- * @beta
+ * @public
  */
 export interface ILoadSupportOptions {
   sources: ISourcesCoordinates
@@ -65,14 +65,14 @@ export interface ILoadSupportOptions {
 }
 
 /**
- * @beta
+ * @public
  */
 export interface IRunOptionsRuntime extends IRuntimeOptions {
   parallel: number
 }
 
 /**
- * @beta
+ * @public
  */
 export interface IRunOptionsFormats {
   stdout: string
@@ -87,7 +87,7 @@ export interface IRunOptionsFormats {
 }
 
 /**
- * @beta
+ * @public
  */
 export interface IRunnableConfiguration {
   sources: ISourcesCoordinates
@@ -97,14 +97,14 @@ export interface IRunnableConfiguration {
 }
 
 /**
- * @beta
+ * @public
  */
 export type ISupportCodeCoordinatesOrLibrary =
   | ISupportCodeCoordinates
   | ISupportCodeLibrary
 
 /**
- * @beta
+ * @public
  */
 export interface IRunOptions {
   sources: ISourcesCoordinates
@@ -116,7 +116,7 @@ export interface IRunOptions {
 /**
  * Contextual data about the project environment.
  *
- * @beta
+ * @public
  */
 export interface IRunEnvironment {
   /**
@@ -140,7 +140,7 @@ export interface IRunEnvironment {
 /**
  * Result of a Cucumber test run.
  *
- * @beta
+ * @public
  */
 export interface IRunResult {
   /**

@@ -4,9 +4,6 @@
 
 ## ISupportCodeCoordinates interface
 
-> This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
-> 
-
 
 <b>Signature:</b>
 
@@ -18,7 +15,7 @@ export interface ISupportCodeCoordinates
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [importPaths](./cucumber.isupportcodecoordinates.importpaths.md) | string\[\] | <b><i>(BETA)</i></b> |
-|  [requireModules](./cucumber.isupportcodecoordinates.requiremodules.md) | string\[\] | <b><i>(BETA)</i></b> |
-|  [requirePaths](./cucumber.isupportcodecoordinates.requirepaths.md) | string\[\] | <b><i>(BETA)</i></b> |
+|  [importPaths](./cucumber.isupportcodecoordinates.importpaths.md) | string\[\] |  |
+|  [requireModules](./cucumber.isupportcodecoordinates.requiremodules.md) | string\[\] |  |
+|  [requirePaths](./cucumber.isupportcodecoordinates.requirepaths.md) | string\[\] |  |
 

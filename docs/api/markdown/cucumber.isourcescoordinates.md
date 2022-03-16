@@ -4,9 +4,6 @@
 
 ## ISourcesCoordinates interface
 
-> This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
-> 
-
 
 <b>Signature:</b>
 
@@ -18,9 +15,9 @@ export interface ISourcesCoordinates
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [defaultDialect](./cucumber.isourcescoordinates.defaultdialect.md) | string | <b><i>(BETA)</i></b> |
-|  [names](./cucumber.isourcescoordinates.names.md) | string\[\] | <b><i>(BETA)</i></b> |
-|  [order](./cucumber.isourcescoordinates.order.md) | PickleOrder | <b><i>(BETA)</i></b> |
-|  [paths](./cucumber.isourcescoordinates.paths.md) | string\[\] | <b><i>(BETA)</i></b> |
-|  [tagExpression](./cucumber.isourcescoordinates.tagexpression.md) | string | <b><i>(BETA)</i></b> |
+|  [defaultDialect](./cucumber.isourcescoordinates.defaultdialect.md) | string |  |
+|  [names](./cucumber.isourcescoordinates.names.md) | string\[\] |  |
+|  [order](./cucumber.isourcescoordinates.order.md) | PickleOrder |  |
+|  [paths](./cucumber.isourcescoordinates.paths.md) | string\[\] |  |
+|  [tagExpression](./cucumber.isourcescoordinates.tagexpression.md) | string |  |
 

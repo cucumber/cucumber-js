@@ -4,9 +4,6 @@
 
 ## IRunOptionsFormats interface
 
-> This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
-> 
-
 
 <b>Signature:</b>
 
@@ -18,8 +15,8 @@ export interface IRunOptionsFormats
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [files](./cucumber.irunoptionsformats.files.md) | Record&lt;string, string&gt; | <b><i>(BETA)</i></b> |
-|  [options](./cucumber.irunoptionsformats.options.md) | FormatOptions | <b><i>(BETA)</i></b> |
-|  [publish](./cucumber.irunoptionsformats.publish.md) | { url?: string; token?: string; } \| false | <b><i>(BETA)</i></b> |
-|  [stdout](./cucumber.irunoptionsformats.stdout.md) | string | <b><i>(BETA)</i></b> |
+|  [files](./cucumber.irunoptionsformats.files.md) | Record&lt;string, string&gt; |  |
+|  [options](./cucumber.irunoptionsformats.options.md) | FormatOptions |  |
+|  [publish](./cucumber.irunoptionsformats.publish.md) | { url?: string; token?: string; } \| false |  |
+|  [stdout](./cucumber.irunoptionsformats.stdout.md) | string |  |
 

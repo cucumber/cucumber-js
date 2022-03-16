@@ -4,9 +4,6 @@
 
 ## ILoadConfigurationOptions.file property
 
-> This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
-> 
-
 Path to load configuration file from (defaults to `cucumber.(js|cjs|mjs|json)` if omitted).
 
 <b>Signature:</b>

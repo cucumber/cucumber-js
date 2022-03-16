@@ -21,7 +21,7 @@ import { mergeEnvironment } from './environment'
 /**
  * Execute a Cucumber test run.
  *
- * @beta
+ * @public
  * @param configuration - Configuration loaded from `loadConfiguration`.
  * @param environment - Project environment.
  * @param onMessage - Callback fired each time Cucumber emits a message.

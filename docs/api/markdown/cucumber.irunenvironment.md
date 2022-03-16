@@ -4,9 +4,6 @@
 
 ## IRunEnvironment interface
 
-> This API is provided as a preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
-> 
-
 Contextual data about the project environment.
 
 <b>Signature:</b>
@@ -19,8 +16,8 @@ export interface IRunEnvironment
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [cwd?](./cucumber.irunenvironment.cwd.md) | string | <b><i>(BETA)</i></b> <i>(Optional)</i> Working directory for the project (defaults to <code>process.cwd()</code> if omitted). |
-|  [env?](./cucumber.irunenvironment.env.md) | NodeJS.ProcessEnv | <b><i>(BETA)</i></b> <i>(Optional)</i> Environment variables (defaults to <code>process.env</code> if omitted). |
-|  [stderr?](./cucumber.irunenvironment.stderr.md) | IFormatterStream | <b><i>(BETA)</i></b> <i>(Optional)</i> Writable stream where the test run's warning/error output is written (defaults to <code>process.stderr</code> if omitted). |
-|  [stdout?](./cucumber.irunenvironment.stdout.md) | IFormatterStream | <b><i>(BETA)</i></b> <i>(Optional)</i> Writable stream where the test run's main output is written (defaults to <code>process.stdout</code> if omitted). |
+|  [cwd?](./cucumber.irunenvironment.cwd.md) | string | <i>(Optional)</i> Working directory for the project (defaults to <code>process.cwd()</code> if omitted). |
+|  [env?](./cucumber.irunenvironment.env.md) | NodeJS.ProcessEnv | <i>(Optional)</i> Environment variables (defaults to <code>process.env</code> if omitted). |
+|  [stderr?](./cucumber.irunenvironment.stderr.md) | IFormatterStream | <i>(Optional)</i> Writable stream where the test run's warning/error output is written (defaults to <code>process.stderr</code> if omitted). |
+|  [stdout?](./cucumber.irunenvironment.stdout.md) | IFormatterStream | <i>(Optional)</i> Writable stream where the test run's main output is written (defaults to <code>process.stdout</code> if omitted). |
 
