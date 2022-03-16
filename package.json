@@ -175,6 +175,10 @@
       "import": "./lib/wrapper.mjs",
       "require": "./lib/index.js"
     },
+    "./api": {
+      "import": "./lib/api/wrapper.mjs",
+      "require": "./lib/api/index.js"
+    },
     "./lib/*": {
       "require": "./lib/*.js"
     },
@@ -277,7 +281,7 @@
     "typescript": "4.6.2"
   },
   "scripts": {
-    "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.node.json && shx cp src/importer.js lib/ && shx cp src/wrapper.mjs lib/",
+    "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.node.json && shx cp src/importer.js lib/ && shx cp src/wrapper.mjs lib/ && shx cp src/api/wrapper.mjs lib/api/",
     "cck-test": "mocha 'compatibility/**/*_spec.ts'",
     "docs": "npm run docs:extract && npm run docs:generate",
     "docs:extract": "api-extractor run --local --verbose",
