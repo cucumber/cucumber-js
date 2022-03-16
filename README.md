@@ -22,7 +22,7 @@ your team.
 
 This is the JavaScript implementation of Cucumber. It runs on [maintained versions](https://github.com/nodejs/Release) of Node.js. You can [quickly try it via CodeSandbox](https://codesandbox.io/s/cucumber-js-demo-2p3vrl?file=/features/greeting.feature), or read on to get started locally in a couple of minutes.
 
-Looking to contribute? Read our [code of conduct](https://github.com/cucumber/common/blob/main/CODE_OF_CONDUCT.md) first, then check the [contributing guide](./CONTRIBUTING.md) to get up and running.
+Looking to contribute? Read our [code of conduct](https://github.com/cucumber/.github/blob/main/CODE_OF_CONDUCT.md) first, then check the [contributing guide](./CONTRIBUTING.md) to get up and running.
 
 ## Install
 
