@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="https://raw.githubusercontent.com/cucumber/cucumber-js/main/docs/images/logo.svg" alt="">
+  <img src="./docs/images/logo.svg" alt="">
   <br>
   Cucumber
 </h1>
