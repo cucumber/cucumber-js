@@ -1,22 +1,30 @@
-import { IRunEnvironment, IResolvedConfiguration } from './types'
+import {
+  IRunEnvironment,
+  IResolvedConfiguration,
+  ILoadConfigurationOptions,
+} from './types'
 import { locateFile } from '../configuration/locate_file'
 import {
   DEFAULT_CONFIGURATION,
   fromFile,
-  IConfiguration,
   mergeConfigurations,
 } from '../configuration'
 import { validateConfiguration } from '../configuration/validate_configuration'
 import { convertConfiguration } from './convert_configuration'
+import { mergeEnvironment } from './environment'
 
+/**
+ * Load user-authored configuration to be used in a test run.
+ *
+ * @public
+ * @param options - Coordinates required to find configuration.
+ * @param environment - Project environment.
+ */
 export async function loadConfiguration(
-  options: {
-    file?: string
-    profiles?: string[]
-    provided?: Partial<IConfiguration>
-  },
-  { cwd = process.cwd(), env = process.env }: Partial<IRunEnvironment>
+  options: ILoadConfigurationOptions = {},
+  environment: IRunEnvironment = {}
 ): Promise<IResolvedConfiguration> {
+  const { cwd, env } = mergeEnvironment(environment)
   const configFile = options.file ?? locateFile(cwd)
   const profileConfiguration = configFile
     ? await fromFile(cwd, configFile, options.profiles)
@@ -29,7 +37,7 @@ export async function loadConfiguration(
   validateConfiguration(original)
   const runnable = await convertConfiguration(original, env)
   return {
-    original,
-    runnable,
+    useConfiguration: original,
+    runConfiguration: runnable,
   }
 }

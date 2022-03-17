@@ -1,5 +1,8 @@
-/*
-Anything exported here will be publicly available via `@cucumber/cucumber/api`
+/**
+ * Cucumber for JavaScript
+ *
+ * @remarks These docs cover the API used for running Cucumber programmatically. The entry point is `@cucumber/cucumber/api`.
+ * @packageDocumentation
  */
 
 export * from './load_configuration'

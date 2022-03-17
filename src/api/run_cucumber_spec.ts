@@ -35,14 +35,14 @@ async function setupEnvironment(): Promise<Partial<IRunEnvironment>> {
   return { cwd, stdout }
 }
 
-async function teardownEnvironment(environment: Partial<IRunEnvironment>) {
+async function teardownEnvironment(environment: IRunEnvironment) {
   await fs.rmdir(environment.cwd, { recursive: true })
   environment.stdout.end()
 }
 
 describe('runCucumber', () => {
   describe('preloading support code', () => {
-    let environment: Partial<IRunEnvironment>
+    let environment: IRunEnvironment
     beforeEach(async () => {
       environment = await setupEnvironment()
     })
@@ -50,10 +50,12 @@ describe('runCucumber', () => {
 
     it('should be able to load support code upfront and supply it to runCucumber', async () => {
       const messages: Envelope[] = []
-      const { runnable } = await loadConfiguration({}, environment)
-      const support = await loadSupport(runnable, environment)
-      await runCucumber({ ...runnable, support }, environment, (envelope) =>
-        messages.push(envelope)
+      const { runConfiguration } = await loadConfiguration({}, environment)
+      const support = await loadSupport(runConfiguration, environment)
+      await runCucumber(
+        { ...runConfiguration, support },
+        environment,
+        (envelope) => messages.push(envelope)
       )
       const testStepFinishedEnvelopes = messages.filter(
         (envelope) => envelope.testStepFinished
@@ -70,7 +72,7 @@ describe('runCucumber', () => {
   })
 
   describe('reusing support code across runs', () => {
-    let environment: Partial<IRunEnvironment>
+    let environment: IRunEnvironment
     beforeEach(async () => {
       environment = await setupEnvironment()
     })
@@ -78,12 +80,16 @@ describe('runCucumber', () => {
 
     it('successfully executes 2 test runs', async () => {
       const messages: Envelope[] = []
-      const { runnable } = await loadConfiguration({}, environment)
-      const { support } = await runCucumber(runnable, environment, (envelope) =>
-        messages.push(envelope)
+      const { runConfiguration } = await loadConfiguration({}, environment)
+      const { support } = await runCucumber(
+        runConfiguration,
+        environment,
+        (envelope) => messages.push(envelope)
       )
-      await runCucumber({ ...runnable, support }, environment, (envelope) =>
-        messages.push(envelope)
+      await runCucumber(
+        { ...runConfiguration, support },
+        environment,
+        (envelope) => messages.push(envelope)
       )
 
       const testStepFinishedEnvelopes = messages.filter(

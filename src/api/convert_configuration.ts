@@ -3,12 +3,12 @@ import {
   isTruthyString,
   OptionSplitter,
 } from '../configuration'
-import { IRunnableConfiguration } from './types'
+import { IRunConfiguration } from './types'
 
 export async function convertConfiguration(
   flatConfiguration: IConfiguration,
   env: NodeJS.ProcessEnv
-): Promise<IRunnableConfiguration> {
+): Promise<IRunConfiguration> {
   return {
     sources: {
       paths: flatConfiguration.paths,

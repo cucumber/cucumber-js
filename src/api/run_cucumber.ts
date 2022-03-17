@@ -8,7 +8,7 @@ import {
 } from '../cli/helpers'
 import { GherkinStreams } from '@cucumber/gherkin-streams'
 import PickleFilter from '../pickle_filter'
-import { IRunConfiguration, IRunEnvironment, IRunResult } from './types'
+import { IRunOptions, IRunEnvironment, IRunResult } from './types'
 import { resolvePaths } from './paths'
 import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
@@ -16,17 +16,22 @@ import { getSupportCodeLibrary } from './support'
 import { Console } from 'console'
 import * as messages from '@cucumber/messages'
 import { doesHaveValue } from '../value_checker'
+import { mergeEnvironment } from './environment'
 
+/**
+ * Execute a Cucumber test run.
+ *
+ * @public
+ * @param configuration - Configuration loaded from `loadConfiguration`.
+ * @param environment - Project environment.
+ * @param onMessage - Callback fired each time Cucumber emits a message.
+ */
 export async function runCucumber(
-  configuration: IRunConfiguration,
-  {
-    cwd = process.cwd(),
-    stdout = process.stdout,
-    stderr = process.stderr,
-    env = process.env,
-  }: Partial<IRunEnvironment>,
+  configuration: IRunOptions,
+  environment: IRunEnvironment = {},
   onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
+  const { cwd, stdout, stderr, env } = mergeEnvironment(environment)
   const logger = new Console(stdout, stderr)
   const newId = IdGenerator.uuid()
 
