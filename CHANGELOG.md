@@ -18,7 +18,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
   ([#1136](https://github.com/cucumber/cucumber-js/issues/1136)
   [#1721](https://github.com/cucumber/cucumber-js/pull/1721))
 - Support for configuration to be objects instead of argv strings, and for configuration files in ESM and JSON formats ([#1952](https://github.com/cucumber/cucumber-js/pull/1952))
-- New API for running Cucumber programmatically ([#1955](https://github.com/cucumber/cucumber-js/pull/1955))
+- New API for running Cucumber programmatically (see [documentation](./docs/javascript_api.md)) ([#1955](https://github.com/cucumber/cucumber-js/pull/1955))
 
 ### Fixed
 - Warn users who are on an unsupported node version ([#1922](https://github.com/cucumber/cucumber-js/pull/1922))
