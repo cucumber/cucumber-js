@@ -25,8 +25,8 @@ These docs cover the API used for running Cucumber programmatically. The entry p
 |  [ILoadConfigurationOptions](./cucumber.iloadconfigurationoptions.md) |  |
 |  [ILoadSupportOptions](./cucumber.iloadsupportoptions.md) |  |
 |  [IResolvedConfiguration](./cucumber.iresolvedconfiguration.md) |  |
+|  [IRunConfiguration](./cucumber.irunconfiguration.md) |  |
 |  [IRunEnvironment](./cucumber.irunenvironment.md) | Contextual data about the project environment. |
-|  [IRunnableConfiguration](./cucumber.irunnableconfiguration.md) |  |
 |  [IRunOptions](./cucumber.irunoptions.md) |  |
 |  [IRunOptionsFormats](./cucumber.irunoptionsformats.md) |  |
 |  [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md) |  |

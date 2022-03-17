@@ -37,7 +37,7 @@ export async function loadConfiguration(
   validateConfiguration(original)
   const runnable = await convertConfiguration(original, env)
   return {
-    original,
-    runnable,
+    useConfiguration: original,
+    runConfiguration: runnable,
   }
 }

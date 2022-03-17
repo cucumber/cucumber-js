@@ -29,11 +29,11 @@ export interface IResolvedConfiguration {
   /**
    * The final flat configuration object resolved from the configuration file/profiles plus any extra provided.
    */
-  original: IConfiguration
+  useConfiguration: IConfiguration
   /**
    * The format that can be passed into `runCucumber`.
    */
-  runnable: IRunnableConfiguration
+  runConfiguration: IRunConfiguration
 }
 
 /**
@@ -89,7 +89,7 @@ export interface IRunOptionsFormats {
 /**
  * @public
  */
-export interface IRunnableConfiguration {
+export interface IRunConfiguration {
   sources: ISourcesCoordinates
   support: ISupportCodeCoordinates
   runtime: IRunOptionsRuntime

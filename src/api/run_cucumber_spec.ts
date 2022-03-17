@@ -50,10 +50,12 @@ describe('runCucumber', () => {
 
     it('should be able to load support code upfront and supply it to runCucumber', async () => {
       const messages: Envelope[] = []
-      const { runnable } = await loadConfiguration({}, environment)
-      const support = await loadSupport(runnable, environment)
-      await runCucumber({ ...runnable, support }, environment, (envelope) =>
-        messages.push(envelope)
+      const { runConfiguration } = await loadConfiguration({}, environment)
+      const support = await loadSupport(runConfiguration, environment)
+      await runCucumber(
+        { ...runConfiguration, support },
+        environment,
+        (envelope) => messages.push(envelope)
       )
       const testStepFinishedEnvelopes = messages.filter(
         (envelope) => envelope.testStepFinished
@@ -78,12 +80,16 @@ describe('runCucumber', () => {
 
     it('successfully executes 2 test runs', async () => {
       const messages: Envelope[] = []
-      const { runnable } = await loadConfiguration({}, environment)
-      const { support } = await runCucumber(runnable, environment, (envelope) =>
-        messages.push(envelope)
+      const { runConfiguration } = await loadConfiguration({}, environment)
+      const { support } = await runCucumber(
+        runConfiguration,
+        environment,
+        (envelope) => messages.push(envelope)
       )
-      await runCucumber({ ...runnable, support }, environment, (envelope) =>
-        messages.push(envelope)
+      await runCucumber(
+        { ...runConfiguration, support },
+        environment,
+        (envelope) => messages.push(envelope)
       )
 
       const testStepFinishedEnvelopes = messages.filter(

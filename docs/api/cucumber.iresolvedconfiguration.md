@@ -15,6 +15,6 @@ export interface IResolvedConfiguration
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [original](./cucumber.iresolvedconfiguration.original.md) | IConfiguration | The final flat configuration object resolved from the configuration file/profiles plus any extra provided. |
-|  [runnable](./cucumber.iresolvedconfiguration.runnable.md) | [IRunnableConfiguration](./cucumber.irunnableconfiguration.md) | The format that can be passed into <code>runCucumber</code>. |
+|  [runConfiguration](./cucumber.iresolvedconfiguration.runconfiguration.md) | [IRunConfiguration](./cucumber.irunconfiguration.md) | The format that can be passed into <code>runCucumber</code>. |
+|  [useConfiguration](./cucumber.iresolvedconfiguration.useconfiguration.md) | IConfiguration | The final flat configuration object resolved from the configuration file/profiles plus any extra provided. |
 

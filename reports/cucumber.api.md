@@ -34,8 +34,20 @@ export interface ILoadSupportOptions {
 
 // @public (undocumented)
 export interface IResolvedConfiguration {
-    original: IConfiguration;
-    runnable: IRunnableConfiguration;
+    runConfiguration: IRunConfiguration;
+    useConfiguration: IConfiguration;
+}
+
+// @public (undocumented)
+export interface IRunConfiguration {
+    // (undocumented)
+    formats: IRunOptionsFormats;
+    // (undocumented)
+    runtime: IRunOptionsRuntime;
+    // (undocumented)
+    sources: ISourcesCoordinates;
+    // (undocumented)
+    support: ISupportCodeCoordinates;
 }
 
 // @public
@@ -45,18 +57,6 @@ export interface IRunEnvironment {
     stderr?: IFormatterStream;
     // Warning: (ae-forgotten-export) The symbol "IFormatterStream" needs to be exported by the entry point index.d.ts
     stdout?: IFormatterStream;
-}
-
-// @public (undocumented)
-export interface IRunnableConfiguration {
-    // (undocumented)
-    formats: IRunOptionsFormats;
-    // (undocumented)
-    runtime: IRunOptionsRuntime;
-    // (undocumented)
-    sources: ISourcesCoordinates;
-    // (undocumented)
-    support: ISupportCodeCoordinates;
 }
 
 // @public (undocumented)
