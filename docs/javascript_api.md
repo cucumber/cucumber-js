@@ -31,7 +31,7 @@ export async function runTests(directory, configFile, failFast) {
   // load the support code upfront
   const support = await loadSupport(runnable, environment)
   // run cucumber, using the support code we loaded already
-  const { success } = await runCucumber({ ...runnable, support }, environment)
+  const { success } = await runCucumber({ ...runConfiguration, support }, environment)
   return success
 }
 ```
