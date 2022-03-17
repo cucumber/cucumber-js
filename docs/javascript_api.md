@@ -12,7 +12,7 @@ There are some examples below, and [reference documentation](./api/index.md) for
 import { loadConfiguration, runCucumber } from '@cucumber/cucumber/api'
 
 export async function runTests() {
-  const { runnable } = await loadConfiguration()
+  const { runConfiguration } = await loadConfiguration()
   const { success } = await runCucumber(runnable)
   return success
 }
@@ -27,7 +27,7 @@ export async function runTests(directory, configFile, failFast) {
   // things we need to specify about the environment
   const environment = { cwd: directory }
   // load configuration from a particular file, and override a specific option
-  const { runnable } = await loadConfiguration({ file: configFile, provided: { failFast } }, environment)
+  const { runConfiguration } = await loadConfiguration({ file: configFile, provided: { failFast } }, environment)
   // load the support code upfront
   const support = await loadSupport(runnable, environment)
   // run cucumber, using the support code we loaded already
