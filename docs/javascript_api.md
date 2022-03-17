@@ -13,7 +13,7 @@ import { loadConfiguration, runCucumber } from '@cucumber/cucumber/api'
 
 export async function runTests() {
   const { runConfiguration } = await loadConfiguration()
-  const { success } = await runCucumber(runnable)
+  const { success } = await runCucumber(runConfiguration)
   return success
 }
 ```
