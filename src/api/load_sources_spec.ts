@@ -53,7 +53,12 @@ describe('loadSources', () => {
       },
       environment
     )
-    expect(plan).to.deep.eq([
+    expect(
+      plan.map((planned) => ({
+        ...planned,
+        uri: planned.uri.replace(/\\/g, '/'),
+      }))
+    ).to.deep.eq([
       {
         name: 'one',
         uri: 'features/test.feature',
