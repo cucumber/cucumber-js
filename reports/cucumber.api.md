@@ -25,11 +25,32 @@ export interface ILoadConfigurationOptions {
 }
 
 // @public (undocumented)
+export interface ILoadSourcesResult {
+    // (undocumented)
+    errors: ISourcesError[];
+    // (undocumented)
+    plan: IPlannedPickle[];
+}
+
+// @public (undocumented)
 export interface ILoadSupportOptions {
     // (undocumented)
     sources: ISourcesCoordinates;
     // (undocumented)
     support: ISupportCodeCoordinates;
+}
+
+// @public (undocumented)
+export interface IPlannedPickle {
+    // (undocumented)
+    location: {
+        line: number;
+        column?: number;
+    };
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    uri: string;
 }
 
 // @public (undocumented)
@@ -117,6 +138,19 @@ export interface ISourcesCoordinates {
     paths: string[];
     // (undocumented)
     tagExpression: string;
+}
+
+// @public (undocumented)
+export interface ISourcesError {
+    // (undocumented)
+    location: {
+        line: number;
+        column?: number;
+    };
+    // (undocumented)
+    message: string;
+    // (undocumented)
+    uri: string;
 }
 
 // @public (undocumented)

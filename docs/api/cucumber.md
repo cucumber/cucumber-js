@@ -23,7 +23,9 @@ These docs cover the API used for running Cucumber programmatically. The entry p
 |  Interface | Description |
 |  --- | --- |
 |  [ILoadConfigurationOptions](./cucumber.iloadconfigurationoptions.md) |  |
+|  [ILoadSourcesResult](./cucumber.iloadsourcesresult.md) |  |
 |  [ILoadSupportOptions](./cucumber.iloadsupportoptions.md) |  |
+|  [IPlannedPickle](./cucumber.iplannedpickle.md) |  |
 |  [IResolvedConfiguration](./cucumber.iresolvedconfiguration.md) |  |
 |  [IRunConfiguration](./cucumber.irunconfiguration.md) |  |
 |  [IRunEnvironment](./cucumber.irunenvironment.md) | Contextual data about the project environment. |
@@ -32,6 +34,7 @@ These docs cover the API used for running Cucumber programmatically. The entry p
 |  [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md) |  |
 |  [IRunResult](./cucumber.irunresult.md) | Result of a Cucumber test run. |
 |  [ISourcesCoordinates](./cucumber.isourcescoordinates.md) |  |
+|  [ISourcesError](./cucumber.isourceserror.md) |  |
 |  [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md) |  |
 
 ## Type Aliases

@@ -47,6 +47,9 @@ export interface ISourcesCoordinates {
   order: PickleOrder
 }
 
+/**
+ * @public
+ */
 export interface IPlannedPickle {
   name: string
   uri: string
@@ -56,6 +59,9 @@ export interface IPlannedPickle {
   }
 }
 
+/**
+ * @public
+ */
 export interface ISourcesError {
   uri: string
   location: {
@@ -65,6 +71,9 @@ export interface ISourcesError {
   message: string
 }
 
+/**
+ * @public
+ */
 export interface ILoadSourcesResult {
   plan: IPlannedPickle[]
   errors: ISourcesError[]

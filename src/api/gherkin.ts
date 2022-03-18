@@ -21,13 +21,14 @@ interface PickleWithDocument {
   pickle: Pickle
 }
 
-export async function loadSourcesInternal({
+export async function getFilteredPicklesAndErrors({
   newId,
   cwd,
   logger,
   unexpandedFeaturePaths,
   featurePaths,
   coordinates,
+  onEnvelope,
 }: {
   newId: IdGenerator.NewId
   cwd: string
@@ -35,16 +36,11 @@ export async function loadSourcesInternal({
   unexpandedFeaturePaths: string[]
   featurePaths: string[]
   coordinates: ISourcesCoordinates
+  onEnvelope?: (envelope: Envelope) => void
 }): Promise<{
   filteredPickles: PickleWithDocument[]
   parseErrors: ParseError[]
 }> {
-  if (featurePaths.length === 0) {
-    return {
-      filteredPickles: [],
-      parseErrors: [],
-    }
-  }
   const gherkinQuery = new GherkinQuery()
   const parseErrors: ParseError[] = []
   await gherkinFromPaths(
@@ -54,11 +50,12 @@ export async function loadSourcesInternal({
       relativeTo: cwd,
       defaultDialect: coordinates.defaultDialect,
     },
-    (message) => {
-      gherkinQuery.update(message)
-      if (message.parseError) {
-        parseErrors.push(message.parseError)
+    (envelope) => {
+      gherkinQuery.update(envelope)
+      if (envelope.parseError) {
+        parseErrors.push(envelope.parseError)
       }
+      onEnvelope?.(envelope)
     }
   )
   const pickleFilter = new PickleFilter({
@@ -98,11 +95,11 @@ export async function loadSourcesInternal({
 async function gherkinFromPaths(
   paths: string[],
   options: IGherkinStreamOptions,
-  onMessage: (envelope: Envelope) => void
+  onEnvelope: (envelope: Envelope) => void
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     const gherkinMessageStream = GherkinStreams.fromPaths(paths, options)
-    gherkinMessageStream.on('data', onMessage)
+    gherkinMessageStream.on('data', onEnvelope)
     gherkinMessageStream.on('end', resolve)
     gherkinMessageStream.on('error', reject)
   })

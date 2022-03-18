@@ -9,7 +9,7 @@ import { resolvePaths } from './paths'
 import { IdGenerator } from '@cucumber/messages'
 import { Console } from 'console'
 import { mergeEnvironment } from './environment'
-import { loadSourcesInternal } from './gherkin'
+import { getFilteredPicklesAndErrors } from './gherkin'
 
 export async function loadSources(
   coordinates: ISourcesCoordinates,
@@ -22,7 +22,13 @@ export async function loadSources(
     cwd,
     coordinates
   )
-  const { filteredPickles, parseErrors } = await loadSourcesInternal({
+  if (featurePaths.length === 0) {
+    return {
+      plan: [],
+      errors: [],
+    }
+  }
+  const { filteredPickles, parseErrors } = await getFilteredPicklesAndErrors({
     newId,
     cwd,
     logger,

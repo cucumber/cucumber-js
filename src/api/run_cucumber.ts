@@ -1,22 +1,15 @@
 import { Envelope, IdGenerator, ParseError } from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../formatter/helpers'
-import {
-  emitMetaMessage,
-  emitSupportCodeMessages,
-  parseGherkinMessageStream,
-} from '../cli/helpers'
-import { GherkinStreams } from '@cucumber/gherkin-streams'
-import PickleFilter from '../pickle_filter'
+import { emitMetaMessage, emitSupportCodeMessages } from '../cli/helpers'
 import { IRunOptions, IRunEnvironment, IRunResult } from './types'
 import { resolvePaths } from './paths'
 import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
 import { getSupportCodeLibrary } from './support'
 import { Console } from 'console'
-import * as messages from '@cucumber/messages'
-import { doesHaveValue } from '../value_checker'
 import { mergeEnvironment } from './environment'
+import { getFilteredPicklesAndErrors } from './gherkin'
 
 /**
  * Execute a Cucumber test run.
@@ -73,35 +66,21 @@ export async function runCucumber(
   })
   await emitMetaMessage(eventBroadcaster, env)
 
-  const gherkinMessageStream = GherkinStreams.fromPaths(featurePaths, {
-    defaultDialect: configuration.sources.defaultDialect,
-    newId,
-    relativeTo: cwd,
-  })
   let pickleIds: string[] = []
-  const parseErrors: ParseError[] = []
-  gherkinMessageStream.on('data', (envelope: messages.Envelope) => {
-    if (doesHaveValue(envelope.parseError)) {
-      parseErrors.push(envelope.parseError)
-    }
-  })
-
+  let parseErrors: ParseError[] = []
   if (featurePaths.length > 0) {
-    pickleIds = await parseGherkinMessageStream({
+    const gherkinResult = await getFilteredPicklesAndErrors({
+      newId,
+      cwd,
       logger,
-      eventBroadcaster,
-      eventDataCollector,
-      gherkinMessageStream,
-      order: configuration.sources.order ?? 'defined',
-      pickleFilter: new PickleFilter({
-        cwd,
-        featurePaths: unexpandedFeaturePaths,
-        names: configuration.sources.names,
-        tagExpression: configuration.sources.tagExpression,
-      }),
+      unexpandedFeaturePaths,
+      featurePaths,
+      coordinates: configuration.sources,
+      onEnvelope: (envelope) => eventBroadcaster.emit('envelope', envelope),
     })
+    pickleIds = gherkinResult.filteredPickles.map(({ pickle }) => pickle.id)
+    parseErrors = gherkinResult.parseErrors
   }
-
   if (parseErrors.length) {
     parseErrors.forEach((parseError) => {
       logger.error(
