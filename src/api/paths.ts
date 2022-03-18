@@ -7,7 +7,11 @@ import { ISourcesCoordinates, ISupportCodeCoordinates } from './types'
 export async function resolvePaths(
   cwd: string,
   sources: Pick<ISourcesCoordinates, 'paths'>,
-  support: ISupportCodeCoordinates
+  support: ISupportCodeCoordinates = {
+    requireModules: [],
+    requirePaths: [],
+    importPaths: [],
+  }
 ): Promise<{
   unexpandedFeaturePaths: string[]
   featurePaths: string[]
