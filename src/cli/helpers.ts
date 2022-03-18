@@ -49,7 +49,7 @@ export async function parseGherkinMessageStream({
       }
     })
     gherkinMessageStream.on('end', () => {
-      orderPickleIds(result, order, logger)
+      orderPickles(result, order, logger)
       resolve(result)
     })
     gherkinMessageStream.on('error', reject)
@@ -57,8 +57,8 @@ export async function parseGherkinMessageStream({
 }
 
 // Orders the pickleIds in place - morphs input
-export function orderPickleIds(
-  pickleIds: string[],
+export function orderPickles<T = string>(
+  pickleIds: T[],
   order: PickleOrder,
   logger: Console
 ): void {

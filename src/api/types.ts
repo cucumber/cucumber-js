@@ -47,6 +47,29 @@ export interface ISourcesCoordinates {
   order: PickleOrder
 }
 
+export interface IPlannedPickle {
+  name: string
+  uri: string
+  location: {
+    line: number
+    column?: number
+  }
+}
+
+export interface ISourcesError {
+  uri: string
+  location: {
+    line: number
+    column?: number
+  }
+  message: string
+}
+
+export interface ILoadSourcesResult {
+  plan: IPlannedPickle[]
+  errors: ISourcesError[]
+}
+
 /**
  * @public
  */
