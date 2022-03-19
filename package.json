@@ -186,7 +186,7 @@
   },
   "types": "./lib/index.d.ts",
   "engines": {
-    "node": "12 || 14 || 16 || 17"
+    "node": "12 || 14 || >=16"
   },
   "dependencies": {
     "@cspotcode/source-map-support": "^0.7.0",
