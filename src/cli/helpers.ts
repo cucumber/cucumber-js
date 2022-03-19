@@ -25,6 +25,17 @@ interface IParseGherkinMessageStreamRequest {
   pickleFilter: PickleFilter
 }
 
+/**
+ * Process a stream of envelopes from Gherkin and resolve to an array of filtered, ordered pickle Ids
+ *
+ * @deprecated use `loadSources` instead
+ *
+ * @param eventBroadcaster
+ * @param eventDataCollector
+ * @param gherkinMessageStream
+ * @param order
+ * @param pickleFilter
+ */
 export async function parseGherkinMessageStream({
   eventBroadcaster,
   eventDataCollector,

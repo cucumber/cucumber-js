@@ -27,6 +27,10 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Changed
 - Switch from `colors` to `chalk` for terminal coloring ([#1895](https://github.com/cucumber/cucumber-js/pull/1895))
 
+### Deprecated
+
+- `parseGherkinMessageStream` is deprecated in favour of `loadSources` ([#1957](https://github.com/cucumber/cucumber-js/pull/1957))
+
 ## [8.0.0-rc.2] - 2022-01-10
 ### Added
 - Export cucumber version number. It is now possible to retrieve the current version
