@@ -25,11 +25,32 @@ export interface ILoadConfigurationOptions {
 }
 
 // @public (undocumented)
+export interface ILoadSourcesResult {
+    // (undocumented)
+    errors: ISourcesError[];
+    // (undocumented)
+    plan: IPlannedPickle[];
+}
+
+// @public (undocumented)
 export interface ILoadSupportOptions {
     // (undocumented)
     sources: ISourcesCoordinates;
     // (undocumented)
     support: ISupportCodeCoordinates;
+}
+
+// @public (undocumented)
+export interface IPlannedPickle {
+    // (undocumented)
+    location: {
+        line: number;
+        column?: number;
+    };
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    uri: string;
 }
 
 // @public (undocumented)
@@ -120,6 +141,19 @@ export interface ISourcesCoordinates {
 }
 
 // @public (undocumented)
+export interface ISourcesError {
+    // (undocumented)
+    location: {
+        line: number;
+        column?: number;
+    };
+    // (undocumented)
+    message: string;
+    // (undocumented)
+    uri: string;
+}
+
+// @public (undocumented)
 export interface ISupportCodeCoordinates {
     // (undocumented)
     importPaths: string[];
@@ -134,6 +168,9 @@ export type ISupportCodeCoordinatesOrLibrary = ISupportCodeCoordinates | ISuppor
 
 // @public
 export function loadConfiguration(options?: ILoadConfigurationOptions, environment?: IRunEnvironment): Promise<IResolvedConfiguration>;
+
+// @public
+export function loadSources(coordinates: ISourcesCoordinates, environment?: IRunEnvironment): Promise<ILoadSourcesResult>;
 
 // @public
 export function loadSupport(options: ILoadSupportOptions, environment?: IRunEnvironment): Promise<ISupportCodeLibrary>;

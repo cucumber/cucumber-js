@@ -50,6 +50,38 @@ export interface ISourcesCoordinates {
 /**
  * @public
  */
+export interface IPlannedPickle {
+  name: string
+  uri: string
+  location: {
+    line: number
+    column?: number
+  }
+}
+
+/**
+ * @public
+ */
+export interface ISourcesError {
+  uri: string
+  location: {
+    line: number
+    column?: number
+  }
+  message: string
+}
+
+/**
+ * @public
+ */
+export interface ILoadSourcesResult {
+  plan: IPlannedPickle[]
+  errors: ISourcesError[]
+}
+
+/**
+ * @public
+ */
 export interface ISupportCodeCoordinates {
   requireModules: string[]
   requirePaths: string[]
