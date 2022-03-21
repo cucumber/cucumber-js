@@ -10,13 +10,13 @@ describe(validateNodeEngineVersion.name, () => {
     // Act
     validateNodeEngineVersion('v11.1.2', errorSpy, () => ({
       engines: {
-        node: '12 || 14 || 16 || 17',
+        node: '12 || 14 || >=16',
       },
     }))
 
     // Assert
     expect(errorSpy).to.have.been.calledOnceWith(
-      'Cucumber can only run on Node.js versions 12 || 14 || 16 || 17. This Node.js version is v11.1.2'
+      'Cucumber can only run on Node.js versions 12 || 14 || >=16. This Node.js version is v11.1.2'
     )
   })
 
@@ -26,13 +26,13 @@ describe(validateNodeEngineVersion.name, () => {
 
     validateNodeEngineVersion('v13.1.2', errorSpy, () => ({
       engines: {
-        node: '12 || 14 || 16 || 17',
+        node: '12 || 14 || >=16',
       },
     }))
 
     // Assert
     expect(errorSpy).to.have.been.calledOnceWith(
-      'Cucumber can only run on Node.js versions 12 || 14 || 16 || 17. This Node.js version is v13.1.2'
+      'Cucumber can only run on Node.js versions 12 || 14 || >=16. This Node.js version is v13.1.2'
     )
   })
 
@@ -43,7 +43,22 @@ describe(validateNodeEngineVersion.name, () => {
     // Act
     validateNodeEngineVersion('v17.1.2', errorSpy, () => ({
       engines: {
-        node: '12 || 14 || 16 || 17',
+        node: '12 || 14 || >=16',
+      },
+    }))
+
+    // Assert
+    expect(errorSpy).not.to.have.been.called()
+  })
+
+  it('does not call onError when the version is a version that isnt out yet at time of release', () => {
+    // Arrange
+    const errorSpy = sinon.spy()
+
+    // Act
+    validateNodeEngineVersion('v18.0.0', errorSpy, () => ({
+      engines: {
+        node: '12 || 14 || >=16',
       },
     }))
 
