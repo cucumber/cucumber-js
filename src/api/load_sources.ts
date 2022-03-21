@@ -11,6 +11,13 @@ import { Console } from 'console'
 import { mergeEnvironment } from './environment'
 import { getFilteredPicklesAndErrors } from './gherkin'
 
+/**
+ * Load and parse features, produce a filtered and ordered test plan and/or parse errors.
+ *
+ * @public
+ * @param coordinates - Coordinates required to find features
+ * @param environment - Project environment.
+ */
 export async function loadSources(
   coordinates: ISourcesCoordinates,
   environment: IRunEnvironment = {}

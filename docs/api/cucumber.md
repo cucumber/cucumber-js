@@ -15,6 +15,7 @@ These docs cover the API used for running Cucumber programmatically. The entry p
 |  Function | Description |
 |  --- | --- |
 |  [loadConfiguration(options, environment)](./cucumber.loadconfiguration.md) | Load user-authored configuration to be used in a test run. |
+|  [loadSources(coordinates, environment)](./cucumber.loadsources.md) | Load and parse features, produce a filtered and ordered test plan and/or parse errors. |
 |  [loadSupport(options, environment)](./cucumber.loadsupport.md) | Load support code for use in test runs. |
 |  [runCucumber(configuration, environment, onMessage)](./cucumber.runcucumber.md) | Execute a Cucumber test run. |
 

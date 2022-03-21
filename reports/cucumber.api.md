@@ -170,6 +170,9 @@ export type ISupportCodeCoordinatesOrLibrary = ISupportCodeCoordinates | ISuppor
 export function loadConfiguration(options?: ILoadConfigurationOptions, environment?: IRunEnvironment): Promise<IResolvedConfiguration>;
 
 // @public
+export function loadSources(coordinates: ISourcesCoordinates, environment?: IRunEnvironment): Promise<ILoadSourcesResult>;
+
+// @public
 export function loadSupport(options: ILoadSupportOptions, environment?: IRunEnvironment): Promise<ISupportCodeLibrary>;
 
 // @public
