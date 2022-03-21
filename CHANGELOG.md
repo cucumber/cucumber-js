@@ -20,16 +20,18 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 - Support for configuration to be objects instead of argv strings, and for configuration files in ESM and JSON formats ([#1952](https://github.com/cucumber/cucumber-js/pull/1952))
 - New API for running Cucumber programmatically (see [documentation](./docs/javascript_api.md)) ([#1955](https://github.com/cucumber/cucumber-js/pull/1955))
 
-### Fixed
-- Warn users who are on an unsupported node version ([#1922](https://github.com/cucumber/cucumber-js/pull/1922))
-- Allow formatters to finish when a Gherkin parse error is encountered ([#1404](https://github.com/cucumber/cucumber-js/issues/1404) [#1951](https://github.com/cucumber/cucumber-js/pull/1951))
-
 ### Changed
 - Switch from `colors` to `chalk` for terminal coloring ([#1895](https://github.com/cucumber/cucumber-js/pull/1895))
 
 ### Deprecated
-
 - `parseGherkinMessageStream` is deprecated in favour of `loadSources` ([#1957](https://github.com/cucumber/cucumber-js/pull/1957))
+
+### Fixed
+- Warn users who are on an unsupported node version ([#1922](https://github.com/cucumber/cucumber-js/pull/1922))
+- Allow formatters to finish when a Gherkin parse error is encountered ([#1404](https://github.com/cucumber/cucumber-js/issues/1404) [#1951](https://github.com/cucumber/cucumber-js/pull/1951))
+
+### Removed
+- `getConfiguration`, `initializeFormatters` and `getSupportCodeLibrary` methods removed from `Cli` class in favour of new API
 
 ## [8.0.0-rc.2] - 2022-01-10
 ### Added
