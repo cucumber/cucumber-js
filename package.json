@@ -188,6 +188,9 @@
   "engines": {
     "node": "12 || 14 || >=16"
   },
+  "enginesTested": {
+    "node": "12 || 14 || 16 || 17"
+  },
   "dependencies": {
     "@cspotcode/source-map-support": "^0.7.0",
     "@cucumber/ci-environment": "9.0.0",
