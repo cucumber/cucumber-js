@@ -27,6 +27,17 @@ setDefinitionFunctionWrapper(function (fn) {
 })
 ```
 
+### `Cli` class
+
+The `Cli` class is sometimes used to run programmatically. We've had to make a few breaking changes:
+
+- `getConfiguration`, `initializeFormatters` and `getSupportCodeLibrary` methods are removed
+- The constructor object has two new required properties:
+  - `stderr` - writable stream to which we direct warning/error output - you might just pass `process.stderr`
+  - `env` - environment variables from which we detect some configuration options - you might just pass `process.env`
+
+In general for programmatic running we'd advise trying [the new API](./javascript_api.md) which is designed for this purpose.
+
 ## Migrating to cucumber-js 7.x.x
 
 ### Package Name
