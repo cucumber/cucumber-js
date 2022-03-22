@@ -1,6 +1,8 @@
-# Migrating to cucumber-js 8.x.x
+# Migrating
 
-## Generator step definitions
+## Migrating to cucumber-js 8.x.x
+
+### Generator step definitions
 
 Generator functions used in step definitions (`function*` with the `yield` keyword)
 are not natively supported anymore with cucumber-js.
@@ -25,9 +27,9 @@ setDefinitionFunctionWrapper(function (fn) {
 })
 ```
 
-# Migrating to cucumber-js 7.x.x
+## Migrating to cucumber-js 7.x.x
 
-## Package Name
+### Package Name
 
 cucumber-js is now published at `@cucumber/cucumber` instead of `cucumber`. To upgrade, you'll need to remove the old package and add the new one:
 
@@ -40,7 +42,7 @@ You'll need to update any `import`/`require` statements in your support code to 
 
 (The executable is still `cucumber-js` though.)
 
-## Hooks
+### Hooks
 
 The result object passed as the argument to your `After` hook function has a different structure.
 
@@ -85,7 +87,7 @@ Now in `@cucumber/cucumber`:
 }
 ```
 
-## Formatters
+### Formatters
 
 The underlying event/data model for cucumber-js is now [cucumber-messages](https://github.com/cucumber/cucumber/tree/master/messages), a shared standard across all official Cucumber implementations. This replaces the old "event protocol".
 
@@ -99,14 +101,14 @@ $ cucumber-js --format @cucumber/pretty-formatter
 
 This does mean that if you want to point to a local formatter implementation (i.e. not a Node module) then you should ensure it's a relative path starting with `./`.
 
-## Parallel
+### Parallel
 
 The parallel mode previously used problematic "master"/"slave" naming that we've dropped in favour of "coordinator" and "worker". This is mostly an internal detail, but is also reflected in the names of some environment variables you might be using:
 
 * `CUCUMBER_TOTAL_SLAVES` is now `CUCUMBER_TOTAL_WORKERS`
 * `CUCUMBER_SLAVE_ID` is now `CUCUMBER_WORKER_ID`
 
-## TypeScript
+### TypeScript
 
 *(You can skip this part if you don't use TypeScript in your projects.)*
 
@@ -123,6 +125,6 @@ There are a few minor differences to be aware of:
 
 Also, your `tsconfig.json` should have the `resolveJsonModule` compiler option switched on. Other than that, a pretty standard TypeScript setup should work as expected.
 
-## Timeouts
+### Timeouts
 
 You can no longer call `setDefaultTimeout` from within other support code e.g. a step, hook or your World class; it should be called globally.
