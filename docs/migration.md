@@ -42,6 +42,13 @@ In general for programmatic running we'd advise trying [the new API](./javascrip
 
 Previously, you could `require` anything directly from Cucumber's internals e.g. `require('@cucumber/cucumber/lib/formatter/helpers')`. As part of adding ESM support we've added subpath exports, which restricts where Node.js can resolve modules from within the package. Deep requires are still possible but in a more limited way e.g. no implicit resolving of `/index.js` with the above example. In a future release we'll remove the capability for deep requires entirely, so we'd advise addressing any instances in your code (here's [an example](https://github.com/cucumber/cucumber-js-pretty-formatter/pull/11)). Everything you need should be available via the main entry point, but if something's missing please [raise an issue](https://github.com/cucumber/cucumber-js/issues).
 
+# Formatter and snippet paths
+
+When providing the path to a custom formatter or snippet syntax:
+
+- For relative paths, you now need to ensure it begins with a `.` (this was already the case for custom formatters as of 7.0.0; snippet syntaxes are being changed to match)
+- For absolute paths, you now need to provide it as a valid `file://` URL 
+
 ## Migrating to cucumber-js 7.x.x
 
 ### Package Name
