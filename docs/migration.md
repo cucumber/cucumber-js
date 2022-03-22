@@ -29,7 +29,7 @@ setDefinitionFunctionWrapper(function (fn) {
 
 ### `Cli` class
 
-The `Cli` class is sometimes used to run programmatically. We've had to make a few breaking changes:
+The `Cli` class is sometimes used to run Cucumber programmatically. We've had to make a few breaking changes:
 
 - `getConfiguration`, `initializeFormatters` and `getSupportCodeLibrary` methods are removed
 - The constructor object has two new required properties:
@@ -38,11 +38,15 @@ The `Cli` class is sometimes used to run programmatically. We've had to make a f
 
 In general for programmatic running we'd advise trying [the new API](./javascript_api.md) which is designed for this purpose.
 
+### Deep requires
+
+Previously, you could `require` anything directly from Cucumber's internals e.g. `require('@cucumber/cucumber/lib/formatter/helpers')`. As part of adding ESM support we've added subpath exports, which restricts where Node.js can resolve modules from within the package. Deep requires are still possible but in a more limited way e.g. no implicit resolving of `/index.js` with the above example. In a future release we'll remove the capability for deep requires entirely, so we'd advise addressing any instances in your code (here's [an example](https://github.com/cucumber/cucumber-js-pretty-formatter/pull/11)). Everything you need should be available via the main entry point, but if something's missing please [raise an issue](https://github.com/cucumber/cucumber-js/issues).
+
 ## Migrating to cucumber-js 7.x.x
 
 ### Package Name
 
-cucumber-js is now published at `@cucumber/cucumber` instead of `cucumber`. To upgrade, you'll need to remove the old package and add the new one:
+Cucumber is now published at `@cucumber/cucumber` instead of `cucumber`. To upgrade, you'll need to remove the old package and add the new one:
 
 ```shell
 $ npm rm cucumber
@@ -123,7 +127,7 @@ The parallel mode previously used problematic "master"/"slave" naming that we've
 
 *(You can skip this part if you don't use TypeScript in your projects.)*
 
-Where before we relied on the community-authored `@types/cucumber` package, cucumber-js is now built with TypeScript and as such includes its own typings, so you can drop your dependency on the separate package:
+Where before we relied on the community-authored `@types/cucumber` package, Cucumber is now built with TypeScript and as such includes its own typings, so you can drop your dependency on the separate package:
 
 ```shell
 $ npm rm @types/cucumber
