@@ -15,10 +15,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 - Improved styling and usability on report from `html` formatter
 - Support for customising work assignment when running in parallel ([#1044](https://github.com/cucumber/cucumber-js/issues/1044)
 [#1588](https://github.com/cucumber/cucumber-js/pull/1588))
-- Add a new option to `--format-options`: `printAttachments`.
-See [./docs/cli.md#printing-attachments-details](https://github.com/cucumber/cucumber-js/blob/main/docs/cli.md#printing-attachments-details) for more info.
-([#1136](https://github.com/cucumber/cucumber-js/issues/1136)
-[#1721](https://github.com/cucumber/cucumber-js/pull/1721))
+- Add a new option to `--format-options`: `printAttachments` (see [documentation](./docs/cli.md#printing-attachments-details)) ([#1136](https://github.com/cucumber/cucumber-js/issues/1136) [#1721](https://github.com/cucumber/cucumber-js/pull/1721))
 - Support for configuration to be objects instead of argv strings, and for configuration files in ESM and JSON formats ([#1952](https://github.com/cucumber/cucumber-js/pull/1952))
 - New API for running Cucumber programmatically (see [documentation](./docs/javascript_api.md)) ([#1955](https://github.com/cucumber/cucumber-js/pull/1955))
 
