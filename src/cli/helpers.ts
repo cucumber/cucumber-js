@@ -17,16 +17,26 @@ import { builtinParameterTypes } from '../support_code_library_builder'
 import { version } from '../version'
 
 interface IParseGherkinMessageStreamRequest {
-  logger: Console
+  cwd?: string
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   gherkinMessageStream: Readable
-  order: PickleOrder
+  order: string
   pickleFilter: PickleFilter
 }
 
+/**
+ * Process a stream of envelopes from Gherkin and resolve to an array of filtered, ordered pickle Ids
+ *
+ * @deprecated use `loadSources` instead
+ *
+ * @param eventBroadcaster
+ * @param eventDataCollector
+ * @param gherkinMessageStream
+ * @param order
+ * @param pickleFilter
+ */
 export async function parseGherkinMessageStream({
-  logger,
   eventBroadcaster,
   eventDataCollector,
   gherkinMessageStream,
@@ -49,7 +59,7 @@ export async function parseGherkinMessageStream({
       }
     })
     gherkinMessageStream.on('end', () => {
-      orderPickleIds(result, order, logger)
+      orderPickles(result, order, console)
       resolve(result)
     })
     gherkinMessageStream.on('error', reject)
@@ -57,8 +67,8 @@ export async function parseGherkinMessageStream({
 }
 
 // Orders the pickleIds in place - morphs input
-export function orderPickleIds(
-  pickleIds: string[],
+export function orderPickles<T = string>(
+  pickleIds: T[],
   order: PickleOrder,
   logger: Console
 ): void {

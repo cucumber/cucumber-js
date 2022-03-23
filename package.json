@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "8.0.0-rc.2",
+  "version": "8.0.0-rc.3",
   "homepage": "https://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com>",
   "contributors": [
@@ -173,11 +173,13 @@
   "exports": {
     ".": {
       "import": "./lib/wrapper.mjs",
-      "require": "./lib/index.js"
+      "require": "./lib/index.js",
+      "types": "./lib/index.d.ts"
     },
     "./api": {
       "import": "./lib/api/wrapper.mjs",
-      "require": "./lib/api/index.js"
+      "require": "./lib/api/index.js",
+      "types": "./lib/api/index.d.ts"
     },
     "./lib/*": {
       "require": "./lib/*.js"
@@ -197,6 +199,7 @@
     "@cucumber/cucumber-expressions": "15.0.2",
     "@cucumber/gherkin": "22.0.0",
     "@cucumber/gherkin-streams": "4.0.0",
+    "@cucumber/gherkin-utils": "^7.0.0",
     "@cucumber/html-formatter": "18.0.0",
     "@cucumber/messages": "17.1.1",
     "@cucumber/tag-expressions": "4.1.0",
@@ -311,6 +314,7 @@
   },
   "license": "MIT",
   "files": [
+    "api/",
     "bin/",
     "lib/"
   ]

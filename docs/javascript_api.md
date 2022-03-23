@@ -35,3 +35,17 @@ export async function runTests(directory, configFile, failFast) {
   return success
 }
 ```
+
+## Sources example
+
+You can use the `loadSources` function to load and parse your feature files, calculate the test plan (accounting for filtering and ordering) and report any parse errors:
+
+```javascript
+import { loadConfiguration, loadSources } from '@cucumber/cucumber/api'
+
+export async function calculatePlan() {
+  const { runConfiguration } = await loadConfiguration()
+  const { plan } = await loadSources(runConfiguration.sources)
+  return plan
+}
+```
