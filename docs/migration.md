@@ -1,6 +1,8 @@
-# Migrating
+# Migration
 
-## Migrating to cucumber-js 8.x.x
+This page details breaking changes in major releases of Cucumber and how to migrate if your project uses things that have been changed or removed. Please see [the changelog](../CHANGELOG.md) for a full list of changes in each release including new features and bug fixes, which aren't discussed here.
+
+## Migrating from 7.x.x to 8.x.x
 
 ### Generator step definitions
 
@@ -49,7 +51,7 @@ When providing the path to a custom formatter or snippet syntax:
 - For relative paths, you now need to ensure it begins with a `.` (this was already the case for custom formatters as of 7.0.0; snippet syntaxes are being changed to match)
 - For absolute paths, you now need to provide it as a valid `file://` URL 
 
-## Migrating to cucumber-js 7.x.x
+## Migrating from 6.x.x to 7.x.x
 
 ### Package Name
 
