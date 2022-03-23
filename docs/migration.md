@@ -29,7 +29,7 @@ setDefinitionFunctionWrapper(function (fn) {
 })
 ```
 
-### `Cli` class
+### Using `Cli` programmatically
 
 The `Cli` class is sometimes used to run Cucumber programmatically. We've had to make a few breaking changes:
 
@@ -38,18 +38,25 @@ The `Cli` class is sometimes used to run Cucumber programmatically. We've had to
   - `stderr` - writable stream to which we direct warning/error output - you might just pass `process.stderr`
   - `env` - environment variables from which we detect some configuration options - you might just pass `process.env`
 
-In general for programmatic running we'd advise trying [the new API](./javascript_api.md) which is designed for this purpose.
+In general for programmatic running (including those removed methods) we'd advise switching to [the new API](./javascript_api.md) which is designed for this purpose.
 
 ### Deep requires
 
 Previously, you could `require` anything directly from Cucumber's internals e.g. `require('@cucumber/cucumber/lib/formatter/helpers')`. As part of adding ESM support we've added subpath exports, which restricts where Node.js can resolve modules from within the package. Deep requires are still possible but in a more limited way e.g. no implicit resolving of `/index.js` with the above example. In a future release we'll remove the capability for deep requires entirely, so we'd advise addressing any instances in your code (here's [an example](https://github.com/cucumber/cucumber-js-pretty-formatter/pull/11)). Everything you need should be available via the main entry point, but if something's missing please [raise an issue](https://github.com/cucumber/cucumber-js/issues).
 
-# Formatter and snippet paths
+### Formatter and snippet paths
 
 When providing the path to a custom formatter or snippet syntax:
 
 - For relative paths, you now need to ensure it begins with a `.` (this was already the case for custom formatters as of 7.0.0; snippet syntaxes are being changed to match)
-- For absolute paths, you now need to provide it as a valid `file://` URL 
+- For absolute paths, you now need to provide it as a valid `file://` URL
+
+### CLI options
+
+These CLI options have been removed:
+
+- `--retryTagFilter` - the correct option is `--retry-tag-filter`
+- `--predictable-ids` - this was only used for internal testing
 
 ## Migrating from 6.x.x to 7.x.x
 
