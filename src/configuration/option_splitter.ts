@@ -2,7 +2,7 @@ export const OptionSplitter = {
   split(option: string): string[] {
     option = option.replace(/"/g, '')
 
-    const parts = option.split(/([^A-Z]):(?!\\)/)
+    const parts = option.split(/((?:file){0}):(?!\\|\/\/)/)
 
     const result = parts.reduce((memo: string[], part: string, i: number) => {
       if (partNeedsRecombined(i)) {
