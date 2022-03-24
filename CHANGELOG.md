@@ -68,6 +68,7 @@ See [docs/profiles.md](./docs/profiles.md#using-another-file-than-cucumberjs) fo
 
 ### Changed
 - Relative paths for custom snippet syntaxes must begin with `.` ([#1640](https://github.com/cucumber/cucumber-js/issues/1640))
+- Absolute paths for custom formatters and snippet syntaxes must be a valid `file://` URL
 - Use performance timers for test case duration measurement.
 [#1793](https://github.com/cucumber/cucumber-js/pull/1793)
 
