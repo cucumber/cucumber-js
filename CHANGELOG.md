@@ -9,7 +9,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [Unreleased]
 ### Fixed
-- Allow `file://` URLs to be used as formatter/snippet paths in options
+- Allow `file://` URLs to be used as formatter/snippet paths in options ([#1963](https://github.com/cucumber/cucumber-js/pull/1963) [#1920](https://github.com/cucumber/cucumber-js/issues/1920))
 
 ## [8.0.0-rc.3] - 2022-03-21
 ### Added
