@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Allow `file://` URLs to be used as formatter/snippet paths in options
 
 ## [8.0.0-rc.3] - 2022-03-21
 ### Added
