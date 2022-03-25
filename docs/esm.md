@@ -4,7 +4,7 @@ You can optionally write your support code (steps, hooks, etc) with native ES mo
 
 If your support code is written as ESM, you'll need to use the `import` configuration option to specify your files, rather than the `require` option, although we do automatically detect and import any `.mjs` files found within your features directory.
 
-Example (adapted from [our original example](./nodejs_example.md)):
+Example:
 
 ```javascript
 // features/support/steps.mjs

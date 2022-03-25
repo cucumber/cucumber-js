@@ -16,15 +16,12 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [8.0.0-rc.3] - 2022-03-21
 ### Added
+- Add support for Node.js 17
 - Cucumber Expressions now support a wider array of parameter types (see [documentation](https://github.com/cucumber/cucumber-expressions#parameter-types))
 - Improved styling and usability on report from `html` formatter
-- Support for customising work assignment when running in parallel ([#1044](https://github.com/cucumber/cucumber-js/issues/1044)
-[#1588](https://github.com/cucumber/cucumber-js/pull/1588))
-- Add a new option to `--format-options`: `printAttachments`.
-See [./docs/cli.md#printing-attachments-details](https://github.com/cucumber/cucumber-js/blob/main/docs/cli.md#printing-attachments-details) for more info.
-([#1136](https://github.com/cucumber/cucumber-js/issues/1136)
-[#1721](https://github.com/cucumber/cucumber-js/pull/1721))
-- Support for configuration to be objects instead of argv strings, and for configuration files in ESM and JSON formats ([#1952](https://github.com/cucumber/cucumber-js/pull/1952))
+- Support for customising work assignment when running in parallel (see [documentation](./docs/parallel.md#custom-work-assignment)) ([#1044](https://github.com/cucumber/cucumber-js/issues/1044) [#1588](https://github.com/cucumber/cucumber-js/pull/1588))
+- Add a new option to `--format-options`: `printAttachments` (see [documentation](./docs/cli.md#printing-attachments-details)) ([#1136](https://github.com/cucumber/cucumber-js/issues/1136) [#1721](https://github.com/cucumber/cucumber-js/pull/1721))
+- Support for configuration to be objects instead of argv strings, and for configuration files in ESM and JSON formats (see [documentation](./docs/configuration.md#files)) ([#1952](https://github.com/cucumber/cucumber-js/pull/1952))
 - New API for running Cucumber programmatically (see [documentation](./docs/javascript_api.md)) ([#1955](https://github.com/cucumber/cucumber-js/pull/1955))
 
 ### Changed
@@ -34,28 +31,23 @@ See [./docs/cli.md#printing-attachments-details](https://github.com/cucumber/cuc
 - `parseGherkinMessageStream` is deprecated in favour of `loadSources` ([#1957](https://github.com/cucumber/cucumber-js/pull/1957))
 
 ### Fixed
-- Warn users who are on an unsupported node version ([#1922](https://github.com/cucumber/cucumber-js/pull/1922))
+- Warn users who are on an unsupported Node.js version ([#1922](https://github.com/cucumber/cucumber-js/pull/1922))
 - Allow formatters to finish when a Gherkin parse error is encountered ([#1404](https://github.com/cucumber/cucumber-js/issues/1404) [#1951](https://github.com/cucumber/cucumber-js/pull/1951))
 
 ### Removed
-- `getConfiguration`, `initializeFormatters` and `getSupportCodeLibrary` methods removed from `Cli` class in favour of new API
+- `getConfiguration`, `initializeFormatters` and `getSupportCodeLibrary` methods removed from `Cli` class in favour of [new API](./docs/javascript_api.md)
 
 ## [8.0.0-rc.2] - 2022-01-10
 ### Added
-- Export cucumber version number. It is now possible to retrieve the current version
-of cucumber using `import { version } from '@cucumber/cucumber'`.
-([PR#1866](https://github.com/cucumber/cucumber-js/pull/1866)
-[Issue#1853](https://github.com/cucumber/cucumber-js/issues/1853))
+- Export Cucumber's version number. It is now possible to retrieve the current version of Cucumber using `import { version } from '@cucumber/cucumber'` ([#1866](https://github.com/cucumber/cucumber-js/pull/1866) [#1853](https://github.com/cucumber/cucumber-js/issues/1853))
 
 ### Changed
 - Switched to new `@cucumber/ci-environment` library for CI detection ([#1868](https://github.com/cucumber/cucumber-js/pull/1868))
 
 ### Fixed
-- Handles spaces in paths for developers working on cucumbers's own code ([#1845](https://github.com/cucumber/cucumber-js/issues/1845))
-- Ensure package.json can be imported by consuming projects
-([PR#1870](https://github.com/cucumber/cucumber-js/pull/1870)
-[Issue#1869](https://github.com/cucumber/cucumber-js/issues/1869))
-- Allows for parentheses in paths for developers working on cucumber's own code ([[#1735](https://github.com/cucumber/cucumber-js/issues/1735)])
+- Handles spaces in paths for developers working on Cucumber's own code ([#1845](https://github.com/cucumber/cucumber-js/issues/1845))
+- Ensure `package.json` can be imported by consuming projects ([#1870](https://github.com/cucumber/cucumber-js/pull/1870) [#1869](https://github.com/cucumber/cucumber-js/issues/1869))
+- Allows for parentheses in paths for developers working on Cucumber's own code ([#1735](https://github.com/cucumber/cucumber-js/issues/1735))
 - Smoother onboarding for Windows developers ([#1863](https://github.com/cucumber/cucumber-js/pull/1863))
 - Pin `colors` to `1.4.0` to fix security vulnerability ([#1884](https://github.com/cucumber/cucumber-js/issues/1884))
 - Pin `cli-table3` to `0.6.1` to fix security vulnerability ([#251](https://github.com/cli-table/cli-table3/pull/251))
@@ -64,22 +56,18 @@ of cucumber using `import { version } from '@cucumber/cucumber'`.
 ### Added
 - Add `wrapPromiseWithTimeout` to public API ([#1566](https://github.com/cucumber/cucumber-js/pull/1566))
 - Add support for user code as native ES modules
-- `BeforeStep` and `AfterStep` hook functions now have access to the `pickleStep` in their argument object.
-- `--config` option to the CLI. It allows you to specify a configuration file other than `cucumber.js`.
-See [docs/profiles.md](./docs/profiles.md#using-another-file-than-cucumberjs) for more info.
-[#1794](https://github.com/cucumber/cucumber-js/pull/1794)
+- `BeforeStep` and `AfterStep` hook functions now have access to the `pickleStep` in their argument object
+- `--config` option to the CLI. It allows you to specify a configuration file other than `cucumber.js` (see [documentation](./docs/profiles.md#using-another-file-than-cucumberjs)) [#1794](https://github.com/cucumber/cucumber-js/pull/1794)
 
 ### Changed
 - Relative paths for custom snippet syntaxes must begin with `.` ([#1640](https://github.com/cucumber/cucumber-js/issues/1640))
 - Absolute paths for custom formatters and snippet syntaxes must be a valid `file://` URL
-- Use performance timers for test case duration measurement.
-[#1793](https://github.com/cucumber/cucumber-js/pull/1793)
+- Use performance timers for test case duration measurement [#1793](https://github.com/cucumber/cucumber-js/pull/1793)
 
 ### Fixed
-- Allow targetting same file multiple times ([#1708](https://github.com/cucumber/cucumber-js/pull/1708))
-- When running with `--dry-run`, undefined or ambiguous steps no longer cause the process to exit with code 1. ([#1814](https://github.com/cucumber/cucumber-js/pull/1814))
-- When running the help command, it now shows all available formatters under the --format option.
-[#1798](https://github.com/cucumber/cucumber-js/pull/1798)
+- Allow targeting same file multiple times ([#1708](https://github.com/cucumber/cucumber-js/pull/1708))
+- When running with `--dry-run`, undefined or ambiguous steps no longer cause the process to exit with code 1 ([#1814](https://github.com/cucumber/cucumber-js/pull/1814))
+- When running the `--help` command, it now shows all available formatters under the `--format` option [#1798](https://github.com/cucumber/cucumber-js/pull/1798)
 
 ### Removed
 - Drop support for Node.js 10 and 15, add support for Node.js 16

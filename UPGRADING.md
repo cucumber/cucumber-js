@@ -1,6 +1,10 @@
-# Migrating to cucumber-js 8.x.x
+# Upgrading
 
-## Generator step definitions
+This document describes breaking changes and how to upgrade. For a complete list of changes including minor and patch releases, please refer to the [changelog](./CHANGELOG.md).
+
+## 8.0.0
+
+### Generator step definitions
 
 Generator functions used in step definitions (`function*` with the `yield` keyword)
 are not natively supported anymore with cucumber-js.
@@ -25,11 +29,40 @@ setDefinitionFunctionWrapper(function (fn) {
 })
 ```
 
-# Migrating to cucumber-js 7.x.x
+### Using `Cli` programmatically
 
-## Package Name
+The `Cli` class is sometimes used to run Cucumber programmatically. We've had to make a few breaking changes:
 
-cucumber-js is now published at `@cucumber/cucumber` instead of `cucumber`. To upgrade, you'll need to remove the old package and add the new one:
+- `getConfiguration`, `initializeFormatters` and `getSupportCodeLibrary` methods are removed
+- The constructor object has two new required properties:
+  - `stderr` - writable stream to which we direct warning/error output - you might just pass `process.stderr`
+  - `env` - environment variables from which we detect some configuration options - you might just pass `process.env`
+
+In general for programmatic running (including those removed methods) we'd advise switching to [the new API](docs/javascript_api.md) which is designed for this purpose.
+
+### Deep requires
+
+Previously, you could `require` anything directly from Cucumber's internals e.g. `require('@cucumber/cucumber/lib/formatter/helpers')`. As part of adding ESM support we've added subpath exports, which restricts where Node.js can resolve modules from within the package. Deep requires are still possible but in a more limited way e.g. no implicit resolving of `/index.js` with the above example. In a future release we'll remove the capability for deep requires entirely, so we'd advise addressing any instances in your code (here's [an example](https://github.com/cucumber/cucumber-js-pretty-formatter/pull/11)). Everything you need should be available via the main entry point, but if something's missing please [raise an issue](https://github.com/cucumber/cucumber-js/issues).
+
+### Formatter and snippet paths
+
+When providing the path to a custom formatter or snippet syntax:
+
+- For relative paths, you now need to ensure it begins with a `.` (this was already the case for custom formatters as of 7.0.0; snippet syntaxes are being changed to match)
+- For absolute paths, you now need to provide it as a valid `file://` URL
+
+### CLI options
+
+These CLI options have been removed:
+
+- `--retryTagFilter` - the correct option is `--retry-tag-filter`
+- `--predictable-ids` - this was only used for internal testing
+
+## 7.0.0
+
+### Package Name
+
+Cucumber is now published at `@cucumber/cucumber` instead of `cucumber`. To upgrade, you'll need to remove the old package and add the new one:
 
 ```shell
 $ npm rm cucumber
@@ -40,7 +73,7 @@ You'll need to update any `import`/`require` statements in your support code to 
 
 (The executable is still `cucumber-js` though.)
 
-## Hooks
+### Hooks
 
 The result object passed as the argument to your `After` hook function has a different structure.
 
@@ -85,7 +118,7 @@ Now in `@cucumber/cucumber`:
 }
 ```
 
-## Formatters
+### Formatters
 
 The underlying event/data model for cucumber-js is now [cucumber-messages](https://github.com/cucumber/cucumber/tree/master/messages), a shared standard across all official Cucumber implementations. This replaces the old "event protocol".
 
@@ -99,18 +132,18 @@ $ cucumber-js --format @cucumber/pretty-formatter
 
 This does mean that if you want to point to a local formatter implementation (i.e. not a Node module) then you should ensure it's a relative path starting with `./`.
 
-## Parallel
+### Parallel
 
 The parallel mode previously used problematic "master"/"slave" naming that we've dropped in favour of "coordinator" and "worker". This is mostly an internal detail, but is also reflected in the names of some environment variables you might be using:
 
 * `CUCUMBER_TOTAL_SLAVES` is now `CUCUMBER_TOTAL_WORKERS`
 * `CUCUMBER_SLAVE_ID` is now `CUCUMBER_WORKER_ID`
 
-## TypeScript
+### TypeScript
 
 *(You can skip this part if you don't use TypeScript in your projects.)*
 
-Where before we relied on the community-authored `@types/cucumber` package, cucumber-js is now built with TypeScript and as such includes its own typings, so you can drop your dependency on the separate package:
+Where before we relied on the community-authored `@types/cucumber` package, Cucumber is now built with TypeScript and as such includes its own typings, so you can drop your dependency on the separate package:
 
 ```shell
 $ npm rm @types/cucumber
@@ -119,10 +152,10 @@ $ npm rm @types/cucumber
 There are a few minor differences to be aware of:
 
 - The type for data tables was named `TableDefinition` - it's now named `DataTable`
-- `World` was typed as an interface, but it's actually a class - you should `extend` it when [building a custom formatter](./custom_formatters.md)
+- `World` was typed as an interface, but it's actually a class - you should `extend` it when [building a custom formatter](docs/custom_formatters.md)
 
 Also, your `tsconfig.json` should have the `resolveJsonModule` compiler option switched on. Other than that, a pretty standard TypeScript setup should work as expected.
 
-## Timeouts
+### Timeouts
 
 You can no longer call `setDefaultTimeout` from within other support code e.g. a step, hook or your World class; it should be called globally.
