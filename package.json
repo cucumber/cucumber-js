@@ -200,7 +200,7 @@
     "@cucumber/gherkin": "22.0.0",
     "@cucumber/gherkin-streams": "4.0.0",
     "@cucumber/gherkin-utils": "^7.0.0",
-    "@cucumber/html-formatter": "18.0.0",
+    "@cucumber/html-formatter": "19.0.0",
     "@cucumber/messages": "17.1.1",
     "@cucumber/tag-expressions": "4.1.0",
     "assertion-error-formatter": "^3.0.0",
