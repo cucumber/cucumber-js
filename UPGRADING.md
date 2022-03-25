@@ -1,8 +1,8 @@
-# Migration
+# Upgrading
 
-This page details breaking changes in major releases of Cucumber and how to migrate if your project uses things that have been changed or removed. Please see [the changelog](../CHANGELOG.md) for a full list of changes in each release including new features and bug fixes, which aren't discussed here.
+This document describes breaking changes and how to upgrade. For a complete list of changes including minor and patch releases, please refer to the [changelog](./CHANGELOG.md).
 
-## Migrating from 7.x.x to 8.x.x
+## 8.0.0
 
 ### Generator step definitions
 
@@ -38,7 +38,7 @@ The `Cli` class is sometimes used to run Cucumber programmatically. We've had to
   - `stderr` - writable stream to which we direct warning/error output - you might just pass `process.stderr`
   - `env` - environment variables from which we detect some configuration options - you might just pass `process.env`
 
-In general for programmatic running (including those removed methods) we'd advise switching to [the new API](./javascript_api.md) which is designed for this purpose.
+In general for programmatic running (including those removed methods) we'd advise switching to [the new API](docs/javascript_api.md) which is designed for this purpose.
 
 ### Deep requires
 
@@ -58,7 +58,7 @@ These CLI options have been removed:
 - `--retryTagFilter` - the correct option is `--retry-tag-filter`
 - `--predictable-ids` - this was only used for internal testing
 
-## Migrating from 6.x.x to 7.x.x
+## 7.0.0
 
 ### Package Name
 
@@ -152,7 +152,7 @@ $ npm rm @types/cucumber
 There are a few minor differences to be aware of:
 
 - The type for data tables was named `TableDefinition` - it's now named `DataTable`
-- `World` was typed as an interface, but it's actually a class - you should `extend` it when [building a custom formatter](./custom_formatters.md)
+- `World` was typed as an interface, but it's actually a class - you should `extend` it when [building a custom formatter](docs/custom_formatters.md)
 
 Also, your `tsconfig.json` should have the `resolveJsonModule` compiler option switched on. Other than that, a pretty standard TypeScript setup should work as expected.
 
