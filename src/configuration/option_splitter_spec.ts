@@ -16,8 +16,8 @@ describe('OptionSplitter', () => {
     },
     {
       description: 'splits absolute unix paths',
-      input: '/custom/formatter:/formatter/output.txt',
-      output: ['/custom/formatter', '/formatter/output.txt'],
+      input: 'file:///custom/formatter:file:///formatter/output.txt',
+      output: ['file:///custom/formatter', 'file:///formatter/output.txt'],
     },
     {
       description: 'splits paths with quotes around them',
@@ -26,14 +26,17 @@ describe('OptionSplitter', () => {
     },
     {
       description: 'splits absolute windows paths',
-      input: 'C:\\custom\\formatter:C:\\formatter\\output.txt',
-      output: ['C:\\custom\\formatter', 'C:\\formatter\\output.txt'],
+      input: 'file://C:\\custom\\formatter:file://C:\\formatter\\output.txt',
+      output: [
+        'file://C:\\custom\\formatter',
+        'file://C:\\formatter\\output.txt',
+      ],
     },
     {
       description:
         'does not split a single absolute windows paths, adds empty string',
-      input: 'C:\\custom\\formatter',
-      output: ['C:\\custom\\formatter', ''],
+      input: 'file://C:\\custom\\formatter',
+      output: ['file://C:\\custom\\formatter', ''],
     },
   ]
 

@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Allow `file://` URLs to be used as formatter/snippet paths in options ([#1963](https://github.com/cucumber/cucumber-js/pull/1963) [#1920](https://github.com/cucumber/cucumber-js/issues/1920))
 
 ## [8.0.0-rc.3] - 2022-03-21
 ### Added
@@ -66,6 +68,7 @@ See [docs/profiles.md](./docs/profiles.md#using-another-file-than-cucumberjs) fo
 
 ### Changed
 - Relative paths for custom snippet syntaxes must begin with `.` ([#1640](https://github.com/cucumber/cucumber-js/issues/1640))
+- Absolute paths for custom formatters and snippet syntaxes must be a valid `file://` URL
 - Use performance timers for test case duration measurement.
 [#1793](https://github.com/cucumber/cucumber-js/pull/1793)
 
