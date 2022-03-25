@@ -14,6 +14,7 @@ For each value you provide, `TYPE` should be one of:
 * The name of one of the built-in formatters (below) e.g. `progress`
 * A module/package name e.g. `@cucumber/pretty-formatter`
 * A relative path to a local formatter implementation e.g. `./my-customer-formatter.js`
+* An absolute path to a local formatter implementation in the form of a `file://` URL
 
 If `PATH` is supplied, the formatter prints to the given file, otherwise it prints to `stdout`.
 

@@ -32,35 +32,32 @@ export async function convertConfiguration(
       strict: flatConfiguration.strict,
       worldParameters: flatConfiguration.worldParameters,
     },
-    formats: {
-      stdout:
-        [...flatConfiguration.format]
-          .reverse()
-          .find((option) => !option.includes(':')) ?? 'progress',
-      files: flatConfiguration.format
-        .filter((option) => option.includes(':'))
-        .reduce((mapped, item) => {
-          const [type, target] = OptionSplitter.split(item)
-          return {
-            ...mapped,
-            [target]: type,
-          }
-        }, {}),
-      publish: makePublishConfig(flatConfiguration, env),
-      options: flatConfiguration.formatOptions,
-    },
+    formats: convertFormats(flatConfiguration, env),
   }
 }
 
-function isPublishing(
+function convertFormats(
   flatConfiguration: IConfiguration,
   env: NodeJS.ProcessEnv
-): boolean {
-  return (
-    flatConfiguration.publish ||
-    isTruthyString(env.CUCUMBER_PUBLISH_ENABLED) ||
-    env.CUCUMBER_PUBLISH_TOKEN !== undefined
+) {
+  const splitFormats: string[][] = flatConfiguration.format.map((item) =>
+    OptionSplitter.split(item)
   )
+  return {
+    stdout:
+      [...splitFormats].reverse().find(([, target]) => !target)?.[0] ??
+      'progress',
+    files: splitFormats
+      .filter(([, target]) => !!target)
+      .reduce((mapped, [type, target]) => {
+        return {
+          ...mapped,
+          [target]: type,
+        }
+      }, {}),
+    publish: makePublishConfig(flatConfiguration, env),
+    options: flatConfiguration.formatOptions,
+  }
 }
 
 function makePublishConfig(
@@ -75,4 +72,15 @@ function makePublishConfig(
     url: env.CUCUMBER_PUBLISH_URL,
     token: env.CUCUMBER_PUBLISH_TOKEN,
   }
+}
+
+function isPublishing(
+  flatConfiguration: IConfiguration,
+  env: NodeJS.ProcessEnv
+): boolean {
+  return (
+    flatConfiguration.publish ||
+    isTruthyString(env.CUCUMBER_PUBLISH_ENABLED) ||
+    env.CUCUMBER_PUBLISH_TOKEN !== undefined
+  )
 }
