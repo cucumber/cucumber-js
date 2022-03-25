@@ -16,10 +16,14 @@ function displayPublishAdvertisementBanner(): void {
 }
 
 export default async function run(): Promise<void> {
-  validateNodeEngineVersion(process.version, (error) => {
-    console.error(error)
-    process.exit(1)
-  })
+  validateNodeEngineVersion(
+    process.version,
+    (error) => {
+      console.error(error)
+      process.exit(1)
+    },
+    console.warn
+  )
 
   const cli = new Cli({
     argv: process.argv,

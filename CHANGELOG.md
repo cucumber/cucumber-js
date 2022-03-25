@@ -11,6 +11,9 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Fixed
 - Allow `file://` URLs to be used as formatter/snippet paths in options ([#1963](https://github.com/cucumber/cucumber-js/pull/1963) [#1920](https://github.com/cucumber/cucumber-js/issues/1920))
 
+### Changed
+- Emit a warning when using a Node.js version that's untested with Cucumber ([#1959](https://github.com/cucumber/cucumber-js/pull/1959))
+
 ## [8.0.0-rc.3] - 2022-03-21
 ### Added
 - Add support for Node.js 17

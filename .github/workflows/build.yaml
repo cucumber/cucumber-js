@@ -19,6 +19,7 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
+        # these versions must be kept in sync with enginesTested.node in package.json
         node-version: [12.x, 14.x, 16.x, 17.x]
       fail-fast: false
 
