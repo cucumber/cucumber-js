@@ -63,4 +63,28 @@ describe('convertConfiguration', () => {
       options: {},
     })
   })
+
+  it('should map formatters correctly when file:// urls are involved', async () => {
+    const result = await convertConfiguration(
+      {
+        ...DEFAULT_CONFIGURATION,
+        format: [
+          'file:///my/fancy/formatter',
+          'json:./report.json',
+          'html:./report.html',
+        ],
+      },
+      {}
+    )
+
+    expect(result.formats).to.eql({
+      stdout: 'file:///my/fancy/formatter',
+      files: {
+        './report.html': 'html',
+        './report.json': 'json',
+      },
+      publish: false,
+      options: {},
+    })
+  })
 })

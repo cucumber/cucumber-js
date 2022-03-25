@@ -1,7 +1,22 @@
 import { expect } from 'chai'
 import FormatterBuilder from './builder'
+import { pathToFileURL } from 'url'
+import path from 'path'
 
 describe('custom class loading', () => {
+  it('should handle a file:// url', async () => {
+    const fileUrl = pathToFileURL(
+      path.resolve(__dirname, './fixtures/module_dot_exports.cjs')
+    ).toString()
+    const CustomClass = await FormatterBuilder.loadCustomClass(
+      'formatter',
+      fileUrl,
+      __dirname
+    )
+
+    expect(typeof CustomClass).to.eq('function')
+  })
+
   it('should handle cjs module.exports', async () => {
     const CustomClass = await FormatterBuilder.loadCustomClass(
       'formatter',
