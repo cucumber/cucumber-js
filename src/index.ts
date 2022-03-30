@@ -1,4 +1,5 @@
 import * as formatterHelpers from './formatter/helpers'
+import * as parallelCanAssignHelpers from './support_code_library_builder/parallel_can_assign_helpers'
 import supportCodeLibraryBuilder from './support_code_library_builder'
 import * as messages from '@cucumber/messages'
 
@@ -50,6 +51,7 @@ export {
   IWorld,
   IWorldOptions,
 } from './support_code_library_builder/world'
+export { parallelCanAssignHelpers }
 
 export {
   ITestCaseHookParameter,
