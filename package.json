@@ -230,7 +230,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "@cucumber/compatibility-kit": "9.1.2",
+    "@cucumber/compatibility-kit": "9.2.0",
     "@cucumber/message-streams": "3.0.0",
     "@cucumber/query": "11.0.0",
     "@microsoft/api-documenter": "7.17.0",
