@@ -282,7 +282,7 @@
     "stream-buffers": "3.0.2",
     "stream-to-string": "1.2.0",
     "strip-ansi": "6.0.1",
-    "ts-node": "10.6.0",
+    "ts-node": "10.7.0",
     "tsd": "0.19.1",
     "typescript": "4.6.3"
   },
