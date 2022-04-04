@@ -142,11 +142,6 @@ const FormatterBuilder = {
       typeof ImportedCode.default === 'function'
     ) {
       return ImportedCode.default
-    } else if (
-      typeof ImportedCode.default === 'object' &&
-      typeof ImportedCode.default.default === 'function'
-    ) {
-      return ImportedCode.default.default
     }
     return null
   },
