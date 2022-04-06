@@ -8,12 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [8.0.0] - 2022-04-06
+### Changed
+- Emit a warning when using a Node.js version that's untested with Cucumber ([#1959](https://github.com/cucumber/cucumber-js/pull/1959))
+
 ### Fixed
 - Allow `file://` URLs to be used as formatter/snippet paths in options ([#1963](https://github.com/cucumber/cucumber-js/pull/1963) [#1920](https://github.com/cucumber/cucumber-js/issues/1920))
 - Allow custom formatters to rely on `--require-module` transpilers ([#1985](https://github.com/cucumber/cucumber-js/pull/1985))
-
-### Changed
-- Emit a warning when using a Node.js version that's untested with Cucumber ([#1959](https://github.com/cucumber/cucumber-js/pull/1959))
 
 ## [8.0.0-rc.3] - 2022-03-21
 ### Added
@@ -1354,7 +1356,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.3...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.0.0...HEAD
+[8.0.0]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.3...v8.0.0
 [8.0.0-rc.3]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.2...v8.0.0-rc.3
 [8.0.0-rc.2]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.1...v8.0.0-rc.2
 [8.0.0-rc.1]: https://github.com/cucumber/cucumber-js/compare/v7.3.1...8.0.0-rc.1
