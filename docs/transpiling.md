@@ -11,7 +11,14 @@ This would mean any support code loaded with the `require` option would be trans
 
 ## TypeScript
 
-Your `tsconfig.json` should have the `resolveJsonModule` compiler option switched on. Other than that, a pretty standard TypeScript setup should work as expected.
+Your `tsconfig.json` should have these `compilerOptions` on:
+
+```json
+"allowSyntheticDefaultImports": true,
+"resolveJsonModule": true,
+```
+
+Other than that, a pretty standard TypeScript setup should work as expected.
 
 > ⚠️ Some TypeScript setups use `esnext` modules by default,
 >   which doesn't marry well with Node. You may consider using commonjs instead.
