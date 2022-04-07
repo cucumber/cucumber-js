@@ -1,6 +1,10 @@
+_**You are reading the documentation in the `main` development branch, which might contain some unreleased features. See documentation for [older versions](https://github.com/cucumber/cucumber-js/blob/main/docs/older_versions.md) if you need it.**_
+
+----
+
 # Configuration
 
-# Files
+## Files
 
 You can keep your configuration in a file. Cucumber will look for one of these files in the root of your project, and use the first one it finds:
 
