@@ -220,6 +220,7 @@ describe('helpers', () => {
             id: '0',
             line: 3,
             options: {
+              name: 'before hook',
               tags: '@hooks-tho',
             },
             uri: 'features/support/hooks.js',
@@ -231,7 +232,9 @@ describe('helpers', () => {
             unwrappedCode: noopFunction,
             id: '1',
             line: 7,
-            options: {},
+            options: {
+              name: 'after hook',
+            },
             uri: 'features/support/hooks.js',
           }),
           new TestCaseHookDefinition({
@@ -249,6 +252,7 @@ describe('helpers', () => {
         {
           hook: {
             id: '0',
+            name: 'before hook',
             tagExpression: '@hooks-tho',
             sourceReference: {
               uri: 'features/support/hooks.js',
@@ -261,6 +265,7 @@ describe('helpers', () => {
         {
           hook: {
             id: '1',
+            name: 'after hook',
             tagExpression: undefined,
             sourceReference: {
               uri: 'features/support/hooks.js',
@@ -273,6 +278,7 @@ describe('helpers', () => {
         {
           hook: {
             id: '2',
+            name: undefined,
             tagExpression: undefined,
             sourceReference: {
               uri: 'features/support/hooks.js',
