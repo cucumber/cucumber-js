@@ -304,7 +304,7 @@
     "pretest-coverage": "npm run build-local",
     "pretypes-test": "npm run build-local",
     "test-coverage": "nyc --silent mocha 'src/**/*_spec.ts' 'compatibility/**/*_spec.ts' && nyc --silent --no-clean node ./bin/cucumber-js && nyc report --reporter=lcov",
-    "test": "npm run lint && npm run docs:ci && npm run types-test && npm run unit-test && npm run cck-test && npm run feature-test",
+    "test": "npm run lint && npm run types-test && npm run unit-test && npm run cck-test && npm run feature-test",
     "types-test": "tsd",
     "unit-test": "mocha 'src/**/*_spec.ts'",
     "update-dependencies": "npx npm-check-updates --upgrade"
