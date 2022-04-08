@@ -18,6 +18,7 @@ export interface IParsedTestStep {
   argument?: messages.PickleStepArgument
   attachments: messages.Attachment[]
   keyword: string
+  name?: string
   result: messages.TestStepResult
   snippet?: string
   sourceLocation?: ILineAndUri
@@ -87,6 +88,7 @@ function parseStep({
       uri: hookDefinition.uri,
       line: hookDefinition.line,
     }
+    out.name = hookDefinition.name
   }
   if (
     doesHaveValue(testStep.stepDefinitionIds) &&

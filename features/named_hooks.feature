@@ -7,7 +7,7 @@ Feature: Named hooks
         Scenario: some scenario
           Given a step
       """
-    Given a file named "features/step_definitions/hooks.js" with:
+    And a file named "features/step_definitions/hooks.js" with:
       """
       const {After, Before} = require('@cucumber/cucumber')
 
@@ -15,14 +15,17 @@ Feature: Named hooks
       Before({name: 'hook 2'}, function() {})
       After({name: 'hook 3'}, function() {})
       """
-    Given a file named "features/step_definitions/steps.js" with:
+    And a file named "features/step_definitions/steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
 
-      Given('a step', function() {})
+      Given('a step', function() {
+        throw 'nope'
+      })
       """
     When I run cucumber-js
-    Then the output contains the text:
+    Then it fails
+    And the output contains the text:
     """
-    Before "hook 2"
+    Before (hook 2) #
     """
