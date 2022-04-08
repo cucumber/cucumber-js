@@ -20,6 +20,7 @@ export interface IDefinitionOptions {
 }
 
 export interface IHookDefinitionOptions extends IDefinitionOptions {
+  name?: string
   tags?: string
 }
 

@@ -12,11 +12,13 @@ export default class TestCaseHookDefinition
   extends Definition
   implements IDefinition
 {
+  public readonly name: string
   public readonly tagExpression: string
   private readonly pickleTagFilter: PickleTagFilter
 
   constructor(data: IDefinitionParameters<IHookDefinitionOptions>) {
     super(data)
+    this.name = data.options.name
     this.tagExpression = data.options.tags
     this.pickleTagFilter = new PickleTagFilter(data.options.tags)
   }
