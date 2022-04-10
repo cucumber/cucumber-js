@@ -1,6 +1,10 @@
 Feature: Named hooks
 
-  Scenario:
+  As a developer
+  I want to name a `Before` or `After` hook
+  So that I can easily identify which hooks are run when reporting
+
+  Scenario: Hook is named and then referenced by its name in formatter output
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
