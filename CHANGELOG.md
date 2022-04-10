@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- Rename the `cucumber-js` binary's underlying file to have a `.js` extension, so it doesn't fall foul of Node.js module conventions and plays nicely with ESM loaders (see [documentation](./docs/esm.md#transpiling)) ([#1993](https://github.com/cucumber/cucumber-js/pull/1993))
 
 ## [8.0.0] - 2022-04-06
 ### Changed
