@@ -180,6 +180,6 @@ Then('I see the version of Cucumber', function (this: World) {
 
 Then('I see the help text for Cucumber', function (this: World) {
   const actualOutput = this.lastRun.output
-  const expectedOutput = 'Usage: cucumber-js'
+  const expectedOutput = 'Usage: cucumber.js'
   expect(actualOutput).to.include(expectedOutput)
 })
