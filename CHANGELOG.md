@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Correctly escape backslashes in generated expressions for snippets ([#1324](https://github.com/cucumber/cucumber-js/issues/1324) [#1995](https://github.com/cucumber/cucumber-js/pull/1995))
 
 ## [8.0.0] - 2022-04-06
 ### Changed
