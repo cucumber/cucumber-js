@@ -9,7 +9,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [Unreleased]
 ### Changed
-- Rename the `cucumber-js` binary's underlying file to have a `.js` extension, so it doesn't fall foul of Node.js module conventions and plays nicely with ESM loaders (see [documentation](./docs/esm.md#transpiling)) ([#1993](https://github.com/cucumber/cucumber-js/pull/1993))
+- Rename the `cucumber-js` binary's underlying file to be `cucumber.js`, so it doesn't fall foul of Node.js module conventions and plays nicely with ESM loaders (see [documentation](./docs/esm.md#transpiling)) ([#1993](https://github.com/cucumber/cucumber-js/pull/1993))
 
 ### Fixed
 - Correctly escape backslashes in generated expressions for snippets ([#1324](https://github.com/cucumber/cucumber-js/issues/1324) [#1995](https://github.com/cucumber/cucumber-js/pull/1995))
