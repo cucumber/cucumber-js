@@ -15,6 +15,9 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 - Correctly escape backslashes in generated expressions for snippets ([#1324](https://github.com/cucumber/cucumber-js/issues/1324) [#1995](https://github.com/cucumber/cucumber-js/pull/1995))
 
 ## [8.0.0] - 2022-04-06
+
+Read the [blog post](https://cucumber.io/blog/open-source/announcing-cucumber-js-8-0-0/) and the [upgrading instructions](https://github.com/cucumber/cucumber-js/blob/main/UPGRADING.md#800).
+
 ### Changed
 - Emit a warning when using a Node.js version that's untested with Cucumber ([#1959](https://github.com/cucumber/cucumber-js/pull/1959))
 
