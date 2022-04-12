@@ -20,10 +20,6 @@ Your `tsconfig.json` should have these `compilerOptions` on:
 
 Other than that, a pretty standard TypeScript setup should work as expected.
 
-> ⚠️ Some TypeScript setups use `esnext` modules by default,
->   which doesn't marry well with Node. You may consider using commonjs instead.
->   See how to add [extra configuration](#extra-configuration) below.
-
 You'll also need to specify where your support code is, since `.ts` files won't be picked up by default.
 
 ### With ts-node
@@ -33,6 +29,24 @@ If you are using [ts-node](https://github.com/TypeStrong/ts-node):
 - In a configuration file `{ requireModule: ['ts-node/register'], require: ['step-definitions/**/*.ts'] }`
 - On the CLI `$ cucumber-js --require-module ts-node/register --require 'step-definitions/**/*.ts'`
 
+#### ESM
+
+For ESM projects, you can use `ts-node`'s ESM loader and then `import` your TypeScript files:
+
+```shell
+$ NODE_OPTIONS"--loader ts-node/esm" cucumber-js --import 'step-definitions/**/*.ts'
+```
+
+Don't forget to set your `tsconfig.json` to emit JavaScript with `import` and `export` statements:
+
+```json
+{
+  "compilerOptions": {
+    "module": "esnext"
+  }
+}
+```
+
 ### With Babel
 
 If you are using babel with [@babel/preset-typescript](https://babeljs.io/docs/en/babel-preset-typescript):
@@ -40,25 +54,6 @@ If you are using babel with [@babel/preset-typescript](https://babeljs.io/docs/e
 - In a configuration file `{ requireModule: ['@babel/register'], require: ['step-definitions/**/*.ts'] }`
 - On the CLI `$ cucumber-js --require-module @babel/register --require 'step-definitions/**/*.ts'`
 
-## Extra Configuration
+### ESM
 
-Sometimes the required module (say `ts-node/register`) needs extra configuration. For example, you might want to configure it such that it prevents the compiled JS being written out to files, and pass some compiler options. In such cases, create a script (say, `tests.setup.js`):
-
-```js
-require('ts-node').register({
-  transpileOnly: true,
-  compilerOptions: {
-    "module": "commonjs",
-    "resolveJsonModule": true,
-  },
-});
-```
-
-And then require it using the `require` option:
-
-- In a configuration file `{ require: ['tests.setup.js', 'features/**/*.ts'] }`
-- On the CLI `$ cucumber-js --require tests.setup.js --require 'features/**/*.ts'`
-
-## ESM
-
-Cucumber doesn't yet support native ESM loader hooks ([see GitHub issue](https://github.com/cucumber/cucumber-js/issues/1844)).
+See [ESM](./esm.md) for general advice on using loaders for transpilation in ESM projects.

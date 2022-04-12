@@ -58,4 +58,8 @@ export const ci = {
 
 ## Transpiling
 
-When using a transpiler for e.g. TypeScript, ESM isn't supported - you'll need to configure your transpiler to output modules in CommonJS syntax (for now). See [this GitHub issue](https://github.com/cucumber/cucumber-js/issues/1844) for the latest on support for ESM loaders.
+You can use [ESM loaders](https://nodejs.org/api/esm.html#loaders) to transpile your support code on the fly. The `requireModule` configuration option only works with CommonJS (i.e. `require` hooks) and is not applicable here. Cucumber doesn't have an equivalent option for ESM loaders because they currently can't be registered in-process, so you'll need to declare the loader externally, like this:
+
+```shell
+$ NODE_OPTIONS="--loader <loader>" npx cucumber-js
+```

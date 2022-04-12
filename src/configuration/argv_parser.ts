@@ -1,6 +1,5 @@
 import { Command } from 'commander'
 import merge from 'lodash.merge'
-import path from 'path'
 import { dialects } from '@cucumber/gherkin'
 import Formatters from '../formatter/helpers/formatters'
 import { version } from '../version'
@@ -65,7 +64,7 @@ const ArgvParser = {
   },
 
   parse(argv: string[]): IParsedArgv {
-    const program = new Command(path.basename(argv[1]))
+    const program = new Command('cucumber-js')
 
     program
       .storeOptionsAsProperties(false)
