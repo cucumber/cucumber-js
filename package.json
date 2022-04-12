@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "8.0.0-rc.2",
+  "version": "8.0.0",
   "homepage": "https://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com>",
   "contributors": [
@@ -173,7 +173,13 @@
   "exports": {
     ".": {
       "import": "./lib/wrapper.mjs",
-      "require": "./lib/index.js"
+      "require": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    },
+    "./api": {
+      "import": "./lib/api/wrapper.mjs",
+      "require": "./lib/api/index.js",
+      "types": "./lib/api/index.d.ts"
     },
     "./lib/*": {
       "require": "./lib/*.js"
@@ -182,16 +188,20 @@
   },
   "types": "./lib/index.d.ts",
   "engines": {
+    "node": "12 || 14 || >=16"
+  },
+  "enginesTested": {
     "node": "12 || 14 || 16 || 17"
   },
   "dependencies": {
     "@cspotcode/source-map-support": "^0.7.0",
-    "@cucumber/ci-environment": "9.0.0",
-    "@cucumber/cucumber-expressions": "15.0.1",
-    "@cucumber/gherkin": "22.0.0",
-    "@cucumber/gherkin-streams": "4.0.0",
-    "@cucumber/html-formatter": "18.0.0",
-    "@cucumber/messages": "17.1.1",
+    "@cucumber/ci-environment": "9.0.4",
+    "@cucumber/cucumber-expressions": "15.0.2",
+    "@cucumber/gherkin": "23.0.1",
+    "@cucumber/gherkin-streams": "5.0.1",
+    "@cucumber/gherkin-utils": "^7.0.0",
+    "@cucumber/html-formatter": "19.0.0",
+    "@cucumber/messages": "18.0.0",
     "@cucumber/tag-expressions": "4.1.0",
     "assertion-error-formatter": "^3.0.0",
     "capital-case": "^1.0.4",
@@ -205,6 +215,8 @@
     "indent-string": "^4.0.0",
     "is-stream": "^2.0.0",
     "knuth-shuffle-seeded": "^1.0.6",
+    "lodash.merge": "^4.6.2",
+    "lodash.mergewith": "^4.6.2",
     "mz": "^2.7.0",
     "progress": "^2.0.3",
     "resolve": "^1.19.0",
@@ -214,18 +226,23 @@
     "string-argv": "^0.3.1",
     "tmp": "^0.2.1",
     "util-arity": "^1.1.0",
-    "verror": "^1.10.0"
+    "verror": "^1.10.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@cucumber/compatibility-kit": "9.1.2",
-    "@cucumber/message-streams": "3.0.0",
+    "@cucumber/message-streams": "4.0.1",
     "@cucumber/query": "11.0.0",
-    "@sinonjs/fake-timers": "9.1.0",
+    "@microsoft/api-documenter": "7.17.0",
+    "@microsoft/api-extractor": "7.20.0",
+    "@sinonjs/fake-timers": "9.1.1",
     "@types/chai": "4.3.0",
     "@types/dirty-chai": "2.0.2",
     "@types/express": "4.17.13",
     "@types/fs-extra": "9.0.13",
     "@types/glob": "7.2.0",
+    "@types/lodash.merge": "^4.6.6",
+    "@types/lodash.mergewith": "^4.6.6",
     "@types/mocha": "9.1.0",
     "@types/mustache": "4.1.2",
     "@types/mz": "2.7.4",
@@ -234,19 +251,19 @@
     "@types/resolve": "1.20.1",
     "@types/semver": "7.3.9",
     "@types/sinon-chai": "3.2.8",
-    "@types/sinonjs__fake-timers": "8.1.1",
+    "@types/sinonjs__fake-timers": "8.1.2",
     "@types/stream-buffers": "3.0.4",
     "@types/tmp": "0.2.3",
     "@types/verror": "1.10.5",
-    "@typescript-eslint/eslint-plugin": "5.13.0",
-    "@typescript-eslint/parser": "5.13.0",
+    "@typescript-eslint/eslint-plugin": "5.17.0",
+    "@typescript-eslint/parser": "5.17.0",
     "chai": "4.3.6",
     "chai-exclude": "2.1.0",
     "coffeescript": "2.6.1",
     "dependency-lint": "7.1.0",
     "dirty-chai": "2.0.1",
-    "eslint": "8.10.0",
-    "eslint-config-prettier": "8.4.0",
+    "eslint": "8.12.0",
+    "eslint-config-prettier": "8.5.0",
     "eslint-plugin-import": "2.25.4",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-prettier": "4.0.0",
@@ -254,11 +271,11 @@
     "express": "4.17.3",
     "fs-extra": "10.0.1",
     "genversion": "3.0.2",
-    "mocha": "9.2.1",
+    "mocha": "9.2.2",
     "mustache": "4.2.0",
     "nyc": "15.1.0",
     "portfinder": "^1.0.28",
-    "prettier": "2.5.1",
+    "prettier": "2.6.1",
     "reindent-template-literals": "1.1.0",
     "shx": "0.3.4",
     "sinon": "13.0.1",
@@ -266,14 +283,16 @@
     "stream-buffers": "3.0.2",
     "stream-to-string": "1.2.0",
     "strip-ansi": "6.0.1",
-    "ts-node": "10.5.0",
-    "tsd": "0.19.1",
-    "typescript": "4.6.2"
+    "ts-node": "10.7.0",
+    "tsd": "0.20.0",
+    "typescript": "4.6.3"
   },
   "scripts": {
-    "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.node.json && shx cp src/importer.js lib/ && shx cp src/wrapper.mjs lib/",
+    "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.node.json && shx cp src/importer.js lib/ && shx cp src/wrapper.mjs lib/ && shx cp src/api/wrapper.mjs lib/api/",
     "cck-test": "mocha 'compatibility/**/*_spec.ts'",
-    "feature-test": "node ./bin/cucumber-js",
+    "docs:ci": "api-extractor run --verbose",
+    "docs:local": "api-extractor run --verbose --local && api-documenter markdown --input-folder ./tmp/api-extractor --output-folder ./docs/api",
+    "feature-test": "node bin/cucumber.js",
     "lint-autofix": "eslint --fix \"{compatibility,example,features,scripts,src,test}/**/*.ts\"",
     "lint-code": "eslint \"{compatibility,example,features,scripts,src,test}/**/*.ts\"",
     "lint-dependencies": "dependency-lint",
@@ -285,17 +304,18 @@
     "prepublishOnly": "rm -rf lib && npm run build-local",
     "pretest-coverage": "npm run build-local",
     "pretypes-test": "npm run build-local",
-    "test-coverage": "nyc --silent mocha 'src/**/*_spec.ts' 'compatibility/**/*_spec.ts' && nyc --silent --no-clean node ./bin/cucumber-js && nyc report --reporter=lcov",
+    "test-coverage": "nyc --silent mocha 'src/**/*_spec.ts' 'compatibility/**/*_spec.ts' && nyc --silent --no-clean node bin/cucumber.js && nyc report --reporter=lcov",
     "test": "npm run lint && npm run types-test && npm run unit-test && npm run cck-test && npm run feature-test",
     "types-test": "tsd",
     "unit-test": "mocha 'src/**/*_spec.ts'",
     "update-dependencies": "npx npm-check-updates --upgrade"
   },
   "bin": {
-    "cucumber-js": "./bin/cucumber-js"
+    "cucumber-js": "bin/cucumber.js"
   },
   "license": "MIT",
   "files": [
+    "api/",
     "bin/",
     "lib/"
   ]

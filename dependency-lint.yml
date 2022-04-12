@@ -5,6 +5,8 @@ executedModules:
   npmScripts:
     dev:
       - build
+      - docs:ci
+      - docs:local
       - lint
       - publish
       - test

@@ -9,14 +9,15 @@ export function warnUserAboutEnablingDeveloperMode(error: any): void {
     throw error
   }
 
+  // eslint-disable-next-line no-console
   console.error(
     chalk.red(
       reindent(`
         Error: Unable to run feature tests!
-        
+
         You need to enable Developer Mode in Windows to run Cucumber JS's feature tests.
 
-        See this link for more info: 
+        See this link for more info:
         https://docs.microsoft.com/en-us/windows/apps/get-started/developer-mode-features-and-debugging
       `)
     )

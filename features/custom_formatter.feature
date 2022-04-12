@@ -139,6 +139,7 @@ Feature: custom formatter
     Then it passes
     Examples:
       | EXT  | IMPORT_STATEMENT                                  | EXPORT_STATEMENT                  |
+      | .ts  | import {Formatter} from '@cucumber/cucumber'      | export default CustomFormatter    |
       | .mjs | import {Formatter} from '@cucumber/cucumber'      | export default CustomFormatter    |
       | .js  | const {Formatter} = require('@cucumber/cucumber') | module.exports = CustomFormatter  |
       | .js  | const {Formatter} = require('@cucumber/cucumber') | exports.default = CustomFormatter |

@@ -4,7 +4,6 @@ import {
   emitMetaMessage,
   emitSupportCodeMessages,
   parseGherkinMessageStream,
-  PickleOrder,
 } from './helpers'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
@@ -23,6 +22,7 @@ import {
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
+import { PickleOrder } from '../models/pickle_order'
 
 const noopFunction = (): void => {
   // no code
@@ -66,6 +66,11 @@ function testEmitSupportCodeMessages(
     eventBroadcaster,
     supportCodeLibrary: Object.assign(
       {
+        originalCoordinates: {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+        },
         stepDefinitions: [],
         beforeTestRunHookDefinitions: [],
         beforeTestCaseHookDefinitions: [],

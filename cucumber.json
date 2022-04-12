@@ -1,0 +1,20 @@
+{
+  "default": {
+    "requireModule": [
+      "ts-node/register"
+    ],
+    "require": [
+      "features/**/*.ts"
+    ],
+    "format": [
+      "progress-bar",
+      "rerun:@rerun.txt",
+      "usage:reports/usage.txt",
+      "message:reports/messages.ndjson",
+      "html:reports/html-formatter.html"
+    ],
+    "retry": 2,
+    "retryTagFilter": "@flaky",
+    "publishQuiet": true
+  }
+}

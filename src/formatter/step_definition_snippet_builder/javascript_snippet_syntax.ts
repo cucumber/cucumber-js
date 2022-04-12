@@ -1,3 +1,4 @@
+import { GeneratedExpression } from '@cucumber/cucumber-expressions'
 import {
   ISnippetSnytax,
   ISnippetSyntaxBuildOptions,
@@ -43,9 +44,8 @@ export default class JavaScriptSnippetSyntax implements ISnippetSnytax {
         if (this.snippetInterface === SnippetInterface.Callback) {
           allParameterNames.push(CALLBACK_NAME)
         }
-        return `${prefix + functionName}('${generatedExpression.source.replace(
-          /'/g,
-          "\\'"
+        return `${prefix + functionName}('${this.escapeSpecialCharacters(
+          generatedExpression
         )}', ${functionKeyword}(${allParameterNames.join(', ')}) {\n`
       }
     )
@@ -55,5 +55,14 @@ export default class JavaScriptSnippetSyntax implements ISnippetSnytax {
       `  ${implementation}\n` +
       '});'
     )
+  }
+
+  private escapeSpecialCharacters(generatedExpression: GeneratedExpression) {
+    let source = generatedExpression.source
+    // double up any backslashes because we're in a javascript string
+    source = source.replace(/\\/g, '\\\\')
+    // escape any single quotes because that's our quote delimiter
+    source = source.replace(/'/g, "\\'")
+    return source
   }
 }

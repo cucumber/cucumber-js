@@ -1,32 +1,26 @@
-import { IRuntimeOptions } from '../runtime'
-import { IParsedArgvFormatOptions } from '../cli/argv_parser'
-import { PickleOrder } from '../cli/helpers'
+import { FormatOptions } from '../formatter'
+import { PickleOrder } from '../models/pickle_order'
 
-export interface IRunConfiguration {
-  sources: {
-    defaultDialect?: string
-    paths?: string[]
-    names?: string[]
-    tagExpression?: string
-    order?: PickleOrder
-  }
-  support: {
-    requireModules: string[]
-    requirePaths: string[]
-    importPaths: string[]
-  }
-  runtime?: Partial<IRuntimeOptions> & { parallel?: number }
-  formats?: IFormatterConfiguration
-}
-
-export interface IFormatterConfiguration {
-  stdout?: string
-  files?: Record<string, string>
-  publish?:
-    | {
-        url?: string
-        token?: string
-      }
-    | false
-  options?: IParsedArgvFormatOptions
+export interface IConfiguration {
+  backtrace: boolean
+  dryRun: boolean
+  forceExit: boolean
+  failFast: boolean
+  format: string[]
+  formatOptions: FormatOptions
+  import: string[]
+  language: string
+  name: string[]
+  order: PickleOrder
+  paths: string[]
+  parallel: number
+  publish: boolean
+  publishQuiet: boolean
+  require: string[]
+  requireModule: string[]
+  retry: number
+  retryTagFilter: string
+  strict: boolean
+  tags: string
+  worldParameters: any
 }

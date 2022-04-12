@@ -19,11 +19,12 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
+        # these versions must be kept in sync with enginesTested.node in package.json
         node-version: [12.x, 14.x, 16.x, 17.x]
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: with Node.js ${{ matrix.node-version }} on ${{ matrix.os }}
       uses: actions/setup-node@v3
       with:
@@ -34,7 +35,7 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 16.x
@@ -43,7 +44,7 @@ jobs:
       - uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: reports
           path: reports
@@ -51,7 +52,7 @@ jobs:
   audit-dependencies:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 16.x
