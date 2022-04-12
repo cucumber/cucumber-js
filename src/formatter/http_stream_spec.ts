@@ -2,6 +2,7 @@ import assert from 'assert'
 import HttpStream from './http_stream'
 import FakeReportServer from '../../test/fake_report_server'
 import { Writable } from 'stream'
+import { getPortPromise as getPort } from 'portfinder'
 
 type Callback = (err?: Error | null) => void
 
@@ -10,8 +11,9 @@ describe('HttpStream', () => {
   let port: number
 
   beforeEach(async () => {
-    reportServer = new FakeReportServer(0)
-    port = await reportServer.start()
+    port = await getPort()
+    reportServer = new FakeReportServer(port)
+    await reportServer.start()
   })
 
   it(`sends a PUT request with written data when the stream is closed`, (callback: Callback) => {
