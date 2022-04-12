@@ -33,7 +33,9 @@ After(function () {
 });
 ```
 
-## Named hooks (since v8.1.0)
+## Named hooks
+
+ℹ️ Added in v8.1.0
 
 Hooks can optionally be named:
 
