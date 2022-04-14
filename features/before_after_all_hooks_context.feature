@@ -21,20 +21,20 @@ Feature: Before / After All Hooks Context
       const {expect} = require('chai')
 
       BeforeAll(function() {
-        this.myVar = {foo: 1}
+        this.testRunContext.myVar = {foo: 1}
       }) 
 
       Given('first step', function() {
-        expect(this.myVar).to.not.be.undefined;
-        expect(this.myVar.foo).to.eql(1) 
+        expect(this.testRunContext.myVar).to.not.be.undefined;
+        expect(this.testRunContext.myVar.foo).to.eql(1) 
       })
 
       Given('second step', function() {
-        expect(this.myVar.foo).to.eql(1) 
+        expect(this.testRunContext.myVar.foo).to.eql(1) 
       })
 
       AfterAll(function() {
-        expect(this.myVar.foo).to.eql(1)
+        expect(this.testRunContext.myVar.foo).to.eql(1)
       })
       """
     When I run cucumber-js

@@ -136,7 +136,7 @@ export default class TestCaseRunner {
       hookParameter,
       step,
       stepDefinition,
-      world: Object.assign(this.world, this.testRunContext), // TODO: should we show the user an error if there are duplicate keys?
+      world: Object.assign(this.world, { testRunContext: this.testRunContext }),
     })
   }
 
