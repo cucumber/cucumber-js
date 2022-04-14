@@ -1,25 +1,21 @@
-import { formatLocation } from '../../formatter/helpers'
+import * as messages from '@cucumber/messages'
+import { IdGenerator } from '@cucumber/messages'
+import { duration } from 'durations'
+import { EventEmitter } from 'events'
+import { pathToFileURL } from 'url'
+import StackTraceFilter from '../../stack_trace_filter'
+import supportCodeLibraryBuilder from '../../support_code_library_builder'
+import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
+import { doesHaveValue } from '../../value_checker'
+import { makeRunTestRunHooks, RunsTestRunHooks } from '../run_test_run_hooks'
+import { RealTestRunStopwatch } from '../stopwatch'
+import TestCaseRunner from '../test_case_runner'
 import {
   ICoordinatorReport,
   IWorkerCommand,
   IWorkerCommandInitialize,
   IWorkerCommandRun,
 } from './command_types'
-import { EventEmitter } from 'events'
-import StackTraceFilter from '../../stack_trace_filter'
-import supportCodeLibraryBuilder from '../../support_code_library_builder'
-import TestCaseRunner from '../test_case_runner'
-import UserCodeRunner from '../../user_code_runner'
-import { IdGenerator } from '@cucumber/messages'
-import * as messages from '@cucumber/messages'
-import TestRunHookDefinition from '../../models/test_run_hook_definition'
-import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
-import { doesHaveValue, valueOrDefault } from '../../value_checker'
-import { IRuntimeOptions } from '../index'
-import { RealTestRunStopwatch } from '../stopwatch'
-import { duration } from 'durations'
-import { pathToFileURL } from 'url'
-import { isJavaScript } from '../../cli/helpers'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../../importer')
@@ -40,7 +36,8 @@ export default class Worker {
   private readonly stackTraceFilter: StackTraceFilter
   private supportCodeLibrary: ISupportCodeLibrary
   private worldParameters: any
-  private options: IRuntimeOptions
+  private runTestRunHooks: RunsTestRunHooks
+  private testRunContext = {}
 
   constructor({
     cwd,
@@ -69,28 +66,32 @@ export default class Worker {
 
   async initialize({
     filterStacktraces,
-    supportCodeRequiredModules,
-    supportCodePaths,
+    requireModules,
+    requirePaths,
+    importPaths,
     supportCodeIds,
     options,
   }: IWorkerCommandInitialize): Promise<void> {
-    supportCodeRequiredModules.map((module) => require(module))
     supportCodeLibraryBuilder.reset(this.cwd, this.newId)
-    for (const codePath of supportCodePaths) {
-      if (supportCodeRequiredModules.length || !isJavaScript(codePath)) {
-        require(codePath)
-      } else {
-        await importer(pathToFileURL(codePath))
-      }
+    requireModules.map((module) => require(module))
+    requirePaths.map((module) => require(module))
+    for (const path of importPaths) {
+      await importer(pathToFileURL(path))
     }
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize(supportCodeIds)
 
     this.worldParameters = options.worldParameters
-    this.options = options
     this.filterStacktraces = filterStacktraces
     if (this.filterStacktraces) {
       this.stackTraceFilter.filter()
     }
+    this.runTestRunHooks = makeRunTestRunHooks(
+      options.dryRun,
+      this.supportCodeLibrary.defaultTimeout,
+      this.testRunContext,
+      (name, location) =>
+        `${name} hook errored on worker ${this.id}, process exiting: ${location}`
+    )
     await this.runTestRunHooks(
       this.supportCodeLibrary.beforeTestRunHookDefinitions,
       'a BeforeAll'
@@ -144,33 +145,5 @@ export default class Worker {
     })
     await testCaseRunner.run()
     this.sendMessage({ ready: true })
-  }
-
-  async runTestRunHooks(
-    testRunHookDefinitions: TestRunHookDefinition[],
-    name: string
-  ): Promise<void> {
-    if (this.options.dryRun) {
-      return
-    }
-    for (const hookDefinition of testRunHookDefinitions) {
-      const { error } = await UserCodeRunner.run({
-        argsArray: [],
-        fn: hookDefinition.code,
-        thisArg: null,
-        timeoutInMilliseconds: valueOrDefault(
-          hookDefinition.options.timeout,
-          this.supportCodeLibrary.defaultTimeout
-        ),
-      })
-      if (doesHaveValue(error)) {
-        const location = formatLocation(hookDefinition)
-        this.exit(
-          1,
-          error,
-          `${name} hook errored on worker ${this.id}, process exiting: ${location}`
-        )
-      }
-    }
   }
 }

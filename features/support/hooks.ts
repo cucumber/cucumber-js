@@ -45,7 +45,7 @@ Before(function (
   } catch (error) {
     warnUserAboutEnablingDeveloperMode(error)
   }
-  this.localExecutablePath = path.join(projectPath, 'bin', 'cucumber-js')
+  this.localExecutablePath = path.join(projectPath, 'bin', 'cucumber.js')
 })
 
 Before('@esm', function (this: World) {
@@ -102,7 +102,7 @@ Before('@global-install', function (this: World) {
   this.globalExecutablePath = path.join(
     globalInstallCucumberPath,
     'bin',
-    'cucumber-js'
+    'cucumber.js'
   )
 })
 

@@ -1,4 +1,5 @@
 Feature: custom formatter
+
   Background:
     Given a file named "features/a.feature" with:
       """
@@ -118,3 +119,27 @@ Feature: custom formatter
       1 step (1 undefined)
       <duration-stat>
       """
+
+  Scenario Outline: supported module formats
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+
+      Given('an undefined step', function() {});
+      """
+    And a file named "simple_formatter<EXT>" with:
+      """
+      <IMPORT_STATEMENT>
+
+      class CustomFormatter extends Formatter {}
+
+      <EXPORT_STATEMENT>
+      """
+    When I run cucumber-js with `--format ./simple_formatter<EXT>`
+    Then it passes
+    Examples:
+      | EXT  | IMPORT_STATEMENT                                  | EXPORT_STATEMENT                  |
+      | .ts  | import {Formatter} from '@cucumber/cucumber'      | export default CustomFormatter    |
+      | .mjs | import {Formatter} from '@cucumber/cucumber'      | export default CustomFormatter    |
+      | .js  | const {Formatter} = require('@cucumber/cucumber') | module.exports = CustomFormatter  |
+      | .js  | const {Formatter} = require('@cucumber/cucumber') | exports.default = CustomFormatter |

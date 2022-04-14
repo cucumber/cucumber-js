@@ -1,11 +1,9 @@
-import ArgvParser from './argv_parser'
-import ProfileLoader from './profile_loader'
 import shuffle from 'knuth-shuffle-seeded'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
 import { EventDataCollector } from '../formatter/helpers'
 import { doesHaveValue } from '../value_checker'
-import OptionSplitter from './option_splitter'
+import { OptionSplitter } from '../configuration'
 import { Readable } from 'stream'
 import os from 'os'
 import * as messages from '@cucumber/messages'
@@ -14,43 +12,31 @@ import detectCiEnvironment from '@cucumber/ci-environment'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
+import { PickleOrder } from '../models/pickle_order'
 import { builtinParameterTypes } from '../support_code_library_builder'
 import { version } from '../version'
 
-export interface IGetExpandedArgvRequest {
-  argv: string[]
-  cwd: string
-}
-
-export async function getExpandedArgv({
-  argv,
-  cwd,
-}: IGetExpandedArgvRequest): Promise<string[]> {
-  const { options } = ArgvParser.parse(argv)
-  let fullArgv = argv
-  const profileArgv = await new ProfileLoader(cwd).getArgv(
-    options.profile,
-    options.config
-  )
-  if (profileArgv.length > 0) {
-    fullArgv = argv.slice(0, 2).concat(profileArgv).concat(argv.slice(2))
-  }
-  return fullArgv
-}
-
 interface IParseGherkinMessageStreamRequest {
-  cwd: string
+  cwd?: string
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   gherkinMessageStream: Readable
-  order: PickleOrder
+  order: string
   pickleFilter: PickleFilter
 }
 
-export type PickleOrder = 'defined' | 'random'
-
+/**
+ * Process a stream of envelopes from Gherkin and resolve to an array of filtered, ordered pickle Ids
+ *
+ * @deprecated use `loadSources` instead
+ *
+ * @param eventBroadcaster
+ * @param eventDataCollector
+ * @param gherkinMessageStream
+ * @param order
+ * @param pickleFilter
+ */
 export async function parseGherkinMessageStream({
-  cwd,
   eventBroadcaster,
   eventDataCollector,
   gherkinMessageStream,
@@ -71,16 +57,9 @@ export async function parseGherkinMessageStream({
           result.push(pickleId)
         }
       }
-      if (doesHaveValue(envelope.parseError)) {
-        reject(
-          new Error(
-            `Parse error in '${envelope.parseError.source.uri}': ${envelope.parseError.message}`
-          )
-        )
-      }
     })
     gherkinMessageStream.on('end', () => {
-      orderPickleIds(result, order)
+      orderPickles(result, order, console)
       resolve(result)
     })
     gherkinMessageStream.on('error', reject)
@@ -88,7 +67,11 @@ export async function parseGherkinMessageStream({
 }
 
 // Orders the pickleIds in place - morphs input
-export function orderPickleIds(pickleIds: string[], order: PickleOrder): void {
+export function orderPickles<T = string>(
+  pickleIds: T[],
+  order: PickleOrder,
+  logger: Console
+): void {
   const [type, seed] = OptionSplitter.split(order)
   switch (type) {
     case 'defined':
@@ -96,7 +79,7 @@ export function orderPickleIds(pickleIds: string[], order: PickleOrder): void {
     case 'random':
       if (seed === '') {
         const newSeed = Math.floor(Math.random() * 1000 * 1000).toString()
-        console.warn(`Random order using seed: ${newSeed}`)
+        logger.warn(`Random order using seed: ${newSeed}`)
         shuffle(pickleIds, newSeed)
       } else {
         shuffle(pickleIds, seed)
@@ -107,14 +90,6 @@ export function orderPickleIds(pickleIds: string[], order: PickleOrder): void {
         'Unrecgonized order type. Should be `defined` or `random`'
       )
   }
-}
-
-export function isJavaScript(filePath: string): boolean {
-  return (
-    filePath.endsWith('.js') ||
-    filePath.endsWith('.mjs') ||
-    filePath.endsWith('.cjs')
-  )
 }
 
 export async function emitMetaMessage(

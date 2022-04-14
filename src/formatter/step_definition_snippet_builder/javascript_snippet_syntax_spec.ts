@@ -145,6 +145,33 @@ describe('JavascriptSnippetSyntax', () => {
       })
     })
 
+    describe('pattern contains escapes', () => {
+      it('returns the proper snippet', () => {
+        // Arrange
+        const syntax = new JavascriptSnippetSyntax(SnippetInterface.Synchronous)
+        const buildOptions: ISnippetSyntaxBuildOptions = {
+          comment: 'comment',
+          functionName: 'functionName',
+          generatedExpressions: generateExpressions(
+            'the user (with permissions) executes the action'
+          ),
+          stepParameterNames: [],
+        }
+
+        // Act
+        const result = syntax.build(buildOptions)
+
+        // Assert
+        expect(result).to.eql(
+          reindent(`
+            functionName('the user \\\\(with permissions) executes the action', function () {
+              // comment
+              return 'pending';
+            });`)
+        )
+      })
+    })
+
     describe('multiple patterns', () => {
       it('returns the snippet with the other choices commented out', function () {
         // Arrange

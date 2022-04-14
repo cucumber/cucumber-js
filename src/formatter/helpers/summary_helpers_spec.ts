@@ -238,13 +238,11 @@ describe('SummaryHelpers', () => {
           'Scenario: b',
           'Given a passing step',
         ].join('\n')
-        const supportCodeLibrary = buildSupportCodeLibrary(
-          ({ Given, Before }) => {
-            Given('a passing step', () => {
-              clock.tick(123)
-            })
-          }
-        )
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
+          Given('a passing step', () => {
+            clock.tick(123)
+          })
+        })
 
         // Act
         const output = await testFormatSummary({
@@ -282,13 +280,11 @@ describe('SummaryHelpers', () => {
           'Scenario: b',
           'Given a passing step',
         ].join('\n')
-        const supportCodeLibrary = buildSupportCodeLibrary(
-          ({ Given, Before }) => {
-            Given('a passing step', () => {
-              clock.tick(12.3 * 1000)
-            })
-          }
-        )
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
+          Given('a passing step', () => {
+            clock.tick(12.3 * 1000)
+          })
+        })
 
         // Act
         const output = await testFormatSummary({
@@ -320,13 +316,11 @@ describe('SummaryHelpers', () => {
           'Scenario: b',
           'Given a passing step',
         ].join('\n')
-        const supportCodeLibrary = buildSupportCodeLibrary(
-          ({ Given, Before }) => {
-            Given('a passing step', () => {
-              clock.tick(123 * 1000)
-            })
-          }
-        )
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
+          Given('a passing step', () => {
+            clock.tick(123 * 1000)
+          })
+        })
 
         // Act
         const output = await testFormatSummary({

@@ -70,3 +70,20 @@ Feature: step definition snippets
         return 'pending';
       });
       """
+
+  Scenario: a step resulting in special characters in the expression
+    Given a file named "features/number.feature" with:
+      """
+      Feature: a feature
+        Scenario: a scenario
+          Given a person's (secret) desires
+      """
+    When I run cucumber-js
+    Then it fails
+    And the output contains the text:
+      """
+      Given('a person\'s \\(secret) desires', function () {
+        // Write code here that turns the phrase above into concrete actions
+        return 'pending';
+      });
+      """

@@ -3,9 +3,7 @@ import { expect } from 'chai'
 import {
   emitMetaMessage,
   emitSupportCodeMessages,
-  isJavaScript,
   parseGherkinMessageStream,
-  PickleOrder,
 } from './helpers'
 import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
@@ -24,13 +22,13 @@ import {
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
+import { PickleOrder } from '../models/pickle_order'
 
 const noopFunction = (): void => {
   // no code
 }
 
 interface ITestParseGherkinMessageStreamRequest {
-  cwd: string
   gherkinMessageStream: Readable
   order: PickleOrder
   pickleFilter: PickleFilter
@@ -49,7 +47,6 @@ async function testParseGherkinMessageStream(
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
   const result = await parseGherkinMessageStream({
-    cwd: options.cwd,
     eventBroadcaster,
     eventDataCollector,
     gherkinMessageStream: options.gherkinMessageStream,
@@ -69,6 +66,11 @@ function testEmitSupportCodeMessages(
     eventBroadcaster,
     supportCodeLibrary: Object.assign(
       {
+        originalCoordinates: {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+        },
         stepDefinitions: [],
         beforeTestRunHookDefinitions: [],
         beforeTestCaseHookDefinitions: [],
@@ -80,6 +82,7 @@ function testEmitSupportCodeMessages(
         parameterTypeRegistry: new ParameterTypeRegistry(),
         undefinedParameterTypes: [],
         World: null,
+        parallelCanAssign: () => true,
       },
       supportCode
     ),
@@ -89,16 +92,6 @@ function testEmitSupportCodeMessages(
 }
 
 describe('helpers', () => {
-  describe('isJavaScript', () => {
-    it('should identify a native javascript file path that can be `import()`ed', () => {
-      expect(isJavaScript('foo/bar.js')).to.be.true()
-      expect(isJavaScript('foo/bar.mjs')).to.be.true()
-      expect(isJavaScript('foo/bar.cjs')).to.be.true()
-      expect(isJavaScript('foo/bar.ts')).to.be.false()
-      expect(isJavaScript('foo/bar.coffee')).to.be.false()
-    })
-  })
-
   describe('emitMetaMessage', () => {
     it('emits a meta message', async () => {
       const envelopes: messages.Envelope[] = []
@@ -383,7 +376,6 @@ describe('helpers', () => {
 
         // Act
         const { envelopes, result } = await testParseGherkinMessageStream({
-          cwd,
           gherkinMessageStream,
           order,
           pickleFilter,
@@ -425,7 +417,6 @@ describe('helpers', () => {
 
         // Act
         const { envelopes, result } = await testParseGherkinMessageStream({
-          cwd,
           gherkinMessageStream,
           order,
           pickleFilter,
@@ -469,7 +460,6 @@ describe('helpers', () => {
 
         // Act
         const { envelopes, result } = await testParseGherkinMessageStream({
-          cwd,
           gherkinMessageStream,
           order,
           pickleFilter,

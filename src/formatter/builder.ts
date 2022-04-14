@@ -3,14 +3,17 @@ import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascrip
 import path from 'path'
 import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import Formatter, { IFormatterCleanupFn, IFormatterLogFn } from '.'
+import Formatter, {
+  FormatOptions,
+  IFormatterCleanupFn,
+  IFormatterLogFn,
+} from '.'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { EventEmitter } from 'events'
 import EventDataCollector from './helpers/event_data_collector'
 import { Writable as WritableStream } from 'stream'
-import { IParsedArgvFormatOptions } from '../cli/argv_parser'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
-import { pathToFileURL } from 'url'
+import { fileURLToPath, pathToFileURL } from 'url'
 import Formatters from './helpers/formatters'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
@@ -27,7 +30,7 @@ export interface IBuildOptions {
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   log: IFormatterLogFn
-  parsedArgvOptions: IParsedArgvFormatOptions
+  parsedArgvOptions: FormatOptions
   stream: WritableStream
   cleanup: IFormatterCleanupFn
   supportCodeLibrary: ISupportCodeLibrary
@@ -94,9 +97,13 @@ const FormatterBuilder = {
     descriptor: string,
     cwd: string
   ) {
-    let CustomClass = descriptor.startsWith(`.`)
-      ? await importer(pathToFileURL(path.resolve(cwd, descriptor)))
-      : await importer(descriptor)
+    let normalised: URL | string = descriptor
+    if (descriptor.startsWith('.')) {
+      normalised = pathToFileURL(path.resolve(cwd, descriptor))
+    } else if (descriptor.startsWith('file://')) {
+      normalised = new URL(descriptor)
+    }
+    let CustomClass = await FormatterBuilder.loadFile(normalised)
     CustomClass = FormatterBuilder.resolveConstructor(CustomClass)
     if (doesHaveValue(CustomClass)) {
       return CustomClass
@@ -107,11 +114,31 @@ const FormatterBuilder = {
     }
   },
 
+  async loadFile(urlOrName: URL | string) {
+    let result
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      result = require(typeof urlOrName === 'string'
+        ? urlOrName
+        : fileURLToPath(urlOrName))
+    } catch (error) {
+      if (error.code === 'ERR_REQUIRE_ESM') {
+        result = await importer(urlOrName)
+      } else {
+        throw error
+      }
+    }
+    return result
+  },
+
   resolveConstructor(ImportedCode: any) {
+    if (doesNotHaveValue(ImportedCode)) {
+      return null
+    }
     if (typeof ImportedCode === 'function') {
       return ImportedCode
     } else if (
-      doesHaveValue(ImportedCode) &&
+      typeof ImportedCode === 'object' &&
       typeof ImportedCode.default === 'function'
     ) {
       return ImportedCode.default

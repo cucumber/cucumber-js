@@ -27,6 +27,8 @@ import {
   ISupportCodeLibrary,
   TestCaseHookFunction,
   TestStepHookFunction,
+  ParallelAssignmentValidator,
+  ISupportCodeCoordinates,
 } from './types'
 import World from './world'
 import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
@@ -77,6 +79,7 @@ export const builtinParameterTypes = [
 export class SupportCodeLibraryBuilder {
   public readonly methods: IDefineSupportCodeMethods
 
+  private originalCoordinates: ISupportCodeCoordinates
   private afterTestCaseHookDefinitionConfigs: ITestCaseHookDefinitionConfig[]
   private afterTestRunHookDefinitionConfigs: ITestRunHookDefinitionConfig[]
   private afterTestStepHookDefinitionConfigs: ITestStepHookDefinitionConfig[]
@@ -90,6 +93,7 @@ export class SupportCodeLibraryBuilder {
   private parameterTypeRegistry: ParameterTypeRegistry
   private stepDefinitionConfigs: IStepDefinitionConfig[]
   private World: any
+  private parallelCanAssign: ParallelAssignmentValidator
 
   constructor() {
     const defineStep = this.defineStep.bind(this)
@@ -123,6 +127,9 @@ export class SupportCodeLibraryBuilder {
       },
       setWorldConstructor: (fn) => {
         this.World = fn
+      },
+      setParallelCanAssign: (fn: ParallelAssignmentValidator): void => {
+        this.parallelCanAssign = fn
       },
       Then: defineStep,
       When: defineStep,
@@ -389,6 +396,7 @@ export class SupportCodeLibraryBuilder {
       canonicalIds?.stepDefinitionIds
     )
     return {
+      originalCoordinates: this.originalCoordinates,
       afterTestCaseHookDefinitions: this.buildTestCaseHookDefinitions(
         this.afterTestCaseHookDefinitionConfigs,
         canonicalIds?.afterTestCaseHookDefinitionIds
@@ -414,12 +422,22 @@ export class SupportCodeLibraryBuilder {
       undefinedParameterTypes: stepDefinitionsResult.undefinedParameterTypes,
       stepDefinitions: stepDefinitionsResult.stepDefinitions,
       World: this.World,
+      parallelCanAssign: this.parallelCanAssign,
     }
   }
 
-  reset(cwd: string, newId: IdGenerator.NewId): void {
+  reset(
+    cwd: string,
+    newId: IdGenerator.NewId,
+    originalCoordinates: ISupportCodeCoordinates = {
+      requireModules: [],
+      requirePaths: [],
+      importPaths: [],
+    }
+  ): void {
     this.cwd = cwd
     this.newId = newId
+    this.originalCoordinates = originalCoordinates
     this.afterTestCaseHookDefinitionConfigs = []
     this.afterTestRunHookDefinitionConfigs = []
     this.afterTestStepHookDefinitionConfigs = []
@@ -430,6 +448,7 @@ export class SupportCodeLibraryBuilder {
     this.defaultTimeout = 5000
     this.parameterTypeRegistry = new ParameterTypeRegistry()
     this.stepDefinitionConfigs = []
+    this.parallelCanAssign = () => true
     this.World = World
   }
 }

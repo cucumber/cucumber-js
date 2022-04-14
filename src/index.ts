@@ -1,4 +1,5 @@
 import * as formatterHelpers from './formatter/helpers'
+import * as parallelCanAssignHelpers from './support_code_library_builder/parallel_can_assign_helpers'
 import supportCodeLibraryBuilder from './support_code_library_builder'
 import * as messages from '@cucumber/messages'
 
@@ -13,6 +14,7 @@ export {
 } from './runtime'
 export { default as supportCodeLibraryBuilder } from './support_code_library_builder'
 export { default as DataTable } from './models/data_table'
+export { default as TestCaseHookDefinition } from './models/test_case_hook_definition'
 export { version } from './version'
 
 // Formatters
@@ -41,6 +43,7 @@ export const Given = methods.Given
 export const setDefaultTimeout = methods.setDefaultTimeout
 export const setDefinitionFunctionWrapper = methods.setDefinitionFunctionWrapper
 export const setWorldConstructor = methods.setWorldConstructor
+export const setParallelCanAssign = methods.setParallelCanAssign
 export const Then = methods.Then
 export const When = methods.When
 export {
@@ -48,6 +51,7 @@ export {
   IWorld,
   IWorldOptions,
 } from './support_code_library_builder/world'
+export { parallelCanAssignHelpers }
 
 export {
   ITestCaseHookParameter,

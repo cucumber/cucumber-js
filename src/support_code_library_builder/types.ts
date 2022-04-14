@@ -7,7 +7,10 @@ import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
 import { IWorld } from './world'
 
 export type DefineStepPattern = string | RegExp
-
+export type ParallelAssignmentValidator = (
+  pickle: messages.Pickle,
+  runningPickles: messages.Pickle[]
+) => boolean
 export interface ITestCaseHookParameter {
   gherkinDocument: messages.GherkinDocument
   pickle: messages.Pickle
@@ -79,6 +82,7 @@ export interface IDefineSupportCodeMethods {
     ) => void)
   setDefaultTimeout: (milliseconds: number) => void
   setDefinitionFunctionWrapper: (fn: Function) => void
+  setParallelCanAssign: (fn: ParallelAssignmentValidator) => void
   setWorldConstructor: (fn: any) => void
   After: (<WorldType = IWorld>(code: TestCaseHookFunction<WorldType>) => void) &
     (<WorldType = IWorld>(
@@ -155,7 +159,14 @@ export interface IDefineSupportCodeMethods {
     ) => void)
 }
 
+export interface ISupportCodeCoordinates {
+  requireModules: string[]
+  requirePaths: string[]
+  importPaths: string[]
+}
+
 export interface ISupportCodeLibrary {
+  readonly originalCoordinates: ISupportCodeCoordinates
   readonly afterTestCaseHookDefinitions: TestCaseHookDefinition[]
   readonly afterTestStepHookDefinitions: TestStepHookDefinition[]
   readonly afterTestRunHookDefinitions: TestRunHookDefinition[]
@@ -167,4 +178,5 @@ export interface ISupportCodeLibrary {
   readonly undefinedParameterTypes: messages.UndefinedParameterType[]
   readonly parameterTypeRegistry: ParameterTypeRegistry
   readonly World: any
+  readonly parallelCanAssign: ParallelAssignmentValidator
 }

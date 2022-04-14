@@ -1,7 +1,8 @@
 Feature: default command line arguments
 
   In order to prevent users from having to enter the options they use every time
-  Users can define cucumber.js with profiles which are groups of command line arguments.
+  Users can define cucumber.js with profiles which are groups of command line arguments
+  or partial configuration objects.
 
   Background:
     Given a file named "features/a.feature" with:
@@ -20,7 +21,9 @@ Feature: default command line arguments
       """
       module.exports = {
         'default': '--format summary',
-        dry: '--dry-run',
+        dry: {
+          dryRun: true
+        },
         progress: '--format progress'
       };
       """
@@ -95,3 +98,22 @@ Feature: default command line arguments
   Scenario: specifying a configuration file that doesn't exist
     When I run cucumber-js with `--config doesntexist.js`
     Then it fails
+
+  Scenario: using a JSON file
+    Given a file named ".cucumber-rc.json" with:
+      """
+      {
+        "default": {
+          "dryRun": true
+        }
+      }
+      """
+    When I run cucumber-js with `--config .cucumber-rc.json`
+    Then it outputs the text:
+      """
+      -
+
+      1 scenario (1 skipped)
+      1 step (1 skipped)
+      <duration-stat>
+      """

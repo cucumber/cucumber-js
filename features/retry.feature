@@ -8,7 +8,7 @@ Feature: Retry flaky tests
     When I run cucumber-js with `--retry-tag-filter @flaky`
     Then the error output contains the text:
       """
-      Error: a positive --retry count must be specified when setting --retry-tag-filter
+      Error: a positive `retry` count must be specified when setting `retryTagFilter`
       """
     And it fails
 

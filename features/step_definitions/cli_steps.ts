@@ -77,19 +77,24 @@ When(
 )
 
 When(
-  /^I run cucumber-js \(installed (locally|globally)\)$/,
+  'I run cucumber-js \\(installed locally\\)',
   { timeout: 10000 },
-  async function (this: World, location: string) {
-    if (location === 'locally') {
-      return await this.run(this.localExecutablePath, [])
-    }
+  async function (this: World) {
+    return await this.run(this.localExecutablePath, [])
+  }
+)
+
+When(
+  'I run cucumber-js \\(installed globally\\)',
+  { timeout: 10000 },
+  async function (this: World) {
     return await this.run(this.globalExecutablePath, [])
   }
 )
 
-Then(/^it passes$/, () => {}) // eslint-disable-line @typescript-eslint/no-empty-function
+Then('it passes', () => {}) // eslint-disable-line @typescript-eslint/no-empty-function
 
-Then(/^it fails$/, function (this: World) {
+Then('it fails', function (this: World) {
   const actualCode: number = doesHaveValue(this.lastRun.error)
     ? this.lastRun.error.code
     : 0
@@ -101,17 +106,33 @@ Then(/^it fails$/, function (this: World) {
   this.verifiedLastRunError = true
 })
 
-Then(/^it outputs the text:$/, function (this: World, text: string) {
+Then('it outputs the text:', function (this: World, text: string) {
   const actualOutput = normalizeText(this.lastRun.output)
   const expectedOutput = normalizeText(text)
   expect(actualOutput).to.eql(expectedOutput)
 })
 
-Then(/^the output contains the text:$/, function (this: World, text: string) {
+Then('the output contains the text:', function (this: World, text: string) {
   const actualOutput = normalizeText(this.lastRun.output)
   const expectedOutput = normalizeText(text)
   expect(actualOutput).to.include(expectedOutput)
 })
+
+Then(
+  'the output contains these types and quantities of message:',
+  function (this: World, expectedMessages: DataTable) {
+    const envelopes = this.lastRun.output
+      .split('\n')
+      .filter((line) => !!line)
+      .map((line) => JSON.parse(line))
+    expectedMessages.rows().forEach(([type, count]) => {
+      expect(envelopes.filter((envelope) => !!envelope[type])).to.have.length(
+        Number(count),
+        `Didn't find expected number of ${type} messages`
+      )
+    })
+  }
+)
 
 Then(
   'the output does not contain the text:',
@@ -123,7 +144,7 @@ Then(
 )
 
 Then(
-  /^the error output contains the text snippets:$/,
+  'the error output contains the text snippets:',
   function (this: World, table: DataTable) {
     const actualOutput = normalizeText(this.lastRun.errorOutput)
     table.rows().forEach((row) => {
@@ -134,7 +155,7 @@ Then(
 )
 
 Then(
-  /^the error output contains the text:$/,
+  'the error output contains the text:',
   function (this: World, text: string) {
     const actualOutput = normalizeText(this.lastRun.errorOutput)
     const expectedOutput = normalizeText(text)
@@ -151,13 +172,13 @@ Then(
   }
 )
 
-Then(/^I see the version of Cucumber$/, function (this: World) {
+Then('I see the version of Cucumber', function (this: World) {
   const actualOutput = this.lastRun.output
   const expectedOutput = `${version as string}\n`
   expect(actualOutput).to.eql(expectedOutput)
 })
 
-Then(/^I see the help text for Cucumber$/, function (this: World) {
+Then('I see the help text for Cucumber', function (this: World) {
   const actualOutput = this.lastRun.output
   const expectedOutput = 'Usage: cucumber-js'
   expect(actualOutput).to.include(expectedOutput)

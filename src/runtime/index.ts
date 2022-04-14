@@ -1,17 +1,14 @@
-import { EventDataCollector, formatLocation } from '../formatter/helpers'
-import StackTraceFilter from '../stack_trace_filter'
-import UserCodeRunner from '../user_code_runner'
-import VError from 'verror'
-import { retriesForPickle, shouldCauseFailure } from './helpers'
-import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
-import TestCaseRunner from './test_case_runner'
+import { IdGenerator } from '@cucumber/messages'
 import { EventEmitter } from 'events'
+import { EventDataCollector } from '../formatter/helpers'
+import StackTraceFilter from '../stack_trace_filter'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import TestRunHookDefinition from '../models/test_run_hook_definition'
-import { doesHaveValue, valueOrDefault } from '../value_checker'
-import { ITestRunStopwatch, RealTestRunStopwatch } from './stopwatch'
 import { assembleTestCases } from './assemble_test_cases'
+import { retriesForPickle, shouldCauseFailure } from './helpers'
+import { makeRunTestRunHooks, RunsTestRunHooks } from './run_test_run_hooks'
+import { ITestRunStopwatch, RealTestRunStopwatch } from './stopwatch'
+import TestCaseRunner from './test_case_runner'
 
 export interface IRuntime {
   start: () => Promise<boolean>
@@ -36,16 +33,6 @@ export interface IRuntimeOptions {
   worldParameters: any
 }
 
-export const DEFAULT_RUNTIME_OPTIONS: IRuntimeOptions = {
-  dryRun: false,
-  failFast: false,
-  filterStacktraces: true,
-  retry: 0,
-  retryTagFilter: '',
-  strict: true,
-  worldParameters: {},
-}
-
 export default class Runtime implements IRuntime {
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
@@ -57,6 +44,7 @@ export default class Runtime implements IRuntime {
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private readonly testRunContext: object // TODO: is this the right type to use?
   private success: boolean
+  private runTestRunHooks: RunsTestRunHooks
 
   constructor({
     eventBroadcaster,
@@ -76,33 +64,12 @@ export default class Runtime implements IRuntime {
     this.supportCodeLibrary = supportCodeLibrary
     this.success = true
     this.testRunContext = {}
-  }
-
-  async runTestRunHooks(
-    definitions: TestRunHookDefinition[],
-    name: string
-  ): Promise<void> {
-    if (this.options.dryRun) {
-      return
-    }
-    for (const hookDefinition of definitions) {
-      const { error } = await UserCodeRunner.run({
-        argsArray: [],
-        fn: hookDefinition.code,
-        thisArg: this.testRunContext,
-        timeoutInMilliseconds: valueOrDefault(
-          hookDefinition.options.timeout,
-          this.supportCodeLibrary.defaultTimeout
-        ),
-      })
-      if (doesHaveValue(error)) {
-        const location = formatLocation(hookDefinition)
-        throw new VError(
-          error,
-          `${name} hook errored, process exiting: ${location}`
-        )
-      }
-    }
+    this.runTestRunHooks = makeRunTestRunHooks(
+      this.options.dryRun,
+      this.supportCodeLibrary.defaultTimeout,
+      this.testRunContext,
+      (name, location) => `${name} hook errored, process exiting: ${location}`
+    )
   }
 
   async runTestCase(

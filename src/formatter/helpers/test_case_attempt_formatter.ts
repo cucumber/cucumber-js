@@ -79,7 +79,6 @@ function formatStep({
 
 export interface IFormatTestCaseAttemptRequest {
   colorFns: IColorFns
-  cwd: string
   testCaseAttempt: ITestCaseAttempt
   snippetBuilder: StepDefinitionSnippetBuilder
   supportCodeLibrary: ISupportCodeLibrary
@@ -88,14 +87,12 @@ export interface IFormatTestCaseAttemptRequest {
 
 export function formatTestCaseAttempt({
   colorFns,
-  cwd,
   snippetBuilder,
   supportCodeLibrary,
   testCaseAttempt,
   printAttachments,
 }: IFormatTestCaseAttemptRequest): string {
   const parsed = parseTestCaseAttempt({
-    cwd,
     snippetBuilder,
     testCaseAttempt,
     supportCodeLibrary,
