@@ -4,7 +4,7 @@ module.exports = {
     "@babel/plugin-transform-shorthand-properties"
   ],
   presets: [
-    ["@babel/preset-env", {targets: "maintained node versions"}]
+    ["@babel/preset-env", {targets: "node 8"}]
   ],
   env: {
     test_coverage: {
