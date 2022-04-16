@@ -1,12 +1,20 @@
-# Cucumber.js
+🚨🚨🚨
 
-[![OpenCollective](https://opencollective.com/cucumber/backers/badge.svg)](https://opencollective.com/cucumber) 
-[![OpenCollective](https://opencollective.com/cucumber/sponsors/badge.svg)](https://opencollective.com/cucumber)
+Cucumber is publishing new releases under `@cucumber/cucumber` on npm:  
+<https://www.npmjs.com/package/@cucumber/cucumber>
 
-[![TravisCI](https://img.shields.io/travis/cucumber/cucumber-js/master.svg?label=travis-ci)](https://travis-ci.org/cucumber/cucumber-js/branches)
-[![AppVeyor Status](https://img.shields.io/appveyor/ci/charlierudolph/cucumber-js/master.svg?label=appveyor)](https://ci.appveyor.com/project/charlierudolph/cucumber-js/history)
-[![Dependencies](https://david-dm.org/cucumber/cucumber-js.svg)](https://david-dm.org/cucumber/cucumber-js)
-[![Coverage Status](https://coveralls.io/repos/github/cucumber/cucumber-js/badge.svg?branch=master)](https://coveralls.io/github/cucumber/cucumber-js?branch=master)
+Features in the latest version include:
+- `BeforeEach` and `AfterEach` hooks
+- Searchable HTML reports
+- Native ESM support
+- Write scenarios in Markdown
+
+Full changelog: https://github.com/cucumber/cucumber-js/blob/main/CHANGELOG.md  
+Upgrading guide: https://github.com/cucumber/cucumber-js/blob/main/UPGRADING.md
+
+🚨🚨🚨
+
+# Cucumber
 
 [Cucumber](https://cucumber.io) is a tool for running automated tests written in plain language. Because they're
 written in plain language, they can be read by anyone on your team. Because they can be
@@ -14,10 +22,6 @@ read by anyone, you can use them to help improve communication, collaboration an
 your team.
 
 Cucumber.js is the JavaScript implementation of Cucumber and runs on the [maintained Node.js versions](https://github.com/nodejs/Release) and *modern* web browsers.
-
-## Try it now
-
-We've put a demo of Cucumber.js to [run in your browser](http://cucumber.github.io/cucumber-js/). Why don't you give it a try before anything else?
 
 ## Help & support
 
