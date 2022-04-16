@@ -1,5 +1,5 @@
 import Cli from './'
-import deprecatedBanner from './deprecated_banner'
+import upgradeBanner from './upgrade_banner'
 import VError from 'verror'
 
 function exitWithError(error) {
@@ -23,7 +23,7 @@ export default async function run() {
   }
 
   if (result.success) {
-    console.error(deprecatedBanner)
+    console.error(upgradeBanner)
   }
 
   const exitCode = result.success ? 0 : 1
