@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - 6.x
-      - fix/6-ci
   pull_request:
     branches:
       - 6.x
