@@ -45,7 +45,7 @@ Then("my color should not be blue", () => {
 
 ## Built-in world
 
-Cucumber provides a number of formatting helpers that are passed into the constructor of the World. The default world binds these helpers as follows:
+By default, the world is an instance of Cucumber's built-in `World` class. Cucumber provides a number of formatting helpers that are passed into the constructor as an options object. The default world binds these helpers as follows:
 
 * `this.attach`: a method for adding [attachments](./attachments.md) to hooks/steps
 * `this.log`: a method for [logging](./attachments.md#logging) information from hooks/steps
@@ -66,7 +66,44 @@ This option is repeatable, so you can use it multiple times and the objects will
 
 ## Custom Worlds
 
-You might also want to have methods on your World that hooks and steps can access to keep their own code simple. To do this, you can provide your own World class with its own properties and methods that help with your instrumentation, and then call `setWorldConstructor` to tell Cucumber about it.
+You might also want to have methods on your world that hooks and steps can access to keep their own code simple. To do this, you can write your own world implementation with its own properties and methods that help with your instrumentation, and then call `setWorldConstructor` to tell Cucumber about it:
+
+```javascript
+const { setWorldConstructor, World, When } = require('@cucumber/cucumber')
+
+class CustomWorld extends World {
+  count = 0
+  
+  constructor(options) {
+    super(options)
+  }
+  
+  eat(count) {
+    this.count += count
+  }
+}
+
+setWorldConstructor(CustomWorld)
+
+When('I eat {int} cucumbers', function(count) {
+  this.eat(count)
+})
+```
+
+In the example above we've extended the built-in `World` class, which is recommended. You can also use a plain function as your world constructor:
+
+```javascript
+const { setWorldConstructor, When } = require('@cucumber/cucumber')
+
+setWorldConstructor(function(options) {
+  this.count = 0
+  this.eat = (count) => this.count += count
+})
+
+When('I eat {int} cucumbers', function(count) {
+  this.eat(count)
+})
+```
 
 ### Real-world example
 
