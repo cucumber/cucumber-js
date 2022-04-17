@@ -1,10 +1,11 @@
 # World
 
-*World*, or sometimes *context*, is an isolated scope for each scenario, exposed to the steps and most hooks as `this`. It allows you to set variables in one step and recall them in a later step. All variables set this way are discarded when the scenario concludes. It is managed by a world class, either the default one or one you create. Each scenario is given an new instance of the class when the test starts, even if it is a [retry run](../retry.md).
+*World*, is an isolated scope for each scenario, exposed to the steps and most hooks as `this`. It allows you to set variables in one step and recall them in a later step. All variables set this way are discarded when the scenario concludes. It is managed by a world class, either the default one or one you create. Each scenario is given an new instance of the class when the test starts, even if it is a [retry run](../retry.md).
 
 The world is not available to the hooks `BeforeAll` or `AfterAll` as each of these executes outside any particular scenario.
 
-##### Basic Example
+Here's some simple usage of the world to retain state between steps:
+
 ```javascript
 const { Given, Then } = require('@cucumber/cucumber')
 
@@ -18,7 +19,8 @@ Then("my color should not be red", function() {
   }
 });
 ```
-With those step definitions in place
+
+With those step definitions in place:
 
 ```gherkin
 Scenario: Will pass
@@ -41,13 +43,13 @@ Then("my color should not be blue", () => {
 });
 ```
 
-## Cucumber World
+## Built-in world
 
 Cucumber provides a number of formatting helpers that are passed into the constructor of the World. The default world binds these helpers as follows:
 
 * `this.attach`: a method for adding [attachments](./attachments.md) to hooks/steps
 * `this.log`: a method for [logging](./attachments.md#logging) information from hooks/steps
-* `this.parameters`: an object of parameters passed in via the [CLI](../cli.md#world-parameters)
+* `this.parameters`: an object of parameters passed in via configuration (see below)
 
 Your custom world will also receive these arguments, but it's up to you to decide what to do with them and they can be safely ignored.
 
@@ -66,10 +68,12 @@ This option is repeatable, so you can use it multiple times and the objects will
 
 You might also want to have methods on your World that hooks and steps can access to keep their own code simple. To do this, you can provide your own World class with its own properties and methods that help with your instrumentation, and then call `setWorldConstructor` to tell Cucumber about it.
 
+### Real-world example
+
 Let's walk through a typical scenario, setting up world that manages a browser context. We'll use the ES6 module syntax for this example.  First, let's set up our custom world. Class files should not be loaded as steps - they should be imported. So in this example we'll presume it is in a classes folder next to the steps folder.
 
-###### CustomWorld.js
 ```javascript
+// CustomWorld.js
 import { World } from '@cucumber/cucumber';
 import seleniumWebdriver from "selenium-webdriver";
 
@@ -117,8 +121,8 @@ export default class extends World {
 
 Now we'll use a step file to setup this custom world and declare the before hook.
 
-###### setup.js
 ```javascript
+// setup.js
 import { Before, setWorldConstructor } from '@cucumber/cucumber';
 import CustomWorld from "../classes/CustomWorld.js"
 
