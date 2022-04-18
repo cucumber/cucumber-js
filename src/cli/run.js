@@ -1,4 +1,5 @@
 import Cli from './'
+import upgradeBanner from './upgrade_banner'
 import VError from 'verror'
 
 function exitWithError(error) {
@@ -19,6 +20,10 @@ export default async function run() {
     result = await cli.run()
   } catch (error) {
     exitWithError(error)
+  }
+
+  if (result.success) {
+    console.error(upgradeBanner)
   }
 
   const exitCode = result.success ? 0 : 1
