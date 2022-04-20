@@ -1,4 +1,4 @@
-import { Before, setWorldConstructor, When, World } from '../'
+import { Before, setWorldConstructor, When, IWorld, World } from '../'
 import { expectError } from 'tsd'
 
 // should allow us to read parameters and add attachments
@@ -44,3 +44,32 @@ Before(async function (this: CustomWorld) {
 When('stuff happens', async function (this: CustomWorld) {
   this.doThing()
 })
+
+// should allow us to use a custom parameters type without a custom world
+interface CustomParameters {
+  foo: string
+}
+Before(async function (this: IWorld<CustomParameters>) {
+  this.log(this.parameters.foo)
+})
+expectError(
+  Before(async function (this: IWorld<CustomParameters>) {
+    this.log(this.parameters.bar)
+  })
+)
+
+// should allow us to use a custom parameters type with a custom world
+class CustomWorldWithParameters extends World<CustomParameters> {
+  doThing(): string {
+    return 'foo'
+  }
+}
+setWorldConstructor(CustomWorldWithParameters)
+Before(async function (this: CustomWorldWithParameters) {
+  this.log(this.parameters.foo)
+})
+expectError(
+  Before(async function (this: CustomWorldWithParameters) {
+    this.log(this.parameters.bar)
+  })
+)
