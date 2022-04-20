@@ -9,6 +9,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [Unreleased]
 
+- Capture dependency on `@cucumber/message-streams` to satisfy peer requirement from `@cucumber/gherkin-streams` ([#2006](https://github.com/cucumber/cucumber-js/pull/2006))
+
 ## [8.1.0] - 2022-04-20
 ### Added
 - Add support for named hooks (see [documentation](./docs/support_files/hooks.md#named-hooks)) ([#1994](https://github.com/cucumber/cucumber-js/pull/1994))
