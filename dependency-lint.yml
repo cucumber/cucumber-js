@@ -18,6 +18,7 @@ ignoreErrors:
   shouldBeDependency: []
   shouldBeDevDependency: []
   unused:
+    - '@cucumber/message-streams' # peer dependency of @cucumber/gherkin-streams
     - '@cucumber/compatibility-kit' # files dynamically loaded in cck test, not require'd
     - '@typescript-eslint/eslint-plugin' # peer dependency of standard-with-typescript
     - '@typescript-eslint/parser' # peer dependency of @typescript-eslint/eslint-plugin
