@@ -8,7 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
-### Fixed
+
+## [8.1.1] - 2022-04-20
+### Fixed
 - Capture dependency on `@cucumber/message-streams` to satisfy peer requirement from `@cucumber/gherkin-streams` ([#2006](https://github.com/cucumber/cucumber-js/pull/2006))
 
 ## [8.1.0] - 2022-04-20
@@ -1372,7 +1374,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.1.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.1.1...HEAD
+[8.1.1]: https://github.com/cucumber/cucumber-js/compare/v8.1.0...v8.1.1
 [8.1.0]: https://github.com/cucumber/cucumber-js/compare/v8.0.0...v8.1.0
 [8.0.0]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.3...v8.0.0
 [8.0.0-rc.3]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.2...v8.0.0-rc.3
