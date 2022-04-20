@@ -10,6 +10,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ## [Unreleased]
 ### Added
 - Add support for named hooks (see [documentation](./docs/support_files/hooks.md#named-hooks)) ([#1994](https://github.com/cucumber/cucumber-js/pull/1994))
+- Add generics support for world parameters type in world-related interfaces and classes (see [documentation](./docs/support_files/world.md#typescript)) ([#1968](https://github.com/cucumber/cucumber-js/issues/1968) [#2002](https://github.com/cucumber/cucumber-js/pull/2002))
 
 ### Changed
 - Rename the `cucumber-js` binary's underlying file to be `cucumber.js`, so it doesn't fall foul of Node.js module conventions and plays nicely with ESM loaders (see [documentation](./docs/esm.md#transpiling)) ([#1993](https://github.com/cucumber/cucumber-js/pull/1993))
