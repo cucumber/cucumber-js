@@ -15,6 +15,7 @@ import { IDefinition } from '../models/definition'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { ITestRunStopwatch } from './stopwatch'
 import StepDefinition from '../models/step_definition'
+import { TestRunContext } from '../support_code_library_builder/world'
 
 export interface INewTestCaseRunnerOptions {
   eventBroadcaster: EventEmitter
@@ -27,7 +28,7 @@ export interface INewTestCaseRunnerOptions {
   skip: boolean
   supportCodeLibrary: ISupportCodeLibrary
   worldParameters: any
-  testRunContext: object
+  testRunContext: TestRunContext
 }
 
 export default class TestCaseRunner {
@@ -46,7 +47,7 @@ export default class TestCaseRunner {
   private testStepResults: messages.TestStepResult[]
   private world: any
   private readonly worldParameters: any
-  private readonly testRunContext: object
+  private readonly testRunContext: TestRunContext
 
   constructor({
     eventBroadcaster,
@@ -97,6 +98,7 @@ export default class TestCaseRunner {
       attach: this.attachmentManager.create.bind(this.attachmentManager),
       log: this.attachmentManager.log.bind(this.attachmentManager),
       parameters: this.worldParameters,
+      testRunContext: this.testRunContext,
     })
     this.testStepResults = []
   }
@@ -136,7 +138,7 @@ export default class TestCaseRunner {
       hookParameter,
       step,
       stepDefinition,
-      world: Object.assign(this.world, { testRunContext: this.testRunContext }),
+      world: this.world,
     })
   }
 

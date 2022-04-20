@@ -3,6 +3,7 @@ import VError from 'verror'
 import { formatLocation } from '../formatter/helpers'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
+import { TestRunContext } from '../support_code_library_builder/world'
 
 export type RunsTestRunHooks = (
   definitions: TestRunHookDefinition[],
@@ -12,7 +13,7 @@ export type RunsTestRunHooks = (
 export const makeRunTestRunHooks = (
   dryRun: boolean,
   defaultTimeout: number,
-  thisArg: object,
+  testRunContext: TestRunContext,
   errorMessage: (name: string, location: string) => string
 ): RunsTestRunHooks =>
   dryRun
@@ -22,7 +23,7 @@ export const makeRunTestRunHooks = (
           const { error } = await UserCodeRunner.run({
             argsArray: [],
             fn: hookDefinition.code,
-            thisArg,
+            thisArg: { testRunContext },
             timeoutInMilliseconds: valueOrDefault(
               hookDefinition.options.timeout,
               defaultTimeout

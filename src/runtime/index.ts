@@ -4,6 +4,7 @@ import { EventEmitter } from 'events'
 import { EventDataCollector } from '../formatter/helpers'
 import StackTraceFilter from '../stack_trace_filter'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { TestRunContext } from '../support_code_library_builder/world'
 import { assembleTestCases } from './assemble_test_cases'
 import { retriesForPickle, shouldCauseFailure } from './helpers'
 import { makeRunTestRunHooks, RunsTestRunHooks } from './run_test_run_hooks'
@@ -42,7 +43,7 @@ export default class Runtime implements IRuntime {
   private readonly pickleIds: string[]
   private readonly stackTraceFilter: StackTraceFilter
   private readonly supportCodeLibrary: ISupportCodeLibrary
-  private readonly testRunContext: object // TODO: is this the right type to use?
+  private readonly testRunContext: TestRunContext
   private success: boolean
   private runTestRunHooks: RunsTestRunHooks
 
