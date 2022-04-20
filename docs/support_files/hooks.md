@@ -6,7 +6,7 @@ Note that your hook functions cannot reference the [world](./world.md) as `this`
 arrow functions. See [FAQ](../faq.md) for details.
 
 ```javascript
-var {After, Before} = require('@cucumber/cucumber');
+const {After, Before} = require('@cucumber/cucumber');
 
 // Synchronous
 Before(function () {
@@ -33,12 +33,28 @@ After(function () {
 });
 ```
 
+## Named hooks
+
+ℹ️ Added in v8.1.0
+
+Hooks can optionally be named:
+
+```javascript
+const {Before} = require('@cucumber/cucumber');
+
+Before({name: "Set up some test state"}, function () {
+// do stuff here
+});
+```
+
+Such hooks will then be referenced by name in [formatter](../formatters.md) output, which can be useful to help you understand what's happening with your tests.
+
 ## Tagged hooks
 
 Hooks can be conditionally selected for execution based on the tags of the scenario.
 
 ```javascript
-var {After, Before} = require('@cucumber/cucumber');
+const {After, Before} = require('@cucumber/cucumber');
 
 Before(function () {
   // This hook will be executed before all scenarios
@@ -85,7 +101,7 @@ If you have some setup / teardown that needs to be done before or after all scen
 Unlike `Before` / `After` these methods will not have a world instance as `this`. This is because each scenario gets its own world instance and these hooks run before / after **all** scenarios.
 
 ```javascript
-var {AfterAll, BeforeAll} = require('@cucumber/cucumber');
+const {AfterAll, BeforeAll} = require('@cucumber/cucumber');
 
 // Synchronous
 BeforeAll(function () {
@@ -111,7 +127,7 @@ AfterAll(function () {
 If you have some code execution that needs to be done before or after all steps, use `BeforeStep` / `AfterStep`. Like the `Before` / `After` hooks, these also have a world instance as 'this', and can be conditionally selected for execution based on the tags of the scenario.
 
 ```javascript
-var {AfterStep, BeforeStep} = require('@cucumber/cucumber');
+const {AfterStep, BeforeStep} = require('@cucumber/cucumber');
 
 BeforeStep({tags: "@foo"}, function () {
   // This hook will be executed before all steps in a scenario with tag @foo
