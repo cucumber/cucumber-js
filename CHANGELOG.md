@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Capture dependency on `@cucumber/message-streams` to satisfy peer requirement from `@cucumber/gherkin-streams` ([#2006](https://github.com/cucumber/cucumber-js/pull/2006))
+
+## [8.1.0] - 2022-04-20
+### Added
+- Add support for named hooks (see [documentation](./docs/support_files/hooks.md#named-hooks)) ([#1994](https://github.com/cucumber/cucumber-js/pull/1994))
+- Add generics support for world parameters type in world-related interfaces and classes (see [documentation](./docs/support_files/world.md#typescript)) ([#1968](https://github.com/cucumber/cucumber-js/issues/1968) [#2002](https://github.com/cucumber/cucumber-js/pull/2002))
+
 ### Changed
 - Rename the `cucumber-js` binary's underlying file to be `cucumber.js`, so it doesn't fall foul of Node.js module conventions and plays nicely with ESM loaders (see [documentation](./docs/esm.md#transpiling)) ([#1993](https://github.com/cucumber/cucumber-js/pull/1993))
 
@@ -1364,7 +1372,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.0.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.1.0...HEAD
+[8.1.0]: https://github.com/cucumber/cucumber-js/compare/v8.0.0...v8.1.0
 [8.0.0]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.3...v8.0.0
 [8.0.0-rc.3]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.2...v8.0.0-rc.3
 [8.0.0-rc.2]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.1...v8.0.0-rc.2

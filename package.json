@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "8.0.0",
+  "version": "8.1.0",
   "homepage": "https://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com>",
   "contributors": [
@@ -199,8 +199,9 @@
     "@cucumber/cucumber-expressions": "15.0.2",
     "@cucumber/gherkin": "23.0.1",
     "@cucumber/gherkin-streams": "5.0.1",
-    "@cucumber/gherkin-utils": "^7.0.0",
-    "@cucumber/html-formatter": "19.0.0",
+    "@cucumber/gherkin-utils": "7.0.0",
+    "@cucumber/html-formatter": "19.1.0",
+    "@cucumber/message-streams": "4.0.1",
     "@cucumber/messages": "18.0.0",
     "@cucumber/tag-expressions": "4.1.0",
     "assertion-error-formatter": "^3.0.0",
@@ -230,8 +231,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "@cucumber/compatibility-kit": "9.1.2",
-    "@cucumber/message-streams": "4.0.1",
+    "@cucumber/compatibility-kit": "9.2.0",
     "@cucumber/query": "11.0.0",
     "@microsoft/api-documenter": "7.17.0",
     "@microsoft/api-extractor": "7.20.0",

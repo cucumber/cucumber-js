@@ -6,6 +6,10 @@ Before(function () {
   // no-op
 })
 
+Before({ name: 'A named hook' }, function () {
+  // no-op
+})
+
 When('a step passes', function () {
   // no-op
 })

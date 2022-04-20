@@ -48,6 +48,7 @@ export interface IDefineStepOptions {
 }
 
 export interface IDefineTestCaseHookOptions {
+  name?: string
   tags?: string
   timeout?: number
 }

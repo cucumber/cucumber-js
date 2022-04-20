@@ -49,6 +49,7 @@ function formatStep({
   printAttachments,
 }: IFormatStepRequest): string {
   const {
+    name,
     result: { status },
     actionLocation,
     attachments,
@@ -56,6 +57,9 @@ function formatStep({
   const colorFn = colorFns.forStatus(status)
   const identifier = testStep.keyword + valueOrDefault(testStep.text, '')
   let text = colorFn(`${CHARACTERS.get(status)} ${identifier}`)
+  if (doesHaveValue(name)) {
+    text += colorFn(` (${name})`)
+  }
   if (doesHaveValue(actionLocation)) {
     text += ` # ${colorFns.location(formatLocation(actionLocation))}`
   }
