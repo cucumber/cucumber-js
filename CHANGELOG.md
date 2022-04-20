@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Capture dependency on `@cucumber/message-streams` to satisfy peer requirement from `@cucumber/gherkin-streams` ([#2006](https://github.com/cucumber/cucumber-js/pull/2006))
 
 ## [8.1.0] - 2022-04-20
 ### Added
