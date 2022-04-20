@@ -39,3 +39,25 @@ Feature: Before / After All Hooks Context
       """
     When I run cucumber-js
     Then it passes
+
+Rule: testRunContext can't leak between scenarios
+  Scenario: One scenario tries to mutate the testRunContext
+    Given a file named "features/steps.js" with:
+      """
+      const {AfterAll, BeforeAll, Given} = require('@cucumber/cucumber')
+      const {expect} = require('chai')
+
+      BeforeAll(function() {
+        this.testRunContext.myVar = {foo: 1}
+      }) 
+
+      Given('first step', function() {
+        this.testRunContext.myVar.foo = 2
+      })
+
+      Given('second step', function() {
+        expect(this.testRunContext.myVar.foo).to.eql(1) 
+      })
+      """
+    When I run cucumber-js
+    Then it passes
