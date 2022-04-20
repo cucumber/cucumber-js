@@ -195,6 +195,7 @@ function emitTestCaseHooks(
       const envelope: messages.Envelope = {
         hook: {
           id: testCaseHookDefinition.id,
+          name: testCaseHookDefinition.name,
           tagExpression: testCaseHookDefinition.tagExpression,
           sourceReference: {
             uri: testCaseHookDefinition.uri,

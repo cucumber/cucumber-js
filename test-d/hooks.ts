@@ -23,6 +23,10 @@ After(function (param: ITestCaseHookParameter) {})
 BeforeStep(function (param: ITestStepHookParameter) {})
 AfterStep(function (param: ITestStepHookParameter) {})
 
+// should allow an object with tags and/or name in hooks
+Before({ tags: '@foo', name: 'before hook' }, function () {})
+After({ tags: '@foo', name: 'after hook' }, function () {})
+
 // should allow us to return 'skipped' from a test case hook
 Before(async function () {
   return 'skipped'
