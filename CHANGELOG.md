@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Explicit support for Node.js 18 ([#2007](https://github.com/cucumber/cucumber-js/pull/2007))
 
 ## [8.1.1] - 2022-04-20
 ### Fixed
