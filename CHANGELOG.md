@@ -11,6 +11,9 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Added
 - Explicit support for Node.js 18 ([#2007](https://github.com/cucumber/cucumber-js/pull/2007))
 
+### Fixed
+- Re-add `cucumber-js` bin file for backwards compatibility ([#2008](https://github.com/cucumber/cucumber-js/pull/2008))
+
 ## [8.1.1] - 2022-04-20
 ### Fixed
 - Capture dependency on `@cucumber/message-streams` to satisfy peer requirement from `@cucumber/gherkin-streams` ([#2006](https://github.com/cucumber/cucumber-js/pull/2006))
