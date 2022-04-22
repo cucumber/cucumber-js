@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [8.1.2] - 2022-04-22
 ### Added
 - Explicit support for Node.js 18 ([#2007](https://github.com/cucumber/cucumber-js/pull/2007))
 
@@ -1379,7 +1381,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.1.1...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.1.2...HEAD
+[8.1.2]: https://github.com/cucumber/cucumber-js/compare/v8.1.1...v8.1.2
 [8.1.1]: https://github.com/cucumber/cucumber-js/compare/v8.1.0...v8.1.1
 [8.1.0]: https://github.com/cucumber/cucumber-js/compare/v8.0.0...v8.1.0
 [8.0.0]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.3...v8.0.0
