@@ -1,5 +1,6 @@
 import { Given, Then } from '../../'
 import { expect } from 'chai'
+import hasAnsi from 'has-ansi'
 import { normalizeText } from '../support/helpers'
 import fs from 'mz/fs'
 import fsExtra from 'fs-extra'
@@ -48,5 +49,25 @@ Then(
     const actualContent = normalizeText(content)
     const expectedContent = normalizeText(text)
     expect(actualContent).to.eql(expectedContent)
+  }
+)
+
+Then(
+  'the file {string} contains ansi colors',
+  async function (this: World, filePath: string) {
+    filePath = Mustache.render(filePath, this)
+    const absoluteFilePath = path.resolve(this.tmpDir, filePath)
+    const content = await fs.readFile(absoluteFilePath, 'utf8')
+    expect(hasAnsi(content)).to.be.true
+  }
+)
+
+Then(
+  "the file {string} doesn't contain ansi colors",
+  async function (this: World, filePath: string) {
+    filePath = Mustache.render(filePath, this)
+    const absoluteFilePath = path.resolve(this.tmpDir, filePath)
+    const content = await fs.readFile(absoluteFilePath, 'utf8')
+    expect(hasAnsi(content)).to.be.false
   }
 )
