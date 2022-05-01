@@ -11,6 +11,7 @@ import { IRuntimeOptions } from '../../runtime'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesNotHaveValue } from '../../value_checker'
 import * as messages from '@cucumber/messages'
+import { PassThrough } from 'stream'
 
 interface ITestFormatSummaryOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
@@ -53,7 +54,7 @@ async function testFormatSummary({
     supportCodeLibrary,
   })
   return formatSummary({
-    colorFns: getColorFns(false),
+    colorFns: getColorFns(new PassThrough(), false),
     testCaseAttempts,
     testRunDuration: durationBetweenTimestamps(
       testRunStarted.timestamp,

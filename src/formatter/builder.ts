@@ -42,7 +42,10 @@ const FormatterBuilder = {
       type,
       options.cwd
     )
-    const colorFns = getColorFns(options.parsedArgvOptions.colorsEnabled)
+    const colorFns = getColorFns(
+      options.stream,
+      options.parsedArgvOptions.colorsEnabled
+    )
     const snippetBuilder =
       await FormatterBuilder.getStepDefinitionSnippetBuilder({
         cwd: options.cwd,

@@ -255,7 +255,6 @@
     "@types/sinon-chai": "3.2.8",
     "@types/sinonjs__fake-timers": "8.1.2",
     "@types/stream-buffers": "3.0.4",
-    "@types/supports-color": "^8.1.1",
     "@types/tmp": "0.2.3",
     "@types/verror": "1.10.5",
     "@typescript-eslint/eslint-plugin": "5.17.0",
