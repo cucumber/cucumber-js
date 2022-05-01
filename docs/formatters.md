@@ -44,11 +44,11 @@ Some options offered by built-in formatters:
 
 ## Colored output
 
-Many formatters, including the built-in ones, emit some colored output. By default, Cucumber will automatically detect the colors support of the output stream and decide whether to emit colors accordingly. This check comes via the supports-colors library and is pretty comprehensive, including awareness of commonly-used  operating systems and CI platforms that represent edge cases.
+Many formatters, including the built-in ones, emit some colored output. By default, Cucumber will automatically detect the colors support of the output stream and decide whether to emit colors accordingly. This check comes via the [supports-colors](https://github.com/chalk/supports-color) library and is pretty comprehensive, including awareness of commonly-used  operating systems and CI platforms that represent edge cases.
 
-If you'd like to override the auto-detected behaviour, you can provide the `colorsEnabled` format option - either `true` to forcibly emit colors, or `false` to forcibly disable them.
+If you'd like to override the auto-detection behaviour, you can provide the `colorsEnabled` format option - either `true` to forcibly emit colors, or `false` to forcibly disable them.
 
-It's worth noting that this option only influences output that Cucumber is in control of. Other tools in your stack such as assertion libraries may have their own way of handling colors. For this reason we'd recommend setting the `FORCE_COLOR` environment variable if you want to forcibly enable or disable colors, as a variety of tools (including Cucumber) will honour it. 
+It's worth noting that this option only influences output that Cucumber is in control of. Other tools in your stack such as assertion libraries might have their own way of handling colors. For this reason we'd recommend setting the `FORCE_COLOR` environment variable if you want to forcibly enable (by setting it to `1`) or disable (by setting it to `0`) colors, as a variety of tools (including Cucumber) will honour it.
 
 ## Built-in formatters
 
