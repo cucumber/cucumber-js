@@ -63,7 +63,7 @@ function detectSupport(
   env: NodeJS.ProcessEnv,
   enabled?: boolean
 ): ColorInfo {
-  const support: ColorInfo = supportsColor(stream, { sniffFlags: false })
+  const support: ColorInfo = supportsColor(stream)
   if ('FORCE_COLOR' in env || doesNotHaveValue(enabled)) {
     return support
   }
