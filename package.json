@@ -207,7 +207,7 @@
     "assertion-error-formatter": "^3.0.0",
     "capital-case": "^1.0.4",
     "chalk": "^4.1.2",
-    "cli-table3": "0.6.1",
+    "cli-table3": "0.6.2",
     "commander": "^9.0.0",
     "duration": "^0.2.2",
     "durations": "^3.4.2",
