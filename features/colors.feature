@@ -20,9 +20,9 @@ Feature: Colors
   Scenario: no colored output by default for a file stream
     When I run cucumber-js with `--format summary:summary.out`
     Then it passes
-    Then the file "summary.out" doesn't contain ansi colors
+    Then the file "summary.out" doesn't contain colors
 
   Scenario: colored output can be explicitly activated for a file stream
     When I run cucumber-js with `--format summary:summary.out --format-options '{"colorsEnabled":true}'`
     Then it passes
-    Then the file "summary.out" contains ansi colors
+    Then the file "summary.out" contains colors

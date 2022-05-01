@@ -53,7 +53,7 @@ Then(
 )
 
 Then(
-  'the file {string} contains ansi colors',
+  'the file {string} contains colors',
   async function (this: World, filePath: string) {
     filePath = Mustache.render(filePath, this)
     const absoluteFilePath = path.resolve(this.tmpDir, filePath)
@@ -63,7 +63,7 @@ Then(
 )
 
 Then(
-  "the file {string} doesn't contain ansi colors",
+  "the file {string} doesn't contain colors",
   async function (this: World, filePath: string) {
     filePath = Mustache.render(filePath, this)
     const absoluteFilePath = path.resolve(this.tmpDir, filePath)
