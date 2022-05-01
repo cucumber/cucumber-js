@@ -2,8 +2,7 @@
 Feature: Colors
 
   As a developer
-  I want to control when/whether the output includes ANSI colors
-  So that I can be happy
+  I want to control when/whether the output includes colors
 
   Background:
     Given a file named "features/a.feature" with:
