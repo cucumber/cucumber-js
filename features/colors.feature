@@ -1,3 +1,4 @@
+@spawn
 Feature: Colors
 
   As a developer
@@ -22,7 +23,12 @@ Feature: Colors
     Then it passes
     Then the file "summary.out" doesn't contain colors
 
-  Scenario: colored output can be explicitly activated for a file stream
+  Scenario: colored output can be activated with the format option
     When I run cucumber-js with `--format summary:summary.out --format-options '{"colorsEnabled":true}'`
+    Then it passes
+    Then the file "summary.out" contains colors
+
+  Scenario: colored output can be activated with FORCE_COLOR
+    When I run cucumber-js with arguments `--format summary:summary.out` and env `FORCE_COLOR=1`
     Then it passes
     Then the file "summary.out" contains colors

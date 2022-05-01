@@ -25,7 +25,7 @@ async function testFormatIssue(
     supportCodeLibrary,
   })
   return formatIssue({
-    colorFns: getColorFns(new PassThrough(), false),
+    colorFns: getColorFns(new PassThrough(), {}, false),
     number: 1,
     snippetBuilder: await FormatterBuilder.getStepDefinitionSnippetBuilder({
       cwd: 'project/',

@@ -13,6 +13,7 @@ import { Writable } from 'stream'
 import { IRunOptionsFormats } from './types'
 
 export async function initializeFormatters({
+  env,
   cwd,
   stdout,
   logger,
@@ -22,6 +23,7 @@ export async function initializeFormatters({
   configuration,
   supportCodeLibrary,
 }: {
+  env: NodeJS.ProcessEnv
   cwd: string
   stdout: IFormatterStream
   logger: Console
@@ -41,6 +43,7 @@ export async function initializeFormatters({
       onStreamError()
     })
     const typeOptions = {
+      env,
       cwd,
       eventBroadcaster,
       eventDataCollector,

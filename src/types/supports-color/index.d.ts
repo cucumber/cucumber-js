@@ -9,9 +9,6 @@ declare module 'supports-color' {
 
   export interface ColorSupport {
     level: ColorSupportLevel
-    hasBasic: boolean
-    has256: boolean
-    has16m: boolean
   }
 
   export type ColorInfo = ColorSupport | false

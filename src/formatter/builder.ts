@@ -26,6 +26,7 @@ interface IGetStepDefinitionSnippetBuilderOptions {
 }
 
 export interface IBuildOptions {
+  env: NodeJS.ProcessEnv
   cwd: string
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
@@ -44,6 +45,7 @@ const FormatterBuilder = {
     )
     const colorFns = getColorFns(
       options.stream,
+      options.env,
       options.parsedArgvOptions.colorsEnabled
     )
     const snippetBuilder =

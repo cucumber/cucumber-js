@@ -18,16 +18,12 @@ export interface IColorFns {
 
 export default function getColorFns(
   stream: Writable,
+  env: NodeJS.ProcessEnv,
   enabled?: boolean
 ): IColorFns {
-  const support: ColorInfo = supportsColor(stream, { sniffFlags: false })
-  if (doesNotHaveValue(enabled)) {
-    enabled = !!support
-  }
-  if (enabled) {
-    const chalkInstance = new chalk.Instance({
-      level: support ? support.level : 1,
-    })
+  const support: ColorInfo = detectSupport(stream, env, enabled)
+  if (support) {
+    const chalkInstance = new chalk.Instance(support)
     return {
       forStatus(status: TestStepResultStatus) {
         return {
@@ -60,4 +56,16 @@ export default function getColorFns(
       errorStack: (x) => x,
     }
   }
+}
+
+function detectSupport(
+  stream: Writable,
+  env: NodeJS.ProcessEnv,
+  enabled?: boolean
+): ColorInfo {
+  const support: ColorInfo = supportsColor(stream, { sniffFlags: false })
+  if ('FORCE_COLOR' in env || doesNotHaveValue(enabled)) {
+    return support
+  }
+  return enabled ? support || { level: 1 } : false
 }

@@ -55,6 +55,7 @@ export async function runCucumber(
 
   let formatterStreamError = false
   const cleanup = await initializeFormatters({
+    env,
     cwd,
     stdout,
     logger,

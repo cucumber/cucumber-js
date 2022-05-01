@@ -54,7 +54,7 @@ async function testFormatSummary({
     supportCodeLibrary,
   })
   return formatSummary({
-    colorFns: getColorFns(new PassThrough(), false),
+    colorFns: getColorFns(new PassThrough(), {}, false),
     testCaseAttempts,
     testRunDuration: durationBetweenTimestamps(
       testRunStarted.timestamp,
