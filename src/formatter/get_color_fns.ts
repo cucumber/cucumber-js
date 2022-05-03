@@ -64,6 +64,7 @@ function detectSupport(
   enabled?: boolean
 ): ColorInfo {
   const support: ColorInfo = supportsColor(stream)
+  // if we find FORCE_COLOR, we can let the supports-color library handle that
   if ('FORCE_COLOR' in env || doesNotHaveValue(enabled)) {
     return support
   }
