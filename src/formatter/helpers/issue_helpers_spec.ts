@@ -7,6 +7,7 @@ import { getTestCaseAttempts } from '../../../test/formatter_helpers'
 import { reindent } from 'reindent-template-literals'
 import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
 import FormatterBuilder from '../builder'
+import { PassThrough } from 'stream'
 
 async function testFormatIssue(
   sourceData: string,
@@ -24,7 +25,7 @@ async function testFormatIssue(
     supportCodeLibrary,
   })
   return formatIssue({
-    colorFns: getColorFns(false),
+    colorFns: getColorFns(new PassThrough(), {}, false),
     number: 1,
     snippetBuilder: await FormatterBuilder.getStepDefinitionSnippetBuilder({
       cwd: 'project/',

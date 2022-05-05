@@ -3,7 +3,6 @@ import { EventEmitter } from 'events'
 import { EventDataCollector } from '../formatter/helpers'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { promisify } from 'util'
-import { doesNotHaveValue } from '../value_checker'
 import { WriteStream as TtyWriteStream } from 'tty'
 import FormatterBuilder from '../formatter/builder'
 import fs from 'mz/fs'
@@ -14,6 +13,7 @@ import { Writable } from 'stream'
 import { IRunOptionsFormats } from './types'
 
 export async function initializeFormatters({
+  env,
   cwd,
   stdout,
   logger,
@@ -23,6 +23,7 @@ export async function initializeFormatters({
   configuration,
   supportCodeLibrary,
 }: {
+  env: NodeJS.ProcessEnv
   cwd: string
   stdout: IFormatterStream
   logger: Console
@@ -42,6 +43,7 @@ export async function initializeFormatters({
       onStreamError()
     })
     const typeOptions = {
+      env,
       cwd,
       eventBroadcaster,
       eventDataCollector,
@@ -53,11 +55,6 @@ export async function initializeFormatters({
           ? async () => await Promise.resolve()
           : promisify<any>(stream.end.bind(stream)),
       supportCodeLibrary,
-    }
-    if (doesNotHaveValue(configuration.options.colorsEnabled)) {
-      typeOptions.parsedArgvOptions.colorsEnabled = (
-        stream as TtyWriteStream
-      ).isTTY
     }
     if (type === 'progress-bar' && !(stream as TtyWriteStream).isTTY) {
       logger.warn(

@@ -59,6 +59,7 @@ async function testProgressBarFormatter({
   }
   const passThrough = new PassThrough()
   const progressBarFormatter = (await FormatterBuilder.build('progress-bar', {
+    env: {},
     cwd: '',
     eventBroadcaster,
     eventDataCollector: new EventDataCollector(eventBroadcaster),

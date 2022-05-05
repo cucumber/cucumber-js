@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- Fix issues with colored output, support `FORCE_COLOR` environment variable as an override ([#2026](https://github.com/cucumber/cucumber-js/pull/2026))
 
 ## [8.1.2] - 2022-04-22
 ### Added
