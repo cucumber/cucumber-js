@@ -35,7 +35,7 @@ export type TestCaseHookFunction<WorldType> = (
 export type TestStepHookFunction<WorldType> = (
   this: WorldType,
   arg: ITestStepHookParameter
-) => void
+) => any | Promise<any>
 
 export type TestStepFunction<WorldType> = (
   this: WorldType,
