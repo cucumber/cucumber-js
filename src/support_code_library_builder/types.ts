@@ -70,17 +70,19 @@ export interface IParameterTypeDefinition<T> {
   preferForRegexpMatch?: boolean
 }
 
+export type IDefineStepFunction = (<WorldType = IWorld>(
+  pattern: DefineStepPattern,
+  code: TestStepFunction<WorldType>
+) => void) &
+  (<WorldType = IWorld>(
+    pattern: DefineStepPattern,
+    options: IDefineStepOptions,
+    code: TestStepFunction<WorldType>
+  ) => void)
+
 export interface IDefineSupportCodeMethods {
   defineParameterType: (options: IParameterTypeDefinition<any>) => void
-  defineStep: (<WorldType = IWorld>(
-    pattern: DefineStepPattern,
-    code: TestStepFunction<WorldType>
-  ) => void) &
-    (<WorldType = IWorld>(
-      pattern: DefineStepPattern,
-      options: IDefineStepOptions,
-      code: TestStepFunction<WorldType>
-    ) => void)
+  defineStep: IDefineStepFunction
   setDefaultTimeout: (milliseconds: number) => void
   setDefinitionFunctionWrapper: (fn: Function) => void
   setParallelCanAssign: (fn: ParallelAssignmentValidator) => void
@@ -131,33 +133,9 @@ export interface IDefineSupportCodeMethods {
     ) => void)
   BeforeAll: ((code: Function) => void) &
     ((options: IDefineTestRunHookOptions, code: Function) => void)
-  Given: (<WorldType = IWorld>(
-    pattern: DefineStepPattern,
-    code: TestStepFunction<WorldType>
-  ) => void) &
-    (<WorldType = IWorld>(
-      pattern: DefineStepPattern,
-      options: IDefineStepOptions,
-      code: TestStepFunction<WorldType>
-    ) => void)
-  Then: (<WorldType = IWorld>(
-    pattern: DefineStepPattern,
-    code: TestStepFunction<WorldType>
-  ) => void) &
-    (<WorldType = IWorld>(
-      pattern: DefineStepPattern,
-      options: IDefineStepOptions,
-      code: TestStepFunction<WorldType>
-    ) => void)
-  When: (<WorldType = IWorld>(
-    pattern: DefineStepPattern,
-    code: TestStepFunction<WorldType>
-  ) => void) &
-    (<WorldType = IWorld>(
-      pattern: DefineStepPattern,
-      options: IDefineStepOptions,
-      code: TestStepFunction<WorldType>
-    ) => void)
+  Given: IDefineStepFunction
+  Then: IDefineStepFunction
+  When: IDefineStepFunction
 }
 
 export interface ISupportCodeCoordinates {
