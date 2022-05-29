@@ -38,7 +38,7 @@ interface IStepDefinitionConfig {
   code: any
   line: number
   options: any
-  keyword?: GherkinStepKeyword
+  keyword: GherkinStepKeyword
   pattern: string | RegExp
   uri: string
 }
@@ -98,7 +98,6 @@ export class SupportCodeLibraryBuilder {
   private parallelCanAssign: ParallelAssignmentValidator
 
   constructor() {
-    const defineStep = this.defineStep.bind(this)
     this.methods = {
       After: this.defineTestCaseHook(
         () => this.afterTestCaseHookDefinitionConfigs
@@ -119,8 +118,10 @@ export class SupportCodeLibraryBuilder {
         () => this.beforeTestStepHookDefinitionConfigs
       ),
       defineParameterType: this.defineParameterType.bind(this),
-      defineStep,
-      Given: defineStep,
+      // @ts-expect-error todo
+      defineStep: (...args) => this.defineStep('Given', ...args),
+      // @ts-expect-error todo
+      Given: (...args) => this.defineStep('Given', ...args),
       setDefaultTimeout: (milliseconds) => {
         this.defaultTimeout = milliseconds
       },
@@ -133,8 +134,10 @@ export class SupportCodeLibraryBuilder {
       setParallelCanAssign: (fn: ParallelAssignmentValidator): void => {
         this.parallelCanAssign = fn
       },
-      Then: defineStep,
-      When: defineStep,
+      // @ts-expect-error todo
+      Then: (...args) => this.defineStep('Then', ...args),
+      // @ts-expect-error todo
+      When: (...args) => this.defineStep('When', ...args),
     }
   }
 
@@ -163,6 +166,7 @@ export class SupportCodeLibraryBuilder {
       code,
       line,
       options,
+      keyword,
       pattern,
       uri,
     })
@@ -348,7 +352,7 @@ export class SupportCodeLibraryBuilder {
     const stepDefinitions: StepDefinition[] = []
     const undefinedParameterTypes: messages.UndefinedParameterType[] = []
     this.stepDefinitionConfigs.forEach(
-      ({ code, line, options, pattern, uri }, index) => {
+      ({ code, line, options, keyword, pattern, uri }, index) => {
         let expression
         if (typeof pattern === 'string') {
           try {
@@ -384,6 +388,7 @@ export class SupportCodeLibraryBuilder {
             id: canonicalIds ? canonicalIds[index] : this.newId(),
             line,
             options,
+            keyword,
             pattern,
             unwrappedCode: code,
             uri,

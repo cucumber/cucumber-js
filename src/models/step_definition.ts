@@ -17,6 +17,7 @@ export default class StepDefinition extends Definition implements IDefinition {
 
   constructor(data: IStepDefinitionParameters) {
     super(data)
+    this.keyword = data.keyword
     this.pattern = data.pattern
     this.expression = data.expression
   }
