@@ -9,7 +9,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [Unreleased]
 ### Changed
-- `defineStep` is now deprecated and will eventually be removed; use the appropriate Given/When/Then keyword to define your step
+- `defineStep` is now deprecated and will eventually be removed; use the appropriate Given/When/Then keyword to define your step ([#2044](https://github.com/cucumber/cucumber-js/pull/2044))
 
 ## [8.2.2] - 2022-05-27
 ### Changed
