@@ -104,11 +104,11 @@ Multiple `BeforeStep` hooks are executed in the order that they are defined.
 
 ---
 
-#### `defineStep(pattern[, options], fn)`
+#### `Given(pattern[, options], fn)`
 
-Defines a step.
+Define a "Given" step.
 
-Aliases: `Given`, `When`, `Then`.
+Aliases: `defineStep` (deprecated and will be removed in a future release; use the appropriate Given/When/Then keyword to define your step).
 
 * `pattern`: A regex or string pattern to match against a gherkin step.
 * `options`: An object with the following keys:
@@ -118,12 +118,6 @@ Aliases: `Given`, `When`, `Then`.
   - Should have one argument for each capture in the regular expression.
   - May have an additional argument if the gherkin step has a docstring or data table.
   - When using the asynchronous callback interface, have one final argument for the callback function.
-
----
-
-#### `Given(pattern[, options], fn)`
-
-Alias of `defineStep`.
 
 ---
 
@@ -199,10 +193,10 @@ function World({attach, parameters}) {
 
 #### `Then(pattern[, options], fn)`
 
-Alias of `defineStep`.
+Define a "Then" step. Same interface as `Given`
 
 ---
 
 #### `When(pattern[, options], fn)`
 
-Alias of `defineStep`.
+Define a "When" step. Same interface as `Given`
