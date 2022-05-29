@@ -70,7 +70,7 @@ export interface IParameterTypeDefinition<T> {
   preferForRegexpMatch?: boolean
 }
 
-export type IDefineStepFunction = (<WorldType = IWorld>(
+export type DefineStepFunction = (<WorldType = IWorld>(
   pattern: DefineStepPattern,
   code: TestStepFunction<WorldType>
 ) => void) &
@@ -82,7 +82,7 @@ export type IDefineStepFunction = (<WorldType = IWorld>(
 
 export interface IDefineSupportCodeMethods {
   defineParameterType: (options: IParameterTypeDefinition<any>) => void
-  defineStep: IDefineStepFunction
+  defineStep: DefineStepFunction
   setDefaultTimeout: (milliseconds: number) => void
   setDefinitionFunctionWrapper: (fn: Function) => void
   setParallelCanAssign: (fn: ParallelAssignmentValidator) => void
@@ -133,9 +133,9 @@ export interface IDefineSupportCodeMethods {
     ) => void)
   BeforeAll: ((code: Function) => void) &
     ((options: IDefineTestRunHookOptions, code: Function) => void)
-  Given: IDefineStepFunction
-  Then: IDefineStepFunction
-  When: IDefineStepFunction
+  Given: DefineStepFunction
+  Then: DefineStepFunction
+  When: DefineStepFunction
 }
 
 export interface ISupportCodeCoordinates {
