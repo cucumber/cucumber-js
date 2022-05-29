@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- `defineStep` is now deprecated and will eventually be removed; use the appropriate Given/When/Then keyword to define your step
 
 ## [8.2.2] - 2022-05-27
 ### Changed
