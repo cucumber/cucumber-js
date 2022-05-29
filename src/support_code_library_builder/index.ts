@@ -29,6 +29,7 @@ import {
   TestStepHookFunction,
   ParallelAssignmentValidator,
   ISupportCodeCoordinates,
+  IDefineStepFunction,
 } from './types'
 import World from './world'
 import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
@@ -118,10 +119,8 @@ export class SupportCodeLibraryBuilder {
         () => this.beforeTestStepHookDefinitionConfigs
       ),
       defineParameterType: this.defineParameterType.bind(this),
-      // @ts-expect-error todo
-      defineStep: (...args) => this.defineStep('Given', ...args),
-      // @ts-expect-error todo
-      Given: (...args) => this.defineStep('Given', ...args),
+      defineStep: this.defineStep('Given', () => this.stepDefinitionConfigs),
+      Given: this.defineStep('Given', () => this.stepDefinitionConfigs),
       setDefaultTimeout: (milliseconds) => {
         this.defaultTimeout = milliseconds
       },
@@ -134,10 +133,8 @@ export class SupportCodeLibraryBuilder {
       setParallelCanAssign: (fn: ParallelAssignmentValidator): void => {
         this.parallelCanAssign = fn
       },
-      // @ts-expect-error todo
-      Then: (...args) => this.defineStep('Then', ...args),
-      // @ts-expect-error todo
-      When: (...args) => this.defineStep('When', ...args),
+      Then: this.defineStep('Then', () => this.stepDefinitionConfigs),
+      When: this.defineStep('When', () => this.stepDefinitionConfigs),
     }
   }
 
@@ -148,28 +145,32 @@ export class SupportCodeLibraryBuilder {
 
   defineStep(
     keyword: GherkinStepKeyword,
-    pattern: DefineStepPattern,
-    options: IDefineStepOptions | Function,
-    code?: Function
-  ): void {
-    if (typeof options === 'function') {
-      code = options
-      options = {}
+    getCollection: () => IStepDefinitionConfig[]
+  ): IDefineStepFunction {
+    return (
+      pattern: DefineStepPattern,
+      options: IDefineStepOptions | Function,
+      code?: Function
+    ) => {
+      if (typeof options === 'function') {
+        code = options
+        options = {}
+      }
+      const { line, uri } = getDefinitionLineAndUri(this.cwd)
+      validateArguments({
+        args: { code, pattern, options },
+        fnName: 'defineStep',
+        location: formatLocation({ line, uri }),
+      })
+      getCollection().push({
+        code,
+        line,
+        options,
+        keyword,
+        pattern,
+        uri,
+      })
     }
-    const { line, uri } = getDefinitionLineAndUri(this.cwd)
-    validateArguments({
-      args: { code, pattern, options },
-      fnName: 'defineStep',
-      location: formatLocation({ line, uri }),
-    })
-    this.stepDefinitionConfigs.push({
-      code,
-      line,
-      options,
-      keyword,
-      pattern,
-      uri,
-    })
   }
 
   defineTestCaseHook(
