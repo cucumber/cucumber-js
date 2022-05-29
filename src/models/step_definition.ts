@@ -8,8 +8,10 @@ import Definition, {
 import { parseStepArgument } from '../step_arguments'
 import { Expression } from '@cucumber/cucumber-expressions'
 import { doesHaveValue } from '../value_checker'
+import { GherkinStepKeyword } from './gherkin_step_keyword'
 
 export default class StepDefinition extends Definition implements IDefinition {
+  public readonly keyword: GherkinStepKeyword
   public readonly pattern: string | RegExp
   public readonly expression: Expression
 

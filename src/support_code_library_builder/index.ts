@@ -32,11 +32,13 @@ import {
 } from './types'
 import World from './world'
 import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
+import { GherkinStepKeyword } from '../models/gherkin_step_keyword'
 
 interface IStepDefinitionConfig {
   code: any
   line: number
   options: any
+  keyword?: GherkinStepKeyword
   pattern: string | RegExp
   uri: string
 }
@@ -142,6 +144,7 @@ export class SupportCodeLibraryBuilder {
   }
 
   defineStep(
+    keyword: GherkinStepKeyword,
     pattern: DefineStepPattern,
     options: IDefineStepOptions | Function,
     code?: Function
