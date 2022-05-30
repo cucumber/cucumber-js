@@ -29,7 +29,7 @@ import {
   TestStepHookFunction,
   ParallelAssignmentValidator,
   ISupportCodeCoordinates,
-  DefineStepFunction,
+  IDefineStep,
 } from './types'
 import World from './world'
 import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
@@ -146,7 +146,7 @@ export class SupportCodeLibraryBuilder {
   defineStep(
     keyword: GherkinStepKeyword,
     getCollection: () => IStepDefinitionConfig[]
-  ): DefineStepFunction {
+  ): IDefineStep {
     return (
       pattern: DefineStepPattern,
       options: IDefineStepOptions | Function,
