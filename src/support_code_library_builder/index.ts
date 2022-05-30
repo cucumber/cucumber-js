@@ -8,6 +8,7 @@ import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { formatLocation } from '../formatter/helpers'
 import validateArguments from './validate_arguments'
+import { deprecate } from 'util'
 import arity from 'util-arity'
 
 import {
@@ -119,7 +120,10 @@ export class SupportCodeLibraryBuilder {
         () => this.beforeTestStepHookDefinitionConfigs
       ),
       defineParameterType: this.defineParameterType.bind(this),
-      defineStep: this.defineStep('Given', () => this.stepDefinitionConfigs),
+      defineStep: deprecate(
+        this.defineStep('Given', () => this.stepDefinitionConfigs),
+        '`defineStep` is deprecated, use `Given`, `When` or `Then` instead; see https://github.com/cucumber/cucumber-js/issues/2043'
+      ),
       Given: this.defineStep('Given', () => this.stepDefinitionConfigs),
       setDefaultTimeout: (milliseconds) => {
         this.defaultTimeout = milliseconds
