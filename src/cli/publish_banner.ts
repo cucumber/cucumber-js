@@ -1,12 +1,16 @@
 import chalk from 'chalk'
 import Table from 'cli-table3'
 
+const chalkInstance = chalk.stderr
+
 const underlineBoldCyan = (x: string): string =>
-  chalk.underline(chalk.bold(chalk.cyan(x)))
+  chalkInstance.underline(chalkInstance.bold(chalkInstance.cyan(x)))
 
 const formattedReportUrl = underlineBoldCyan('https://reports.cucumber.io')
 const formattedEnv =
-  chalk.cyan('CUCUMBER_PUBLISH_ENABLED') + '=' + chalk.cyan('true')
+  chalkInstance.cyan('CUCUMBER_PUBLISH_ENABLED') +
+  '=' +
+  chalkInstance.cyan('true')
 const formattedMoreInfoUrl = underlineBoldCyan(
   'https://cucumber.io/docs/cucumber/environment-variables/'
 )
@@ -14,18 +18,20 @@ const formattedMoreInfoUrl = underlineBoldCyan(
 const text = `\
 Share your Cucumber Report with your team at ${formattedReportUrl}
 
-Command line option:    ${chalk.cyan('--publish')}
+Command line option:    ${chalkInstance.cyan('--publish')}
 Environment variable:   ${formattedEnv}
 
 More information at ${formattedMoreInfoUrl}
 
-To disable this message, add this to your ${chalk.bold('./cucumber.js')}: 
-${chalk.bold("module.exports = { default: '--publish-quiet' }")}`
+To disable this message, add this to your ${chalkInstance.bold(
+  './cucumber.js'
+)}: 
+${chalkInstance.bold("module.exports = { default: '--publish-quiet' }")}`
 
 const table = new Table({
   style: {
     head: [],
-    border: ['green'],
+    border: chalkInstance.supportsColor ? ['green'] : [],
   },
 })
 
