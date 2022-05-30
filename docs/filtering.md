@@ -31,7 +31,7 @@ This option is repeatable, so you can provide several expressions and they'll al
 
 You can specify a [Cucumber tag expression](https://docs.cucumber.io/cucumber/api/#tag-expressions) to only run scenarios that match it:
 
-- In a configuration file `{ tags: ['@foo or @bar'] }`
+- In a configuration file `{ tags: '@foo or @bar' }`
 - On the CLI `$ cucumber-js --tags "@foo or @bar"`
 
 This option is repeatable, so you can provide several expressions and they'll be combined with an `and` operator, meaning a scenario needs to match all of them.

@@ -17,6 +17,14 @@ After(function () {})
 BeforeStep(function () {})
 AfterStep(function () {})
 
+// should allow hook functions to be async
+BeforeAll(async function () {})
+AfterAll(async function () {})
+Before(async function () {})
+After(async function () {})
+BeforeStep(async function () {})
+AfterStep(async function () {})
+
 // should allow typed arguments in hooks
 Before(function (param: ITestCaseHookParameter) {})
 After(function (param: ITestCaseHookParameter) {})
