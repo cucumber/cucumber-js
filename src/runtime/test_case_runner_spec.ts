@@ -258,6 +258,7 @@ describe('TestCaseRunner', () => {
 
     describe('with a flaky step and a positive retries value', () => {
       it('emits the expected envelopes and returns a passing result', async () => {
+        // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
           let willPass = false
           Given('a step', function () {
