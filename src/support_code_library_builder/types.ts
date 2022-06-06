@@ -15,6 +15,7 @@ export interface ITestCaseHookParameter {
   gherkinDocument: messages.GherkinDocument
   pickle: messages.Pickle
   result?: messages.TestStepResult
+  willBeRetried?: boolean
   testCaseStartedId: string
 }
 
