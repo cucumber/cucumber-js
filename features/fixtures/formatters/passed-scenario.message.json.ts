@@ -37,6 +37,7 @@ module.exports = [
                     column: 5,
                   },
                   keyword: 'Given ',
+                  keywordType: 'Context',
                   text: 'a step',
                   id: '1',
                 },
@@ -60,6 +61,7 @@ module.exports = [
         {
           astNodeIds: ['1'],
           id: '3',
+          type: 'Context',
           text: 'a step',
         },
       ],
