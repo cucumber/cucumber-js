@@ -11,6 +11,9 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Added
 - Add `willBeRetried` to the parameter passed to `After` hook functions ([#2045](https://github.com/cucumber/cucumber-js/pull/2045))
 
+### Fixed
+- Prevent outputting ANSI escapes to `stderr` if it can't display them ([#2035](https://github.com/cucumber/cucumber-js/pull/2035))
+
 ## [8.2.2] - 2022-05-27
 ### Changed
 - Use latest HTML formatter with better handling for scenario outlines
