@@ -1,1 +1,1 @@
-export type GherkinStepKeyword = 'Given' | 'When' | 'Then'
+export type GherkinStepKeyword = 'Unknown' | 'Given' | 'When' | 'Then'

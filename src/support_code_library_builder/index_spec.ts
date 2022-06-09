@@ -132,7 +132,7 @@ describe('supportCodeLibraryBuilder', () => {
         supportCodeLibraryBuilder.methods.defineStep('a thing', step)
         expect(
           supportCodeLibraryBuilder.finalize().stepDefinitions[0].keyword
-        ).to.eq('Given')
+        ).to.eq('Unknown')
       })
     })
   })
