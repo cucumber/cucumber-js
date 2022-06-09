@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Add `willBeRetried` to the parameter passed to `After` hook functions ([#2045](https://github.com/cucumber/cucumber-js/pull/2045))
+
 ### Fixed
 - Prevent outputting ANSI escapes to `stderr` if it can't display them ([#2035](https://github.com/cucumber/cucumber-js/pull/2035))
 
