@@ -29,6 +29,10 @@ setDefinitionFunctionWrapper(function (fn) {
 })
 ```
 
+### Accessing `willBeRetried` from hooks
+
+In the argument passed to your `After` hook function, the `result` no longer has a `willBeRetried` property; this is now available at the top level of the object.
+
 ### Using `Cli` programmatically
 
 The `Cli` class is sometimes used to run Cucumber programmatically. We've had to make a few breaking changes:
