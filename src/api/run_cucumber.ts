@@ -58,6 +58,7 @@ export async function runCucumber(
     env,
     cwd,
     stdout,
+    stderr,
     logger,
     onStreamError: () => (formatterStreamError = true),
     eventBroadcaster,
