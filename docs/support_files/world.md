@@ -234,4 +234,4 @@ setWorldConstructor(function(this: CustomWorld, options: IWorldOptions) {
 - It allows you to track test state while maintaining the isolation of each scenario.
 - Every scenario gets its own instance of the world. Even on [retry](../retry.md).
 - You can use the default world or build your own.
-- You can pass parameters to the world using the `worldParamerers` configuration option.
+- You can pass parameters to the world using the `worldParameters` configuration option.
