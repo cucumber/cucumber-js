@@ -1,6 +1,7 @@
 import * as messages from '@cucumber/messages'
 import { ITestCaseHookParameter } from '../support_code_library_builder/types'
 import { Expression } from '@cucumber/cucumber-expressions'
+import { GherkinStepKeyword } from './gherkin_step_keyword'
 
 export interface IGetInvocationDataRequest {
   hookParameter: ITestCaseHookParameter
@@ -35,6 +36,7 @@ export interface IDefinitionParameters<T extends IDefinitionOptions> {
 
 export interface IStepDefinitionParameters
   extends IDefinitionParameters<IDefinitionOptions> {
+  keyword: GherkinStepKeyword
   pattern: string | RegExp
   expression: Expression
 }

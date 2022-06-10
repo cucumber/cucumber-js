@@ -11,6 +11,9 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Added
 - Add `willBeRetried` to the parameter passed to `After` hook functions ([#2045](https://github.com/cucumber/cucumber-js/pull/2045))
 
+### Changed
+- `defineStep` is now deprecated and will eventually be removed; use the appropriate Given/When/Then keyword to define your step ([#2044](https://github.com/cucumber/cucumber-js/pull/2044))
+
 ### Fixed
 - Prevent outputting ANSI escapes to `stderr` if it can't display them ([#2035](https://github.com/cucumber/cucumber-js/pull/2035))
 

@@ -99,6 +99,42 @@ describe('supportCodeLibraryBuilder', () => {
         expect(stepDefinition.unwrappedCode).to.eql(step)
       })
     })
+
+    describe('keyword retention', () => {
+      const step = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+
+      beforeEach(() =>
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+      )
+
+      it('should record correctly for Given', () => {
+        supportCodeLibraryBuilder.methods.Given('a thing', step)
+        expect(
+          supportCodeLibraryBuilder.finalize().stepDefinitions[0].keyword
+        ).to.eq('Given')
+      })
+
+      it('should record correctly for When', () => {
+        supportCodeLibraryBuilder.methods.When('a thing', step)
+        expect(
+          supportCodeLibraryBuilder.finalize().stepDefinitions[0].keyword
+        ).to.eq('When')
+      })
+
+      it('should record correctly for Then', () => {
+        supportCodeLibraryBuilder.methods.Then('a thing', step)
+        expect(
+          supportCodeLibraryBuilder.finalize().stepDefinitions[0].keyword
+        ).to.eq('Then')
+      })
+
+      it('should record correctly for defineStep', () => {
+        supportCodeLibraryBuilder.methods.defineStep('a thing', step)
+        expect(
+          supportCodeLibraryBuilder.finalize().stepDefinitions[0].keyword
+        ).to.eq('Unknown')
+      })
+    })
   })
 
   describe('After', () => {
