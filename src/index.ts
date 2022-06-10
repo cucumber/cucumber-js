@@ -38,6 +38,9 @@ export const Before = methods.Before
 export const BeforeAll = methods.BeforeAll
 export const BeforeStep = methods.BeforeStep
 export const defineParameterType = methods.defineParameterType
+/**
+ * @deprecated use `Given`, `When` or `Then` instead; see <https://github.com/cucumber/cucumber-js/issues/2043>
+ */
 export const defineStep = methods.defineStep
 export const Given = methods.Given
 export const setDefaultTimeout = methods.setDefaultTimeout
