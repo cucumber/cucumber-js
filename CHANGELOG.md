@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [8.3.0] - 2022-06-11
 ### Added
 - Add `willBeRetried` to the parameter passed to `After` hook functions ([#2045](https://github.com/cucumber/cucumber-js/pull/2045))
 
@@ -1398,7 +1400,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.2.2...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.3.0...HEAD
+[8.3.0]: https://github.com/cucumber/cucumber-js/compare/v8.2.2...v8.3.0
 [8.2.2]: https://github.com/cucumber/cucumber-js/compare/v8.2.1...v8.2.2
 [8.2.1]: https://github.com/cucumber/cucumber-js/compare/v8.2.0...v8.2.1
 [8.2.0]: https://github.com/cucumber/cucumber-js/compare/v8.1.2...v8.2.0
@@ -1525,6 +1528,4 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 [0.1.3]: https://github.com/cucumber/cucumber-js/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/cucumber/cucumber-js/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/cucumber/cucumber-js/compare/v0.1.0...v0.1.1
-[0.1.0]: https://github.com/cucumber/cucumber-js/compare/v0.0.1...v0.1.0
-mpare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/cucumber/cucumber-js/compare/v0.0.1...v0.1.0
