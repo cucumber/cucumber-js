@@ -5,6 +5,7 @@
  * @packageDocumentation
  */
 
+export { IConfiguration } from '../configuration'
 export * from './load_configuration'
 export * from './load_sources'
 export * from './load_support'
