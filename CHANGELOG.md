@@ -11,6 +11,10 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Fixed
 - Fix issues with using absolute paths for features ([#2063](https://github.com/cucumber/cucumber-js/pull/2063))
 
+## [8.3.1] - 2022-06-21
+### Fixed
+- Export `IConfiguration` type on API entry point ([#2064](https://github.com/cucumber/cucumber-js/pull/2064))
+
 ## [8.3.0] - 2022-06-11
 ### Added
 - Add `willBeRetried` to the parameter passed to `After` hook functions ([#2045](https://github.com/cucumber/cucumber-js/pull/2045))
@@ -1402,7 +1406,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.3.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.3.1...HEAD
+[8.3.1]: https://github.com/cucumber/cucumber-js/compare/v8.3.0...v8.3.1
 [8.3.0]: https://github.com/cucumber/cucumber-js/compare/v8.2.2...v8.3.0
 [8.2.2]: https://github.com/cucumber/cucumber-js/compare/v8.2.1...v8.2.2
 [8.2.1]: https://github.com/cucumber/cucumber-js/compare/v8.2.0...v8.2.1
