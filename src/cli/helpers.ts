@@ -33,7 +33,7 @@ interface IParseGherkinMessageStreamRequest {
   eventDataCollector: EventDataCollector
   gherkinMessageStream: Readable
   order: string
-  unexpandedFeaturePaths: string[]
+  unexpandedFeaturePaths?: string[]
   pickleFilter: PickleFilter
 }
 
@@ -84,7 +84,7 @@ export async function parseGherkinMessageStream({
 export function orderPickles<T = string>(
   pickleIds: T[],
   order: PickleOrder,
-  unexpandedFeaturePaths: string[],
+  unexpandedFeaturePaths: string[] | undefined,
   logger: Console
 ): void {
   const [type, seed] = OptionSplitter.split(order)
@@ -108,8 +108,10 @@ export function orderPickles<T = string>(
         picklesWithDocument.sort((a, b) => {
           const pathA = `${a.pickle.uri}:${a.location.line}`
           const pathB = `${b.pickle.uri}:${b.location.line}`
-          let indexA = unexpandedFeaturePaths.indexOf(pathA)
-          let indexB = unexpandedFeaturePaths.indexOf(pathB)
+          let indexA =
+            unexpandedFeaturePaths?.indexOf(pathA) || Number.MAX_SAFE_INTEGER
+          let indexB =
+            unexpandedFeaturePaths?.indexOf(pathB) || Number.MIN_SAFE_INTEGER
           if (indexA === -1) {
             indexA = Number.MAX_SAFE_INTEGER
           }
