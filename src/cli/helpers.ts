@@ -22,6 +22,7 @@ interface IParseGherkinMessageStreamRequest {
   eventDataCollector: EventDataCollector
   gherkinMessageStream: Readable
   order: string
+  unexpandedFeaturePaths: string[]
   pickleFilter: PickleFilter
 }
 
@@ -34,6 +35,7 @@ interface IParseGherkinMessageStreamRequest {
  * @param eventDataCollector
  * @param gherkinMessageStream
  * @param order
+ * @param unexpandedFeaturePaths
  * @param pickleFilter
  */
 export async function parseGherkinMessageStream({
@@ -41,6 +43,7 @@ export async function parseGherkinMessageStream({
   eventDataCollector,
   gherkinMessageStream,
   order,
+  unexpandedFeaturePaths,
   pickleFilter,
 }: IParseGherkinMessageStreamRequest): Promise<string[]> {
   return await new Promise<string[]>((resolve, reject) => {
@@ -59,7 +62,7 @@ export async function parseGherkinMessageStream({
       }
     })
     gherkinMessageStream.on('end', () => {
-      orderPickles(result, order, console)
+      orderPickles(result, order, unexpandedFeaturePaths, console)
       resolve(result)
     })
     gherkinMessageStream.on('error', reject)
@@ -70,6 +73,7 @@ export async function parseGherkinMessageStream({
 export function orderPickles<T = string>(
   pickleIds: T[],
   order: PickleOrder,
+  unexpandedFeaturePaths: string[],
   logger: Console
 ): void {
   const [type, seed] = OptionSplitter.split(order)
@@ -84,6 +88,8 @@ export function orderPickles<T = string>(
       } else {
         shuffle(pickleIds, seed)
       }
+      break
+    case 'rerun':
       break
     default:
       throw new Error(

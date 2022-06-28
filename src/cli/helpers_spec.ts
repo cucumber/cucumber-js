@@ -51,6 +51,7 @@ async function testParseGherkinMessageStream(
     eventDataCollector,
     gherkinMessageStream: options.gherkinMessageStream,
     order: options.order,
+    unexpandedFeaturePaths: [],
     pickleFilter: options.pickleFilter,
   })
   return { envelopes, result }

@@ -47,3 +47,17 @@ Feature: Set the execution order
       | second scenario - X |
       | second scenario - Y |
       | first scenario      |
+
+  Scenario: run in rerun order
+    Given a file named "@rerun.txt" with:
+      """
+      features/a.feature:19
+      features/a.feature:3
+      features/a.feature:14
+      """
+    When I run cucumber-js with `--order rerun @rerun.txt`
+    Then it runs the scenarios:
+      | NAME                |
+      | second scenario - Z |
+      | first scenario      |
+      | second scenario - Y |

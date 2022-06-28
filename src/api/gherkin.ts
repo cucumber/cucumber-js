@@ -85,7 +85,12 @@ export async function getFilteredPicklesAndErrors({
         pickle,
       }
     })
-  orderPickles(filteredPickles, coordinates.order, logger)
+  orderPickles(
+    filteredPickles,
+    coordinates.order,
+    unexpandedFeaturePaths,
+    logger
+  )
   return {
     filteredPickles,
     parseErrors,

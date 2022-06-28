@@ -1,1 +1,1 @@
-export type PickleOrder = 'defined' | 'random' | string
+export type PickleOrder = 'defined' | 'random' | 'rerun' | string

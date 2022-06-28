@@ -112,7 +112,7 @@ const ArgvParser = {
 
       .option(
         '--order <TYPE[:SEED]>',
-        'run scenarios in the specified order. Type should be `defined` or `random`'
+        "run scenarios in the specified order. Type should be 'defined', 'random' or 'rerun'"
       )
       .option(
         '-p, --profile <NAME>',
