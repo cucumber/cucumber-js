@@ -3,6 +3,7 @@ import { FormatOptions, IFormatterStream } from '../formatter'
 import { PickleOrder } from '../models/pickle_order'
 import { IRuntimeOptions } from '../runtime'
 import { IConfiguration } from '../configuration'
+import { GherkinDocument, Location, Pickle } from '@cucumber/messages'
 
 /**
  * @public
@@ -183,4 +184,10 @@ export interface IRunResult {
    * The support code library that was used in the test run; can be reused in subsequent `runCucumber` calls.
    */
   support: ISupportCodeLibrary
+}
+
+export interface PickleWithDocument {
+  gherkinDocument: GherkinDocument
+  location: Location
+  pickle: Pickle
 }

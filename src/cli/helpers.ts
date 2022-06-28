@@ -15,6 +15,7 @@ import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { PickleOrder } from '../models/pickle_order'
 import { builtinParameterTypes } from '../support_code_library_builder'
 import { version } from '../version'
+import { PickleWithDocument } from '../api/types'
 
 interface IParseGherkinMessageStreamRequest {
   cwd?: string
@@ -90,6 +91,24 @@ export function orderPickles<T = string>(
       }
       break
     case 'rerun':
+      {
+        const picklesWithDocument =
+          pickleIds as unknown[] as PickleWithDocument[]
+
+        picklesWithDocument.sort((a, b) => {
+          const pathA = `${a.pickle.uri}:${a.location.line}`
+          const pathB = `${b.pickle.uri}:${b.location.line}`
+          let indexA = unexpandedFeaturePaths.indexOf(pathA)
+          let indexB = unexpandedFeaturePaths.indexOf(pathB)
+          if (indexA === -1) {
+            indexA = Number.MAX_SAFE_INTEGER
+          }
+          if (indexB === -1) {
+            indexB = Number.MIN_SAFE_INTEGER
+          }
+          return indexA - indexB
+        })
+      }
       break
     default:
       throw new Error(

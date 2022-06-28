@@ -2,24 +2,11 @@ import {
   GherkinStreams,
   IGherkinStreamOptions,
 } from '@cucumber/gherkin-streams'
-import {
-  Envelope,
-  GherkinDocument,
-  IdGenerator,
-  Location,
-  ParseError,
-  Pickle,
-} from '@cucumber/messages'
+import { Envelope, IdGenerator, ParseError } from '@cucumber/messages'
 import { Query as GherkinQuery } from '@cucumber/gherkin-utils'
 import PickleFilter from '../pickle_filter'
 import { orderPickles } from '../cli/helpers'
-import { ISourcesCoordinates } from './types'
-
-interface PickleWithDocument {
-  gherkinDocument: GherkinDocument
-  location: Location
-  pickle: Pickle
-}
+import { ISourcesCoordinates, PickleWithDocument } from './types'
 
 export async function getFilteredPicklesAndErrors({
   newId,
