@@ -102,21 +102,29 @@ export function orderPickles<T = string>(
       break
     case 'rerun':
       {
+        if (unexpandedFeaturePaths === undefined) {
+          throw new Error(
+            'Cannot order by rerun because no unexpandedFeaturePaths were provided'
+          )
+        }
+
         const picklesWithDocument =
           pickleIds as unknown[] as PickleWithDocument[]
 
         picklesWithDocument.sort((a, b) => {
           const pathA = `${a.pickle.uri}:${a.location.line}`
           const pathB = `${b.pickle.uri}:${b.location.line}`
-          let indexA =
-            unexpandedFeaturePaths?.indexOf(pathA) || Number.MAX_SAFE_INTEGER
-          let indexB =
-            unexpandedFeaturePaths?.indexOf(pathB) || Number.MIN_SAFE_INTEGER
+          const indexA = unexpandedFeaturePaths.indexOf(pathA)
+          const indexB = unexpandedFeaturePaths.indexOf(pathB)
           if (indexA === -1) {
-            indexA = Number.MAX_SAFE_INTEGER
+            throw new Error(
+              `Cannot use rerun order because ${pathA} was not in the rerun order. Did you forget to specify @rerun.txt?`
+            )
           }
           if (indexB === -1) {
-            indexB = Number.MIN_SAFE_INTEGER
+            throw new Error(
+              `Cannot use rerun order because ${pathB} was not in the rerun order. Did you forget to specify @rerun.txt?`
+            )
           }
           return indexA - indexB
         })
