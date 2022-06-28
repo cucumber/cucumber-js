@@ -7,7 +7,12 @@ import { OptionSplitter } from '../configuration'
 import { Readable } from 'stream'
 import os from 'os'
 import * as messages from '@cucumber/messages'
-import { IdGenerator } from '@cucumber/messages'
+import {
+  GherkinDocument,
+  IdGenerator,
+  Location,
+  Pickle,
+} from '@cucumber/messages'
 import detectCiEnvironment from '@cucumber/ci-environment'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
@@ -15,7 +20,12 @@ import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { PickleOrder } from '../models/pickle_order'
 import { builtinParameterTypes } from '../support_code_library_builder'
 import { version } from '../version'
-import { PickleWithDocument } from '../api/types'
+
+export interface PickleWithDocument {
+  gherkinDocument: GherkinDocument
+  location: Location
+  pickle: Pickle
+}
 
 interface IParseGherkinMessageStreamRequest {
   cwd?: string

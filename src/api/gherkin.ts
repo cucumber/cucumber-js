@@ -5,8 +5,8 @@ import {
 import { Envelope, IdGenerator, ParseError } from '@cucumber/messages'
 import { Query as GherkinQuery } from '@cucumber/gherkin-utils'
 import PickleFilter from '../pickle_filter'
-import { orderPickles } from '../cli/helpers'
-import { ISourcesCoordinates, PickleWithDocument } from './types'
+import { orderPickles, PickleWithDocument } from '../cli/helpers'
+import { ISourcesCoordinates } from './types'
 
 export async function getFilteredPicklesAndErrors({
   newId,
