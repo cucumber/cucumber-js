@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "8.3.1",
+  "version": "8.4.0",
   "homepage": "https://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com>",
   "contributors": [
@@ -278,7 +278,6 @@
     "mocha": "10.0.0",
     "mustache": "4.2.0",
     "nyc": "15.1.0",
-    "portfinder": "1.0.28",
     "prettier": "2.6.2",
     "reindent-template-literals": "1.1.0",
     "shx": "0.3.4",

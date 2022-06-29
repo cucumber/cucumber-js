@@ -49,3 +49,8 @@ Feature: Target specific scenarios
       | args                                       |
       | features/a.feature:2:10                    |
       | features/a.feature:2 features/a.feature:10 |
+
+  Scenario: using absolute paths
+    When I run cucumber-js with `{{{tmpDir}}}/features/a.feature:2`
+    Then it fails
+    And it runs the scenario "first scenario"
