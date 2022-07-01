@@ -212,7 +212,7 @@
     "duration": "^0.2.2",
     "durations": "^3.4.2",
     "figures": "^3.2.0",
-    "glob": "^7.1.6",
+    "glob": "^8.0.0",
     "has-ansi": "^4.0.1",
     "indent-string": "^4.0.0",
     "is-stream": "^2.0.0",
