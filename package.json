@@ -202,7 +202,7 @@
     "@cucumber/gherkin-utils": "8.0.0",
     "@cucumber/html-formatter": "19.2.0",
     "@cucumber/message-streams": "4.0.1",
-    "@cucumber/messages": "19.0.0",
+    "@cucumber/messages": "19.1.2",
     "@cucumber/tag-expressions": "4.1.0",
     "assertion-error-formatter": "^3.0.0",
     "capital-case": "^1.0.4",
