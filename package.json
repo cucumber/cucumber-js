@@ -237,7 +237,7 @@
     "@cucumber/compatibility-kit": "10.0.0",
     "@cucumber/query": "12.0.0",
     "@microsoft/api-documenter": "7.17.11",
-    "@microsoft/api-extractor": "7.23.0",
+    "@microsoft/api-extractor": "7.28.2",
     "@sinonjs/fake-timers": "9.1.2",
     "@types/chai": "4.3.1",
     "@types/dirty-chai": "2.0.2",
