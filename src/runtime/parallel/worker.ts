@@ -58,10 +58,7 @@ export default class Worker {
     this.stackTraceFilter = new StackTraceFilter()
     this.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
       this.sendMessage({
-        jsonEnvelope: JSON.stringify({
-          ...envelope,
-          workerId: this.id,
-        }),
+        jsonEnvelope: JSON.stringify(envelope),
       })
     })
   }
