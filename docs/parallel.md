@@ -65,3 +65,27 @@ setParallelCanAssign(function(pickleInQuestion, picklesInProgress) {
     myTagRule(pickleInQuestion, picklesInProgress);
 })
 ```
+
+### Formatting
+
+If you need to know worker `id` the message was sent from – you can look for `wokerId` property in the envelope object:
+
+```javascript
+const { Formatter } = require('@cucumber/cucumber')
+
+class ExampleFormatter extends Formatter {
+  constructor(options) {
+		options.eventBroadcaster.on('envelope', (envelope) => {
+			if (envelope.workerId) {
+        console.log(`the envelope was sent from a worker with id ${envelope.workerId}`)
+      } else {
+        console.log('the envelope was sent outside of any worker')
+      }
+		})
+
+    super(options)
+  }
+}
+
+module.exports = ExampleFormatter
+```
