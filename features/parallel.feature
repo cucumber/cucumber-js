@@ -55,3 +55,25 @@ Feature: Running scenarios in parallel
       my error
       """
     Then it fails
+
+  Scenario: the envelopes from workers contain `workerId` parameter
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+
+      Given(/^a slow step$/, function(callback) {
+        setTimeout(callback, 1000)
+      })
+      """
+    And a file named "features/a.feature" with:
+      """
+      Feature: slow
+        Scenario: a
+          Given a slow step
+
+        Scenario: b
+          Given a slow step
+      """
+    When I run cucumber-js with `--parallel 2`
+    Then it passes
+    And test case and test step envelopes contain `workerId` parameter
