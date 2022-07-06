@@ -196,7 +196,7 @@
   "dependencies": {
     "@cspotcode/source-map-support": "^0.8.0",
     "@cucumber/ci-environment": "9.0.4",
-    "@cucumber/cucumber-expressions": "15.2.0",
+    "@cucumber/cucumber-expressions": "16.0.0",
     "@cucumber/gherkin": "24.0.0",
     "@cucumber/gherkin-streams": "5.0.1",
     "@cucumber/gherkin-utils": "8.0.0",
@@ -234,7 +234,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "@cucumber/compatibility-kit": "10.0.0",
+    "@cucumber/compatibility-kit": "11.0.0",
     "@cucumber/query": "12.0.0",
     "@microsoft/api-documenter": "7.18.0",
     "@microsoft/api-extractor": "7.28.2",
