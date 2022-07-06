@@ -34,7 +34,7 @@ If you are using [ts-node](https://github.com/TypeStrong/ts-node):
 For ESM projects, you can use `ts-node`'s ESM loader and then `import` your TypeScript files:
 
 ```shell
-$ NODE_OPTIONS"--loader ts-node/esm" cucumber-js --import 'step-definitions/**/*.ts'
+$ NODE_OPTIONS="--loader ts-node/esm" cucumber-js --import 'step-definitions/**/*.ts'
 ```
 
 Don't forget to set your `tsconfig.json` to emit JavaScript with `import` and `export` statements:
