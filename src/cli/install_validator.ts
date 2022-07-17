@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import isInstalledGlobally from 'is-installed-globally'
 
 export async function validateInstall(): Promise<void> {
