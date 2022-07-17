@@ -140,11 +140,11 @@ export class SupportCodeLibraryBuilder {
       Then: this.defineStep('Then', () => this.stepDefinitionConfigs),
       When: this.defineStep('When', () => this.stepDefinitionConfigs),
     }
-    const check = () => {
+    const checkInstall = (method: string) => {
       if (doesNotHaveValue(this.cwd)) {
         throw new Error(
           `
-          You're calling functions on an instance of Cucumber that isn't running.
+          You're calling functions (e.g. "${method}") on an instance of Cucumber that isn't running.
           This is mostly likely due to:
           - Cucumber being installed globally
           - A project structure where your support code is depending on a different instance of Cucumber
@@ -160,7 +160,7 @@ export class SupportCodeLibraryBuilder {
         method: keyof IDefineSupportCodeMethods
       ): any {
         return (...args: any[]) => {
-          check()
+          checkInstall(method)
           // @ts-expect-error difficult to type this correctly
           return target[method](...args)
         }

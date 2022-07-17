@@ -18,7 +18,7 @@ Feature: Global Installs
     Then it fails
     And the error output contains the text:
       """
-      You're calling functions on an instance of Cucumber that isn't running.
+      You're calling functions (e.g. "When") on an instance of Cucumber that isn't running.
       This is mostly likely due to:
       - Cucumber being installed globally
       - A project structure where your support code is depending on a different instance of Cucumber
