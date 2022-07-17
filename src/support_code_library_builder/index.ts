@@ -16,7 +16,7 @@ import {
   ParameterTypeRegistry,
   RegularExpression,
 } from '@cucumber/cucumber-expressions'
-import { doesHaveValue } from '../value_checker'
+import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import {
   DefineStepPattern,
   IDefineStepOptions,
@@ -100,7 +100,7 @@ export class SupportCodeLibraryBuilder {
   private parallelCanAssign: ParallelAssignmentValidator
 
   constructor() {
-    this.methods = {
+    const methods: IDefineSupportCodeMethods = {
       After: this.defineTestCaseHook(
         () => this.afterTestCaseHookDefinitionConfigs
       ),
@@ -140,6 +140,32 @@ export class SupportCodeLibraryBuilder {
       Then: this.defineStep('Then', () => this.stepDefinitionConfigs),
       When: this.defineStep('When', () => this.stepDefinitionConfigs),
     }
+    const check = () => {
+      if (doesNotHaveValue(this.cwd)) {
+        throw new Error(
+          `
+          You're calling functions on an instance of Cucumber that isn't running.
+          This is mostly likely due to:
+          - Cucumber being installed globally
+          - A project structure where your support code is depending on a different instance of Cucumber
+          Either way, you'll need to address this in order for Cucumber to work.
+          See https://github.com/cucumber/cucumber-js/blob/main/docs/faq.md
+          `
+        )
+      }
+    }
+    this.methods = new Proxy(methods, {
+      get(
+        target: IDefineSupportCodeMethods,
+        method: keyof IDefineSupportCodeMethods
+      ): any {
+        return (...args: any[]) => {
+          check()
+          // @ts-expect-error need to fix argument types
+          return target[method](...args)
+        }
+      },
+    })
   }
 
   defineParameterType(options: IParameterTypeDefinition<any>): void {

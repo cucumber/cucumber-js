@@ -18,10 +18,12 @@ Feature: Global Installs
     Then it fails
     And the error output contains the text:
       """
-      You appear to be executing an install of cucumber (most likely a global install)
-      that is different from your local install (the one required in your support files).
-      For cucumber to work, you need to execute the same install that is required in your support files.
-      Please execute the locally installed version to run your tests.
+      You're calling functions on an instance of Cucumber that isn't running.
+      This is mostly likely due to:
+      - Cucumber being installed globally
+      - A project structure where your support code is depending on a different instance of Cucumber
+      Either way, you'll need to address this in order for Cucumber to work.
+      See https://github.com/cucumber/cucumber-js/blob/main/docs/faq.md
       """
     When I run cucumber-js (installed locally)
     Then it passes
