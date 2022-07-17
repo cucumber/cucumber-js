@@ -161,7 +161,7 @@ export class SupportCodeLibraryBuilder {
       ): any {
         return (...args: any[]) => {
           check()
-          // @ts-expect-error need to fix argument types
+          // @ts-expect-error difficult to type this correctly
           return target[method](...args)
         }
       },
