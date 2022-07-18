@@ -149,7 +149,7 @@ export class SupportCodeLibraryBuilder {
           - Cucumber being installed globally
           - A project structure where your support code is depending on a different instance of Cucumber
           Either way, you'll need to address this in order for Cucumber to work.
-          See https://github.com/cucumber/cucumber-js/blob/main/docs/faq.md
+          See https://github.com/cucumber/cucumber-js/blob/main/docs/installation.md#invalid-installations
           `
         )
       }
