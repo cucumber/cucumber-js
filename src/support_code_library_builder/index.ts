@@ -145,7 +145,7 @@ export class SupportCodeLibraryBuilder {
         throw new Error(
           `
           You're calling functions (e.g. "${method}") on an instance of Cucumber that isn't running.
-          This is mostly likely due to:
+          This means you have an invalid installation, mostly likely due to:
           - Cucumber being installed globally
           - A project structure where your support code is depending on a different instance of Cucumber
           Either way, you'll need to address this in order for Cucumber to work.
