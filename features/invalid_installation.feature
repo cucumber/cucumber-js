@@ -1,7 +1,8 @@
-Feature: Global Installs
+Feature: Invalid installations
 
-  @spawn @global-install
-  Scenario: executing cucumber from a global install error
+  @spawn
+  Scenario: Cucumber exits with an error when running an invalid installation
+    Given an invalid installation
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -14,7 +15,7 @@ Feature: Global Installs
 
       When(/^a step is passing$/, function() {})
       """
-    When I run cucumber-js (installed globally)
+    When I run cucumber-js
     Then it fails
     And the error output contains the text:
       """
@@ -25,5 +26,3 @@ Feature: Global Installs
       Either way, you'll need to address this in order for Cucumber to work.
       See https://github.com/cucumber/cucumber-js/blob/main/docs/installation.md#invalid-installations
       """
-    When I run cucumber-js (installed locally)
-    Then it passes

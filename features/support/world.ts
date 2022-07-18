@@ -36,7 +36,6 @@ export class World {
   public lastRun: ILastRun
   public verifiedLastRunError: boolean
   public localExecutablePath: string
-  public globalExecutablePath: string
   public reportServer: FakeReportServer
 
   parseEnvString(str: string): NodeJS.ProcessEnv {
