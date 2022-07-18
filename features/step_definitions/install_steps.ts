@@ -35,7 +35,7 @@ Given('an invalid installation', async function (this: World) {
     })
   })
 
-  const globalInstallCucumberPath = path.join(
+  const invalidInstallationCucumberPath = path.join(
     installationNodeModulesPath,
     '@cucumber',
     'cucumber'
@@ -44,12 +44,12 @@ Given('an invalid installation', async function (this: World) {
   itemsToCopy.forEach((item) => {
     fsExtra.copySync(
       path.join(projectPath, item),
-      path.join(globalInstallCucumberPath, item)
+      path.join(invalidInstallationCucumberPath, item)
     )
   })
 
   this.localExecutablePath = path.join(
-    globalInstallCucumberPath,
+    invalidInstallationCucumberPath,
     'bin',
     'cucumber.js'
   )
