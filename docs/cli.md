@@ -22,9 +22,6 @@ Or via [npx](https://docs.npmjs.com/cli/v8/commands/npx):
 $ npx cucumber-js
 ```
 
-**Note on global installs:** Cucumber does not work when installed globally because `@cucumber/cucumber`
-needs to be required in your support files and globally installed modules cannot be required.
-
 ## Options
 
 All the [standard configuration options](./configuration.md#options) can be provided via the CLI.
