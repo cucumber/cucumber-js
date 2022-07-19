@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- Reworked handling for invalid installations ([#2089](https://github.com/cucumber/cucumber-js/pull/2089))
 
 ## [8.4.0] - 2022-06-29
 ### Fixed
