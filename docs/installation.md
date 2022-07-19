@@ -36,7 +36,7 @@ We'll emit a warning if it looks like Cucumber is installed globally.
 
 If your project depends on `@cucumber/cucumber`, but also has another dependency that _itself_ depends on `@cucumber/cucumber` (maybe at a slightly different version), this can cause the issue with multiple instances in play at the same time. If you're familiar with React, this is a lot like [the "invalid hook call" issue](https://reactjs.org/warnings/invalid-hook-call-warning.html#duplicate-react).
 
-This is most common where you have split some of your support code (e.g. step definitions) into a separate package for reuse across multiple projects. 
+This is common where you have split some of your support code (e.g. step definitions) into a separate package for reuse across multiple projects, or are perhaps using a third-party package intended to work with Cucumber.
 
 You can diagnose this by running `npm why @cucumber/cucumber` in your project. You might see something like:
 
@@ -52,7 +52,11 @@ node_modules/my-shared-steps-library/node_modules/@cucumber/cucumber
     my-shared-steps-library@"1.0.0" from the root project
 ```
 
-In this case, the fix is to change your library so `@cucumber/cucumber` is a [peer dependency](https://docs.npmjs.com/cli/v8/configuring-npm/package-json#peerdependencies) rather than a regular dependency (it probably also needs to be a dev dependency). This will remove the duplication in the host project.
+In this case, the fix is to change the library so `@cucumber/cucumber` is a [peer dependency](https://docs.npmjs.com/cli/v8/configuring-npm/package-json#peerdependencies) rather than a regular dependency (it probably also needs to be a dev dependency). This will remove the duplication in the host project. If you don't control the library, consider using [overrides](https://docs.npmjs.com/cli/v8/configuring-npm/package-json#overrides) (npm) or [resolutions](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/) (Yarn) to get it down to a single instance.
+
+### Deprecated package
+
+When looking at the duplicate dependency issue, it's worth checking whether anything in your project is depending on the old, deprecated `cucumber` package. Anything touching Cucumber [should be using](../UPGRADING.md#package-name) the newer `@cucumber/cucumber` package.
 
 ### Linking
 
