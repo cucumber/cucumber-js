@@ -62,7 +62,7 @@ When looking at the duplicate dependency issue, it's worth checking whether anyt
 
 With the shared library example above, even if you have `@cucumber/cucumber` correctly defined as a peer dependency, you can still hit the issue if you hook up the library locally using `npm link` or `yarn link` when developing or testing.
 
-This is trickier to the deal with. If you run `npm link ../my-project/node_modules/@cucumber/cucumber` from the library, this should work around it (assuming `my-project` is your host project's directory, and it's adjacent to your library in the file system).
+This is trickier to deal with. If you run `npm link ../my-project/node_modules/@cucumber/cucumber` from the library, this should work around it (assuming `my-project` is your host project's directory, and it's adjacent to your library in the file system).
 
 ### Notes
 
