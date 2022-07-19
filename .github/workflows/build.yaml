@@ -56,4 +56,4 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.x
-      - run: npm audit --groups dependencies
+      - run: npm audit --groups dependencies --audit-level high
