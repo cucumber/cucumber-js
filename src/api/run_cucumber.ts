@@ -58,7 +58,7 @@ export async function runCucumber(
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
 
   let formatterStreamError = false
-  const cleanup = await initializeFormatters({
+  const cleanupFormatters = await initializeFormatters({
     env,
     cwd,
     stdout,
@@ -93,7 +93,7 @@ export async function runCucumber(
         `Parse error in "${parseError.source.uri}" ${parseError.message}`
       )
     })
-    await cleanup()
+    await cleanupFormatters()
     await plugins.cleanup()
     return {
       success: false,
@@ -121,7 +121,7 @@ export async function runCucumber(
     options: configuration.runtime,
   })
   const success = await runtime.start()
-  await cleanup()
+  await cleanupFormatters()
   await plugins.cleanup()
 
   return {
