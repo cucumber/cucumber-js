@@ -10,6 +10,7 @@ import { getSupportCodeLibrary } from './support'
 import { Console } from 'console'
 import { mergeEnvironment } from './environment'
 import { getFilteredPicklesAndErrors } from './gherkin'
+import { initializePlugins } from './plugins'
 
 /**
  * Execute a Cucumber test run.
@@ -47,10 +48,13 @@ export async function runCucumber(
           requireModules: supportCoordinates.requireModules,
         })
 
+  const plugins = await initializePlugins(configuration, environment)
+
   const eventBroadcaster = new EventEmitter()
   if (onMessage) {
     eventBroadcaster.on('envelope', onMessage)
   }
+  eventBroadcaster.on('envelope', (value) => plugins.emit('message', value))
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
 
   let formatterStreamError = false
@@ -90,6 +94,7 @@ export async function runCucumber(
       )
     })
     await cleanup()
+    await plugins.cleanup()
     return {
       success: false,
       support: supportCodeLibrary,
@@ -117,6 +122,7 @@ export async function runCucumber(
   })
   const success = await runtime.start()
   await cleanup()
+  await plugins.cleanup()
 
   return {
     success: success && !formatterStreamError,

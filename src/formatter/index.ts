@@ -6,7 +6,6 @@ import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { WriteStream as FsWriteStream } from 'fs'
 import { WriteStream as TtyWriteStream } from 'tty'
 import { EventEmitter } from 'events'
-import HttpStream from './http_stream'
 import { valueOrDefault } from '../value_checker'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 
@@ -23,11 +22,7 @@ export interface FormatOptions {
   [customKey: string]: any
 }
 
-export type IFormatterStream =
-  | FsWriteStream
-  | TtyWriteStream
-  | PassThrough
-  | HttpStream
+export type IFormatterStream = FsWriteStream | TtyWriteStream | PassThrough
 export type IFormatterLogFn = (buffer: string | Uint8Array) => void
 export type IFormatterCleanupFn = () => Promise<any>
 
