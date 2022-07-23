@@ -1,8 +1,9 @@
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import { FormatOptions, IFormatterStream } from '../formatter'
+import { FormatOptions } from '../formatter'
 import { PickleOrder } from '../models/pickle_order'
 import { IRuntimeOptions } from '../runtime'
 import { IConfiguration } from '../configuration'
+import { Writable } from 'stream'
 
 /**
  * @public
@@ -158,11 +159,11 @@ export interface IRunEnvironment {
   /**
    * Writable stream where the test run's main output is written (defaults to `process.stdout` if omitted).
    */
-  stdout?: IFormatterStream
+  stdout?: Writable
   /**
    * Writable stream where the test run's warning/error output is written (defaults to `process.stderr` if omitted).
    */
-  stderr?: IFormatterStream
+  stderr?: Writable
   /**
    * Environment variables (defaults to `process.env` if omitted).
    */

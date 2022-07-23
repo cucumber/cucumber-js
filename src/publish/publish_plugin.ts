@@ -1,7 +1,6 @@
 import { Plugin } from '../plugin'
 import HttpStream from './http_stream'
 import { Writable } from 'stream'
-import { IFormatterStream } from '../formatter'
 import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
 import stripAnsi from 'strip-ansi'
@@ -44,7 +43,7 @@ including ANSI escapes, so if our stderr stream doesn't support those we need to
 strip them back out. Ideally we should get structured data from the service and
 compose the console message on this end.
  */
-function sanitisePublishOutput(raw: string, stderr: IFormatterStream) {
+function sanitisePublishOutput(raw: string, stderr: Writable) {
   if (!supportsColor(stderr) && hasAnsi(raw)) {
     return stripAnsi(raw)
   }
