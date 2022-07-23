@@ -1,15 +1,21 @@
-import { Envelope } from '@cucumber/messages'
-import { Plugin, PluginCleanup } from './types'
+import { Plugin, PluginCleanup, PluginEvents } from './types'
 import { IRunEnvironment, IRunOptions } from '../api'
 
+type HandlerRegistry = {
+  [K in keyof PluginEvents]: Array<(value: PluginEvents[K]) => void>
+}
+
 export class PluginManager {
-  private handlers: Array<(value: Envelope) => void> = []
+  private handlers: HandlerRegistry = { message: [] }
   private cleanupFns: PluginCleanup[] = []
 
   constructor(private pluginFns: Plugin[]) {}
 
-  private async register(event: 'message', handler: (value: Envelope) => void) {
-    this.handlers.push(handler)
+  private async register<K extends keyof PluginEvents>(
+    event: K,
+    handler: (value: PluginEvents[K]) => void
+  ) {
+    this.handlers[event].push(handler)
   }
 
   async init(
@@ -30,8 +36,8 @@ export class PluginManager {
     }
   }
 
-  emit(event: 'message', value: Envelope): void {
-    this.handlers.forEach((handler) => handler(value))
+  emit<K extends keyof PluginEvents>(event: K, value: PluginEvents[K]): void {
+    this.handlers[event].forEach((handler) => handler(value))
   }
 
   async cleanup(): Promise<void> {
