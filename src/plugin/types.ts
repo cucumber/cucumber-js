@@ -5,6 +5,7 @@ export type PluginCleanup = () => any | void | Promise<any | void>
 
 interface PluginContext {
   on: (event: 'message', handler: (value: Envelope) => void) => void
+  logger: Console
   configuration: IRunOptions
   environment: IRunEnvironment
 }

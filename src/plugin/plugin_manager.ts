@@ -12,10 +12,15 @@ export class PluginManager {
     this.handlers.push(handler)
   }
 
-  async init(configuration: IRunOptions, environment: IRunEnvironment) {
+  async init(
+    logger: Console,
+    configuration: IRunOptions,
+    environment: IRunEnvironment
+  ) {
     for (const pluginFn of this.pluginFns) {
       const cleanupFn = await pluginFn({
         on: this.register.bind(this),
+        logger,
         configuration,
         environment,
       })

@@ -10,6 +10,7 @@ const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://messages.cucumber.io/api/reports'
 
 export const publishPlugin: Plugin = async ({
   on,
+  logger,
   configuration,
   environment,
 }) => {
@@ -33,6 +34,7 @@ export const publishPlugin: Plugin = async ({
     },
   })
   stream.pipe(readerStream)
+  stream.on('error', (error: Error) => logger.error(error.message))
   on('message', (value) => stream.write(JSON.stringify(value) + '\n'))
   return () => stream.end()
 }

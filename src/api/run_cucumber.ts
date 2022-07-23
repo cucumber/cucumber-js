@@ -26,7 +26,7 @@ export async function runCucumber(
   onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
   const { cwd, stdout, stderr, env } = mergeEnvironment(environment)
-  const logger = new Console(stdout, stderr)
+  const logger = new Console(stderr)
   const newId = IdGenerator.uuid()
 
   const supportCoordinates =
@@ -48,7 +48,7 @@ export async function runCucumber(
           requireModules: supportCoordinates.requireModules,
         })
 
-  const plugins = await initializePlugins(configuration, environment)
+  const plugins = await initializePlugins(logger, configuration, environment)
 
   const eventBroadcaster = new EventEmitter()
   if (onMessage) {
