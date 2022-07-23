@@ -1,11 +1,12 @@
 import { Plugin } from '../plugin'
-import { DEFAULT_CUCUMBER_PUBLISH_URL } from '../formatter/publish'
 import HttpStream from './http_stream'
 import { Writable } from 'stream'
 import { IFormatterStream } from '../formatter'
 import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
 import stripAnsi from 'strip-ansi'
+
+const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://messages.cucumber.io/api/reports'
 
 export const publishPlugin: Plugin = async ({
   on,
