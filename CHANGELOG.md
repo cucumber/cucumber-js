@@ -1,4 +1,3 @@
-
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -9,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [8.5.1] - 2022-07-28
 ### Fixed
 - Ensure durations are integers in JSON formatter ([#2094](https://github.com/cucumber/cucumber-js/pull/2094))
 
@@ -1415,7 +1416,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.5.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.5.1...HEAD
+[8.5.1]: https://github.com/cucumber/cucumber-js/compare/v8.5.0...v8.5.1
 [8.5.0]: https://github.com/cucumber/cucumber-js/compare/v8.4.0...v8.5.0
 [8.4.0]: https://github.com/cucumber/cucumber-js/compare/v8.3.1...v8.4.0
 [8.3.1]: https://github.com/cucumber/cucumber-js/compare/v8.3.0...v8.3.1
