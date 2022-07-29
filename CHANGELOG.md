@@ -9,6 +9,10 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [Unreleased]
 
+## [8.5.1] - 2022-07-28
+### Fixed
+- Ensure durations are integers in JSON formatter ([#2094](https://github.com/cucumber/cucumber-js/pull/2094))
+
 ## [8.5.0] - 2022-07-19
 ### Changed
 - Reworked handling for invalid installations ([#2089](https://github.com/cucumber/cucumber-js/pull/2089))
@@ -1412,7 +1416,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.5.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.5.1...HEAD
+[8.5.1]: https://github.com/cucumber/cucumber-js/compare/v8.5.0...v8.5.1
 [8.5.0]: https://github.com/cucumber/cucumber-js/compare/v8.4.0...v8.5.0
 [8.4.0]: https://github.com/cucumber/cucumber-js/compare/v8.3.1...v8.4.0
 [8.3.1]: https://github.com/cucumber/cucumber-js/compare/v8.3.0...v8.3.1

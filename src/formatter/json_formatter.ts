@@ -8,6 +8,7 @@ import {
 import { ITestCaseAttempt } from './helpers/event_data_collector'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { parseStepArgument } from '../step_arguments'
+import { durationToNanoseconds } from './helpers/duration_helpers'
 
 const { getGherkinStepMap, getGherkinScenarioMap } = GherkinDocumentParser
 
@@ -280,10 +281,7 @@ export default class JsonFormatter extends Formatter {
       status: messages.TestStepResultStatus[status].toLowerCase(),
     }
     if (doesHaveValue(testStepResult.duration)) {
-      data.result.duration =
-        messages.TimeConversion.durationToMilliseconds(
-          testStepResult.duration
-        ) * 1000000
+      data.result.duration = durationToNanoseconds(testStepResult.duration)
     }
     if (
       status === messages.TestStepResultStatus.FAILED &&
