@@ -257,7 +257,7 @@
     "@types/sinonjs__fake-timers": "8.1.2",
     "@types/stream-buffers": "3.0.4",
     "@types/tmp": "0.2.3",
-    "@types/verror": "1.10.5",
+    "@types/verror": "1.10.6",
     "@typescript-eslint/eslint-plugin": "5.30.3",
     "@typescript-eslint/parser": "5.30.3",
     "chai": "4.3.6",
