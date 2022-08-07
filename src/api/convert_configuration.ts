@@ -3,6 +3,7 @@ import {
   isTruthyString,
   OptionSplitter,
 } from '../configuration'
+import { IPublishConfig } from '../formatter/publish'
 import { IRunConfiguration } from './types'
 
 export async function convertConfiguration(
@@ -63,7 +64,7 @@ function convertFormats(
 function makePublishConfig(
   flatConfiguration: IConfiguration,
   env: NodeJS.ProcessEnv
-): any {
+): IPublishConfig | false {
   const enabled = isPublishing(flatConfiguration, env)
   if (!enabled) {
     return false
