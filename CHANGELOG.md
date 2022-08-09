@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- `IPublishConfig` interface for use in return type of `makePublishConfig` instead of explicit `any` ([#1648](https://github.com/cucumber/cucumber-js/pull/2106))
 
 ## [8.5.1] - 2022-07-28
 ### Fixed

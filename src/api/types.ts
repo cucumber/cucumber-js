@@ -3,6 +3,7 @@ import { FormatOptions, IFormatterStream } from '../formatter'
 import { PickleOrder } from '../models/pickle_order'
 import { IRuntimeOptions } from '../runtime'
 import { IConfiguration } from '../configuration'
+import { IPublishConfig } from '../formatter/publish'
 
 /**
  * @public
@@ -109,12 +110,7 @@ export interface IRunOptionsRuntime extends IRuntimeOptions {
 export interface IRunOptionsFormats {
   stdout: string
   files: Record<string, string>
-  publish:
-    | {
-        url?: string
-        token?: string
-      }
-    | false
+  publish: IPublishConfig | false
   options: FormatOptions
 }
 
