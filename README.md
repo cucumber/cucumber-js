@@ -87,6 +87,7 @@ If you learn best by example, we have [a repo with several example projects](htt
 
 The following documentation is for `main`, which might contain some unreleased features. See [documentation for older versions](./docs/older_versions.md) if you need it.
 
+* [Installation](./docs/installation.md)
 * [CLI](./docs/cli.md)
 * [Configuration](./docs/configuration.md)
 * Support Code

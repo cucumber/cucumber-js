@@ -38,7 +38,7 @@ export default class Cli {
   }
 
   async run(): Promise<ICliRunResult> {
-    await validateInstall(this.cwd)
+    await validateInstall()
     const { options, configuration: argvConfiguration } = ArgvParser.parse(
       this.argv
     )

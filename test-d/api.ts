@@ -1,5 +1,8 @@
-import { loadConfiguration, runCucumber } from '../api'
+import { IConfiguration, loadConfiguration, runCucumber } from '../api'
 
 // should allow api usage from /api subpath
-const { runConfiguration } = await loadConfiguration()
+const provided: Partial<IConfiguration> = {
+  paths: ['features/foo.feature'],
+}
+const { runConfiguration } = await loadConfiguration({ provided })
 const { success } = await runCucumber(runConfiguration)

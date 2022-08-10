@@ -56,20 +56,28 @@ export class PickleLineFilter {
 
   constructor(cwd: string, featurePaths: string[] = []) {
     this.featureUriToLinesMapping = this.getFeatureUriToLinesMapping({
+      cwd,
       featurePaths,
     })
   }
 
   getFeatureUriToLinesMapping({
+    cwd,
     featurePaths,
   }: {
+    cwd: string
     featurePaths: string[]
   }): Record<string, number[]> {
     const mapping: Record<string, number[]> = {}
     featurePaths.forEach((featurePath) => {
       const match = FEATURE_LINENUM_REGEXP.exec(featurePath)
       if (doesHaveValue(match)) {
-        const uri = path.normalize(match[1])
+        let uri = match[1]
+        if (path.isAbsolute(uri)) {
+          uri = path.relative(cwd, uri)
+        } else {
+          uri = path.normalize(uri)
+        }
         const linesExpression = match[2]
         if (doesHaveValue(linesExpression)) {
           if (doesNotHaveValue(mapping[uri])) {

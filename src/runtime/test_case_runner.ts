@@ -181,6 +181,7 @@ export default class TestCaseRunner {
 
   async run(): Promise<messages.TestStepResultStatus> {
     for (let attempt = 0; attempt < this.maxAttempts; attempt++) {
+      const moreAttemptsRemaining = attempt + 1 < this.maxAttempts
       this.currentTestCaseStartedId = this.newId()
       const testCaseStarted: messages.Envelope = {
         testCaseStarted: {
@@ -203,6 +204,9 @@ export default class TestCaseRunner {
             }
             if (didWeRunStepsYet) {
               hookParameter.result = this.getWorstStepResult()
+              hookParameter.willBeRetried =
+                this.getWorstStepResult().status ===
+                  messages.TestStepResultStatus.FAILED && moreAttemptsRemaining
             }
             return await this.runHook(
               findHookDefinition(testStep.hookId, this.supportCodeLibrary),
@@ -219,9 +223,10 @@ export default class TestCaseRunner {
           }
         })
       }
+
       const willBeRetried =
         this.getWorstStepResult().status ===
-          messages.TestStepResultStatus.FAILED && attempt + 1 < this.maxAttempts
+          messages.TestStepResultStatus.FAILED && moreAttemptsRemaining
       const testCaseFinished: messages.Envelope = {
         testCaseFinished: {
           testCaseStartedId: this.currentTestCaseStartedId,

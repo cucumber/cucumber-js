@@ -1,5 +1,8 @@
 import chalk from 'chalk'
+import { ColorInfo, supportsColor } from 'supports-color'
 import { TestStepResultStatus } from '@cucumber/messages'
+import { Writable } from 'stream'
+import { doesNotHaveValue } from '../value_checker'
 
 export type IColorFn = (text: string) => string
 
@@ -13,26 +16,32 @@ export interface IColorFns {
   errorStack: IColorFn
 }
 
-export default function getColorFns(enabled: boolean): IColorFns {
-  if (enabled) {
+export default function getColorFns(
+  stream: Writable,
+  env: NodeJS.ProcessEnv,
+  enabled?: boolean
+): IColorFns {
+  const support: ColorInfo = detectSupport(stream, env, enabled)
+  if (support) {
+    const chalkInstance = new chalk.Instance(support)
     return {
       forStatus(status: TestStepResultStatus) {
         return {
-          AMBIGUOUS: chalk.red.bind(chalk),
-          FAILED: chalk.red.bind(chalk),
-          PASSED: chalk.green.bind(chalk),
-          PENDING: chalk.yellow.bind(chalk),
-          SKIPPED: chalk.cyan.bind(chalk),
-          UNDEFINED: chalk.yellow.bind(chalk),
-          UNKNOWN: chalk.yellow.bind(chalk),
+          AMBIGUOUS: chalkInstance.red.bind(chalk),
+          FAILED: chalkInstance.red.bind(chalk),
+          PASSED: chalkInstance.green.bind(chalk),
+          PENDING: chalkInstance.yellow.bind(chalk),
+          SKIPPED: chalkInstance.cyan.bind(chalk),
+          UNDEFINED: chalkInstance.yellow.bind(chalk),
+          UNKNOWN: chalkInstance.yellow.bind(chalk),
         }[status]
       },
-      location: chalk.gray.bind(chalk),
-      tag: chalk.cyan.bind(chalk),
-      diffAdded: chalk.green.bind(chalk),
-      diffRemoved: chalk.red.bind(chalk),
-      errorMessage: chalk.red.bind(chalk),
-      errorStack: chalk.grey.bind(chalk),
+      location: chalkInstance.gray.bind(chalk),
+      tag: chalkInstance.cyan.bind(chalk),
+      diffAdded: chalkInstance.green.bind(chalk),
+      diffRemoved: chalkInstance.red.bind(chalk),
+      errorMessage: chalkInstance.red.bind(chalk),
+      errorStack: chalkInstance.grey.bind(chalk),
     }
   } else {
     return {
@@ -47,4 +56,17 @@ export default function getColorFns(enabled: boolean): IColorFns {
       errorStack: (x) => x,
     }
   }
+}
+
+function detectSupport(
+  stream: Writable,
+  env: NodeJS.ProcessEnv,
+  enabled?: boolean
+): ColorInfo {
+  const support: ColorInfo = supportsColor(stream)
+  // if we find FORCE_COLOR, we can let the supports-color library handle that
+  if ('FORCE_COLOR' in env || doesNotHaveValue(enabled)) {
+    return support
+  }
+  return enabled ? support || { level: 1 } : false
 }

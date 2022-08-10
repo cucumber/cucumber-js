@@ -15,6 +15,7 @@ export interface ITestCaseHookParameter {
   gherkinDocument: messages.GherkinDocument
   pickle: messages.Pickle
   result?: messages.TestStepResult
+  willBeRetried?: boolean
   testCaseStartedId: string
 }
 
@@ -35,7 +36,7 @@ export type TestCaseHookFunction<WorldType> = (
 export type TestStepHookFunction<WorldType> = (
   this: WorldType,
   arg: ITestStepHookParameter
-) => void
+) => any | Promise<any>
 
 export type TestStepFunction<WorldType> = (
   this: WorldType,
@@ -70,17 +71,19 @@ export interface IParameterTypeDefinition<T> {
   preferForRegexpMatch?: boolean
 }
 
+export type IDefineStep = (<WorldType = IWorld>(
+  pattern: DefineStepPattern,
+  code: TestStepFunction<WorldType>
+) => void) &
+  (<WorldType = IWorld>(
+    pattern: DefineStepPattern,
+    options: IDefineStepOptions,
+    code: TestStepFunction<WorldType>
+  ) => void)
+
 export interface IDefineSupportCodeMethods {
   defineParameterType: (options: IParameterTypeDefinition<any>) => void
-  defineStep: (<WorldType = IWorld>(
-    pattern: DefineStepPattern,
-    code: TestStepFunction<WorldType>
-  ) => void) &
-    (<WorldType = IWorld>(
-      pattern: DefineStepPattern,
-      options: IDefineStepOptions,
-      code: TestStepFunction<WorldType>
-    ) => void)
+  defineStep: IDefineStep
   setDefaultTimeout: (milliseconds: number) => void
   setDefinitionFunctionWrapper: (fn: Function) => void
   setParallelCanAssign: (fn: ParallelAssignmentValidator) => void
@@ -131,33 +134,9 @@ export interface IDefineSupportCodeMethods {
     ) => void)
   BeforeAll: ((code: Function) => void) &
     ((options: IDefineTestRunHookOptions, code: Function) => void)
-  Given: (<WorldType = IWorld>(
-    pattern: DefineStepPattern,
-    code: TestStepFunction<WorldType>
-  ) => void) &
-    (<WorldType = IWorld>(
-      pattern: DefineStepPattern,
-      options: IDefineStepOptions,
-      code: TestStepFunction<WorldType>
-    ) => void)
-  Then: (<WorldType = IWorld>(
-    pattern: DefineStepPattern,
-    code: TestStepFunction<WorldType>
-  ) => void) &
-    (<WorldType = IWorld>(
-      pattern: DefineStepPattern,
-      options: IDefineStepOptions,
-      code: TestStepFunction<WorldType>
-    ) => void)
-  When: (<WorldType = IWorld>(
-    pattern: DefineStepPattern,
-    code: TestStepFunction<WorldType>
-  ) => void) &
-    (<WorldType = IWorld>(
-      pattern: DefineStepPattern,
-      options: IDefineStepOptions,
-      code: TestStepFunction<WorldType>
-    ) => void)
+  Given: IDefineStep
+  Then: IDefineStep
+  When: IDefineStep
 }
 
 export interface ISupportCodeCoordinates {

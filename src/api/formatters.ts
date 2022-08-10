@@ -3,7 +3,6 @@ import { EventEmitter } from 'events'
 import { EventDataCollector } from '../formatter/helpers'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { promisify } from 'util'
-import { doesNotHaveValue } from '../value_checker'
 import { WriteStream as TtyWriteStream } from 'tty'
 import FormatterBuilder from '../formatter/builder'
 import fs from 'mz/fs'
@@ -11,11 +10,16 @@ import path from 'path'
 import { DEFAULT_CUCUMBER_PUBLISH_URL } from '../formatter/publish'
 import HttpStream from '../formatter/http_stream'
 import { Writable } from 'stream'
+import { supportsColor } from 'supports-color'
 import { IRunOptionsFormats } from './types'
+import hasAnsi from 'has-ansi'
+import stripAnsi from 'strip-ansi'
 
 export async function initializeFormatters({
+  env,
   cwd,
   stdout,
+  stderr,
   logger,
   onStreamError,
   eventBroadcaster,
@@ -23,8 +27,10 @@ export async function initializeFormatters({
   configuration,
   supportCodeLibrary,
 }: {
+  env: NodeJS.ProcessEnv
   cwd: string
   stdout: IFormatterStream
+  stderr: IFormatterStream
   logger: Console
   onStreamError: () => void
   eventBroadcaster: EventEmitter
@@ -42,6 +48,7 @@ export async function initializeFormatters({
       onStreamError()
     })
     const typeOptions = {
+      env,
       cwd,
       eventBroadcaster,
       eventDataCollector,
@@ -53,11 +60,6 @@ export async function initializeFormatters({
           ? async () => await Promise.resolve()
           : promisify<any>(stream.end.bind(stream)),
       supportCodeLibrary,
-    }
-    if (doesNotHaveValue(configuration.options.colorsEnabled)) {
-      typeOptions.parsedArgvOptions.colorsEnabled = (
-        stream as TtyWriteStream
-      ).isTTY
     }
     if (type === 'progress-bar' && !(stream as TtyWriteStream).isTTY) {
       logger.warn(
@@ -91,7 +93,7 @@ export async function initializeFormatters({
     const readerStream = new Writable({
       objectMode: true,
       write: function (responseBody: string, encoding, writeCallback) {
-        logger.error(responseBody)
+        logger.error(sanitisePublishOutput(responseBody, stderr))
         writeCallback()
       },
     })
@@ -102,4 +104,17 @@ export async function initializeFormatters({
   return async function () {
     await Promise.all(formatters.map(async (f) => await f.finished()))
   }
+}
+
+/*
+This is because the Cucumber Reports service returns a pre-formatted console message
+including ANSI escapes, so if our stderr stream doesn't support those we need to
+strip them back out. Ideally we should get structured data from the service and
+compose the console message on this end.
+ */
+function sanitisePublishOutput(raw: string, stderr: IFormatterStream) {
+  if (!supportsColor(stderr) && hasAnsi(raw)) {
+    return stripAnsi(raw)
+  }
+  return raw
 }

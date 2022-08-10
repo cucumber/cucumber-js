@@ -360,6 +360,44 @@ describe('TestCaseRunner', () => {
         expect(envelopes).to.eql(expected)
         expect(result).to.eql(messages.TestStepResultStatus.PASSED)
       })
+
+      it('should provide the correctly willBeRetried value to the hook', async () => {
+        // Arrange
+        const hookStub = sinon.stub()
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, After }) => {
+            let willPass = false
+            Given('a step', function () {
+              if (willPass) {
+                return
+              }
+              willPass = true
+              throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+            })
+            After(hookStub)
+          }
+        )
+        const {
+          gherkinDocument,
+          pickles: [pickle],
+        } = await parse({
+          data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
+          uri: 'a.feature',
+        })
+
+        // Act
+        await testRunner({
+          gherkinDocument,
+          pickle,
+          retries: 1,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(hookStub).to.have.been.calledTwice()
+        expect(hookStub.args[0][0].willBeRetried).to.eq(true)
+        expect(hookStub.args[1][0].willBeRetried).to.eq(false)
+      })
     })
 
     describe('with a step when skipping', () => {

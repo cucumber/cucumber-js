@@ -24,6 +24,12 @@ The base `Formatter` does very little aside from saving some of the options on t
 
 If there is any other formatter functionality you would like access to, please create an [issue](https://github.com/cucumber/cucumber-js).
 
+## Testing
+
+To test your formatter with a good degree of confidence, you probably want to run Cucumber with a predefined set of features and support code, and then assert that the output from your formatter is what you'd expect.
+
+We take this approach with the official [`@cucumber/pretty-formatter`](https://github.com/cucumber/cucumber-js-pretty-formatter), using the [JavaScript API](./javascript_api.md) to run Cucumber in-process and grabbing the result from its `stdout` to compare against a fixture file. Take a look at [the `run`  helper function](https://github.com/cucumber/cucumber-js-pretty-formatter/blob/main/test/exec.ts#L19) for some hints on how to go about this.
+
 ## Distribution
 
 If you want to share your formatter with other users, [publish it as an npm package](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) and make sure your formatter class is the default export of the entry point defined in `package.json` - that way users will be able to just reference it by the package name when running cucumber-js, once they've added it as a dependency.

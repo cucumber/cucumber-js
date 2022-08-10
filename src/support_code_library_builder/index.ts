@@ -8,6 +8,7 @@ import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { formatLocation } from '../formatter/helpers'
 import validateArguments from './validate_arguments'
+import { deprecate } from 'util'
 import arity from 'util-arity'
 
 import {
@@ -15,7 +16,7 @@ import {
   ParameterTypeRegistry,
   RegularExpression,
 } from '@cucumber/cucumber-expressions'
-import { doesHaveValue } from '../value_checker'
+import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import {
   DefineStepPattern,
   IDefineStepOptions,
@@ -29,14 +30,17 @@ import {
   TestStepHookFunction,
   ParallelAssignmentValidator,
   ISupportCodeCoordinates,
+  IDefineStep,
 } from './types'
 import World from './world'
 import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
+import { GherkinStepKeyword } from '../models/gherkin_step_keyword'
 
 interface IStepDefinitionConfig {
   code: any
   line: number
   options: any
+  keyword: GherkinStepKeyword
   pattern: string | RegExp
   uri: string
 }
@@ -96,8 +100,7 @@ export class SupportCodeLibraryBuilder {
   private parallelCanAssign: ParallelAssignmentValidator
 
   constructor() {
-    const defineStep = this.defineStep.bind(this)
-    this.methods = {
+    const methods: IDefineSupportCodeMethods = {
       After: this.defineTestCaseHook(
         () => this.afterTestCaseHookDefinitionConfigs
       ),
@@ -117,8 +120,11 @@ export class SupportCodeLibraryBuilder {
         () => this.beforeTestStepHookDefinitionConfigs
       ),
       defineParameterType: this.defineParameterType.bind(this),
-      defineStep,
-      Given: defineStep,
+      defineStep: deprecate(
+        this.defineStep('Unknown', () => this.stepDefinitionConfigs),
+        '`defineStep` is deprecated, use `Given`, `When` or `Then` instead; see https://github.com/cucumber/cucumber-js/issues/2043'
+      ),
+      Given: this.defineStep('Given', () => this.stepDefinitionConfigs),
       setDefaultTimeout: (milliseconds) => {
         this.defaultTimeout = milliseconds
       },
@@ -131,9 +137,35 @@ export class SupportCodeLibraryBuilder {
       setParallelCanAssign: (fn: ParallelAssignmentValidator): void => {
         this.parallelCanAssign = fn
       },
-      Then: defineStep,
-      When: defineStep,
+      Then: this.defineStep('Then', () => this.stepDefinitionConfigs),
+      When: this.defineStep('When', () => this.stepDefinitionConfigs),
     }
+    const checkInstall = (method: string) => {
+      if (doesNotHaveValue(this.cwd)) {
+        throw new Error(
+          `
+          You're calling functions (e.g. "${method}") on an instance of Cucumber that isn't running.
+          This means you have an invalid installation, mostly likely due to:
+          - Cucumber being installed globally
+          - A project structure where your support code is depending on a different instance of Cucumber
+          Either way, you'll need to address this in order for Cucumber to work.
+          See https://github.com/cucumber/cucumber-js/blob/main/docs/installation.md#invalid-installations
+          `
+        )
+      }
+    }
+    this.methods = new Proxy(methods, {
+      get(
+        target: IDefineSupportCodeMethods,
+        method: keyof IDefineSupportCodeMethods
+      ): any {
+        return (...args: any[]) => {
+          checkInstall(method)
+          // @ts-expect-error difficult to type this correctly
+          return target[method](...args)
+        }
+      },
+    })
   }
 
   defineParameterType(options: IParameterTypeDefinition<any>): void {
@@ -142,27 +174,33 @@ export class SupportCodeLibraryBuilder {
   }
 
   defineStep(
-    pattern: DefineStepPattern,
-    options: IDefineStepOptions | Function,
-    code?: Function
-  ): void {
-    if (typeof options === 'function') {
-      code = options
-      options = {}
+    keyword: GherkinStepKeyword,
+    getCollection: () => IStepDefinitionConfig[]
+  ): IDefineStep {
+    return (
+      pattern: DefineStepPattern,
+      options: IDefineStepOptions | Function,
+      code?: Function
+    ) => {
+      if (typeof options === 'function') {
+        code = options
+        options = {}
+      }
+      const { line, uri } = getDefinitionLineAndUri(this.cwd)
+      validateArguments({
+        args: { code, pattern, options },
+        fnName: 'defineStep',
+        location: formatLocation({ line, uri }),
+      })
+      getCollection().push({
+        code,
+        line,
+        options,
+        keyword,
+        pattern,
+        uri,
+      })
     }
-    const { line, uri } = getDefinitionLineAndUri(this.cwd)
-    validateArguments({
-      args: { code, pattern, options },
-      fnName: 'defineStep',
-      location: formatLocation({ line, uri }),
-    })
-    this.stepDefinitionConfigs.push({
-      code,
-      line,
-      options,
-      pattern,
-      uri,
-    })
   }
 
   defineTestCaseHook(
@@ -345,7 +383,7 @@ export class SupportCodeLibraryBuilder {
     const stepDefinitions: StepDefinition[] = []
     const undefinedParameterTypes: messages.UndefinedParameterType[] = []
     this.stepDefinitionConfigs.forEach(
-      ({ code, line, options, pattern, uri }, index) => {
+      ({ code, line, options, keyword, pattern, uri }, index) => {
         let expression
         if (typeof pattern === 'string') {
           try {
@@ -381,6 +419,7 @@ export class SupportCodeLibraryBuilder {
             id: canonicalIds ? canonicalIds[index] : this.newId(),
             line,
             options,
+            keyword,
             pattern,
             unwrappedCode: code,
             uri,

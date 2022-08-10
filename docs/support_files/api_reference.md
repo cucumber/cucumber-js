@@ -38,7 +38,7 @@ Defines a hook which is run after each scenario.
   * `tags`: String tag expression used to apply this hook to only specific scenarios. See [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/) for more information.
   * `timeout`: A hook-specific timeout, to override the default timeout.
 * `fn`: A function, defined as follows:
-  * The first argument will be an object of the form `{pickle, gherkinDocument, result, testCaseStartedId}`
+  * The first argument will be an object of the form `{pickle, gherkinDocument, result, willBeRetried, testCaseStartedId}`
     * The pickle object comes from the [gherkin](https://github.com/cucumber/cucumber/tree/gherkin/v15.0.2/gherkin) library. See `testdata/good/*.pickles.ndjson` for examples of its structure.
   * When using the asynchronous callback interface, have one final argument for the callback function.
 
@@ -104,11 +104,11 @@ Multiple `BeforeStep` hooks are executed in the order that they are defined.
 
 ---
 
-#### `defineStep(pattern[, options], fn)`
+#### `Given(pattern[, options], fn)`
 
-Defines a step.
+Define a "Given" step.
 
-Aliases: `Given`, `When`, `Then`.
+Aliases: `defineStep` (deprecated and will be removed in a future release; use the appropriate Given/When/Then keyword to define your step).
 
 * `pattern`: A regex or string pattern to match against a gherkin step.
 * `options`: An object with the following keys:
@@ -118,12 +118,6 @@ Aliases: `Given`, `When`, `Then`.
   - Should have one argument for each capture in the regular expression.
   - May have an additional argument if the gherkin step has a docstring or data table.
   - When using the asynchronous callback interface, have one final argument for the callback function.
-
----
-
-#### `Given(pattern[, options], fn)`
-
-Alias of `defineStep`.
 
 ---
 
@@ -199,10 +193,10 @@ function World({attach, parameters}) {
 
 #### `Then(pattern[, options], fn)`
 
-Alias of `defineStep`.
+Define a "Then" step. Same interface as `Given`
 
 ---
 
 #### `When(pattern[, options], fn)`
 
-Alias of `defineStep`.
+Define a "When" step. Same interface as `Given`

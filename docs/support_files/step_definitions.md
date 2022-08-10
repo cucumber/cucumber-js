@@ -9,7 +9,7 @@ Cucumber supports two types of expressions:
 
 ## Cucumber expressions
 
-[Full docs.](https://cucumber.io/docs/cucumber/cucumber-expressions/)
+[Full docs.](https://github.com/cucumber/cucumber-expressions#readme)
 
 Gherkin:
 ```gherkin

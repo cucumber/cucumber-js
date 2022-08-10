@@ -145,6 +145,7 @@ describe('helpers', () => {
             line: 9,
             options: {},
             uri: 'features/support/cukes.js',
+            keyword: 'Given',
             pattern: 'I have {int} cukes in my belly',
             expression: new CucumberExpression(
               'I have {int} cukes in my belly',
@@ -183,6 +184,7 @@ describe('helpers', () => {
             line: 9,
             options: {},
             uri: 'features/support/cukes.js',
+            keyword: 'Given',
             pattern: /I have (\d+) cukes in my belly/,
             expression: new RegularExpression(
               /I have (\d+) cukes in my belly/,

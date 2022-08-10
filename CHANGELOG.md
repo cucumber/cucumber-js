@@ -8,7 +8,56 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
-### Fixed
+### Added
+- `IPublishConfig` interface for use in return type of `makePublishConfig` instead of explicit `any` ([#1648](https://github.com/cucumber/cucumber-js/pull/2106))
+
+## [8.5.1] - 2022-07-28
+### Fixed
+- Ensure durations are integers in JSON formatter ([#2094](https://github.com/cucumber/cucumber-js/pull/2094))
+
+## [8.5.0] - 2022-07-19
+### Changed
+- Reworked handling for invalid installations ([#2089](https://github.com/cucumber/cucumber-js/pull/2089))
+
+## [8.4.0] - 2022-06-29
+### Fixed
+- Fix issues with using absolute paths for features ([#2063](https://github.com/cucumber/cucumber-js/pull/2063))
+
+## [8.3.1] - 2022-06-21
+### Fixed
+- Export `IConfiguration` type on API entry point ([#2064](https://github.com/cucumber/cucumber-js/pull/2064))
+
+## [8.3.0] - 2022-06-11
+### Added
+- Add `willBeRetried` to the parameter passed to `After` hook functions ([#2045](https://github.com/cucumber/cucumber-js/pull/2045))
+
+### Changed
+- `defineStep` is now deprecated and will eventually be removed; use the appropriate Given/When/Then keyword to define your step ([#2044](https://github.com/cucumber/cucumber-js/pull/2044))
+
+### Fixed
+- Prevent outputting ANSI escapes to `stderr` if it can't display them ([#2035](https://github.com/cucumber/cucumber-js/pull/2035))
+
+## [8.2.2] - 2022-05-27
+### Changed
+- Use latest HTML formatter with better handling for scenario outlines
+
+## [8.2.1] - 2022-05-14
+### Fixed
+- Fix return type of step hook function to allow async functions ([#2038](https://github.com/cucumber/cucumber-js/pull/2038))
+
+## [8.2.0] - 2022-05-05
+### Changed
+- Fix issues with colored output, support `FORCE_COLOR` environment variable as an override ([#2026](https://github.com/cucumber/cucumber-js/pull/2026))
+
+## [8.1.2] - 2022-04-22
+### Added
+- Explicit support for Node.js 18 ([#2007](https://github.com/cucumber/cucumber-js/pull/2007))
+
+### Fixed
+- Re-add `cucumber-js` bin file for backwards compatibility ([#2008](https://github.com/cucumber/cucumber-js/pull/2008))
+
+## [8.1.1] - 2022-04-20
+### Fixed
 - Capture dependency on `@cucumber/message-streams` to satisfy peer requirement from `@cucumber/gherkin-streams` ([#2006](https://github.com/cucumber/cucumber-js/pull/2006))
 
 ## [8.1.0] - 2022-04-20
@@ -23,9 +72,6 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 - Correctly escape backslashes in generated expressions for snippets ([#1324](https://github.com/cucumber/cucumber-js/issues/1324) [#1995](https://github.com/cucumber/cucumber-js/pull/1995))
 
 ## [8.0.0] - 2022-04-06
-
-Read the [blog post](https://cucumber.io/blog/open-source/announcing-cucumber-js-8-0-0/) and the [upgrading instructions](https://github.com/cucumber/cucumber-js/blob/main/UPGRADING.md#800).
-
 ### Changed
 - Emit a warning when using a Node.js version that's untested with Cucumber ([#1959](https://github.com/cucumber/cucumber-js/pull/1959))
 
@@ -1372,7 +1418,17 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.1.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.5.1...HEAD
+[8.5.1]: https://github.com/cucumber/cucumber-js/compare/v8.5.0...v8.5.1
+[8.5.0]: https://github.com/cucumber/cucumber-js/compare/v8.4.0...v8.5.0
+[8.4.0]: https://github.com/cucumber/cucumber-js/compare/v8.3.1...v8.4.0
+[8.3.1]: https://github.com/cucumber/cucumber-js/compare/v8.3.0...v8.3.1
+[8.3.0]: https://github.com/cucumber/cucumber-js/compare/v8.2.2...v8.3.0
+[8.2.2]: https://github.com/cucumber/cucumber-js/compare/v8.2.1...v8.2.2
+[8.2.1]: https://github.com/cucumber/cucumber-js/compare/v8.2.0...v8.2.1
+[8.2.0]: https://github.com/cucumber/cucumber-js/compare/v8.1.2...v8.2.0
+[8.1.2]: https://github.com/cucumber/cucumber-js/compare/v8.1.1...v8.1.2
+[8.1.1]: https://github.com/cucumber/cucumber-js/compare/v8.1.0...v8.1.1
 [8.1.0]: https://github.com/cucumber/cucumber-js/compare/v8.0.0...v8.1.0
 [8.0.0]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.3...v8.0.0
 [8.0.0-rc.3]: https://github.com/cucumber/cucumber-js/compare/v8.0.0-rc.2...v8.0.0-rc.3
