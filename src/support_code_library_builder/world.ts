@@ -1,4 +1,5 @@
 import { ICreateAttachment, ICreateLog } from '../runtime/attachment_manager'
+import { cloneDeep } from 'lodash'
 
 export type TestRunContext = any
 
@@ -34,6 +35,6 @@ export default class World<ParametersType = any>
     this.attach = attach
     this.log = log
     this.parameters = parameters
-    this.testRunContext = testRunContext
+    this.testRunContext = cloneDeep(testRunContext)
   }
 }
