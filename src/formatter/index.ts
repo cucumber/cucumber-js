@@ -20,6 +20,11 @@ export interface FormatOptions {
   [customKey: string]: any
 }
 
+export interface IPublishConfig {
+  url: string
+  token: string
+}
+
 export type IFormatterStream = Writable
 export type IFormatterLogFn = (buffer: string | Uint8Array) => void
 export type IFormatterCleanupFn = () => Promise<any>

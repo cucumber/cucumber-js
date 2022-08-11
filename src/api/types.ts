@@ -1,5 +1,5 @@
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import { FormatOptions } from '../formatter'
+import { FormatOptions, IPublishConfig } from '../formatter'
 import { PickleOrder } from '../models/pickle_order'
 import { IRuntimeOptions } from '../runtime'
 import { IConfiguration } from '../configuration'
@@ -110,12 +110,7 @@ export interface IRunOptionsRuntime extends IRuntimeOptions {
 export interface IRunOptionsFormats {
   stdout: string
   files: Record<string, string>
-  publish:
-    | {
-        url?: string
-        token?: string
-      }
-    | false
+  publish: IPublishConfig | false
   options: FormatOptions
 }
 
