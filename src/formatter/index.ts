@@ -1,12 +1,9 @@
 import { IColorFns } from './get_color_fns'
 import { EventDataCollector } from './helpers'
 import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
-import { PassThrough, Writable as WritableStream } from 'stream'
+import { Writable } from 'stream'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import { WriteStream as FsWriteStream } from 'fs'
-import { WriteStream as TtyWriteStream } from 'tty'
 import { EventEmitter } from 'events'
-import HttpStream from './http_stream'
 import { valueOrDefault } from '../value_checker'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 
@@ -23,11 +20,12 @@ export interface FormatOptions {
   [customKey: string]: any
 }
 
-export type IFormatterStream =
-  | FsWriteStream
-  | TtyWriteStream
-  | PassThrough
-  | HttpStream
+export interface IPublishConfig {
+  url: string
+  token: string
+}
+
+export type IFormatterStream = Writable
 export type IFormatterLogFn = (buffer: string | Uint8Array) => void
 export type IFormatterCleanupFn = () => Promise<any>
 
@@ -39,7 +37,7 @@ export interface IFormatterOptions {
   log: IFormatterLogFn
   parsedArgvOptions: FormatOptions
   snippetBuilder: StepDefinitionSnippetBuilder
-  stream: WritableStream
+  stream: Writable
   cleanup: IFormatterCleanupFn
   supportCodeLibrary: ISupportCodeLibrary
 }
@@ -50,7 +48,7 @@ export default class Formatter {
   protected eventDataCollector: EventDataCollector
   protected log: IFormatterLogFn
   protected snippetBuilder: StepDefinitionSnippetBuilder
-  protected stream: WritableStream
+  protected stream: Writable
   protected supportCodeLibrary: ISupportCodeLibrary
   protected printAttachments: boolean
   private readonly cleanup: IFormatterCleanupFn

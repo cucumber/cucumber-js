@@ -10,6 +10,7 @@ import { getSupportCodeLibrary } from './support'
 import { Console } from 'console'
 import { mergeEnvironment } from './environment'
 import { getFilteredPicklesAndErrors } from './gherkin'
+import { initializePlugins } from './plugins'
 
 /**
  * Execute a Cucumber test run.
@@ -25,7 +26,7 @@ export async function runCucumber(
   onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
   const { cwd, stdout, stderr, env } = mergeEnvironment(environment)
-  const logger = new Console(stdout, stderr)
+  const logger = new Console(stderr)
   const newId = IdGenerator.uuid()
 
   const supportCoordinates =
@@ -47,14 +48,17 @@ export async function runCucumber(
           requireModules: supportCoordinates.requireModules,
         })
 
+  const plugins = await initializePlugins(logger, configuration, environment)
+
   const eventBroadcaster = new EventEmitter()
   if (onMessage) {
     eventBroadcaster.on('envelope', onMessage)
   }
+  eventBroadcaster.on('envelope', (value) => plugins.emit('message', value))
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
 
   let formatterStreamError = false
-  const cleanup = await initializeFormatters({
+  const cleanupFormatters = await initializeFormatters({
     env,
     cwd,
     stdout,
@@ -89,7 +93,8 @@ export async function runCucumber(
         `Parse error in "${parseError.source.uri}" ${parseError.message}`
       )
     })
-    await cleanup()
+    await cleanupFormatters()
+    await plugins.cleanup()
     return {
       success: false,
       support: supportCodeLibrary,
@@ -116,7 +121,8 @@ export async function runCucumber(
     options: configuration.runtime,
   })
   const success = await runtime.start()
-  await cleanup()
+  await cleanupFormatters()
+  await plugins.cleanup()
 
   return {
     success: success && !formatterStreamError,

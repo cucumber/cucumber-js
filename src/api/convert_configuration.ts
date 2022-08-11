@@ -3,7 +3,7 @@ import {
   isTruthyString,
   OptionSplitter,
 } from '../configuration'
-import { IPublishConfig } from '../formatter/publish'
+import { IPublishConfig } from '../formatter'
 import { IRunConfiguration } from './types'
 
 export async function convertConfiguration(
