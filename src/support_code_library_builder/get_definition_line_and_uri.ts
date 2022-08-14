@@ -1,10 +1,8 @@
 import path from 'path'
-import { wrapCallSite } from '@cspotcode/source-map-support'
-import stackChain from 'stack-chain'
+import errorStackParser, { StackFrame } from 'error-stack-parser'
 import { isFileNameInCucumber } from '../stack_trace_filter'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import { ILineAndUri } from '../types'
-import CallSite = NodeJS.CallSite
 
 export function getDefinitionLineAndUri(
   cwd: string,
@@ -12,11 +10,10 @@ export function getDefinitionLineAndUri(
 ): ILineAndUri {
   let line: number
   let uri: string
-
-  const stackframes: CallSite[] = stackChain.callSite().map(wrapCallSite)
+  const stackframes: StackFrame[] = errorStackParser.parse(new Error())
   const stackframe = stackframes.find(
-    (frame: CallSite) =>
-      frame.getFileName() !== __filename && !isExcluded(frame.getFileName())
+    (frame: StackFrame) =>
+      frame.fileName !== __filename && !isExcluded(frame.fileName)
   )
   if (stackframe != null) {
     line = stackframe.getLineNumber()

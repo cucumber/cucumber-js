@@ -195,7 +195,6 @@
     "node": "12 || 14 || 16 || 17 || 18"
   },
   "dependencies": {
-    "@cspotcode/source-map-support": "^0.8.0",
     "@cucumber/ci-environment": "9.1.0",
     "@cucumber/cucumber-expressions": "16.0.0",
     "@cucumber/gherkin": "24.0.0",
@@ -212,6 +211,7 @@
     "commander": "^9.0.0",
     "duration": "^0.2.2",
     "durations": "^3.4.2",
+    "error-stack-parser": "^2.1.4",
     "figures": "^3.2.0",
     "glob": "^7.1.6",
     "has-ansi": "^4.0.1",
