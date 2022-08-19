@@ -95,9 +95,6 @@ export default class Runtime implements IRuntime {
   }
 
   async start(): Promise<boolean> {
-    if (this.options.filterStacktraces) {
-      this.stackTraceFilter.filter()
-    }
     const testRunStarted: messages.Envelope = {
       testRunStarted: {
         timestamp: this.stopwatch.timestamp(),
@@ -132,9 +129,6 @@ export default class Runtime implements IRuntime {
       },
     }
     this.eventBroadcaster.emit('envelope', testRunFinished)
-    if (this.options.filterStacktraces) {
-      this.stackTraceFilter.unfilter()
-    }
     return this.success
   }
 }

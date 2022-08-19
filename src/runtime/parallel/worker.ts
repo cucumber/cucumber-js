@@ -81,9 +81,6 @@ export default class Worker {
 
     this.worldParameters = options.worldParameters
     this.filterStacktraces = filterStacktraces
-    if (this.filterStacktraces) {
-      this.stackTraceFilter.filter()
-    }
     this.runTestRunHooks = makeRunTestRunHooks(
       options.dryRun,
       this.supportCodeLibrary.defaultTimeout,
@@ -102,9 +99,6 @@ export default class Worker {
       this.supportCodeLibrary.afterTestRunHookDefinitions,
       'an AfterAll'
     )
-    if (this.filterStacktraces) {
-      this.stackTraceFilter.unfilter()
-    }
     this.exit(0)
   }
 
