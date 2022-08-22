@@ -1,7 +1,6 @@
-import stackChain from 'stack-chain'
 import path from 'path'
 import { valueOrDefault } from './value_checker'
-import CallSite = NodeJS.CallSite
+import { StackFrame } from 'error-stack-parser'
 
 const projectRootPath = path.join(__dirname, '..')
 const projectChildDirs = ['src', 'lib', 'node_modules']
@@ -12,42 +11,28 @@ export function isFileNameInCucumber(fileName: string): boolean {
   )
 }
 
-export default class StackTraceFilter {
-  private currentFilter: CallSite[]
-
-  filter(): void {
-    this.currentFilter = stackChain.filter.attach(
-      (_err: any, frames: CallSite[]) => {
-        if (this.isErrorInCucumber(frames)) {
-          return frames
-        }
-        const index = frames.findIndex((x) => this.isFrameInCucumber(x))
-        if (index === -1) {
-          return frames
-        }
-        return frames.slice(0, index)
-      }
-    )
+export function filterStackTrace(frames: StackFrame[]): StackFrame[] {
+  if (isErrorInCucumber(frames)) {
+    return frames
   }
-
-  isErrorInCucumber(frames: CallSite[]): boolean {
-    const filteredFrames = frames.filter((x) => !this.isFrameInNode(x))
-    return (
-      filteredFrames.length > 0 && this.isFrameInCucumber(filteredFrames[0])
-    )
+  const index = frames.findIndex((x) => isFrameInCucumber(x))
+  if (index === -1) {
+    return frames
   }
+  return frames.slice(0, index)
+}
 
-  isFrameInCucumber(frame: CallSite): boolean {
-    const fileName = valueOrDefault(frame.getFileName(), '')
-    return isFileNameInCucumber(fileName)
-  }
+function isErrorInCucumber(frames: StackFrame[]): boolean {
+  const filteredFrames = frames.filter((x) => !isFrameInNode(x))
+  return filteredFrames.length > 0 && isFrameInCucumber(filteredFrames[0])
+}
 
-  isFrameInNode(frame: CallSite): boolean {
-    const fileName = valueOrDefault(frame.getFileName(), '')
-    return !fileName.includes(path.sep)
-  }
+function isFrameInCucumber(frame: StackFrame): boolean {
+  const fileName = valueOrDefault(frame.getFileName(), '')
+  return isFileNameInCucumber(fileName)
+}
 
-  unfilter(): void {
-    stackChain.filter.deattach(this.currentFilter)
-  }
+function isFrameInNode(frame: StackFrame): boolean {
+  const fileName = valueOrDefault(frame.getFileName(), '')
+  return !fileName.includes(path.sep)
 }

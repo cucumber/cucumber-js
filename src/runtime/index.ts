@@ -2,7 +2,6 @@ import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../formatter/helpers'
-import StackTraceFilter from '../stack_trace_filter'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { assembleTestCases } from './assemble_test_cases'
 import { retriesForPickle, shouldCauseFailure } from './helpers'
@@ -40,7 +39,6 @@ export default class Runtime implements IRuntime {
   private readonly newId: IdGenerator.NewId
   private readonly options: IRuntimeOptions
   private readonly pickleIds: string[]
-  private readonly stackTraceFilter: StackTraceFilter
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private success: boolean
   private runTestRunHooks: RunsTestRunHooks
@@ -59,7 +57,6 @@ export default class Runtime implements IRuntime {
     this.newId = newId
     this.options = options
     this.pickleIds = pickleIds
-    this.stackTraceFilter = new StackTraceFilter()
     this.supportCodeLibrary = supportCodeLibrary
     this.success = true
     this.runTestRunHooks = makeRunTestRunHooks(
@@ -85,6 +82,7 @@ export default class Runtime implements IRuntime {
       testCase,
       retries,
       skip,
+      filterStackTraces: this.options.filterStacktraces,
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.options.worldParameters,
     })

@@ -3,7 +3,6 @@ import { IdGenerator } from '@cucumber/messages'
 import { duration } from 'durations'
 import { EventEmitter } from 'events'
 import { pathToFileURL } from 'url'
-import StackTraceFilter from '../../stack_trace_filter'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
@@ -33,7 +32,6 @@ export default class Worker {
   private filterStacktraces: boolean
   private readonly newId: IdGenerator.NewId
   private readonly sendMessage: IMessageSender
-  private readonly stackTraceFilter: StackTraceFilter
   private supportCodeLibrary: ISupportCodeLibrary
   private worldParameters: any
   private runTestRunHooks: RunsTestRunHooks
@@ -55,7 +53,6 @@ export default class Worker {
     this.exit = exit
     this.sendMessage = sendMessage
     this.eventBroadcaster = new EventEmitter()
-    this.stackTraceFilter = new StackTraceFilter()
     this.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
       this.sendMessage({
         jsonEnvelope: JSON.stringify(envelope),
@@ -131,6 +128,7 @@ export default class Worker {
       testCase,
       retries,
       skip,
+      filterStackTraces: this.filterStacktraces,
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.worldParameters,
     })
