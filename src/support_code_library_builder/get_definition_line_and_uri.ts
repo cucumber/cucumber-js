@@ -1,6 +1,6 @@
 import path from 'path'
 import errorStackParser, { StackFrame } from 'error-stack-parser'
-import { isFileNameInCucumber } from '../stack_traces'
+import { isFileNameInCucumber } from '../filter_stack_trace'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import { ILineAndUri } from '../types'
 

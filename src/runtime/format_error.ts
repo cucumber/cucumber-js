@@ -1,6 +1,6 @@
 import { format } from 'assertion-error-formatter'
 import errorStackParser from 'error-stack-parser'
-import { filterStackTrace } from '../stack_traces'
+import { filterStackTrace } from '../filter_stack_trace'
 
 export function formatError(error: Error, filterStackTraces: boolean): string {
   let filteredStack: string
