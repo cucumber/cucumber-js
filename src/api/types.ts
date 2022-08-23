@@ -163,6 +163,10 @@ export interface IRunEnvironment {
    * Environment variables (defaults to `process.env` if omitted).
    */
   env?: NodeJS.ProcessEnv
+  /**
+   * Whether debug logging is enabled.
+   */
+  debug?: boolean
 }
 
 /**
