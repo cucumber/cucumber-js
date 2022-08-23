@@ -28,7 +28,6 @@ export async function runCucumber(
 ): Promise<IRunResult> {
   const { cwd, stdout, stderr, env, debug } = mergeEnvironment(environment)
   const logger: ILogger = new Logger(stderr, debug)
-  logger.debug.log('Debug works!')
 
   const newId = IdGenerator.uuid()
 

@@ -26,12 +26,12 @@ Feature: debug
     When I run cucumber-js
     Then the error output contains the text:
     """
-    Debug works!
+    No configuration file found
     """
 
   Scenario:
     When I run cucumber-js
     Then the error output does not contain the text:
     """
-    Debug works!
+    No configuration file found
     """
