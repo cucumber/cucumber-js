@@ -99,6 +99,7 @@ The following documentation is for `main`, which might contain some unreleased f
   * [Timeouts](./docs/support_files/timeouts.md)
   * [World](./docs/support_files/world.md)
 * Guides
+  * [Debugging](./docs/debugging.md)
   * [Dry run](./docs/dry_run.md)
   * [ES Modules](./docs/esm.md)
   * [Failing fast](./docs/fail_fast.md)
