@@ -7,9 +7,10 @@ import {
 } from './types'
 import { resolvePaths } from './paths'
 import { IdGenerator } from '@cucumber/messages'
-import { Console } from 'console'
 import { mergeEnvironment } from './environment'
 import { getFilteredPicklesAndErrors } from './gherkin'
+import { Logger } from './logger'
+import { ILogger } from '../logger'
 
 /**
  * Load and parse features, produce a filtered and ordered test plan and/or parse errors.
@@ -22,8 +23,8 @@ export async function loadSources(
   coordinates: ISourcesCoordinates,
   environment: IRunEnvironment = {}
 ): Promise<ILoadSourcesResult> {
-  const { cwd, stderr } = mergeEnvironment(environment)
-  const logger = new Console(stderr)
+  const { cwd, stderr, debug } = mergeEnvironment(environment)
+  const logger: ILogger = new Logger(stderr, debug)
   const newId = IdGenerator.uuid()
   const { unexpandedFeaturePaths, featurePaths } = await resolvePaths(
     cwd,

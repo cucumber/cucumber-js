@@ -1,5 +1,6 @@
 import { Plugin, PluginCleanup, PluginEvents } from './types'
 import { IRunEnvironment, IRunOptions } from '../api'
+import { ILogger } from '../logger'
 
 type HandlerRegistry = {
   [K in keyof PluginEvents]: Array<(value: PluginEvents[K]) => void>
@@ -19,7 +20,7 @@ export class PluginManager {
   }
 
   async init(
-    logger: Console,
+    logger: ILogger,
     configuration: IRunOptions,
     environment: IRunEnvironment
   ) {

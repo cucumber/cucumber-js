@@ -3,6 +3,7 @@ import { IFormatterStream } from '../formatter'
 import { loadConfiguration, runCucumber } from '../api'
 import { getKeywords, getLanguages } from './i18n'
 import { validateInstall } from './install_validator'
+import debug from 'debug'
 
 export interface ICliRunResult {
   shouldAdvertisePublish: boolean
@@ -63,6 +64,7 @@ export default class Cli {
       stdout: this.stdout,
       stderr: this.stderr,
       env: this.env,
+      debug: debug.enabled('cucumber'),
     }
     const { useConfiguration: configuration, runConfiguration } =
       await loadConfiguration(

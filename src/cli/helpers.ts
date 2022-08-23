@@ -15,6 +15,7 @@ import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { PickleOrder } from '../models/pickle_order'
 import { builtinParameterTypes } from '../support_code_library_builder'
 import { version } from '../version'
+import { ILogger } from '../logger'
 
 interface IParseGherkinMessageStreamRequest {
   cwd?: string
@@ -70,7 +71,7 @@ export async function parseGherkinMessageStream({
 export function orderPickles<T = string>(
   pickleIds: T[],
   order: PickleOrder,
-  logger: Console
+  logger: Pick<ILogger, 'warn'>
 ): void {
   const [type, seed] = OptionSplitter.split(order)
   switch (type) {
