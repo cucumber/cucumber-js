@@ -35,7 +35,7 @@ export async function loadConfiguration(
     logger.debug('No configuration file found')
   }
   const profileConfiguration = configFile
-    ? await fromFile(cwd, configFile, options.profiles)
+    ? await fromFile(logger, cwd, configFile, options.profiles)
     : {}
   const original = mergeConfigurations(
     DEFAULT_CONFIGURATION,
