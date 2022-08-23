@@ -10,7 +10,7 @@ import { getSupportCodeLibrary } from './support'
 import { mergeEnvironment } from './environment'
 import { getFilteredPicklesAndErrors } from './gherkin'
 import { initializePlugins } from './plugins'
-import { Logger } from './logger'
+import { ConsoleLogger } from './console_logger'
 import { ILogger } from '../logger'
 
 /**
@@ -27,7 +27,7 @@ export async function runCucumber(
   onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
   const { cwd, stdout, stderr, env, debug } = mergeEnvironment(environment)
-  const logger: ILogger = new Logger(stderr, debug)
+  const logger: ILogger = new ConsoleLogger(stderr, debug)
 
   const newId = IdGenerator.uuid()
 
@@ -37,7 +37,7 @@ export async function runCucumber(
       : configuration.support
 
   const { unexpandedFeaturePaths, featurePaths, requirePaths, importPaths } =
-    await resolvePaths(cwd, configuration.sources, supportCoordinates)
+    await resolvePaths(logger, cwd, configuration.sources, supportCoordinates)
 
   const supportCodeLibrary =
     'World' in configuration.support

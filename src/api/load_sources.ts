@@ -9,7 +9,7 @@ import { resolvePaths } from './paths'
 import { IdGenerator } from '@cucumber/messages'
 import { mergeEnvironment } from './environment'
 import { getFilteredPicklesAndErrors } from './gherkin'
-import { Logger } from './logger'
+import { ConsoleLogger } from './console_logger'
 import { ILogger } from '../logger'
 
 /**
@@ -24,9 +24,10 @@ export async function loadSources(
   environment: IRunEnvironment = {}
 ): Promise<ILoadSourcesResult> {
   const { cwd, stderr, debug } = mergeEnvironment(environment)
-  const logger: ILogger = new Logger(stderr, debug)
+  const logger: ILogger = new ConsoleLogger(stderr, debug)
   const newId = IdGenerator.uuid()
   const { unexpandedFeaturePaths, featurePaths } = await resolvePaths(
+    logger,
     cwd,
     coordinates
   )

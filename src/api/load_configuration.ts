@@ -13,7 +13,7 @@ import { validateConfiguration } from '../configuration/validate_configuration'
 import { convertConfiguration } from './convert_configuration'
 import { mergeEnvironment } from './environment'
 import { ILogger } from '../logger'
-import { Logger } from './logger'
+import { ConsoleLogger } from './console_logger'
 
 /**
  * Load user-authored configuration to be used in a test run.
@@ -27,12 +27,12 @@ export async function loadConfiguration(
   environment: IRunEnvironment = {}
 ): Promise<IResolvedConfiguration> {
   const { cwd, stderr, env, debug } = mergeEnvironment(environment)
-  const logger: ILogger = new Logger(stderr, debug)
+  const logger: ILogger = new ConsoleLogger(stderr, debug)
   const configFile = options.file ?? locateFile(cwd)
   if (configFile) {
-    logger.debug.log(`Configuration will be loaded from "${configFile}"`)
+    logger.debug(`Configuration will be loaded from "${configFile}"`)
   } else {
-    logger.debug.log('No configuration file found')
+    logger.debug('No configuration file found')
   }
   const profileConfiguration = configFile
     ? await fromFile(cwd, configFile, options.profiles)
@@ -42,7 +42,7 @@ export async function loadConfiguration(
     profileConfiguration,
     options.provided
   )
-  logger.debug.log('Resolved configuration:', original)
+  logger.debug('Resolved configuration:', original)
   validateConfiguration(original)
   const runnable = await convertConfiguration(original, env)
   return {
