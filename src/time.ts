@@ -1,9 +1,16 @@
 import { performance } from 'perf_hooks'
 import * as messages from '@cucumber/messages'
+import { FakeClock, GlobalTimers, TimerId } from '@sinonjs/fake-timers'
 
 let previousTimestamp: number
 
-const methods: any = {
+interface IMethods extends GlobalTimers<TimerId> {
+  beginTiming: () => void
+  endTiming: () => number
+  performance: FakeClock<TimerId>['performance']
+}
+
+const methods: Partial<IMethods> = {
   beginTiming() {
     previousTimestamp = getTimestamp()
   },
@@ -44,7 +51,7 @@ export async function wrapPromiseWithTimeout<T>(
   timeoutInMilliseconds: number,
   timeoutMessage: string = ''
 ): Promise<T> {
-  let timeoutId: NodeJS.Timeout
+  let timeoutId: TimerId
   if (timeoutMessage === '') {
     timeoutMessage = `Action did not complete within ${timeoutInMilliseconds} milliseconds`
   }
