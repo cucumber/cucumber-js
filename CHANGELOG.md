@@ -12,6 +12,9 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 - `IMethods` interface for use in `getTimestamp`, `durationBetweenTimestamps`, and `wrapPromiseWithTimeout` functions and `methods` in `time` module instead of explicit `any` ([#2111](https://github.com/cucumber/cucumber-js/pull/2111))
 - `IPublishConfig` interface for use in return type of `makePublishConfig` instead of explicit `any` ([#2106](https://github.com/cucumber/cucumber-js/pull/2106))
 
+### Fixed
+- Add override to ensure `ansi-regex` version is `^5.0.1` ([#2114](https://github.com/cucumber/cucumber-js/pull/2114))
+
 ## [8.5.1] - 2022-07-28
 ### Fixed
 - Ensure durations are integers in JSON formatter ([#2094](https://github.com/cucumber/cucumber-js/pull/2094))
