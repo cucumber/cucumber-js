@@ -10,8 +10,6 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ## [Unreleased]
 ### Added
 - `IMethods` interface for use in `getTimestamp`, `durationBetweenTimestamps`, and `wrapPromiseWithTimeout` functions and `methods` in `time` module instead of explicit `any` ([#2111](https://github.com/cucumber/cucumber-js/pull/2111))
-
-### Added
 - `IPublishConfig` interface for use in return type of `makePublishConfig` instead of explicit `any` ([#2106](https://github.com/cucumber/cucumber-js/pull/2106))
 
 ## [8.5.1] - 2022-07-28
