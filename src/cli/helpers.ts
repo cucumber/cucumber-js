@@ -71,7 +71,7 @@ export async function parseGherkinMessageStream({
 export function orderPickles<T = string>(
   pickleIds: T[],
   order: PickleOrder,
-  logger: Pick<ILogger, 'warn'>
+  logger: ILogger
 ): void {
   const [type, seed] = OptionSplitter.split(order)
   switch (type) {
