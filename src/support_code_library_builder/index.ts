@@ -8,7 +8,6 @@ import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { formatLocation } from '../formatter/helpers'
 import validateArguments from './validate_arguments'
-import { deprecate } from 'util'
 import arity from 'util-arity'
 
 import {

@@ -1,3 +1,4 @@
+import * as cliHelpers from './cli/helpers'
 import * as formatterHelpers from './formatter/helpers'
 import * as parallelCanAssignHelpers from './support_code_library_builder/parallel_can_assign_helpers'
 import supportCodeLibraryBuilder from './support_code_library_builder'
@@ -6,7 +7,6 @@ import { deprecate } from 'util'
 
 // Top level
 export { default as Cli } from './cli'
-export { parseGherkinMessageStream } from './cli/helpers'
 export { default as PickleFilter } from './pickle_filter'
 export {
   default as Runtime,
@@ -64,9 +64,16 @@ export { wrapPromiseWithTimeout } from './time'
 
 // Deprecated
 /**
- * @deprecated use `Given`, `When` or `Then` instead; see <https://github.com/cucumber/cucumber-js/issues/2043>
+ * @deprecated use `Given`, `When` or `Then` instead; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
  */
 export const defineStep = deprecate(
   methods.defineStep,
-  '`defineStep` is deprecated, use `Given`, `When` or `Then` instead; see https://github.com/cucumber/cucumber-js/issues/2043'
+  '`defineStep` is deprecated, use `Given`, `When` or `Then` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
+)
+/**
+ * @deprecated use `loadSources` instead; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
+ */
+export const parseGherkinMessageStream = deprecate(
+  cliHelpers.parseGherkinMessageStream,
+  '`parseGherkinMessageStream` is deprecated, use `loadSources` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
 )

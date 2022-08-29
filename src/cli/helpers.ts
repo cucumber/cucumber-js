@@ -28,8 +28,6 @@ interface IParseGherkinMessageStreamRequest {
 /**
  * Process a stream of envelopes from Gherkin and resolve to an array of filtered, ordered pickle Ids
  *
- * @deprecated use `loadSources` instead
- *
  * @param eventBroadcaster
  * @param eventDataCollector
  * @param gherkinMessageStream
