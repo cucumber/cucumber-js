@@ -2,6 +2,7 @@ import * as formatterHelpers from './formatter/helpers'
 import * as parallelCanAssignHelpers from './support_code_library_builder/parallel_can_assign_helpers'
 import supportCodeLibraryBuilder from './support_code_library_builder'
 import * as messages from '@cucumber/messages'
+import { deprecate } from 'util'
 
 // Top level
 export { default as Cli } from './cli'
@@ -38,10 +39,6 @@ export const Before = methods.Before
 export const BeforeAll = methods.BeforeAll
 export const BeforeStep = methods.BeforeStep
 export const defineParameterType = methods.defineParameterType
-/**
- * @deprecated use `Given`, `When` or `Then` instead; see <https://github.com/cucumber/cucumber-js/issues/2043>
- */
-export const defineStep = methods.defineStep
 export const Given = methods.Given
 export const setDefaultTimeout = methods.setDefaultTimeout
 export const setDefinitionFunctionWrapper = methods.setDefinitionFunctionWrapper
@@ -64,3 +61,12 @@ export const Status = messages.TestStepResultStatus
 
 // Time helpers
 export { wrapPromiseWithTimeout } from './time'
+
+// Deprecated
+/**
+ * @deprecated use `Given`, `When` or `Then` instead; see <https://github.com/cucumber/cucumber-js/issues/2043>
+ */
+export const defineStep = deprecate(
+  methods.defineStep,
+  '`defineStep` is deprecated, use `Given`, `When` or `Then` instead; see https://github.com/cucumber/cucumber-js/issues/2043'
+)

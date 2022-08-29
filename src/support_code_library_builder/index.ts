@@ -120,10 +120,7 @@ export class SupportCodeLibraryBuilder {
         () => this.beforeTestStepHookDefinitionConfigs
       ),
       defineParameterType: this.defineParameterType.bind(this),
-      defineStep: deprecate(
-        this.defineStep('Unknown', () => this.stepDefinitionConfigs),
-        '`defineStep` is deprecated, use `Given`, `When` or `Then` instead; see https://github.com/cucumber/cucumber-js/issues/2043'
-      ),
+      defineStep: this.defineStep('Unknown', () => this.stepDefinitionConfigs),
       Given: this.defineStep('Given', () => this.stepDefinitionConfigs),
       setDefaultTimeout: (milliseconds) => {
         this.defaultTimeout = milliseconds
