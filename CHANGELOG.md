@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Add new JUnit formatter ([#2121](https://github.com/cucumber/cucumber-js/pull/2121))
 
 ## [8.5.2] - 2022-08-24
 ### Added
