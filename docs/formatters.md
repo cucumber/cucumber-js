@@ -103,6 +103,10 @@ Outputs details of the test run in the legacy JSON format.
 
 *Note: this formatter is in maintenance mode and won't have new features added to it. Where you need a structured data representation of your test run, it's best to use the `message` formatter. Tools that rely on this formatter will continue to work, but are encouraged to migrate to consume the `message` output instead.*
 
+### `junit`
+
+The JUnit formatter produces a XML based JUnit report.
+
 ### `snippets`
 
 The Snippets Formatter doesn't output anything regarding the test run; it just prints [Snippets to implement any undefined steps](./snippets.md). This is useful when you want to quickly zero in on the steps you have to implement and grab the snippet code for them in one go.
