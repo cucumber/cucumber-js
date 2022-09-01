@@ -212,7 +212,7 @@
     "commander": "^9.0.0",
     "duration": "^0.2.2",
     "durations": "^3.4.2",
-    "figures": "^3.2.0",
+    "figures": "^5.0.0",
     "glob": "^7.1.6",
     "has-ansi": "^4.0.1",
     "indent-string": "^4.0.0",
