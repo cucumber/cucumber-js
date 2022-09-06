@@ -1,4 +1,9 @@
-import { Envelope, TestStepResultStatus, IdGenerator } from '@cucumber/messages'
+import {
+  Envelope,
+  TestStepResultStatus,
+  IdGenerator,
+  Pickle,
+} from '@cucumber/messages'
 import fs from 'mz/fs'
 import path from 'path'
 import { reindent } from 'reindent-template-literals'
@@ -112,6 +117,40 @@ describe('runCucumber', () => {
           (envelope) => envelope.testRunFinished.success === true
         )
       ).to.be.true()
+    })
+  })
+
+  describe('runtime tests filtering', () => {
+    let environment: IRunEnvironment
+    beforeEach(async () => {
+      environment = await setupEnvironment()
+    })
+    afterEach(async () => teardownEnvironment(environment))
+
+    it('skips the matched test', async () => {
+      const messages: Envelope[] = []
+      const { runConfiguration } = await loadConfiguration({}, environment)
+      await runCucumber(
+        {
+          ...runConfiguration,
+          runtime: {
+            ...runConfiguration.runtime,
+            exclude: (pickle: Pickle) => pickle.name === 'one',
+          },
+        },
+        environment,
+        (envelope) => messages.push(envelope)
+      )
+
+      const testStepFinishedEnvelopes = messages.filter(
+        (envelope) => envelope.testStepFinished
+      )
+      const testRunFinishedEnvelopes = messages.filter(
+        (envelope) => envelope.testRunFinished
+      )
+
+      expect(testStepFinishedEnvelopes).to.have.length(0)
+      expect(testRunFinishedEnvelopes).to.have.length(1)
     })
   })
 })
