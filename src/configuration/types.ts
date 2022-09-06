@@ -16,6 +16,8 @@ export interface IConfiguration {
   name: string[]
   order: PickleOrder
   paths: string[]
+  include?: RuntimePickleFilter
+  exclude?: RuntimePickleFilter
   parallel: number
   publish: boolean
   publishQuiet: boolean

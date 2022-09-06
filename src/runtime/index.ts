@@ -4,6 +4,7 @@ import { EventEmitter } from 'events'
 import { EventDataCollector } from '../formatter/helpers'
 import StackTraceFilter from '../stack_trace_filter'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { RuntimePickleFilter } from '../configuration/types'
 import { assembleTestCases } from './assemble_test_cases'
 import { retriesForPickle, shouldCauseFailure } from './helpers'
 import { makeRunTestRunHooks, RunsTestRunHooks } from './run_test_run_hooks'
@@ -31,6 +32,8 @@ export interface IRuntimeOptions {
   retryTagFilter: string
   strict: boolean
   worldParameters: any
+  include?: RuntimePickleFilter
+  exclude?: RuntimePickleFilter
 }
 
 export default class Runtime implements IRuntime {

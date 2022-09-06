@@ -31,6 +31,8 @@ export async function convertConfiguration(
       retryTagFilter: flatConfiguration.retryTagFilter,
       strict: flatConfiguration.strict,
       worldParameters: flatConfiguration.worldParameters,
+      include: flatConfiguration.include,
+      exclude: flatConfiguration.exclude,
     },
     formats: convertFormats(flatConfiguration, env),
   }
