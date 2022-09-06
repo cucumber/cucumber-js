@@ -30,7 +30,7 @@ export async function getFilteredPicklesAndErrors({
   featurePaths,
   coordinates,
   include = () => true,
-  exclude = () => true,
+  exclude = () => false,
   onEnvelope,
 }: {
   newId: IdGenerator.NewId
@@ -71,8 +71,6 @@ export async function getFilteredPicklesAndErrors({
   })
   const filteredPickles: PickleWithDocument[] = gherkinQuery
     .getPickles()
-    .filter(include)
-    .filter(exclude)
     .filter((pickle) => {
       const gherkinDocument = gherkinQuery
         .getGherkinDocuments()
@@ -92,6 +90,9 @@ export async function getFilteredPicklesAndErrors({
         pickle,
       }
     })
+    .filter(({ pickle }) => include(pickle))
+    .filter(({ pickle }) => !exclude(pickle))
+
   orderPickles(filteredPickles, coordinates.order, logger)
   return {
     filteredPickles,
