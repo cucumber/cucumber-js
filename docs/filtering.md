@@ -35,3 +35,16 @@ You can specify a [Cucumber tag expression](https://docs.cucumber.io/cucumber/ap
 - On the CLI `$ cucumber-js --tags "@foo or @bar"`
 
 This option is repeatable, so you can provide several expressions and they'll be combined with an `and` operator, meaning a scenario needs to match all of them.
+
+## Runtime filters
+
+You can specify runtime filters to exclude or include test cases from the run:
+
+```js
+module.exports = {
+  default: {
+    include: (pickle) => requiredTestsCasesIds.includes(pickle.id),
+    exclude: (pickle) => /specific expression/.test(pickle.name),
+  }
+}
+```
