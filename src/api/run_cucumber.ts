@@ -78,6 +78,8 @@ export async function runCucumber(
       unexpandedFeaturePaths,
       featurePaths,
       coordinates: configuration.sources,
+      include: configuration.runtime.include,
+      exclude: configuration.runtime.exclude,
       onEnvelope: (envelope) => eventBroadcaster.emit('envelope', envelope),
     })
     pickleIds = gherkinResult.filteredPickles.map(({ pickle }) => pickle.id)

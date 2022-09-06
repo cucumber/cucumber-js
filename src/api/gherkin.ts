@@ -13,6 +13,7 @@ import {
 import { Query as GherkinQuery } from '@cucumber/gherkin-utils'
 import PickleFilter from '../pickle_filter'
 import { orderPickles } from '../cli/helpers'
+import { RuntimePickleFilter } from '../configuration/types'
 import { ISourcesCoordinates } from './types'
 
 interface PickleWithDocument {
@@ -28,6 +29,8 @@ export async function getFilteredPicklesAndErrors({
   unexpandedFeaturePaths,
   featurePaths,
   coordinates,
+  include = () => true,
+  exclude = () => true,
   onEnvelope,
 }: {
   newId: IdGenerator.NewId
@@ -36,6 +39,8 @@ export async function getFilteredPicklesAndErrors({
   unexpandedFeaturePaths: string[]
   featurePaths: string[]
   coordinates: ISourcesCoordinates
+  include?: RuntimePickleFilter
+  exclude?: RuntimePickleFilter
   onEnvelope?: (envelope: Envelope) => void
 }): Promise<{
   filteredPickles: PickleWithDocument[]
@@ -66,6 +71,8 @@ export async function getFilteredPicklesAndErrors({
   })
   const filteredPickles: PickleWithDocument[] = gherkinQuery
     .getPickles()
+    .filter(include)
+    .filter(exclude)
     .filter((pickle) => {
       const gherkinDocument = gherkinQuery
         .getGherkinDocuments()
