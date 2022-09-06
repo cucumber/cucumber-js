@@ -1,5 +1,8 @@
+import { Pickle } from '@cucumber/messages'
 import { FormatOptions } from '../formatter'
 import { PickleOrder } from '../models/pickle_order'
+
+export type RuntimePickleFilter = (pickle: Pickle) => boolean
 
 export interface IConfiguration {
   backtrace: boolean
