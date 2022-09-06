@@ -127,7 +127,7 @@ describe('runCucumber', () => {
     })
     afterEach(async () => teardownEnvironment(environment))
 
-    it('skips the matched test', async () => {
+    it('skips the matched test to exclude filter', async () => {
       const messages: Envelope[] = []
       const { runConfiguration } = await loadConfiguration({}, environment)
       await runCucumber(
@@ -136,6 +136,32 @@ describe('runCucumber', () => {
           runtime: {
             ...runConfiguration.runtime,
             exclude: (pickle: Pickle) => pickle.name === 'one',
+          },
+        },
+        environment,
+        (envelope) => messages.push(envelope)
+      )
+
+      const testStepFinishedEnvelopes = messages.filter(
+        (envelope) => envelope.testStepFinished
+      )
+      const testRunFinishedEnvelopes = messages.filter(
+        (envelope) => envelope.testRunFinished
+      )
+
+      expect(testStepFinishedEnvelopes).to.have.length(0)
+      expect(testRunFinishedEnvelopes).to.have.length(1)
+    })
+
+    it('skips the unmatched test to include filter', async () => {
+      const messages: Envelope[] = []
+      const { runConfiguration } = await loadConfiguration({}, environment)
+      await runCucumber(
+        {
+          ...runConfiguration,
+          runtime: {
+            ...runConfiguration.runtime,
+            include: (pickle: Pickle) => pickle.name !== 'one',
           },
         },
         environment,
