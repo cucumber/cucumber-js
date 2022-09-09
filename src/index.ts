@@ -1,3 +1,4 @@
+import * as cliModule from './cli'
 import * as cliHelpers from './cli/helpers'
 import * as formatterHelpers from './formatter/helpers'
 import * as parallelCanAssignHelpers from './support_code_library_builder/parallel_can_assign_helpers'
@@ -6,7 +7,6 @@ import * as messages from '@cucumber/messages'
 import { deprecate } from 'util'
 
 // Top level
-export { default as Cli } from './cli'
 export { default as PickleFilter } from './pickle_filter'
 export {
   default as Runtime,
@@ -63,6 +63,13 @@ export const Status = messages.TestStepResultStatus
 export { wrapPromiseWithTimeout } from './time'
 
 // Deprecated
+/**
+ * @deprecated use `runCucumber` instead; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
+ */
+export const Cli = deprecate(
+  cliModule.default,
+  '`Cli` is deprecated, use `runCucumber` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
+)
 /**
  * @deprecated use `Given`, `When` or `Then` instead; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
  */

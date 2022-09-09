@@ -12,6 +12,14 @@ Assuming a current major version of `N`:
 
 ## Current deprecations
 
+### `Cli`
+
+Deprecated in `8.SOMETHING.SOMETHING`, will be removed in `10.0.0`.
+
+The `Cli` class is used internally to represent an instance of the command-line program invoked via `cucumber-js`. It can be used to run Cucumber programmatically, but is poorly suited for this.
+
+To adapt, pivot to the `runCucumber` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
+
 ### `defineStep`
 
 Deprecated in `8.3.0`, will be removed in `10.0.0`.
