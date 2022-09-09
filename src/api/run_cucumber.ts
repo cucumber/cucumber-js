@@ -26,7 +26,7 @@ export async function runCucumber(
   onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
   const { cwd, stdout, stderr, env } = mergeEnvironment(environment)
-  const logger = new Console(stdout)
+  const logger = new Console(stdout, stderr)
   const newId = IdGenerator.uuid()
 
   const supportCoordinates =
