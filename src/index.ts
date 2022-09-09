@@ -1,13 +1,13 @@
-import * as cliModule from './cli'
+import { default as _Cli } from './cli'
 import * as cliHelpers from './cli/helpers'
 import * as formatterHelpers from './formatter/helpers'
+import { default as _PickleFilter } from './pickle_filter'
 import * as parallelCanAssignHelpers from './support_code_library_builder/parallel_can_assign_helpers'
 import supportCodeLibraryBuilder from './support_code_library_builder'
 import * as messages from '@cucumber/messages'
 import { deprecate } from 'util'
 
 // Top level
-export { default as PickleFilter } from './pickle_filter'
 export {
   default as Runtime,
   INewRuntimeOptions,
@@ -67,7 +67,7 @@ export { wrapPromiseWithTimeout } from './time'
  * @deprecated use `runCucumber` instead; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
  */
 export const Cli = deprecate(
-  cliModule.default,
+  _Cli,
   '`Cli` is deprecated, use `runCucumber` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
 )
 /**
@@ -83,4 +83,11 @@ export const defineStep = deprecate(
 export const parseGherkinMessageStream = deprecate(
   cliHelpers.parseGherkinMessageStream,
   '`parseGherkinMessageStream` is deprecated, use `loadSources` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
+)
+/**
+ * @deprecated use `loadSources` instead; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
+ */
+export const PickleFilter = deprecate(
+  _PickleFilter,
+  '`PickleFilter` is deprecated, use `loadSources` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
 )

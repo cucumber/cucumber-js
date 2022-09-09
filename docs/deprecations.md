@@ -35,3 +35,11 @@ Deprecated in `8.0.0`, will be removed in `10.0.0`.
 `parseGherkinMessageStream` is a way to process a stream of envelopes from Gherkin and resolve to an array of filtered, ordered pickle Ids. Its interface includes internal implementation details from Cucumber which are difficult to assemble.
 
 To adapt, pivot to the `loadSources` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
+
+### `PickleFilter`
+
+Deprecated in `8.SOMETHING.SOMETHING`, will be removed in `10.0.0`.
+
+The `PickleFilter` class is used to provide a filter to the `parseGherkinMessageStream` function above.
+
+To adapt, pivot to the `loadSources` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
