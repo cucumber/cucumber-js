@@ -43,3 +43,7 @@ Deprecated in `8.SOMETHING.SOMETHING`, will be removed in `10.0.0`.
 The `PickleFilter` class is used to provide a filter to the `parseGherkinMessageStream` function above.
 
 To adapt, pivot to the `loadSources` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
+
+## Previous deprecations
+
+For deprecations that have been completed (i.e. the functionality removed), see [UPGRADING.md](../UPGRADING.md).
