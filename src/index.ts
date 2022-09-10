@@ -3,16 +3,12 @@ import * as cliHelpers from './cli/helpers'
 import * as formatterHelpers from './formatter/helpers'
 import { default as _PickleFilter } from './pickle_filter'
 import * as parallelCanAssignHelpers from './support_code_library_builder/parallel_can_assign_helpers'
+import { default as _Runtime } from './runtime'
 import supportCodeLibraryBuilder from './support_code_library_builder'
 import * as messages from '@cucumber/messages'
 import { deprecate } from 'util'
 
 // Top level
-export {
-  default as Runtime,
-  INewRuntimeOptions,
-  IRuntimeOptions,
-} from './runtime'
 export { default as supportCodeLibraryBuilder } from './support_code_library_builder'
 export { default as DataTable } from './models/data_table'
 export { default as TestCaseHookDefinition } from './models/test_case_hook_definition'
@@ -91,3 +87,11 @@ export const PickleFilter = deprecate(
   _PickleFilter,
   '`PickleFilter` is deprecated, use `loadSources` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
 )
+/**
+ * @deprecated use `loadSources` instead; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
+ */
+export const Runtime = deprecate(
+  _Runtime,
+  '`Runtime` is deprecated, use `runCucumber` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
+)
+export { INewRuntimeOptions, IRuntimeOptions } from './runtime'

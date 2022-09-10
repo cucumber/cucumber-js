@@ -44,6 +44,14 @@ The `PickleFilter` class is used to provide a filter to the `parseGherkinMessage
 
 To adapt, pivot to the `loadSources` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
 
+### `Runtime`
+
+Deprecated in `8.SOMETHING.SOMETHING`, will be removed in `10.0.0`.
+
+The `Runtime` class is used internally to represent an instance of the serial test case runner. Its interface includes internal implementation details from Cucumber which are difficult to assemble.
+
+To adapt, pivot to the `runCucumber` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
+
 ## Previous deprecations
 
 For deprecations that have been completed (i.e. the functionality removed), see [UPGRADING.md](../UPGRADING.md).
