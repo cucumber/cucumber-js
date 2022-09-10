@@ -14,7 +14,7 @@ Assuming a current major version of `N`:
 
 ### `Cli`
 
-Deprecated in `8.SOMETHING.SOMETHING`, will be removed in `10.0.0`.
+Deprecated in `8.6.0`, will be removed in `10.0.0`.
 
 The `Cli` class is used internally to represent an instance of the command-line program invoked via `cucumber-js`. It can be used to run Cucumber programmatically, but is poorly suited for this.
 
@@ -38,7 +38,7 @@ To adapt, pivot to the `loadSources` function from the [JavaScript API](./javasc
 
 ### `PickleFilter`
 
-Deprecated in `8.SOMETHING.SOMETHING`, will be removed in `10.0.0`.
+Deprecated in `8.6.0`, will be removed in `10.0.0`.
 
 The `PickleFilter` class is used to provide a filter to the `parseGherkinMessageStream` function above.
 
@@ -46,7 +46,7 @@ To adapt, pivot to the `loadSources` function from the [JavaScript API](./javasc
 
 ### `Runtime`
 
-Deprecated in `8.SOMETHING.SOMETHING`, will be removed in `10.0.0`.
+Deprecated in `8.6.0`, will be removed in `10.0.0`.
 
 The `Runtime` class is used internally to represent an instance of the serial test case runner. Its interface includes internal implementation details from Cucumber which are difficult to assemble.
 
