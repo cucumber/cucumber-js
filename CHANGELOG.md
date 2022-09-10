@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Default `stderr` if not provided to `Cli` constructor ([#2138](https://github.com/cucumber/cucumber-js/pull/2138))
 
 ## [8.5.2] - 2022-08-24
 ### Added
