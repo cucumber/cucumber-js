@@ -68,7 +68,11 @@ export default class HttpStream extends Transform {
                 {},
                 (err2, res2) => {
                   if (doesHaveValue(err2)) return callback(err2)
-                  this.emitErrorUnlessHttp2xx(res2, this.url, this.method)
+                  this.emitErrorUnlessHttp2xx(
+                    res2,
+                    res1.headers.location,
+                    'PUT'
+                  )
                   callback()
                 }
               )
@@ -123,9 +127,14 @@ export default class HttpStream extends Transform {
     }
 
     const allHeaders = { ...headers, ...additionalHttpHeaders }
+    // eslint-disable-next-line no-console
+    console.log('HEADERS:', allHeaders)
+    // eslint-disable-next-line no-console
+    console.log('URL:', url)
     const req = httpx.request(url, {
       method,
       headers: allHeaders,
+      timeout: 10000,
     })
     req.on('error', (err) => this.emit('error', err))
     req.on('response', (res) => {
