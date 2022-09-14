@@ -21,13 +21,13 @@ export default class Cli {
     argv,
     cwd,
     stdout,
-    stderr,
+    stderr = process.stderr,
     env,
   }: {
     argv: string[]
     cwd: string
     stdout: IFormatterStream
-    stderr: IFormatterStream
+    stderr?: IFormatterStream
     env: NodeJS.ProcessEnv
   }) {
     this.argv = argv
