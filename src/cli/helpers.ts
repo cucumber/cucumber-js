@@ -7,7 +7,12 @@ import { OptionSplitter } from '../configuration'
 import { Readable } from 'stream'
 import os from 'os'
 import * as messages from '@cucumber/messages'
-import { IdGenerator } from '@cucumber/messages'
+import {
+  GherkinDocument,
+  IdGenerator,
+  Location,
+  Pickle,
+} from '@cucumber/messages'
 import detectCiEnvironment from '@cucumber/ci-environment'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
@@ -16,12 +21,19 @@ import { PickleOrder } from '../models/pickle_order'
 import { builtinParameterTypes } from '../support_code_library_builder'
 import { version } from '../version'
 
+export interface PickleWithDocument {
+  gherkinDocument: GherkinDocument
+  location: Location
+  pickle: Pickle
+}
+
 interface IParseGherkinMessageStreamRequest {
   cwd?: string
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   gherkinMessageStream: Readable
   order: string
+  unexpandedFeaturePaths?: string[]
   pickleFilter: PickleFilter
 }
 
@@ -34,6 +46,7 @@ interface IParseGherkinMessageStreamRequest {
  * @param eventDataCollector
  * @param gherkinMessageStream
  * @param order
+ * @param unexpandedFeaturePaths
  * @param pickleFilter
  */
 export async function parseGherkinMessageStream({
@@ -41,6 +54,7 @@ export async function parseGherkinMessageStream({
   eventDataCollector,
   gherkinMessageStream,
   order,
+  unexpandedFeaturePaths,
   pickleFilter,
 }: IParseGherkinMessageStreamRequest): Promise<string[]> {
   return await new Promise<string[]>((resolve, reject) => {
@@ -59,7 +73,7 @@ export async function parseGherkinMessageStream({
       }
     })
     gherkinMessageStream.on('end', () => {
-      orderPickles(result, order, console)
+      orderPickles(result, order, unexpandedFeaturePaths, console)
       resolve(result)
     })
     gherkinMessageStream.on('error', reject)
@@ -70,6 +84,7 @@ export async function parseGherkinMessageStream({
 export function orderPickles<T = string>(
   pickleIds: T[],
   order: PickleOrder,
+  unexpandedFeaturePaths: string[] | undefined,
   logger: Console
 ): void {
   const [type, seed] = OptionSplitter.split(order)
@@ -83,6 +98,36 @@ export function orderPickles<T = string>(
         shuffle(pickleIds, newSeed)
       } else {
         shuffle(pickleIds, seed)
+      }
+      break
+    case 'rerun':
+      {
+        if (unexpandedFeaturePaths === undefined) {
+          throw new Error(
+            'Cannot order by rerun because no unexpandedFeaturePaths were provided'
+          )
+        }
+
+        const picklesWithDocument =
+          pickleIds as unknown[] as PickleWithDocument[]
+
+        picklesWithDocument.sort((a, b) => {
+          const pathA = `${a.pickle.uri}:${a.location.line}`
+          const pathB = `${b.pickle.uri}:${b.location.line}`
+          const indexA = unexpandedFeaturePaths.indexOf(pathA)
+          const indexB = unexpandedFeaturePaths.indexOf(pathB)
+          if (indexA === -1) {
+            throw new Error(
+              `Cannot use rerun order because ${pathA} was not in the rerun order. Did you forget to specify @rerun.txt?`
+            )
+          }
+          if (indexB === -1) {
+            throw new Error(
+              `Cannot use rerun order because ${pathB} was not in the rerun order. Did you forget to specify @rerun.txt?`
+            )
+          }
+          return indexA - indexB
+        })
       }
       break
     default:
