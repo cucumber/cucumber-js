@@ -38,6 +38,10 @@ export const Before = methods.Before
 export const BeforeAll = methods.BeforeAll
 export const BeforeStep = methods.BeforeStep
 export const defineParameterType = methods.defineParameterType
+export const HookParallelMode = {
+  WORKER_ONLY: 'worker-only',
+  COORDINATOR_ONLY: 'coordinator-only',
+}
 /**
  * @deprecated use `Given`, `When` or `Then` instead; see <https://github.com/cucumber/cucumber-js/issues/2043>
  */

@@ -27,22 +27,24 @@ Feature: Before/AfterAll hooks in parallel
       let counter = 0
 
       Given('first step', function() {
-        counter += counter
+        counter ++
         expect(counter).to.eql(1)
       })
 
       Given('second step', function() {
-        counter += counter
+        counter ++
         expect(counter).to.eql(1)
       })
 
       AfterAll({ parallelMode: HookParallelMode.WORKER_ONLY }, function() {
-        counter += counter
+        counter ++
+        console.log('worker: ', counter)
         expect(counter).to.eql(2)
       })
 
       AfterAll({ parallelMode: HookParallelMode.COORDINATOR_ONLY }, function() {
-        counter += counter
+        counter ++
+        console.log('coordinator: ', counter)
         expect(counter).to.eql(1)
       })
       """
