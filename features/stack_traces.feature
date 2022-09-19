@@ -1,4 +1,5 @@
 @spawn
+@source-mapping
 Feature: Stack traces
   Background:
     Given a file named "features/a.feature" with:
