@@ -10,6 +10,7 @@ export function mergeEnvironment(
       stdout: process.stdout,
       stderr: process.stderr,
       env: process.env,
+      debug: false,
     },
     provided
   )

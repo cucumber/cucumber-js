@@ -7,10 +7,11 @@ import { resolvePaths } from './paths'
 import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
 import { getSupportCodeLibrary } from './support'
-import { Console } from 'console'
 import { mergeEnvironment } from './environment'
 import { getFilteredPicklesAndErrors } from './gherkin'
 import { initializePlugins } from './plugins'
+import { ConsoleLogger } from './console_logger'
+import { ILogger } from '../logger'
 
 /**
  * Execute a Cucumber test run.
@@ -25,8 +26,9 @@ export async function runCucumber(
   environment: IRunEnvironment = {},
   onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
-  const { cwd, stdout, stderr, env } = mergeEnvironment(environment)
-  const logger = new Console(stderr)
+  const { cwd, stdout, stderr, env, debug } = mergeEnvironment(environment)
+  const logger: ILogger = new ConsoleLogger(stderr, debug)
+
   const newId = IdGenerator.uuid()
 
   const supportCoordinates =
@@ -35,7 +37,7 @@ export async function runCucumber(
       : configuration.support
 
   const { unexpandedFeaturePaths, featurePaths, requirePaths, importPaths } =
-    await resolvePaths(cwd, configuration.sources, supportCoordinates)
+    await resolvePaths(logger, cwd, configuration.sources, supportCoordinates)
 
   const supportCodeLibrary =
     'World' in configuration.support
