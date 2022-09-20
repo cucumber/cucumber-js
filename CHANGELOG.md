@@ -11,6 +11,9 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Added
 - Debug logging capability to help diagnose configuration issues (see [documentation](./docs/debugging.md)) ([#2120](https://github.com/cucumber/cucumber-js/pull/2120))
 
+### Fixed
+- Rework time interfaces to avoid using sinon types ([#2142](https://github.com/cucumber/cucumber-js/pull/2142))
+
 ## [8.5.3] - 2022-09-10
 ### Fixed
 - Default `stderr` if not provided to `Cli` constructor ([#2138](https://github.com/cucumber/cucumber-js/pull/2138))
