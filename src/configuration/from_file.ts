@@ -5,20 +5,24 @@ import { IConfiguration } from './types'
 import { mergeConfigurations } from './merge_configurations'
 import ArgvParser from './argv_parser'
 import { checkSchema } from './check_schema'
+import { ILogger } from '../logger'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
 
 export async function fromFile(
+  logger: ILogger,
   cwd: string,
   file: string,
   profiles: string[] = []
 ): Promise<Partial<IConfiguration>> {
   const definitions = await loadFile(cwd, file)
   if (!definitions.default) {
+    logger.debug('No default profile defined in configuration file')
     definitions.default = {}
   }
   if (profiles.length < 1) {
+    logger.debug('No profiles specified; using default profile')
     profiles = ['default']
   }
   const definedKeys = Object.keys(definitions)
@@ -30,7 +34,7 @@ export async function fromFile(
   return mergeConfigurations(
     {},
     ...profiles.map((profileKey) =>
-      extractConfiguration(profileKey, definitions[profileKey])
+      extractConfiguration(logger, profileKey, definitions[profileKey])
     )
   )
 }
@@ -58,10 +62,12 @@ async function loadFile(
 }
 
 function extractConfiguration(
+  logger: ILogger,
   name: string,
   definition: any
 ): Partial<IConfiguration> {
   if (typeof definition === 'string') {
+    logger.debug(`Profile "${name}" value is a string; parsing as argv`)
     const { configuration } = ArgvParser.parse([
       'node',
       'cucumber-js',

@@ -11,12 +11,13 @@ import { doesHaveValue } from '../../value_checker'
 import { ITestRunStopwatch, RealTestRunStopwatch } from '../stopwatch'
 import { assembleTestCases, IAssembledTestCases } from '../assemble_test_cases'
 import { IdGenerator } from '@cucumber/messages'
+import { ILogger } from '../../logger'
 
 const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
 
 export interface INewCoordinatorOptions {
   cwd: string
-  logger: Console
+  logger: ILogger
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   options: IRuntimeOptions
@@ -64,7 +65,7 @@ export default class Coordinator implements IRuntime {
   private readonly requirePaths: string[]
   private readonly importPaths: string[]
   private readonly numberOfWorkers: number
-  private readonly logger: Console
+  private readonly logger: ILogger
   private success: boolean
   private idleInterventions: number
 

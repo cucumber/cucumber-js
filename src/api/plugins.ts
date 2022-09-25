@@ -1,13 +1,14 @@
 import { Plugin, PluginManager } from '../plugin'
 import publishPlugin from '../publish'
 import { IRunEnvironment, IRunOptions } from './types'
+import { ILogger } from '../logger'
 
 const INTERNAL_PLUGINS: Record<string, Plugin> = {
   publish: publishPlugin,
 }
 
 export async function initializePlugins(
-  logger: Console,
+  logger: ILogger,
   configuration: IRunOptions,
   environment: IRunEnvironment
 ): Promise<PluginManager> {

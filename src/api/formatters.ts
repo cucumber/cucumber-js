@@ -8,6 +8,7 @@ import FormatterBuilder from '../formatter/builder'
 import fs from 'mz/fs'
 import path from 'path'
 import { IRunOptionsFormats } from './types'
+import { ILogger } from '../logger'
 
 export async function initializeFormatters({
   env,
@@ -24,7 +25,7 @@ export async function initializeFormatters({
   cwd: string
   stdout: IFormatterStream
   stderr: IFormatterStream
-  logger: Console
+  logger: ILogger
   onStreamError: () => void
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
