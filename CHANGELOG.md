@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Deprecated
+- `Cli`, `PickleFilter` and `Runtime` deprecated in favour of new API functions (see [documentation](./docs/deprecations.md)) ([#2136](https://github.com/cucumber/cucumber-js/pull/2136))
 
 ## [8.6.0] - 2022-09-20
 ### Added
