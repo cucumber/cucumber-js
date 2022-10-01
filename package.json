@@ -253,7 +253,7 @@
     "@types/mocha": "9.1.1",
     "@types/mustache": "4.2.1",
     "@types/mz": "2.7.4",
-    "@types/node": "16.11.56",
+    "@types/node": "16.11.62",
     "@types/progress": "2.0.5",
     "@types/semver": "7.3.12",
     "@types/sinon-chai": "3.2.8",
