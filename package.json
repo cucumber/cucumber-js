@@ -238,7 +238,7 @@
   "devDependencies": {
     "@cucumber/compatibility-kit": "11.0.1",
     "@cucumber/query": "12.0.0",
-    "@microsoft/api-documenter": "7.19.1",
+    "@microsoft/api-documenter": "7.19.16",
     "@microsoft/api-extractor": "7.29.5",
     "@sinonjs/fake-timers": "9.1.2",
     "@types/chai": "4.3.3",
