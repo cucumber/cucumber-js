@@ -9,9 +9,9 @@ The number you provide is the number of workers that will run scenarios in paral
 
 Each worker receives the following env variables (as well as a copy of `process.env` from the coordinator process):
 
-* `CUCUMBER_PARALLEL` - set to 'true'
-* `CUCUMBER_TOTAL_WORKERS` - set to the number of workers
-* `CUCUMBER_WORKER_ID` - ID for worker ('0', '1', '2', etc.)
+- `CUCUMBER_PARALLEL` - set to 'true'
+- `CUCUMBER_TOTAL_WORKERS` - set to the number of workers
+- `CUCUMBER_WORKER_ID` - ID for worker ('0', '1', '2', etc.)
 
 ### Timing
 
@@ -32,56 +32,64 @@ When using parallel mode, any `BeforeAll` and `AfterAll` hooks you have defined 
 If you would like to prevent specific sets of scenarios from running in parallel you can use `setParallelCanAssign`.
 
 Example:
+
 ```javascript
-setParallelCanAssign(function(pickleInQuestion, picklesInProgress) {
+setParallelCanAssign(function (pickleInQuestion, picklesInProgress) {
   // Only one pickle with the word example in the name can run at a time
-  if (pickleInQuestion.name.includes("example")) {
-    return picklesInProgress.every(p => !p.name.includes("example"));
+  if (pickleInQuestion.name.includes('example')) {
+    return picklesInProgress.every((p) => !p.name.includes('example'))
   }
   // No other restrictions
-  return true;
+  return true
 })
 ```
 
 For convenience, the following helpers exist to build a `canAssignFn`:
 
 ```javascript
-import { setParallelCanAssign, parallelCanAssignHelpers } from '@cucumber/cucumber'
+import {
+  setParallelCanAssign,
+  parallelCanAssignHelpers,
+} from '@cucumber/cucumber'
 
 const { atMostOnePicklePerTag } = parallelCanAssignHelpers
-const myTagRule = atMostOnePicklePerTag(["@tag1", "@tag2"]);
+const myTagRule = atMostOnePicklePerTag(['@tag1', '@tag2'])
 
 // Only one pickle with @tag1 can run at a time
 //   AND only one pickle with @tag2 can run at a time
 setParallelCanAssign(myTagRule)
 
 // If you want to join a tag rule with other rules you can compose them like so:
-const myCustomRule = function(pickleInQuestion, picklesInProgress) {
+const myCustomRule = function (pickleInQuestion, picklesInProgress) {
   // ...
-};
+}
 
-setParallelCanAssign(function(pickleInQuestion, picklesInProgress) {
-  return myCustomRule(pickleInQuestion, picklesInProgress) &&
-    myTagRule(pickleInQuestion, picklesInProgress);
+setParallelCanAssign(function (pickleInQuestion, picklesInProgress) {
+  return (
+    myCustomRule(pickleInQuestion, picklesInProgress) &&
+    myTagRule(pickleInQuestion, picklesInProgress)
+  )
 })
 ```
 
 ### Formatting
 
-If you need to know worker `id` the message was sent from – you can look for `wokerId` property in the envelope object:
+You can access `workerId` property in `testCaseStarted` envelope object:
 
 ```javascript
 const { Formatter } = require('@cucumber/cucumber')
 
 class ExampleFormatter extends Formatter {
   constructor(options) {
-		options.eventBroadcaster.on('envelope', (envelope) => {
-			if (envelope.workerId) {
-        console.log(`the envelope was sent from a worker with id ${envelope.workerId}`)
+    options.eventBroadcaster.on('testCaseStarted', (envelope) => {
+      if (envelope.workerId) {
+        console.log(
+          `the event has been fired from a worker with id ${envelope.workerId}`
+        )
       } else {
-        console.log('the envelope was sent outside of any worker')
+        console.log('the event has been sent from the main thread')
       }
-		})
+    })
 
     super(options)
   }
