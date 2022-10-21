@@ -9,7 +9,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [Unreleased]
 ### Changed
-- Add `workerId` property to envelope message sent from a worker in parallel mode ([#2085](https://github.com/cucumber/cucumber-js/pull/2085))
+- Add `workerId` property to `testCaseStarted` message ([#2085](https://github.com/cucumber/cucumber-js/pull/2085))
 
 ## [8.7.0] - 2022-10-17
 ### Deprecated
