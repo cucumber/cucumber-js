@@ -57,9 +57,16 @@ export default class Worker {
     this.eventBroadcaster = new EventEmitter()
     this.stackTraceFilter = new StackTraceFilter()
     this.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
-      this.sendMessage({
-        jsonEnvelope: JSON.stringify(envelope),
-      })
+      const jsonEnvelope = { ...envelope }
+
+      // assign `workerId` property only for the `testCaseStarted` message
+      if (envelope.testCaseStarted) {
+        Object.assign(jsonEnvelope.testCaseStarted, {
+          workerId: this.id,
+        })
+      }
+
+      this.sendMessage({ jsonEnvelope: JSON.stringify(jsonEnvelope) })
     })
   }
 

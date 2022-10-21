@@ -1,6 +1,6 @@
 import { DataTable, Then } from '../../'
 import { World } from '../support/world'
-import messages, { Envelope } from '@cucumber/messages'
+import messages from '@cucumber/messages'
 import { expect } from 'chai'
 
 function getSetsOfPicklesRunningAtTheSameTime(
@@ -56,20 +56,10 @@ Then(
   }
 )
 
-Then(
-  'test case and test step envelopes contain `workerId` parameter',
-  function (this: World) {
-    const expectedEnvelopes = this.lastRun.envelopes.filter(
-      (envelope) =>
-        envelope.testCaseStarted ||
-        envelope.testCaseFinished ||
-        envelope.testStepStarted ||
-        envelope.testCaseFinished
-    )
-    const envelopesWithWorkerId = expectedEnvelopes.filter(
-      (envelope: Envelope & { workerId?: string }) => envelope.workerId
-    )
+Then('`testCaseStarted` envelope has `workerId`', function (this: World) {
+  const testCaseStartedEnvelope = this.lastRun.envelopes.find(
+    (envelope) => envelope.testCaseStarted
+  )
 
-    expect(envelopesWithWorkerId.length).to.eql(expectedEnvelopes.length)
-  }
-)
+  expect(testCaseStartedEnvelope.testCaseStarted).to.ownProperty('workerId')
+})

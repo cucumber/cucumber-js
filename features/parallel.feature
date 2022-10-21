@@ -56,7 +56,7 @@ Feature: Running scenarios in parallel
       """
     Then it fails
 
-  Scenario: the envelopes from workers contain `workerId` parameter
+  Scenario: `testCaseStarted` envelope from workers contains `workerId` parameter
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
@@ -76,4 +76,4 @@ Feature: Running scenarios in parallel
       """
     When I run cucumber-js with `--parallel 2`
     Then it passes
-    And test case and test step envelopes contain `workerId` parameter
+    And `testCaseStarted` envelope has `workerId`
