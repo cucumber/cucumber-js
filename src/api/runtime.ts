@@ -5,6 +5,7 @@ import { IdGenerator } from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import Coordinator from '../runtime/parallel/coordinator'
 import { IRunOptionsRuntime } from './types'
+import { ILogger } from '../logger'
 
 export function makeRuntime({
   cwd,
@@ -20,7 +21,7 @@ export function makeRuntime({
   options: { parallel, ...options },
 }: {
   cwd: string
-  logger: Console
+  logger: ILogger
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   newId: IdGenerator.NewId

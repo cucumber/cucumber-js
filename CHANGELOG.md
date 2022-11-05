@@ -11,6 +11,21 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Added
 - Add new JUnit formatter ([#2121](https://github.com/cucumber/cucumber-js/pull/2121))
 
+## [8.7.0] - 2022-10-17
+### Deprecated
+- `Cli`, `PickleFilter` and `Runtime` deprecated in favour of new API functions (see [documentation](./docs/deprecations.md)) ([#2136](https://github.com/cucumber/cucumber-js/pull/2136))
+
+## [8.6.0] - 2022-09-20
+### Added
+- Debug logging capability to help diagnose configuration issues (see [documentation](./docs/debugging.md)) ([#2120](https://github.com/cucumber/cucumber-js/pull/2120))
+
+### Fixed
+- Rework time interfaces to avoid using sinon types ([#2142](https://github.com/cucumber/cucumber-js/pull/2142))
+
+## [8.5.3] - 2022-09-10
+### Fixed
+- Default `stderr` if not provided to `Cli` constructor ([#2138](https://github.com/cucumber/cucumber-js/pull/2138))
+
 ## [8.5.2] - 2022-08-24
 ### Added
 - `IMethods` interface for use in `getTimestamp`, `durationBetweenTimestamps`, and `wrapPromiseWithTimeout` functions and `methods` in `time` module instead of explicit `any` ([#2111](https://github.com/cucumber/cucumber-js/pull/2111))
@@ -1426,7 +1441,10 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.5.2...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.7.0...HEAD
+[8.7.0]: https://github.com/cucumber/cucumber-js/compare/v8.6.0...v8.7.0
+[8.6.0]: https://github.com/cucumber/cucumber-js/compare/v8.5.3...v8.6.0
+[8.5.3]: https://github.com/cucumber/cucumber-js/compare/v8.5.2...v8.5.3
 [8.5.2]: https://github.com/cucumber/cucumber-js/compare/v8.5.1...v8.5.2
 [8.5.1]: https://github.com/cucumber/cucumber-js/compare/v8.5.0...v8.5.1
 [8.5.0]: https://github.com/cucumber/cucumber-js/compare/v8.4.0...v8.5.0
