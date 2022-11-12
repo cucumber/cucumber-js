@@ -25,6 +25,7 @@ export interface INewTestCaseRunnerOptions {
   testCase: messages.TestCase
   retries: number
   skip: boolean
+  filterStackTraces: boolean
   supportCodeLibrary: ISupportCodeLibrary
   worldParameters: any
 }
@@ -41,6 +42,7 @@ export default class TestCaseRunner {
   private readonly testCase: messages.TestCase
   private readonly maxAttempts: number
   private readonly skip: boolean
+  private readonly filterStackTraces: boolean
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private testStepResults: messages.TestStepResult[]
   private world: any
@@ -55,6 +57,7 @@ export default class TestCaseRunner {
     testCase,
     retries = 0,
     skip,
+    filterStackTraces,
     supportCodeLibrary,
     worldParameters,
   }: INewTestCaseRunnerOptions) {
@@ -83,6 +86,7 @@ export default class TestCaseRunner {
     this.pickle = pickle
     this.testCase = testCase
     this.skip = skip
+    this.filterStackTraces = filterStackTraces
     this.supportCodeLibrary = supportCodeLibrary
     this.worldParameters = worldParameters
     this.resetTestProgressData()
@@ -129,6 +133,7 @@ export default class TestCaseRunner {
   ): Promise<messages.TestStepResult> {
     return await StepRunner.run({
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
+      filterStackTraces: this.filterStackTraces,
       hookParameter,
       step,
       stepDefinition,

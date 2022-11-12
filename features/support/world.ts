@@ -41,10 +41,14 @@ export class World {
   parseEnvString(str: string): NodeJS.ProcessEnv {
     const result: NodeJS.ProcessEnv = {}
     if (doesHaveValue(str)) {
-      str
-        .split(/\s+/)
-        .map((keyValue) => keyValue.split('='))
-        .forEach((pair) => (result[pair[0]] = pair[1]))
+      try {
+        Object.assign(result, JSON.parse(str))
+      } catch {
+        str
+          .split(/\s+/)
+          .map((keyValue) => keyValue.split('='))
+          .forEach((pair) => (result[pair[0]] = pair[1]))
+      }
     }
     return result
   }
