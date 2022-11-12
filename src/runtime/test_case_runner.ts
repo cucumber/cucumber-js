@@ -181,65 +181,79 @@ export default class TestCaseRunner {
   async run(): Promise<messages.TestStepResultStatus> {
     for (let attempt = 0; attempt < this.maxAttempts; attempt++) {
       const moreAttemptsRemaining = attempt + 1 < this.maxAttempts
-      this.currentTestCaseStartedId = this.newId()
-      const testCaseStarted: messages.Envelope = {
-        testCaseStarted: {
-          attempt,
-          testCaseId: this.testCase.id,
-          id: this.currentTestCaseStartedId,
-          timestamp: this.stopwatch.timestamp(),
-        },
-      }
-      this.eventBroadcaster.emit('envelope', testCaseStarted)
-      // used to determine whether a hook is a Before or After
-      let didWeRunStepsYet = false
-      for (const testStep of this.testCase.testSteps) {
-        await this.aroundTestStep(testStep.id, async () => {
-          if (doesHaveValue(testStep.hookId)) {
-            const hookParameter: ITestCaseHookParameter = {
-              gherkinDocument: this.gherkinDocument,
-              pickle: this.pickle,
-              testCaseStartedId: this.currentTestCaseStartedId,
-            }
-            if (didWeRunStepsYet) {
-              hookParameter.result = this.getWorstStepResult()
-              hookParameter.willBeRetried =
-                this.getWorstStepResult().status ===
-                  messages.TestStepResultStatus.FAILED && moreAttemptsRemaining
-            }
-            return await this.runHook(
-              findHookDefinition(testStep.hookId, this.supportCodeLibrary),
-              hookParameter,
-              !didWeRunStepsYet
-            )
-          } else {
-            const pickleStep = this.pickle.steps.find(
-              (pickleStep) => pickleStep.id === testStep.pickleStepId
-            )
-            const testStepResult = await this.runStep(pickleStep, testStep)
-            didWeRunStepsYet = true
-            return testStepResult
-          }
-        })
-      }
 
-      const willBeRetried =
-        this.getWorstStepResult().status ===
-          messages.TestStepResultStatus.FAILED && moreAttemptsRemaining
-      const testCaseFinished: messages.Envelope = {
-        testCaseFinished: {
-          testCaseStartedId: this.currentTestCaseStartedId,
-          timestamp: this.stopwatch.timestamp(),
-          willBeRetried,
-        },
-      }
-      this.eventBroadcaster.emit('envelope', testCaseFinished)
+      const willBeRetried = await this.runAttempt(
+        attempt,
+        moreAttemptsRemaining
+      )
+
       if (!willBeRetried) {
         break
       }
       this.resetTestProgressData()
     }
     return this.getWorstStepResult().status
+  }
+
+  async runAttempt(
+    attempt: number,
+    moreAttemptsRemaining: boolean
+  ): Promise<boolean> {
+    this.currentTestCaseStartedId = this.newId()
+    const testCaseStarted: messages.Envelope = {
+      testCaseStarted: {
+        attempt,
+        testCaseId: this.testCase.id,
+        id: this.currentTestCaseStartedId,
+        timestamp: this.stopwatch.timestamp(),
+      },
+    }
+    this.eventBroadcaster.emit('envelope', testCaseStarted)
+    // used to determine whether a hook is a Before or After
+    let didWeRunStepsYet = false
+    for (const testStep of this.testCase.testSteps) {
+      await this.aroundTestStep(testStep.id, async () => {
+        if (doesHaveValue(testStep.hookId)) {
+          const hookParameter: ITestCaseHookParameter = {
+            gherkinDocument: this.gherkinDocument,
+            pickle: this.pickle,
+            testCaseStartedId: this.currentTestCaseStartedId,
+          }
+          if (didWeRunStepsYet) {
+            hookParameter.result = this.getWorstStepResult()
+            hookParameter.willBeRetried =
+              this.getWorstStepResult().status ===
+                messages.TestStepResultStatus.FAILED && moreAttemptsRemaining
+          }
+          return await this.runHook(
+            findHookDefinition(testStep.hookId, this.supportCodeLibrary),
+            hookParameter,
+            !didWeRunStepsYet
+          )
+        } else {
+          const pickleStep = this.pickle.steps.find(
+            (pickleStep) => pickleStep.id === testStep.pickleStepId
+          )
+          const testStepResult = await this.runStep(pickleStep, testStep)
+          didWeRunStepsYet = true
+          return testStepResult
+        }
+      })
+    }
+
+    const willBeRetried =
+      this.getWorstStepResult().status ===
+        messages.TestStepResultStatus.FAILED && moreAttemptsRemaining
+    const testCaseFinished: messages.Envelope = {
+      testCaseFinished: {
+        testCaseStartedId: this.currentTestCaseStartedId,
+        timestamp: this.stopwatch.timestamp(),
+        willBeRetried,
+      },
+    }
+    this.eventBroadcaster.emit('envelope', testCaseFinished)
+
+    return willBeRetried
   }
 
   async runHook(
