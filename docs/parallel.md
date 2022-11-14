@@ -81,13 +81,15 @@ const { Formatter } = require('@cucumber/cucumber')
 
 class ExampleFormatter extends Formatter {
   constructor(options) {
-    options.eventBroadcaster.on('testCaseStarted', (envelope) => {
-      if (envelope.workerId) {
-        console.log(
-          `the event has been fired from a worker with id ${envelope.workerId}`
-        )
-      } else {
-        console.log('the event has been sent from the main thread')
+    options.eventBroadcaster.on('envelope', (envelope) => {
+      if (envelope.testCaseStarted) {
+        if (envelope.testCaseStarted.workerId) {
+          console.log(
+            `the event has been fired from a worker with id ${envelope.testCaseStarted.workerId}`
+          )
+        } else {
+          console.log('the event has been sent from the main thread')
+        }
       }
     })
 
