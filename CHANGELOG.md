@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [8.8.0] - 2022-11-14
 ### Changed
 - Add `workerId` property to `testCaseStarted` message ([#2085](https://github.com/cucumber/cucumber-js/pull/2085))
 - Handle stack traces without V8-specific modification ([#2119](https://github.com/cucumber/cucumber-js/pull/2119))
@@ -1442,7 +1444,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.7.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.8.0...HEAD
+[8.8.0]: https://github.com/cucumber/cucumber-js/compare/v8.7.0...v8.8.0
 [8.7.0]: https://github.com/cucumber/cucumber-js/compare/v8.6.0...v8.7.0
 [8.6.0]: https://github.com/cucumber/cucumber-js/compare/v8.5.3...v8.6.0
 [8.5.3]: https://github.com/cucumber/cucumber-js/compare/v8.5.2...v8.5.3
