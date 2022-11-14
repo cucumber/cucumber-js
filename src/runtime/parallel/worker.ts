@@ -54,9 +54,11 @@ export default class Worker {
     this.sendMessage = sendMessage
     this.eventBroadcaster = new EventEmitter()
     this.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
-      this.sendMessage({
-        jsonEnvelope: JSON.stringify(envelope),
-      })
+      // assign `workerId` property only for the `testCaseStarted` message
+      if (envelope.testCaseStarted) {
+        envelope.testCaseStarted.workerId = this.id
+      }
+      this.sendMessage({ jsonEnvelope: JSON.stringify(envelope) })
     })
   }
 
