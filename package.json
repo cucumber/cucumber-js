@@ -196,7 +196,6 @@
     "node": "12 || 14 || 16 || 17 || 18"
   },
   "dependencies": {
-    "@cspotcode/source-map-support": "^0.8.0",
     "@cucumber/ci-environment": "9.1.0",
     "@cucumber/cucumber-expressions": "16.0.0",
     "@cucumber/gherkin": "24.1.0",
@@ -214,6 +213,7 @@
     "debug": "^4.3.4",
     "duration": "^0.2.2",
     "durations": "^3.4.2",
+    "error-stack-parser": "^2.1.4",
     "figures": "^3.2.0",
     "glob": "^7.1.6",
     "has-ansi": "^4.0.1",
@@ -227,7 +227,6 @@
     "progress": "^2.0.3",
     "resolve-pkg": "^2.0.0",
     "semver": "7.3.8",
-    "stack-chain": "^2.0.0",
     "string-argv": "^0.3.1",
     "strip-ansi": "6.0.1",
     "supports-color": "^8.1.1",
@@ -312,7 +311,7 @@
     "prepublishOnly": "rm -rf lib && npm run build-local",
     "pretest-coverage": "npm run build-local",
     "pretypes-test": "npm run build-local",
-    "test-coverage": "nyc --silent mocha 'src/**/*_spec.ts' 'compatibility/**/*_spec.ts' && nyc --silent --no-clean node bin/cucumber.js && nyc report --reporter=lcov",
+    "test-coverage": "nyc --silent mocha 'src/**/*_spec.ts' 'compatibility/**/*_spec.ts' && nyc --silent --no-clean node bin/cucumber.js --tags \"not @source-mapping\" && nyc report --reporter=lcov",
     "test": "npm run lint && npm run types-test && npm run unit-test && npm run cck-test && npm run feature-test",
     "types-test": "tsd",
     "unit-test": "mocha 'src/**/*_spec.ts'",

@@ -54,6 +54,7 @@ async function testRunner(
     pickle: options.pickle,
     testCase,
     retries: valueOrDefault(options.retries, 0),
+    filterStackTraces: false,
     skip: valueOrDefault(options.skip, false),
     supportCodeLibrary: options.supportCodeLibrary,
     worldParameters: {},

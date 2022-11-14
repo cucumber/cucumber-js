@@ -10,6 +10,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ## [Unreleased]
 ### Changed
 - Add `workerId` property to `testCaseStarted` message ([#2085](https://github.com/cucumber/cucumber-js/pull/2085))
+- Handle stack traces without V8-specific modification ([#2119](https://github.com/cucumber/cucumber-js/pull/2119))
 
 ## [8.7.0] - 2022-10-17
 ### Deprecated

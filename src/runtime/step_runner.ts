@@ -1,7 +1,6 @@
 import Time from '../time'
 import UserCodeRunner from '../user_code_runner'
 import * as messages from '@cucumber/messages'
-import { format } from 'assertion-error-formatter'
 import { ITestCaseHookParameter } from '../support_code_library_builder/types'
 import { IDefinition, IGetInvocationDataResponse } from '../models/definition'
 import {
@@ -9,11 +8,13 @@ import {
   doesNotHaveValue,
   valueOrDefault,
 } from '../value_checker'
+import { formatError } from './format_error'
 
 const { beginTiming, endTiming } = Time
 
 export interface IRunOptions {
   defaultTimeout: number
+  filterStackTraces: boolean
   hookParameter: ITestCaseHookParameter
   step: messages.PickleStep
   stepDefinition: IDefinition
@@ -22,6 +23,7 @@ export interface IRunOptions {
 
 export async function run({
   defaultTimeout,
+  filterStackTraces,
   hookParameter,
   step,
   stepDefinition,
@@ -68,7 +70,7 @@ export async function run({
   } else if (result === 'pending') {
     status = messages.TestStepResultStatus.PENDING
   } else if (doesHaveValue(error)) {
-    message = format(error)
+    message = formatError(error, filterStackTraces)
     status = messages.TestStepResultStatus.FAILED
   } else {
     status = messages.TestStepResultStatus.PASSED
