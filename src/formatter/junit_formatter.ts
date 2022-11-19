@@ -217,22 +217,16 @@ export default class JunitFormatter extends Formatter {
     return `${uri}:${obj.line.toString()}`
   }
 
-  getTestStepEmoji(step: IJUnitTestStep): string {
-    switch (step.result.status) {
-      case TestStepResultStatus.PASSED:
-        return '🟩'
-      case TestStepResultStatus.FAILED:
-        return '🟥'
-      default:
-        return '🟨'
-    }
-  }
-
   formatTestSteps(steps: IJUnitTestStep[]): string {
     return steps
       .filter((step) => !step.hidden)
       .map(
-        (step) => `${this.getTestStepEmoji(step)} ${step.keyword}${step.name}`
+        (step) => {
+          const statusText = step.result.status.toLowerCase();
+          const maxLength = 80 - statusText.length - 3
+          const stepText = `${step.keyword}${step.name}`.padEnd(maxLength, '.').substring(0, maxLength)
+          return `${stepText}...${statusText}`;
+        }
       )
       .join('\n')
   }
