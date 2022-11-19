@@ -327,9 +327,9 @@ export default class JunitFormatter extends Formatter {
           classname: test.id,
         })
         if (!test.result.success) {
-          xmlTestcase.ele('failure', {}, test.result.errorMessage)
+          xmlTestcase.ele('failure', {}).cdata(test.result.errorMessage)
         }
-        xmlTestcase.ele('system-out', {}, test.systemOutput)
+        xmlTestcase.ele('system-out', {}).cdata(test.systemOutput)
       })
     })
 

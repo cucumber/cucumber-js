@@ -65,7 +65,7 @@ describe('JunitFormatter', () => {
             '<testsuites>\n' +
             '  <testsuite failures="0" name="my feature" time="0.001" tests="1">\n' +
             '    <testcase name="my scenario" time="0.001" classname="my-feature;my-scenario">\n' +
-            '      <system-out>🟩 Given a passing step</system-out>\n' +
+            '      <system-out><![CDATA[🟩 Given a passing step]]></system-out>\n' +
             '    </testcase>\n' +
             '  </testsuite>\n' +
             '</testsuites>'
@@ -102,8 +102,8 @@ describe('JunitFormatter', () => {
             '<testsuites>\n' +
             '  <testsuite failures="1" name="my feature" time="0" tests="1">\n' +
             '    <testcase name="my scenario" time="0" classname="my-feature;my-scenario">\n' +
-            '      <failure>error</failure>\n' +
-            '      <system-out>🟥 Given a failing step</system-out>\n' +
+            '      <failure><![CDATA[error]]></failure>\n' +
+            '      <system-out><![CDATA[🟥 Given a failing step]]></system-out>\n' +
             '    </testcase>\n' +
             '  </testsuite>\n' +
             '</testsuites>'
@@ -141,7 +141,7 @@ describe('JunitFormatter', () => {
             '<testsuites>\n' +
             '  <testsuite failures="0" name="my feature" time="0" tests="1">\n' +
             '    <testcase name="my scenario" time="0" classname="my-feature;my-scenario">\n' +
-            '      <system-out>🟩 Given a flaky step</system-out>\n' +
+            '      <system-out><![CDATA[🟩 Given a flaky step]]></system-out>\n' +
             '    </testcase>\n' +
             '  </testsuite>\n' +
             '</testsuites>'
@@ -175,12 +175,12 @@ describe('JunitFormatter', () => {
             '<testsuites>\n' +
             '  <testsuite failures="1" name="my feature" time="0" tests="1">\n' +
             '    <testcase name="my scenario" time="0" classname="my-feature;my-scenario">\n' +
-            '      <failure>Undefined step. Implement with the following snippet:\n' +
+            '      <failure><![CDATA[Undefined step. Implement with the following snippet:\n' +
             '  this.Given(/^a passing step$/, function(callback) {\n' +
             '      // Write code here that turns the phrase above into concrete actions\n' +
             "      callback(null, 'pending');\n" +
-            '  });</failure>\n' +
-            '      <system-out>🟨 Given a passing step</system-out>\n' +
+            '  });]]></failure>\n' +
+            '      <system-out><![CDATA[🟨 Given a passing step]]></system-out>\n' +
             '    </testcase>\n' +
             '  </testsuite>\n' +
             '</testsuites>'
@@ -231,10 +231,10 @@ describe('JunitFormatter', () => {
             '<testsuites>\n' +
             '  <testsuite failures="0" name="my feature" time="0.002" tests="2">\n' +
             '    <testcase name="first example" time="0.001" classname="my-feature;my-rule;first-example">\n' +
-            '      <system-out>🟩 Given a passing step</system-out>\n' +
+            '      <system-out><![CDATA[🟩 Given a passing step]]></system-out>\n' +
             '    </testcase>\n' +
             '    <testcase name="second example" time="0.001" classname="my-feature;my-rule;second-example">\n' +
-            '      <system-out>🟩 Given a passing step</system-out>\n' +
+            '      <system-out><![CDATA[🟩 Given a passing step]]></system-out>\n' +
             '    </testcase>\n' +
             '  </testsuite>\n' +
             '</testsuites>'
