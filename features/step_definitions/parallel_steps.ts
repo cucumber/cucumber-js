@@ -55,3 +55,11 @@ Then(
     expect(actualSets).to.eql(expectedSets)
   }
 )
+
+Then('`testCaseStarted` envelope has `workerId`', function (this: World) {
+  const testCaseStartedEnvelope = this.lastRun.envelopes.find(
+    (envelope) => envelope.testCaseStarted
+  )
+
+  expect(testCaseStartedEnvelope.testCaseStarted).to.ownProperty('workerId')
+})

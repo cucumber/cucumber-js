@@ -57,3 +57,14 @@ If you are using babel with [@babel/preset-typescript](https://babeljs.io/docs/e
 ### ESM
 
 See [ESM](./esm.md) for general advice on using loaders for transpilation in ESM projects.
+
+### Source maps
+
+Source maps are used to ensure accurate source references and stack traces in Cucumber's reporting, by giving traceability from a transpiled piece of code back to the original source code.
+
+Just-in-time transpilers like `ts-node` and `@babel/register` have sensible default configuration that emits source maps and enables them in the runtime environment, so you shouldn't have to do anything in order for source maps to work.
+
+If you're using step definition code that's _already_ transpiled (maybe because it's a shared library) then you'll need to:
+
+1. Ensure source maps are emitted by your transpiler. You can verify by checking for a comment starting with `//# sourceMappingURL=` at the end of your transpiled file(s).
+2. Ensure source maps are enabled at runtime. Node.js supports this natively via [the `--enable-source-maps` flag](https://nodejs.org/docs/latest/api/cli.html#--enable-source-maps).
