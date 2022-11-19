@@ -20,14 +20,17 @@ describe('JunitFormatter', () => {
   })
 
   describe('no features', () => {
-    it('outputs an empty array', async () => {
+    it('outputs an empty <testsuite>', async () => {
       // Arrange
 
       // Act
       const output = await testFormatter({ type: 'junit' })
 
       // Assert
-      expect(output).xml.to.deep.equal('<?xml version="1.0"?>\n<testsuites/>')
+      expect(output).xml.to.deep.equal(
+        '<?xml version="1.0"?>\n' +
+          '<testsuite failures="0" name="cucumber-js" time="0" tests="0"/>'
+      )
     })
   })
 
@@ -62,13 +65,11 @@ describe('JunitFormatter', () => {
         // Assert
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
-            '<testsuites>\n' +
-            '  <testsuite failures="0" name="my feature" time="0.001" tests="1">\n' +
-            '    <testcase name="my scenario" time="0.001" classname="my-feature;my-scenario">\n' +
-            '      <system-out><![CDATA[🟩 Given a passing step]]></system-out>\n' +
-            '    </testcase>\n' +
-            '  </testsuite>\n' +
-            '</testsuites>'
+            '<testsuite failures="0" name="cucumber-js" time="0.001" tests="1">\n' +
+            '  <testcase name="my scenario" time="0.001" classname="my-feature;my-scenario">\n' +
+            '    <system-out><![CDATA[🟩 Given a passing step]]></system-out>\n' +
+            '  </testcase>\n' +
+            '</testsuite>'
         )
       })
     })
@@ -99,14 +100,12 @@ describe('JunitFormatter', () => {
         // Assert
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
-            '<testsuites>\n' +
-            '  <testsuite failures="1" name="my feature" time="0" tests="1">\n' +
-            '    <testcase name="my scenario" time="0" classname="my-feature;my-scenario">\n' +
-            '      <failure><![CDATA[error]]></failure>\n' +
-            '      <system-out><![CDATA[🟥 Given a failing step]]></system-out>\n' +
-            '    </testcase>\n' +
-            '  </testsuite>\n' +
-            '</testsuites>'
+            '<testsuite failures="1" name="cucumber-js" time="0" tests="1">\n' +
+            '  <testcase name="my scenario" time="0" classname="my-feature;my-scenario">\n' +
+            '    <failure><![CDATA[error]]></failure>\n' +
+            '    <system-out><![CDATA[🟥 Given a failing step]]></system-out>\n' +
+            '  </testcase>\n' +
+            '</testsuite>'
         )
       })
     })
@@ -138,13 +137,11 @@ describe('JunitFormatter', () => {
         // Assert
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
-            '<testsuites>\n' +
-            '  <testsuite failures="0" name="my feature" time="0" tests="1">\n' +
-            '    <testcase name="my scenario" time="0" classname="my-feature;my-scenario">\n' +
-            '      <system-out><![CDATA[🟩 Given a flaky step]]></system-out>\n' +
-            '    </testcase>\n' +
-            '  </testsuite>\n' +
-            '</testsuites>'
+            '<testsuite failures="0" name="cucumber-js" time="0" tests="1">\n' +
+            '  <testcase name="my scenario" time="0" classname="my-feature;my-scenario">\n' +
+            '    <system-out><![CDATA[🟩 Given a flaky step]]></system-out>\n' +
+            '  </testcase>\n' +
+            '</testsuite>'
         )
       })
     })
@@ -172,18 +169,16 @@ describe('JunitFormatter', () => {
         // Assert
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
-            '<testsuites>\n' +
-            '  <testsuite failures="1" name="my feature" time="0" tests="1">\n' +
-            '    <testcase name="my scenario" time="0" classname="my-feature;my-scenario">\n' +
-            '      <failure><![CDATA[Undefined step. Implement with the following snippet:\n' +
+            '<testsuite failures="1" name="cucumber-js" time="0" tests="1">\n' +
+            '  <testcase name="my scenario" time="0" classname="my-feature;my-scenario">\n' +
+            '    <failure><![CDATA[Undefined step. Implement with the following snippet:\n' +
             '  this.Given(/^a passing step$/, function(callback) {\n' +
-            '      // Write code here that turns the phrase above into concrete actions\n' +
-            "      callback(null, 'pending');\n" +
+            '    // Write code here that turns the phrase above into concrete actions\n' +
+            "    callback(null, 'pending');\n" +
             '  });]]></failure>\n' +
-            '      <system-out><![CDATA[🟨 Given a passing step]]></system-out>\n' +
-            '    </testcase>\n' +
-            '  </testsuite>\n' +
-            '</testsuites>'
+            '    <system-out><![CDATA[🟨 Given a passing step]]></system-out>\n' +
+            '  </testcase>\n' +
+            '</testsuite>'
         )
       })
     })
@@ -228,16 +223,14 @@ describe('JunitFormatter', () => {
         // Assert
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
-            '<testsuites>\n' +
-            '  <testsuite failures="0" name="my feature" time="0.002" tests="2">\n' +
-            '    <testcase name="first example" time="0.001" classname="my-feature;my-rule;first-example">\n' +
-            '      <system-out><![CDATA[🟩 Given a passing step]]></system-out>\n' +
-            '    </testcase>\n' +
-            '    <testcase name="second example" time="0.001" classname="my-feature;my-rule;second-example">\n' +
-            '      <system-out><![CDATA[🟩 Given a passing step]]></system-out>\n' +
-            '    </testcase>\n' +
-            '  </testsuite>\n' +
-            '</testsuites>'
+            '<testsuite failures="0" name="cucumber-js" time="0.002" tests="2">\n' +
+            '  <testcase name="first example" time="0.001" classname="my-feature;my-rule;first-example">\n' +
+            '    <system-out><![CDATA[🟩 Given a passing step]]></system-out>\n' +
+            '  </testcase>\n' +
+            '  <testcase name="second example" time="0.001" classname="my-feature;my-rule;second-example">\n' +
+            '    <system-out><![CDATA[🟩 Given a passing step]]></system-out>\n' +
+            '  </testcase>\n' +
+            '</testsuite>'
         )
       })
     })

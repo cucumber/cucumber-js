@@ -5,19 +5,14 @@ import Formatter, { IFormatterOptions } from './'
 import * as messages from '@cucumber/messages'
 import { Attachment, Duration, TestStepResultStatus } from '@cucumber/messages'
 import { ITestCaseAttempt } from './helpers/event_data_collector'
-import { doesHaveValue, doesNotHaveValue } from '../value_checker'
+import { doesHaveValue } from '../value_checker'
 import {
   getGherkinExampleRuleMap,
   getGherkinStepMap,
 } from './helpers/gherkin_document_parser'
 import { getPickleStepMap, getStepKeyword } from './helpers/pickle_parser'
 
-interface UriToTestCaseAttemptsMap {
-  [uri: string]: ITestCaseAttempt[]
-}
-
 interface IJUnitTestSuite {
-  id: string
   name: string
   failures: number
   time: number
@@ -78,26 +73,10 @@ export default class JunitFormatter extends Formatter {
     })
   }
 
-  private getGroupedTestCases() {
+  private getTestCases() {
     return this.eventDataCollector
       .getTestCaseAttempts()
-      .reduce<UriToTestCaseAttemptsMap>(
-        (
-          attempts: UriToTestCaseAttemptsMap,
-          testCaseAttempt: ITestCaseAttempt
-        ) => {
-          if (!testCaseAttempt.willBeRetried) {
-            const { uri } = testCaseAttempt.pickle
-            if (doesNotHaveValue(attempts[uri])) {
-              // eslint-disable-next-line no-param-reassign
-              attempts[uri] = []
-            }
-            attempts[uri].push(testCaseAttempt)
-          }
-          return attempts
-        },
-        {}
-      )
+      .filter((attempt) => !attempt.willBeRetried)
   }
 
   private getTestSteps(
@@ -189,8 +168,8 @@ export default class JunitFormatter extends Formatter {
           `  this.${firstFailed.keyword.trim()}(/^${
             firstFailed.name
           }$/, function(callback) {\n` +
-          `      // Write code here that turns the phrase above into concrete actions\n` +
-          `      callback(null, 'pending');\n` +
+          `    // Write code here that turns the phrase above into concrete actions\n` +
+          `    callback(null, 'pending');\n` +
           `  });`
         )
       default:
@@ -259,78 +238,68 @@ export default class JunitFormatter extends Formatter {
   }
 
   onTestRunFinished(): void {
-    const attempts = this.getGroupedTestCases()
+    const testCases = this.getTestCases()
 
-    const testSuites = Object.keys(attempts).map<IJUnitTestSuite>((uri) => {
-      const group = attempts[uri]
-      const { gherkinDocument } = group[0]
-      const feature = gherkinDocument.feature
-      const gherkinStepMap = getGherkinStepMap(gherkinDocument)
-      const gherkinExampleRuleMap = getGherkinExampleRuleMap(gherkinDocument)
+    const tests = testCases.map<IJUnitTestCase>(
+      (testCaseAttempt: ITestCaseAttempt) => {
+        const { gherkinDocument, pickle } = testCaseAttempt
+        const { feature } = gherkinDocument
+        const gherkinStepMap = getGherkinStepMap(gherkinDocument)
+        const gherkinExampleRuleMap = getGherkinExampleRuleMap(gherkinDocument)
+        const pickleStepMap = getPickleStepMap(pickle)
 
-      const tests = group.map<IJUnitTestCase>(
-        (testCaseAttempt: ITestCaseAttempt) => {
-          const { pickle } = testCaseAttempt
-          const pickleStepMap = getPickleStepMap(pickle)
+        const steps = this.getTestSteps(
+          testCaseAttempt,
+          gherkinStepMap,
+          pickleStepMap
+        )
+        const stepDuration = steps.reduce(
+          (total, step) => total + (step.result.duration || 0),
+          0
+        )
 
-          const steps = this.getTestSteps(
-            testCaseAttempt,
-            gherkinStepMap,
-            pickleStepMap
-          )
-          const stepDuration = steps.reduce(
-            (total, step) => total + (step.result.duration || 0),
-            0
-          )
-
-          return {
-            id: this.formatScenarioId({
-              feature,
-              pickle,
-              gherkinExampleRuleMap,
-            }),
-            name: pickle.name,
-            time: stepDuration,
-            result: this.getTestcaseResult(steps),
-            systemOutput: this.formatTestSteps(steps),
-            steps,
-          }
+        return {
+          id: this.formatScenarioId({
+            feature,
+            pickle,
+            gherkinExampleRuleMap,
+          }),
+          name: pickle.name,
+          time: stepDuration,
+          result: this.getTestcaseResult(steps),
+          systemOutput: this.formatTestSteps(steps),
+          steps,
         }
-      )
-
-      return {
-        id: this.convertNameToId(feature),
-        name: feature.name,
-        tests,
-        failures: tests.filter((test) => !test.result.success).length,
-        time: tests.reduce((total, test) => total + test.time, 0),
       }
-    })
+    )
 
-    this.log(this.buildXmlReport(testSuites))
+    const testSuite: IJUnitTestSuite = {
+      name: 'cucumber-js',
+      tests,
+      failures: tests.filter((test) => !test.result.success).length,
+      time: tests.reduce((total, test) => total + test.time, 0),
+    }
+
+    this.log(this.buildXmlReport(testSuite))
   }
 
-  buildXmlReport(testSuites: IJUnitTestSuite[]): string {
-    const xmlReport = xmlbuilder.create('testsuites')
-
-    testSuites.forEach((suite) => {
-      const xmlSuite = xmlReport.ele('testsuite', {
-        failures: suite.failures,
-        name: suite.name,
-        time: suite.time,
-        tests: suite.tests.length,
+  buildXmlReport(testSuite: IJUnitTestSuite): string {
+    const xmlReport = xmlbuilder
+      .create('testsuite')
+      .att('failures', testSuite.failures)
+      .att('name', testSuite.name)
+      .att('time', testSuite.time)
+      .att('tests', testSuite.tests.length)
+    testSuite.tests.forEach((test) => {
+      const xmlTestCase = xmlReport.ele('testcase', {
+        name: test.name,
+        time: test.time,
+        classname: test.id,
       })
-      suite.tests.forEach((test) => {
-        const xmlTestcase = xmlSuite.ele('testcase', {
-          name: test.name,
-          time: test.time,
-          classname: test.id,
-        })
-        if (!test.result.success) {
-          xmlTestcase.ele('failure', {}).cdata(test.result.errorMessage)
-        }
-        xmlTestcase.ele('system-out', {}).cdata(test.systemOutput)
-      })
+      if (!test.result.success) {
+        xmlTestCase.ele('failure', {}).cdata(test.result.errorMessage)
+      }
+      xmlTestCase.ele('system-out', {}).cdata(test.systemOutput)
     })
 
     return xmlReport.end({ pretty: true })
