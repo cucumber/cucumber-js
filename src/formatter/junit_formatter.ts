@@ -1,5 +1,3 @@
-import path from 'path'
-
 import xmlbuilder from 'xmlbuilder'
 import Formatter, { IFormatterOptions } from './'
 import * as messages from '@cucumber/messages'
@@ -26,7 +24,7 @@ interface IJUnitTestSuite {
 }
 
 interface IJUnitTestCase {
-  id: string
+  classname: string
   name: string
   time: number
   result: IJUnitTestCaseResult
@@ -140,12 +138,6 @@ export default class JunitFormatter extends Formatter {
     }
   }
 
-  private convertNameToId(
-    obj: messages.Feature | messages.Pickle | messages.Rule
-  ): string {
-    return obj.name.replace(/ /g, '-').toLowerCase()
-  }
-
   private durationToSeconds(duration: Duration): number {
     const NANOS_IN_SECOND = 1_000_000_000
     return (
@@ -153,7 +145,7 @@ export default class JunitFormatter extends Formatter {
     )
   }
 
-  private formatScenarioId({
+  private formatClassname({
     feature,
     pickle,
     gherkinExampleRuleMap,
@@ -162,14 +154,14 @@ export default class JunitFormatter extends Formatter {
     pickle: messages.Pickle
     gherkinExampleRuleMap: Record<string, messages.Rule>
   }): string {
-    let parts: (messages.Feature | messages.Pickle | messages.Rule)[]
+    let parts: (messages.Feature | messages.Rule)[]
     const rule = gherkinExampleRuleMap[pickle.astNodeIds[0]]
     if (doesHaveValue(rule)) {
-      parts = [feature, rule, pickle]
+      parts = [feature, rule]
     } else {
-      parts = [feature, pickle]
+      parts = [feature]
     }
-    return parts.map((part) => this.convertNameToId(part)).join(';')
+    return parts.map((part) => part.name).join('; ')
   }
 
   private formatTestSteps(steps: IJUnitTestStep[]): string {
@@ -208,7 +200,7 @@ export default class JunitFormatter extends Formatter {
         )
 
         return {
-          id: this.formatScenarioId({
+          classname: this.formatClassname({
             feature,
             pickle,
             gherkinExampleRuleMap,
@@ -241,9 +233,9 @@ export default class JunitFormatter extends Formatter {
       .att('tests', testSuite.tests.length)
     testSuite.tests.forEach((test) => {
       const xmlTestCase = xmlReport.ele('testcase', {
+        classname: test.classname,
         name: test.name,
         time: test.time,
-        classname: test.id,
       })
       if (!test.result.success) {
         const xmlFailure = xmlTestCase.ele('failure', {

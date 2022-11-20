@@ -66,7 +66,7 @@ describe('JunitFormatter', () => {
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
             '<testsuite failures="0" name="cucumber-js" time="0.001" tests="1">\n' +
-            '  <testcase name="my scenario" time="0.001" classname="my-feature;my-scenario">\n' +
+            '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
             '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
@@ -101,7 +101,7 @@ describe('JunitFormatter', () => {
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
             '<testsuite failures="1" name="cucumber-js" time="0" tests="1">\n' +
-            '  <testcase name="my scenario" time="0" classname="my-feature;my-scenario">\n' +
+            '  <testcase classname="my feature" name="my scenario" time="0">\n' +
             '    <failure type="FAILED" message="A hook or step failed"><![CDATA[error]]></failure>\n' +
             '    <system-out><![CDATA[Given a failing step......................................................failed]]></system-out>\n' +
             '  </testcase>\n' +
@@ -138,7 +138,7 @@ describe('JunitFormatter', () => {
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
             '<testsuite failures="0" name="cucumber-js" time="0" tests="1">\n' +
-            '  <testcase name="my scenario" time="0" classname="my-feature;my-scenario">\n' +
+            '  <testcase classname="my feature" name="my scenario" time="0">\n' +
             '    <system-out><![CDATA[Given a flaky step........................................................passed]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
@@ -170,7 +170,7 @@ describe('JunitFormatter', () => {
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
             '<testsuite failures="1" name="cucumber-js" time="0" tests="1">\n' +
-            '  <testcase name="my scenario" time="0" classname="my-feature;my-scenario">\n' +
+            '  <testcase classname="my feature" name="my scenario" time="0">\n' +
             '    <failure type="UNDEFINED" message="A step in the test case is not defined"/>\n' +
             '    <system-out><![CDATA[Given a passing step...................................................undefined]]></system-out>\n' +
             '  </testcase>\n' +
@@ -220,10 +220,10 @@ describe('JunitFormatter', () => {
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
             '<testsuite failures="0" name="cucumber-js" time="0.002" tests="2">\n' +
-            '  <testcase name="first example" time="0.001" classname="my-feature;my-rule;first-example">\n' +
+            '  <testcase classname="my feature; my rule" name="first example" time="0.001">\n' +
             '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
             '  </testcase>\n' +
-            '  <testcase name="second example" time="0.001" classname="my-feature;my-rule;second-example">\n' +
+            '  <testcase classname="my feature; my rule" name="second example" time="0.001">\n' +
             '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
