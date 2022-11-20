@@ -180,6 +180,52 @@ describe('JunitFormatter', () => {
     })
   })
 
+  describe('scenario outline with several examples', () => {
+    it('outputs one test case per example with unique names', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: [
+            'Feature: my feature',
+            '',
+            '  Scenario Outline: my templated scenario',
+            '    Given a <status> step',
+            '  Examples:',
+            '    | status  |',
+            '    | passing |',
+            '    | failing |',
+            '',
+
+          ].join('\n'),
+          uri: 'a.feature',
+        },
+      ]
+
+      const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+
+      // Act
+      const output = await testFormatter({
+        sources,
+        supportCodeLibrary,
+        type: 'junit',
+      })
+
+      // Assert
+      expect(output).xml.to.deep.equal(
+        '<?xml version="1.0"?>\n' +
+        '<testsuite failures="1" name="cucumber-js" time="0.001" tests="2">\n' +
+        '  <testcase classname="my feature" name="my templated scenario" time="0.001">\n' +
+        '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
+        '  </testcase>\n' +
+        '  <testcase classname="my feature" name="my templated scenario" time="0">\n' +
+        '    <failure type="FAILED" message="A hook or step failed"><![CDATA[error]]></failure>\n' +
+        '    <system-out><![CDATA[Given a failing step......................................................failed]]></system-out>\n' +
+        '  </testcase>\n' +
+        '</testsuite>'
+      )
+    })
+  })
+
   describe('one rule with several examples (scenarios)', () => {
     describe('passed', () => {
       it('outputs the feature', async () => {
