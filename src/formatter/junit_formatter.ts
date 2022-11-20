@@ -3,7 +3,13 @@ import path from 'path'
 import xmlbuilder from 'xmlbuilder'
 import Formatter, { IFormatterOptions } from './'
 import * as messages from '@cucumber/messages'
-import { Attachment, Duration, TestStepResultStatus } from '@cucumber/messages'
+import {
+  Attachment,
+  Duration,
+  getWorstTestStepResult,
+  TestStepResult,
+  TestStepResultStatus,
+} from '@cucumber/messages'
 import { ITestCaseAttempt } from './helpers/event_data_collector'
 import { doesHaveValue } from '../value_checker'
 import {
@@ -29,8 +35,9 @@ interface IJUnitTestCase {
 }
 
 interface IJUnitTestCaseResult {
+  status: TestStepResultStatus
   success: boolean
-  errorMessage?: string
+  message?: string
 }
 
 interface IJUnitTestStep {
@@ -40,11 +47,8 @@ interface IJUnitTestStep {
   line: number
   name?: string
   location?: string
-  result: {
-    status: messages.TestStepResultStatus
-    errorMessage?: string
-    duration: number
-  }
+  result: TestStepResult
+  time: number
 }
 
 interface IBuildJUnitTestStepOptions {
@@ -59,6 +63,16 @@ interface IBuildJUnitTestStepOptions {
 interface ILineAndUri {
   line: number
   uri: string
+}
+
+const statusDescriptions: Record<TestStepResultStatus, string> = {
+  UNKNOWN: `A result couldn't be established`,
+  PASSED: 'Everything went fine',
+  SKIPPED: 'The test case was skipped',
+  PENDING: 'A step in the test case is not yet implemented',
+  UNDEFINED: 'A step in the test case is not defined',
+  AMBIGUOUS: 'Multiple definitions match one of the steps in the test case',
+  FAILED: 'A hook or step failed',
 }
 
 export default class JunitFormatter extends Formatter {
@@ -121,59 +135,20 @@ export default class JunitFormatter extends Formatter {
       )
       data.location = this.formatLocation(stepDefinition)
     }
-    const { message, status } = testStepResult
-    data.result = {
-      status: messages.TestStepResultStatus[status],
-      duration: testStepResult.duration
-        ? this.durationToSeconds(testStepResult.duration)
-        : 0,
-    }
-    if (
-      status === messages.TestStepResultStatus.FAILED &&
-      doesHaveValue(message)
-    ) {
-      data.result.errorMessage = message
-    }
+    data.result = testStepResult
+    data.time = testStepResult.duration
+      ? this.durationToSeconds(testStepResult.duration)
+      : 0
     data.attachments = testStepAttachments
     return data as IJUnitTestStep
   }
 
   private getTestcaseResult(steps: IJUnitTestStep[]): IJUnitTestCaseResult {
-    const result: IJUnitTestCaseResult = {
-      success: steps.every(
-        (step) => step.result.status === TestStepResultStatus.PASSED
-      ),
-    }
-
-    if (!result.success) {
-      result.errorMessage = this.getTestcaseErrorMessage(steps)
-    }
-
-    return result
-  }
-
-  private getTestcaseErrorMessage(steps: IJUnitTestStep[]): string | undefined {
-    const firstFailed = steps.find(
-      (step) => step.result.status !== TestStepResultStatus.PASSED
-    )
-
-    switch (firstFailed?.result.status) {
-      case TestStepResultStatus.FAILED:
-        return firstFailed.result.errorMessage
-      case TestStepResultStatus.PENDING:
-        return 'Pending'
-      case TestStepResultStatus.UNDEFINED:
-        return (
-          `Undefined step. Implement with the following snippet:\n` +
-          `  this.${firstFailed.keyword.trim()}(/^${
-            firstFailed.name
-          }$/, function(callback) {\n` +
-          `    // Write code here that turns the phrase above into concrete actions\n` +
-          `    callback(null, 'pending');\n` +
-          `  });`
-        )
-      default:
-        return undefined
+    const worstResult = getWorstTestStepResult(steps.map((step) => step.result))
+    return {
+      status: worstResult.status,
+      success: worstResult.status === TestStepResultStatus.PASSED,
+      message: worstResult.message,
     }
   }
 
@@ -220,14 +195,14 @@ export default class JunitFormatter extends Formatter {
   formatTestSteps(steps: IJUnitTestStep[]): string {
     return steps
       .filter((step) => !step.hidden)
-      .map(
-        (step) => {
-          const statusText = step.result.status.toLowerCase();
-          const maxLength = 80 - statusText.length - 3
-          const stepText = `${step.keyword}${step.name}`.padEnd(maxLength, '.').substring(0, maxLength)
-          return `${stepText}...${statusText}`;
-        }
-      )
+      .map((step) => {
+        const statusText = step.result.status.toLowerCase()
+        const maxLength = 80 - statusText.length - 3
+        const stepText = `${step.keyword}${step.name}`
+          .padEnd(maxLength, '.')
+          .substring(0, maxLength)
+        return `${stepText}...${statusText}`
+      })
       .join('\n')
   }
 
@@ -248,7 +223,7 @@ export default class JunitFormatter extends Formatter {
           pickleStepMap
         )
         const stepDuration = steps.reduce(
-          (total, step) => total + (step.result.duration || 0),
+          (total, step) => total + (step.time || 0),
           0
         )
 
@@ -291,7 +266,13 @@ export default class JunitFormatter extends Formatter {
         classname: test.id,
       })
       if (!test.result.success) {
-        xmlTestCase.ele('failure', {}).cdata(test.result.errorMessage)
+        const failureElement = xmlTestCase.ele('failure', {
+          type: test.result.status,
+          message: statusDescriptions[test.result.status],
+        })
+        if (test.result.message) {
+          failureElement.cdata(test.result.message)
+        }
       }
       xmlTestCase.ele('system-out', {}).cdata(test.systemOutput)
     })

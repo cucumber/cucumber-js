@@ -102,7 +102,7 @@ describe('JunitFormatter', () => {
           '<?xml version="1.0"?>\n' +
             '<testsuite failures="1" name="cucumber-js" time="0" tests="1">\n' +
             '  <testcase name="my scenario" time="0" classname="my-feature;my-scenario">\n' +
-            '    <failure><![CDATA[error]]></failure>\n' +
+            '    <failure type="FAILED" message="A hook or step failed"><![CDATA[error]]></failure>\n' +
             '    <system-out><![CDATA[Given a failing step......................................................failed]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
@@ -171,11 +171,7 @@ describe('JunitFormatter', () => {
           '<?xml version="1.0"?>\n' +
             '<testsuite failures="1" name="cucumber-js" time="0" tests="1">\n' +
             '  <testcase name="my scenario" time="0" classname="my-feature;my-scenario">\n' +
-            '    <failure><![CDATA[Undefined step. Implement with the following snippet:\n' +
-            '  this.Given(/^a passing step$/, function(callback) {\n' +
-            '    // Write code here that turns the phrase above into concrete actions\n' +
-            "    callback(null, 'pending');\n" +
-            '  });]]></failure>\n' +
+            '    <failure type="UNDEFINED" message="A step in the test case is not defined"/>\n' +
             '    <system-out><![CDATA[Given a passing step...................................................undefined]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
