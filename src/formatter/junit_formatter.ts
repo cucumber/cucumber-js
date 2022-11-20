@@ -46,7 +46,6 @@ interface IJUnitTestStep {
   keyword: string
   line: number
   name?: string
-  location?: string
   result: TestStepResult
   time: number
 }
@@ -58,11 +57,6 @@ interface IBuildJUnitTestStepOptions {
   testStep: messages.TestStep
   testStepAttachments: messages.Attachment[]
   testStepResult: messages.TestStepResult
-}
-
-interface ILineAndUri {
-  line: number
-  uri: string
 }
 
 const statusDescriptions: Record<TestStepResultStatus, string> = {
@@ -129,12 +123,6 @@ export default class JunitFormatter extends Formatter {
       data.keyword = isBeforeHook ? 'Before' : 'After'
       data.hidden = true
     }
-    if (testStep.stepDefinitionIds && testStep.stepDefinitionIds.length === 1) {
-      const stepDefinition = this.supportCodeLibrary.stepDefinitions.find(
-        (s) => s.id === testStep.stepDefinitionIds[0]
-      )
-      data.location = this.formatLocation(stepDefinition)
-    }
     data.result = testStepResult
     data.time = testStepResult.duration
       ? this.durationToSeconds(testStepResult.duration)
@@ -184,15 +172,7 @@ export default class JunitFormatter extends Formatter {
     return parts.map((part) => this.convertNameToId(part)).join(';')
   }
 
-  formatLocation(obj: ILineAndUri, cwd?: string): string {
-    let { uri } = obj
-    if (cwd) {
-      uri = path.relative(cwd, uri)
-    }
-    return `${uri}:${obj.line.toString()}`
-  }
-
-  formatTestSteps(steps: IJUnitTestStep[]): string {
+  private formatTestSteps(steps: IJUnitTestStep[]): string {
     return steps
       .filter((step) => !step.hidden)
       .map((step) => {
@@ -206,7 +186,7 @@ export default class JunitFormatter extends Formatter {
       .join('\n')
   }
 
-  onTestRunFinished(): void {
+  private onTestRunFinished(): void {
     const testCases = this.getTestCases()
 
     const tests = testCases.map<IJUnitTestCase>(
@@ -252,7 +232,7 @@ export default class JunitFormatter extends Formatter {
     this.log(this.buildXmlReport(testSuite))
   }
 
-  buildXmlReport(testSuite: IJUnitTestSuite): string {
+  private buildXmlReport(testSuite: IJUnitTestSuite): string {
     const xmlReport = xmlbuilder
       .create('testsuite')
       .att('failures', testSuite.failures)
