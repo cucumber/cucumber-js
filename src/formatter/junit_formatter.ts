@@ -246,12 +246,12 @@ export default class JunitFormatter extends Formatter {
         classname: test.id,
       })
       if (!test.result.success) {
-        const failureElement = xmlTestCase.ele('failure', {
+        const xmlFailure = xmlTestCase.ele('failure', {
           type: test.result.status,
           message: statusDescriptions[test.result.status],
         })
         if (test.result.message) {
-          failureElement.cdata(test.result.message)
+          xmlFailure.cdata(test.result.message)
         }
       }
       xmlTestCase.ele('system-out', {}).cdata(test.systemOutput)
