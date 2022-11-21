@@ -180,6 +180,47 @@ describe('JunitFormatter', () => {
     })
   })
 
+  describe('one scenario with a background', () => {
+    it('outputs the feature', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: [
+            'Feature: my feature',
+            '',
+            '  Background:',
+            '    Given a passing step',
+            '',
+            '  Scenario: my scenario',
+            '',
+            '    When a passing step',
+          ].join('\n'),
+          uri: 'a.feature',
+        },
+      ]
+
+      const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+
+      // Act
+      const output = await testFormatter({
+        sources,
+        supportCodeLibrary,
+        type: 'junit',
+      })
+
+      // Assert
+      expect(output).xml.to.deep.equal(
+        '<?xml version="1.0"?>\n' +
+        '<testsuite failures="0" name="cucumber-js" time="0.002" tests="1">\n' +
+        '  <testcase classname="my feature" name="my scenario" time="0.002">\n' +
+        '    <system-out><![CDATA[Given a passing step......................................................passed\n' +
+        'When a passing step.......................................................passed]]></system-out>\n' +
+        '  </testcase>\n' +
+        '</testsuite>'
+      )
+    })
+  })
+
   describe('scenario outline with several examples', () => {
     it('outputs one test case per example with unique names', async () => {
       // Arrange
