@@ -4,7 +4,10 @@ import * as messages from '@cucumber/messages'
 import {
   Attachment,
   Duration,
+  Feature,
   getWorstTestStepResult,
+  Pickle,
+  Rule,
   TestStepResult,
   TestStepResultStatus,
 } from '@cucumber/messages'
@@ -68,6 +71,7 @@ const statusDescriptions: Record<TestStepResultStatus, string> = {
 }
 
 export default class JunitFormatter extends Formatter {
+  private readonly names: Record<string, string[]> = {}
   public static readonly documentation: string = 'Outputs JUnit report'
 
   constructor(options: IFormatterOptions) {
@@ -129,7 +133,7 @@ export default class JunitFormatter extends Formatter {
     return data as IJUnitTestStep
   }
 
-  private getTestcaseResult(steps: IJUnitTestStep[]): IJUnitTestCaseResult {
+  private getTestCaseResult(steps: IJUnitTestStep[]): IJUnitTestCaseResult {
     const worstResult = getWorstTestStepResult(steps.map((step) => step.result))
     return {
       status: worstResult.status,
@@ -164,6 +168,29 @@ export default class JunitFormatter extends Formatter {
     return parts.map((part) => part.name).join('; ')
   }
 
+  private getTestCaseName(
+    feature: Feature,
+    rule: Rule | undefined,
+    pickle: Pickle
+  ) {
+    const featureName = feature.name
+    const testCaseName = rule ? rule.name + ': ' + pickle.name : pickle.name
+    if (!this.names[featureName]) {
+      this.names[featureName] = []
+    }
+    let index = 0
+    while (
+      this.names[featureName].includes(
+        index > 0 ? `${testCaseName} [${index}]` : testCaseName
+      )
+    ) {
+      index++
+    }
+    const name = index > 0 ? `${testCaseName} [${index}]` : testCaseName
+    this.names[featureName].push(name)
+    return name
+  }
+
   private formatTestSteps(steps: IJUnitTestStep[]): string {
     return steps
       .filter((step) => !step.hidden)
@@ -185,8 +212,9 @@ export default class JunitFormatter extends Formatter {
       (testCaseAttempt: ITestCaseAttempt) => {
         const { gherkinDocument, pickle } = testCaseAttempt
         const { feature } = gherkinDocument
-        const gherkinStepMap = getGherkinStepMap(gherkinDocument)
         const gherkinExampleRuleMap = getGherkinExampleRuleMap(gherkinDocument)
+        const rule = gherkinExampleRuleMap[pickle.astNodeIds[0]]
+        const gherkinStepMap = getGherkinStepMap(gherkinDocument)
         const pickleStepMap = getPickleStepMap(pickle)
 
         const steps = this.getTestSteps(
@@ -200,14 +228,10 @@ export default class JunitFormatter extends Formatter {
         )
 
         return {
-          classname: this.formatClassname({
-            feature,
-            pickle,
-            gherkinExampleRuleMap,
-          }),
-          name: pickle.name,
+          classname: feature.name,
+          name: this.getTestCaseName(feature, rule, pickle),
           time: stepDuration,
-          result: this.getTestcaseResult(steps),
+          result: this.getTestCaseResult(steps),
           systemOutput: this.formatTestSteps(steps),
           steps,
         }

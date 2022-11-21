@@ -195,7 +195,6 @@ describe('JunitFormatter', () => {
             '    | passing |',
             '    | failing |',
             '',
-
           ].join('\n'),
           uri: 'a.feature',
         },
@@ -213,15 +212,15 @@ describe('JunitFormatter', () => {
       // Assert
       expect(output).xml.to.deep.equal(
         '<?xml version="1.0"?>\n' +
-        '<testsuite failures="1" name="cucumber-js" time="0.001" tests="2">\n' +
-        '  <testcase classname="my feature" name="my templated scenario" time="0.001">\n' +
-        '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
-        '  </testcase>\n' +
-        '  <testcase classname="my feature" name="my templated scenario" time="0">\n' +
-        '    <failure type="FAILED" message="A hook or step failed"><![CDATA[error]]></failure>\n' +
-        '    <system-out><![CDATA[Given a failing step......................................................failed]]></system-out>\n' +
-        '  </testcase>\n' +
-        '</testsuite>'
+          '<testsuite failures="1" name="cucumber-js" time="0.001" tests="2">\n' +
+          '  <testcase classname="my feature" name="my templated scenario" time="0.001">\n' +
+          '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
+          '  </testcase>\n' +
+          '  <testcase classname="my feature" name="my templated scenario [1]" time="0">\n' +
+          '    <failure type="FAILED" message="A hook or step failed"><![CDATA[error]]></failure>\n' +
+          '    <system-out><![CDATA[Given a failing step......................................................failed]]></system-out>\n' +
+          '  </testcase>\n' +
+          '</testsuite>'
       )
     })
   })
@@ -266,10 +265,10 @@ describe('JunitFormatter', () => {
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
             '<testsuite failures="0" name="cucumber-js" time="0.002" tests="2">\n' +
-            '  <testcase classname="my feature; my rule" name="first example" time="0.001">\n' +
+            '  <testcase classname="my feature" name="my rule: first example" time="0.001">\n' +
             '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
             '  </testcase>\n' +
-            '  <testcase classname="my feature; my rule" name="second example" time="0.001">\n' +
+            '  <testcase classname="my feature" name="my rule: second example" time="0.001">\n' +
             '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
