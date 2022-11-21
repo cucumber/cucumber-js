@@ -276,4 +276,54 @@ describe('JunitFormatter', () => {
       })
     })
   })
+
+  describe('unnamed features/rules/scenarios', () => {
+    it('defaults the names', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: [
+            'Feature:',
+            '  my feature description',
+            '',
+            '  Rule:',
+            '    my rule description',
+            '',
+            '    Example:',
+            '      first example description',
+            '',
+            '      Given a passing step',
+            '',
+            '    Example:',
+            '      second example description',
+            '',
+            '      Given a passing step',
+          ].join('\n'),
+          uri: 'a.feature',
+        },
+      ]
+
+      const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+
+      // Act
+      const output = await testFormatter({
+        sources,
+        supportCodeLibrary,
+        type: 'junit',
+      })
+
+      // Assert
+      expect(output).xml.to.deep.equal(
+        '<?xml version="1.0"?>\n' +
+          '<testsuite failures="0" name="cucumber-js" time="0.002" tests="2">\n' +
+          '  <testcase classname="(unnamed feature)" name="(unnamed rule): (unnamed scenario)" time="0.001">\n' +
+          '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
+          '  </testcase>\n' +
+          '  <testcase classname="(unnamed feature)" name="(unnamed rule): (unnamed scenario) [1]" time="0.001">\n' +
+          '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
+          '  </testcase>\n' +
+          '</testsuite>'
+      )
+    })
+  })
 })

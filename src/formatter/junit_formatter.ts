@@ -149,23 +149,11 @@ export default class JunitFormatter extends Formatter {
     )
   }
 
-  private formatClassname({
-    feature,
-    pickle,
-    gherkinExampleRuleMap,
-  }: {
-    feature: messages.Feature
-    pickle: messages.Pickle
-    gherkinExampleRuleMap: Record<string, messages.Rule>
-  }): string {
-    let parts: (messages.Feature | messages.Rule)[]
-    const rule = gherkinExampleRuleMap[pickle.astNodeIds[0]]
-    if (doesHaveValue(rule)) {
-      parts = [feature, rule]
-    } else {
-      parts = [feature]
+  private nameOrDefault(name: string, fallbackSuffix: string): string {
+    if (!name) {
+      return `(unnamed ${fallbackSuffix})`
     }
-    return parts.map((part) => part.name).join('; ')
+    return name
   }
 
   private getTestCaseName(
@@ -173,8 +161,11 @@ export default class JunitFormatter extends Formatter {
     rule: Rule | undefined,
     pickle: Pickle
   ) {
-    const featureName = feature.name
-    const testCaseName = rule ? rule.name + ': ' + pickle.name : pickle.name
+    const featureName = this.nameOrDefault(feature.name, 'feature')
+    const pickleName = this.nameOrDefault(pickle.name, 'scenario')
+    const testCaseName = rule
+      ? this.nameOrDefault(rule.name, 'rule') + ': ' + pickleName
+      : pickleName
     if (!this.names[featureName]) {
       this.names[featureName] = []
     }
@@ -228,7 +219,7 @@ export default class JunitFormatter extends Formatter {
         )
 
         return {
-          classname: feature.name,
+          classname: this.nameOrDefault(feature.name, 'feature'),
           name: this.getTestCaseName(feature, rule, pickle),
           time: stepDuration,
           result: this.getTestCaseResult(steps),
