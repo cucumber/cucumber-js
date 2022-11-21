@@ -4,9 +4,38 @@ import chaiXml from 'chai-xml'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 import { testFormatter } from '../../test/formatter_helpers'
-import { getJsonFormatterSupportCodeLibrary } from '../../test/fixtures/json_formatter_steps'
+import { ISupportCodeLibrary } from "../support_code_library_builder/types";
+import { buildSupportCodeLibrary } from "../../test/runtime_helpers";
 
 use(chaiXml)
+
+function getJUnitFormatterSupportCodeLibrary(
+  clock: InstalledClock
+): ISupportCodeLibrary {
+  return buildSupportCodeLibrary(__dirname, ({ Before, After, Given }) => {
+    Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+    After(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+
+    Given('a passing step', function () {
+      clock.tick(1)
+    })
+
+    let willPass = false
+    Given('a flaky step', function () {
+      clock.tick(1)
+      if (willPass) {
+        return
+      }
+      willPass = true
+      throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+    })
+
+    Given('a failing step', function () {
+      clock.tick(1)
+      throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+    })
+  })
+}
 
 describe('JunitFormatter', () => {
   let clock: InstalledClock
@@ -53,7 +82,7 @@ describe('JunitFormatter', () => {
           },
         ]
 
-        const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+        const supportCodeLibrary = getJUnitFormatterSupportCodeLibrary(clock)
 
         // Act
         const output = await testFormatter({
@@ -88,7 +117,7 @@ describe('JunitFormatter', () => {
           },
         ]
 
-        const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+        const supportCodeLibrary = getJUnitFormatterSupportCodeLibrary(clock)
 
         // Act
         const output = await testFormatter({
@@ -100,8 +129,8 @@ describe('JunitFormatter', () => {
         // Assert
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
-            '<testsuite failures="1" name="cucumber-js" time="0" tests="1">\n' +
-            '  <testcase classname="my feature" name="my scenario" time="0">\n' +
+            '<testsuite failures="1" name="cucumber-js" time="0.001" tests="1">\n' +
+            '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
             '    <failure type="FAILED" message="A hook or step failed"><![CDATA[error]]></failure>\n' +
             '    <system-out><![CDATA[Given a failing step......................................................failed]]></system-out>\n' +
             '  </testcase>\n' +
@@ -124,7 +153,7 @@ describe('JunitFormatter', () => {
           },
         ]
 
-        const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+        const supportCodeLibrary = getJUnitFormatterSupportCodeLibrary(clock)
 
         // Act
         const output = await testFormatter({
@@ -137,8 +166,8 @@ describe('JunitFormatter', () => {
         // Assert
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
-            '<testsuite failures="0" name="cucumber-js" time="0" tests="1">\n' +
-            '  <testcase classname="my feature" name="my scenario" time="0">\n' +
+            '<testsuite failures="0" name="cucumber-js" time="0.001" tests="1">\n' +
+            '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
             '    <system-out><![CDATA[Given a flaky step........................................................passed]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
@@ -199,7 +228,7 @@ describe('JunitFormatter', () => {
         },
       ]
 
-      const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+      const supportCodeLibrary = getJUnitFormatterSupportCodeLibrary(clock)
 
       // Act
       const output = await testFormatter({
@@ -211,12 +240,12 @@ describe('JunitFormatter', () => {
       // Assert
       expect(output).xml.to.deep.equal(
         '<?xml version="1.0"?>\n' +
-        '<testsuite failures="0" name="cucumber-js" time="0.002" tests="1">\n' +
-        '  <testcase classname="my feature" name="my scenario" time="0.002">\n' +
-        '    <system-out><![CDATA[Given a passing step......................................................passed\n' +
-        'When a passing step.......................................................passed]]></system-out>\n' +
-        '  </testcase>\n' +
-        '</testsuite>'
+          '<testsuite failures="0" name="cucumber-js" time="0.002" tests="1">\n' +
+          '  <testcase classname="my feature" name="my scenario" time="0.002">\n' +
+          '    <system-out><![CDATA[Given a passing step......................................................passed\n' +
+          'When a passing step.......................................................passed]]></system-out>\n' +
+          '  </testcase>\n' +
+          '</testsuite>'
       )
     })
   })
@@ -241,7 +270,7 @@ describe('JunitFormatter', () => {
         },
       ]
 
-      const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+      const supportCodeLibrary = getJUnitFormatterSupportCodeLibrary(clock)
 
       // Act
       const output = await testFormatter({
@@ -253,11 +282,11 @@ describe('JunitFormatter', () => {
       // Assert
       expect(output).xml.to.deep.equal(
         '<?xml version="1.0"?>\n' +
-          '<testsuite failures="1" name="cucumber-js" time="0.001" tests="2">\n' +
+          '<testsuite failures="1" name="cucumber-js" time="0.002" tests="2">\n' +
           '  <testcase classname="my feature" name="my templated scenario" time="0.001">\n' +
           '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
           '  </testcase>\n' +
-          '  <testcase classname="my feature" name="my templated scenario [1]" time="0">\n' +
+          '  <testcase classname="my feature" name="my templated scenario [1]" time="0.001">\n' +
           '    <failure type="FAILED" message="A hook or step failed"><![CDATA[error]]></failure>\n' +
           '    <system-out><![CDATA[Given a failing step......................................................failed]]></system-out>\n' +
           '  </testcase>\n' +
@@ -293,7 +322,7 @@ describe('JunitFormatter', () => {
           },
         ]
 
-        const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+        const supportCodeLibrary = getJUnitFormatterSupportCodeLibrary(clock)
 
         // Act
         const output = await testFormatter({
@@ -344,7 +373,7 @@ describe('JunitFormatter', () => {
         },
       ]
 
-      const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+      const supportCodeLibrary = getJUnitFormatterSupportCodeLibrary(clock)
 
       // Act
       const output = await testFormatter({
