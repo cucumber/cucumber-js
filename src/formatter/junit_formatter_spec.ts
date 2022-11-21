@@ -4,8 +4,8 @@ import chaiXml from 'chai-xml'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 import { testFormatter } from '../../test/formatter_helpers'
-import { ISupportCodeLibrary } from "../support_code_library_builder/types";
-import { buildSupportCodeLibrary } from "../../test/runtime_helpers";
+import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 
 use(chaiXml)
 
@@ -33,6 +33,11 @@ function getJUnitFormatterSupportCodeLibrary(
     Given('a failing step', function () {
       clock.tick(1)
       throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+    })
+
+    Given('a pending step', function () {
+      clock.tick(1)
+      return 'pending'
     })
   })
 }
@@ -175,8 +180,43 @@ describe('JunitFormatter', () => {
       })
     })
 
-    describe('without a step definition', () => {
+    describe('pending', () => {
       it('does not output a match attribute for the step', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: [
+              'Feature: my feature',
+              '  Scenario: my scenario',
+              '    Given a pending step',
+            ].join('\n'),
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getJUnitFormatterSupportCodeLibrary(clock)
+
+        // Act
+        const output = await testFormatter({
+          sources,
+          supportCodeLibrary,
+          type: 'junit',
+        })
+
+        // Assert
+        expect(output).xml.to.deep.equal(
+          '<?xml version="1.0"?>\n' +
+            '<testsuite failures="1" name="cucumber-js" time="0.001" tests="1">\n' +
+            '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
+            '    <failure type="PENDING" message="A step in the test case is not yet implemented"/>\n' +
+            '    <system-out><![CDATA[Given a pending step.....................................................pending]]></system-out>\n' +
+            '  </testcase>\n' +
+            '</testsuite>'
+        )
+      })
+    })
+
+    describe('without a step definition', () => {
+      it('outputs the feature', async () => {
         // Arrange
         const sources = [
           {
