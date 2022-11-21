@@ -22,6 +22,7 @@ import { getPickleStepMap, getStepKeyword } from './helpers/pickle_parser'
 interface IJUnitTestSuite {
   name: string
   failures: number
+  skipped: number
   time: number
   tests: IJUnitTestCase[]
 }
@@ -37,7 +38,6 @@ interface IJUnitTestCase {
 
 interface IJUnitTestCaseResult {
   status: TestStepResultStatus
-  success: boolean
   message?: string
 }
 
@@ -135,11 +135,7 @@ export default class JunitFormatter extends Formatter {
 
   private getTestCaseResult(steps: IJUnitTestStep[]): IJUnitTestCaseResult {
     const worstResult = getWorstTestStepResult(steps.map((step) => step.result))
-    return {
-      status: worstResult.status,
-      success: worstResult.status === TestStepResultStatus.PASSED,
-      message: worstResult.message,
-    }
+    return worstResult
   }
 
   private durationToSeconds(duration: Duration): number {
@@ -229,10 +225,19 @@ export default class JunitFormatter extends Formatter {
       }
     )
 
+    const passed = tests.filter(
+      (item) => item.result.status === TestStepResultStatus.PASSED
+    ).length
+    const skipped = tests.filter(
+      (item) => item.result.status === TestStepResultStatus.SKIPPED
+    ).length
+    const failures = tests.length - passed - skipped
+
     const testSuite: IJUnitTestSuite = {
       name: 'cucumber-js',
       tests,
-      failures: tests.filter((test) => !test.result.success).length,
+      failures,
+      skipped,
       time: tests.reduce((total, test) => total + test.time, 0),
     }
 
@@ -243,6 +248,7 @@ export default class JunitFormatter extends Formatter {
     const xmlReport = xmlbuilder
       .create('testsuite')
       .att('failures', testSuite.failures)
+      .att('skipped', testSuite.skipped)
       .att('name', testSuite.name)
       .att('time', testSuite.time)
       .att('tests', testSuite.tests.length)
@@ -252,7 +258,9 @@ export default class JunitFormatter extends Formatter {
         name: test.name,
         time: test.time,
       })
-      if (!test.result.success) {
+      if (test.result.status === TestStepResultStatus.SKIPPED) {
+        xmlTestCase.ele('skipped')
+      } else if (test.result.status !== TestStepResultStatus.PASSED) {
         const xmlFailure = xmlTestCase.ele('failure', {
           type: test.result.status,
           message: statusDescriptions[test.result.status],

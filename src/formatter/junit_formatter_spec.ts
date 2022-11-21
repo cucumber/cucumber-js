@@ -39,6 +39,10 @@ function getJUnitFormatterSupportCodeLibrary(
       clock.tick(1)
       return 'pending'
     })
+
+    Given('a skipped step', function () {
+      return 'skipped'
+    })
   })
 }
 
@@ -63,7 +67,7 @@ describe('JunitFormatter', () => {
       // Assert
       expect(output).xml.to.deep.equal(
         '<?xml version="1.0"?>\n' +
-          '<testsuite failures="0" name="cucumber-js" time="0" tests="0"/>'
+          '<testsuite failures="0" skipped="0" name="cucumber-js" time="0" tests="0"/>'
       )
     })
   })
@@ -99,7 +103,7 @@ describe('JunitFormatter', () => {
         // Assert
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
-            '<testsuite failures="0" name="cucumber-js" time="0.001" tests="1">\n' +
+            '<testsuite failures="0" skipped="0" name="cucumber-js" time="0.001" tests="1">\n' +
             '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
             '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
             '  </testcase>\n' +
@@ -134,7 +138,7 @@ describe('JunitFormatter', () => {
         // Assert
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
-            '<testsuite failures="1" name="cucumber-js" time="0.001" tests="1">\n' +
+            '<testsuite failures="1" skipped="0" name="cucumber-js" time="0.001" tests="1">\n' +
             '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
             '    <failure type="FAILED" message="A hook or step failed"><![CDATA[error]]></failure>\n' +
             '    <system-out><![CDATA[Given a failing step......................................................failed]]></system-out>\n' +
@@ -171,7 +175,7 @@ describe('JunitFormatter', () => {
         // Assert
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
-            '<testsuite failures="0" name="cucumber-js" time="0.001" tests="1">\n' +
+            '<testsuite failures="0" skipped="0" name="cucumber-js" time="0.001" tests="1">\n' +
             '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
             '    <system-out><![CDATA[Given a flaky step........................................................passed]]></system-out>\n' +
             '  </testcase>\n' +
@@ -181,7 +185,7 @@ describe('JunitFormatter', () => {
     })
 
     describe('pending', () => {
-      it('does not output a match attribute for the step', async () => {
+      it('outputs the feature', async () => {
         // Arrange
         const sources = [
           {
@@ -205,10 +209,49 @@ describe('JunitFormatter', () => {
         // Assert
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
-            '<testsuite failures="1" name="cucumber-js" time="0.001" tests="1">\n' +
+            '<testsuite failures="1" skipped="0" name="cucumber-js" time="0.001" tests="1">\n' +
             '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
             '    <failure type="PENDING" message="A step in the test case is not yet implemented"/>\n' +
             '    <system-out><![CDATA[Given a pending step.....................................................pending]]></system-out>\n' +
+            '  </testcase>\n' +
+            '</testsuite>'
+        )
+      })
+    })
+
+    describe('skipped', () => {
+      it('outputs the feature', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: [
+              'Feature: my feature',
+              '  Scenario: my scenario',
+              '    Given a passing step',
+              '    And a skipped step',
+              '    And a passing step',
+            ].join('\n'),
+            uri: 'a.feature',
+          },
+        ]
+        const supportCodeLibrary = getJUnitFormatterSupportCodeLibrary(clock)
+
+        // Act
+        const output = await testFormatter({
+          sources,
+          supportCodeLibrary,
+          type: 'junit',
+        })
+
+        // Assert
+        expect(output).xml.to.deep.equal(
+          '<?xml version="1.0"?>\n' +
+            '<testsuite failures="0" skipped="1" name="cucumber-js" time="0.001" tests="1">\n' +
+            '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
+            '    <skipped/>\n' +
+            '    <system-out><![CDATA[Given a passing step......................................................passed\n' +
+            'And a skipped step.......................................................skipped\n' +
+            'And a passing step.......................................................skipped]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
         )
@@ -238,7 +281,7 @@ describe('JunitFormatter', () => {
         // Assert
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
-            '<testsuite failures="1" name="cucumber-js" time="0" tests="1">\n' +
+            '<testsuite failures="1" skipped="0" name="cucumber-js" time="0" tests="1">\n' +
             '  <testcase classname="my feature" name="my scenario" time="0">\n' +
             '    <failure type="UNDEFINED" message="A step in the test case is not defined"/>\n' +
             '    <system-out><![CDATA[Given a passing step...................................................undefined]]></system-out>\n' +
@@ -280,7 +323,7 @@ describe('JunitFormatter', () => {
       // Assert
       expect(output).xml.to.deep.equal(
         '<?xml version="1.0"?>\n' +
-          '<testsuite failures="0" name="cucumber-js" time="0.002" tests="1">\n' +
+          '<testsuite failures="0" skipped="0" name="cucumber-js" time="0.002" tests="1">\n' +
           '  <testcase classname="my feature" name="my scenario" time="0.002">\n' +
           '    <system-out><![CDATA[Given a passing step......................................................passed\n' +
           'When a passing step.......................................................passed]]></system-out>\n' +
@@ -322,7 +365,7 @@ describe('JunitFormatter', () => {
       // Assert
       expect(output).xml.to.deep.equal(
         '<?xml version="1.0"?>\n' +
-          '<testsuite failures="1" name="cucumber-js" time="0.002" tests="2">\n' +
+          '<testsuite failures="1" skipped="0" name="cucumber-js" time="0.002" tests="2">\n' +
           '  <testcase classname="my feature" name="my templated scenario" time="0.001">\n' +
           '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
           '  </testcase>\n' +
@@ -374,7 +417,7 @@ describe('JunitFormatter', () => {
         // Assert
         expect(output).xml.to.deep.equal(
           '<?xml version="1.0"?>\n' +
-            '<testsuite failures="0" name="cucumber-js" time="0.002" tests="2">\n' +
+            '<testsuite failures="0" skipped="0" name="cucumber-js" time="0.002" tests="2">\n' +
             '  <testcase classname="my feature" name="my rule: first example" time="0.001">\n' +
             '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
             '  </testcase>\n' +
@@ -425,7 +468,7 @@ describe('JunitFormatter', () => {
       // Assert
       expect(output).xml.to.deep.equal(
         '<?xml version="1.0"?>\n' +
-          '<testsuite failures="0" name="cucumber-js" time="0.002" tests="2">\n' +
+          '<testsuite failures="0" skipped="0" name="cucumber-js" time="0.002" tests="2">\n' +
           '  <testcase classname="(unnamed feature)" name="(unnamed rule): (unnamed scenario)" time="0.001">\n' +
           '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
           '  </testcase>\n' +
