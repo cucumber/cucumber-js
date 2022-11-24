@@ -95,7 +95,7 @@ You can:
 
 ### `message`
 
-Outputs all the [Cucumber Messages](https://github.com/cucumber/common/tree/main/messages) for the test run as newline-delimited JSON, which can then be consumed by other tools.
+Outputs all the [Cucumber Messages](https://github.com/cucumber/messages) for the test run as newline-delimited JSON, which can then be consumed by other tools.
 
 ### `json`
 
