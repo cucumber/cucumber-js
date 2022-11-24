@@ -9,7 +9,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [Unreleased]
 ### Added
-- Add new JUnit formatter ([#2121](https://github.com/cucumber/cucumber-js/pull/2121))
+- Add new JUnit formatter (see [documentation](./docs/formatters.md#junit)) ([#2121](https://github.com/cucumber/cucumber-js/pull/2121))
 
 ## [8.8.0] - 2022-11-14
 ### Changed

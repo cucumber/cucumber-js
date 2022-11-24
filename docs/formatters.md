@@ -105,7 +105,7 @@ Outputs details of the test run in the legacy JSON format.
 
 ### `junit`
 
-The JUnit formatter produces a XML based JUnit report.
+The JUnit formatter produces an XML-based report in the standard(ish) [JUnit format](https://github.com/junit-team/junit5/blob/43638eb6a870e0d6c49224053dfeb39dcf0ef33f/platform-tests/src/test/resources/jenkins-junit.xsd). This is most commonly useful for having your CI platform pick up your tests results and factor them into its reporting. Consult your CI platform's docs for where exactly you should output this report to and what the filename should be.
 
 ### `snippets`
 
