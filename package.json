@@ -255,7 +255,7 @@
     "@types/mocha": "10.0.1",
     "@types/mustache": "4.2.1",
     "@types/mz": "2.7.4",
-    "@types/node": "18.11.9",
+    "@types/node": "18.11.10",
     "@types/progress": "2.0.5",
     "@types/semver": "7.3.13",
     "@types/sinon-chai": "3.2.9",
