@@ -23,6 +23,8 @@ describe('convertConfiguration', () => {
         retryTagFilter: '',
         strict: true,
         worldParameters: {},
+        include: undefined,
+        exclude: undefined,
       },
       sources: {
         defaultDialect: 'en',

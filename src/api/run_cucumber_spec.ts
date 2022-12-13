@@ -1,4 +1,9 @@
-import { Envelope, TestStepResultStatus, IdGenerator } from '@cucumber/messages'
+import {
+  Envelope,
+  TestStepResultStatus,
+  IdGenerator,
+  Pickle,
+} from '@cucumber/messages'
 import fs from 'mz/fs'
 import path from 'path'
 import { reindent } from 'reindent-template-literals'
@@ -11,36 +16,42 @@ import { loadConfiguration } from './load_configuration'
 
 const newId = IdGenerator.uuid()
 
-async function setupEnvironment(): Promise<Partial<IRunEnvironment>> {
-  const cwd = path.join(__dirname, '..', '..', 'tmp', `runCucumber_${newId()}`)
-  await fs.mkdir(path.join(cwd, 'features'), { recursive: true })
-  await fs.writeFile(
-    path.join(cwd, 'features', 'test.feature'),
-    reindent(`Feature: test fixture
-      Scenario: one
-        Given a step
-        Then another step`)
-  )
-  await fs.writeFile(
-    path.join(cwd, 'features', 'steps.ts'),
-    reindent(`import { Given, Then } from '../../../src'
-    Given('a step', function () {})
-    Then('another step', function () {})`)
-  )
-  await fs.writeFile(
-    path.join(cwd, 'cucumber.mjs'),
-    `export default {paths: ['features/test.feature'], requireModule: ['ts-node/register'], require: ['features/steps.ts']}`
-  )
-  const stdout = new PassThrough()
-  return { cwd, stdout }
-}
-
 async function teardownEnvironment(environment: IRunEnvironment) {
   await fs.rmdir(environment.cwd, { recursive: true })
   environment.stdout.end()
 }
 
-describe('runCucumber', () => {
+describe('runCucumber without runtime filters', () => {
+  async function setupEnvironment(): Promise<Partial<IRunEnvironment>> {
+    const cwd = path.join(
+      __dirname,
+      '..',
+      '..',
+      'tmp',
+      `runCucumber_${newId()}`
+    )
+    await fs.mkdir(path.join(cwd, 'features'), { recursive: true })
+    await fs.writeFile(
+      path.join(cwd, 'features', 'test.feature'),
+      reindent(`Feature: test fixture
+      Scenario: one
+        Given a step
+        Then another step`)
+    )
+    await fs.writeFile(
+      path.join(cwd, 'features', 'steps.ts'),
+      reindent(`import { Given, Then } from '../../../src'
+    Given('a step', function () {})
+    Then('another step', function () {})`)
+    )
+    await fs.writeFile(
+      path.join(cwd, 'cucumber.mjs'),
+      `export default {paths: ['features/test.feature'], requireModule: ['ts-node/register'], require: ['features/steps.ts']}`
+    )
+    const stdout = new PassThrough()
+    return { cwd, stdout }
+  }
+
   describe('preloading support code', () => {
     let environment: IRunEnvironment
     beforeEach(async () => {
@@ -112,6 +123,124 @@ describe('runCucumber', () => {
           (envelope) => envelope.testRunFinished.success === true
         )
       ).to.be.true()
+    })
+  })
+})
+
+describe('runCucumber with runtime filters', () => {
+  async function setupEnvironment(): Promise<Partial<IRunEnvironment>> {
+    const cwd = path.join(
+      __dirname,
+      '..',
+      '..',
+      'tmp',
+      `runCucumber_${newId()}`
+    )
+    await fs.mkdir(path.join(cwd, 'features'), { recursive: true })
+    await fs.writeFile(
+      path.join(cwd, 'features', 'test.feature'),
+      reindent(`Feature: test fixture
+      @foo
+      Scenario: one
+        Given a step
+        Then another step
+      
+      @bar
+      Scenario: two
+        Given a step
+        Then another step`)
+    )
+    await fs.writeFile(
+      path.join(cwd, 'features', 'steps.ts'),
+      reindent(`import { Given, Then } from '../../../src'
+    Given('a step', function () {})
+    Then('another step', function () {})`)
+    )
+    await fs.writeFile(
+      path.join(cwd, 'cucumber.mjs'),
+      `export default {paths: ['features/test.feature'], requireModule: ['ts-node/register'], require: ['features/steps.ts']}`
+    )
+    const stdout = new PassThrough()
+    return { cwd, stdout }
+  }
+
+  let environment: IRunEnvironment
+  beforeEach(async () => {
+    environment = await setupEnvironment()
+  })
+  afterEach(async () => teardownEnvironment(environment))
+
+  describe('include filter', () => {
+    it('skips the matched test to exclude filter', async () => {
+      const messages: Envelope[] = []
+      const { runConfiguration } = await loadConfiguration({}, environment)
+      await runCucumber(
+        {
+          ...runConfiguration,
+          runtime: {
+            ...runConfiguration.runtime,
+            include: (pickle: Pickle) => pickle.name === 'one',
+          },
+        },
+        environment,
+        (envelope) => messages.push(envelope)
+      )
+
+      const picklesEnvelopes = messages.filter((envelope) => !!envelope.pickle)
+      const testCasesEnvelopes = messages.filter(
+        (envelope) => !!envelope.testCase
+      )
+      const includedPickleEnvelope = picklesEnvelopes.find(
+        (envelope) => envelope.pickle.name === 'one'
+      )
+      const excludedPickleEnvelope = picklesEnvelopes.find(
+        (envelope) => envelope.pickle.name === 'two'
+      )
+
+      expect(testCasesEnvelopes).to.have.length(1)
+      expect(includedPickleEnvelope.pickle.id).eq(
+        testCasesEnvelopes[0].testCase.pickleId
+      )
+      expect(excludedPickleEnvelope.pickle.id).not.eq(
+        testCasesEnvelopes[0].testCase.pickleId
+      )
+    })
+  })
+
+  describe('exclude filter', () => {
+    it('skips the matched test to exclude filter', async () => {
+      const messages: Envelope[] = []
+      const { runConfiguration } = await loadConfiguration({}, environment)
+      await runCucumber(
+        {
+          ...runConfiguration,
+          runtime: {
+            ...runConfiguration.runtime,
+            exclude: (pickle: Pickle) => pickle.name === 'one',
+          },
+        },
+        environment,
+        (envelope) => messages.push(envelope)
+      )
+
+      const picklesEnvelopes = messages.filter((envelope) => !!envelope.pickle)
+      const testCasesEnvelopes = messages.filter(
+        (envelope) => !!envelope.testCase
+      )
+      const includedPickleEnvelope = picklesEnvelopes.find(
+        (envelope) => envelope.pickle.name === 'two'
+      )
+      const excludedPickleEnvelope = picklesEnvelopes.find(
+        (envelope) => envelope.pickle.name === 'one'
+      )
+
+      expect(testCasesEnvelopes).to.have.length(1)
+      expect(includedPickleEnvelope.pickle.id).eq(
+        testCasesEnvelopes[0].testCase.pickleId
+      )
+      expect(excludedPickleEnvelope.pickle.id).not.eq(
+        testCasesEnvelopes[0].testCase.pickleId
+      )
     })
   })
 })
