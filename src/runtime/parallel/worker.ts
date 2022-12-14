@@ -73,7 +73,7 @@ export default class Worker {
     supportCodeLibraryBuilder.reset(this.cwd, this.newId, {
       requireModules,
       requirePaths,
-      importPaths
+      importPaths,
     })
     requireModules.map((module) => require(module))
     requirePaths.map((module) => require(module))

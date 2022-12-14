@@ -1,12 +1,12 @@
-import { IdGenerator } from "@cucumber/messages";
-import { IRunEnvironment  } from "./types";
-import path from "path";
-import fs from "mz/fs";
-import { reindent } from "reindent-template-literals";
-import { PassThrough } from "stream";
-import { loadSupport } from "./load_support";
-import { loadConfiguration } from "./load_configuration";
-import { expect } from "chai";
+import { IdGenerator } from '@cucumber/messages'
+import { IRunEnvironment } from './types'
+import path from 'path'
+import fs from 'mz/fs'
+import { reindent } from 'reindent-template-literals'
+import { PassThrough } from 'stream'
+import { loadSupport } from './load_support'
+import { loadConfiguration } from './load_configuration'
+import { expect } from 'chai'
 
 const newId = IdGenerator.uuid()
 
@@ -46,18 +46,14 @@ describe('loadSupport', () => {
   })
   afterEach(async () => teardownEnvironment(environment))
 
-  it("should include original paths in the returned support code library", async () => {
+  it('should include original paths in the returned support code library', async () => {
     const { runConfiguration } = await loadConfiguration({}, environment)
     const support = await loadSupport(runConfiguration, environment)
 
     expect(support.originalCoordinates).to.deep.eq({
-      requireModules: [
-        "ts-node/register"
-      ],
-      requirePaths: [
-        `${environment.cwd}/features/steps.ts`
-      ],
-      importPaths: []
+      requireModules: ['ts-node/register'],
+      requirePaths: [`${environment.cwd}/features/steps.ts`],
+      importPaths: [],
     })
-  });
+  })
 })

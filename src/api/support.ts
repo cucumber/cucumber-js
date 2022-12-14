@@ -22,7 +22,7 @@ export async function getSupportCodeLibrary({
   supportCodeLibraryBuilder.reset(cwd, newId, {
     requireModules,
     requirePaths,
-    importPaths
+    importPaths,
   })
   requireModules.map((module) => require(module))
   requirePaths.map((path) => require(path))
