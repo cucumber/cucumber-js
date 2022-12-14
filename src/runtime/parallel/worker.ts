@@ -70,7 +70,11 @@ export default class Worker {
     supportCodeIds,
     options,
   }: IWorkerCommandInitialize): Promise<void> {
-    supportCodeLibraryBuilder.reset(this.cwd, this.newId)
+    supportCodeLibraryBuilder.reset(this.cwd, this.newId, {
+      requireModules,
+      requirePaths,
+      importPaths
+    })
     requireModules.map((module) => require(module))
     requirePaths.map((module) => require(module))
     for (const path of importPaths) {
