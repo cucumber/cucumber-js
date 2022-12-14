@@ -52,7 +52,7 @@ describe('loadSupport', () => {
 
     expect(support.originalCoordinates).to.deep.eq({
       requireModules: ['ts-node/register'],
-      requirePaths: [`${environment.cwd}/features/steps.ts`],
+      requirePaths: [path.join(environment.cwd, 'features', 'steps.ts')],
       importPaths: [],
     })
   })
