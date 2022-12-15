@@ -1,9 +1,9 @@
-import { IRunEnvironment } from "./types";
-import path from "path";
-import fs from "mz/fs";
-import { reindent } from "reindent-template-literals";
-import { PassThrough } from "stream";
-import { IdGenerator } from "@cucumber/messages";
+import { IRunEnvironment } from './types'
+import path from 'path'
+import fs from 'mz/fs'
+import { reindent } from 'reindent-template-literals'
+import { PassThrough } from 'stream'
+import { IdGenerator } from '@cucumber/messages'
 
 const newId = IdGenerator.uuid()
 
