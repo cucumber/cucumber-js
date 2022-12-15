@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Include original coordinates in `loadSupport` result ([#2197](https://github.com/cucumber/cucumber-js/pull/2197))
 
 ## [8.9.0] - 2022-11-24
 ### Added
