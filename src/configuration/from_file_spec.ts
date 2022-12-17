@@ -99,5 +99,20 @@ describe('fromFile', () => {
       const result = await fromFile(logger, cwd, 'cucumber.json', ['p1'])
       expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
     })
+
+    it('should work with yaml', async () => {
+      const { logger, cwd } = await setup(
+        'cucumber.yaml',
+        `default:
+
+p1:
+  paths:
+    - "other/path/*.feature"
+`
+      )
+
+      const result = await fromFile(logger, cwd, 'cucumber.yaml', ['p1'])
+      expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
+    })
   })
 })

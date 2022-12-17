@@ -1,6 +1,7 @@
 import stringArgv from 'string-argv'
 import fs from 'fs'
 import path from 'path'
+import YAML from 'yaml'
 import { promisify } from 'util'
 import { pathToFileURL } from 'url'
 import { IConfiguration } from './types'
@@ -48,9 +49,9 @@ async function loadFile(
   const filePath: string = path.join(cwd, file)
   const extension = path.extname(filePath)
   let definitions
-  if (extension === 'json') {
-    const json = await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
-    definitions = JSON.parse(json)
+  if (extension === '.json' || extension === '.yaml' || extension === '.yml') {
+    const raw = await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
+    definitions = YAML.parse(raw)
   } else {
     try {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
