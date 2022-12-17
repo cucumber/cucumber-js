@@ -1,5 +1,7 @@
 import stringArgv from 'string-argv'
+import fs from 'fs'
 import path from 'path'
+import { promisify } from 'util'
 import { pathToFileURL } from 'url'
 import { IConfiguration } from './types'
 import { mergeConfigurations } from './merge_configurations'
@@ -44,15 +46,21 @@ async function loadFile(
   file: string
 ): Promise<Record<string, any>> {
   const filePath: string = path.join(cwd, file)
+  const extension = path.extname(filePath)
   let definitions
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    definitions = require(filePath)
-  } catch (error) {
-    if (error.code === 'ERR_REQUIRE_ESM') {
-      definitions = await importer(pathToFileURL(filePath))
-    } else {
-      throw error
+  if (extension === 'json') {
+    const json = await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
+    definitions = JSON.parse(json)
+  } else {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      definitions = require(filePath)
+    } catch (error) {
+      if (error.code === 'ERR_REQUIRE_ESM') {
+        definitions = await importer(pathToFileURL(filePath))
+      } else {
+        throw error
+      }
     }
   }
   if (typeof definitions !== 'object') {
