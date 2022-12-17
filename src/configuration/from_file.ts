@@ -1,14 +1,14 @@
-import stringArgv from 'string-argv'
-import fs from 'fs'
-import path from 'path'
-import YAML from 'yaml'
-import { promisify } from 'util'
-import { pathToFileURL } from 'url'
-import { IConfiguration } from './types'
-import { mergeConfigurations } from './merge_configurations'
-import ArgvParser from './argv_parser'
-import { checkSchema } from './check_schema'
-import { ILogger } from '../logger'
+import stringArgv from "string-argv";
+import fs from "fs";
+import path from "path";
+import YAML from "yaml";
+import { promisify } from "util";
+import { pathToFileURL } from "url";
+import { IConfiguration } from "./types";
+import { mergeConfigurations } from "./merge_configurations";
+import ArgvParser from "./argv_parser";
+import { checkSchema } from "./check_schema";
+import { ILogger } from "../logger";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
@@ -49,20 +49,25 @@ async function loadFile(
   const filePath: string = path.join(cwd, file)
   const extension = path.extname(filePath)
   let definitions
-  if (extension === '.json' || extension === '.yaml' || extension === '.yml') {
-    const raw = await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
-    definitions = YAML.parse(raw)
-  } else {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      definitions = require(filePath)
-    } catch (error) {
-      if (error.code === 'ERR_REQUIRE_ESM') {
-        definitions = await importer(pathToFileURL(filePath))
-      } else {
-        throw error
+  switch (extension) {
+    case '.json':
+      definitions = JSON.parse(await promisify(fs.readFile)(filePath, { encoding: 'utf-8' }))
+      break
+    case '.yaml':
+    case '.yml':
+      definitions = YAML.parse(await promisify(fs.readFile)(filePath, { encoding: 'utf-8' }))
+      break
+    default:
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        definitions = require(filePath)
+      } catch (error) {
+        if (error.code === 'ERR_REQUIRE_ESM') {
+          definitions = await importer(pathToFileURL(filePath))
+        } else {
+          throw error
+        }
       }
-    }
   }
   if (typeof definitions !== 'object') {
     throw new Error(`Configuration file ${filePath} does not export an object`)
