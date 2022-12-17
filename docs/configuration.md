@@ -12,6 +12,8 @@ You can keep your configuration in a file. Cucumber will look for one of these f
 - `cucumber.cjs`
 - `cucumber.mjs`
 - `cucumber.json`
+- `cucumber.yaml`
+- `cucumber.yml`
 
 You can also put your file somewhere else and tell Cucumber via the `--config` CLI option:
 
@@ -45,9 +47,18 @@ And the same in JSON format:
 {
   "default": {
     "parallel": 2,
-      "format": ["html:cucumber-report.html"]
+    "format": ["html:cucumber-report.html"]
   }
 }
+```
+
+And the same in YAML format:
+
+```yaml
+default:
+  parallel: 2
+  format:
+    - "html:cucumber-report.html"
 ```
 
 Cucumber also supports the configuration being a string of options in the style of the CLI, though this isn't recommended:
