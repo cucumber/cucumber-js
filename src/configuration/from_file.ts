@@ -1,14 +1,14 @@
-import stringArgv from "string-argv";
-import fs from "fs";
-import path from "path";
-import YAML from "yaml";
-import { promisify } from "util";
-import { pathToFileURL } from "url";
-import { IConfiguration } from "./types";
-import { mergeConfigurations } from "./merge_configurations";
-import ArgvParser from "./argv_parser";
-import { checkSchema } from "./check_schema";
-import { ILogger } from "../logger";
+import stringArgv from 'string-argv'
+import fs from 'fs'
+import path from 'path'
+import YAML from 'yaml'
+import { promisify } from 'util'
+import { pathToFileURL } from 'url'
+import { IConfiguration } from './types'
+import { mergeConfigurations } from './merge_configurations'
+import ArgvParser from './argv_parser'
+import { checkSchema } from './check_schema'
+import { ILogger } from '../logger'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
@@ -51,11 +51,15 @@ async function loadFile(
   let definitions
   switch (extension) {
     case '.json':
-      definitions = JSON.parse(await promisify(fs.readFile)(filePath, { encoding: 'utf-8' }))
+      definitions = JSON.parse(
+        await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
+      )
       break
     case '.yaml':
     case '.yml':
-      definitions = YAML.parse(await promisify(fs.readFile)(filePath, { encoding: 'utf-8' }))
+      definitions = YAML.parse(
+        await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
+      )
       break
     default:
       try {
