@@ -37,15 +37,22 @@ $ npm install @cucumber/cucumber
 
 Let's take this example of something to test:
 
+
+First, write your main code in `src/index.js`:
+
 ```js
 class Greeter {
   sayHello() {
     return 'hello'
   }
 }
+
+module.exports = {
+  Greeter
+}
 ```
 
-First, write your feature in `features/greeting.feature`:
+Then, write your feature in `features/greeting.feature`:
 
 ```gherkin
 Feature: Greeting
