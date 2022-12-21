@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Add support for YAML as a configuration file format ([#2199](https://github.com/cucumber/cucumber-js/pull/2199))
 
 ## [8.9.1] - 2022-12-16
 ### Fixed

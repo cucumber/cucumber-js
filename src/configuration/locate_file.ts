@@ -6,6 +6,8 @@ const DEFAULT_FILENAMES = [
   'cucumber.cjs',
   'cucumber.mjs',
   'cucumber.json',
+  'cucumber.yaml',
+  'cucumber.yml',
 ]
 
 export function locateFile(cwd: string): string | undefined {

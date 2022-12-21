@@ -1,5 +1,8 @@
 import stringArgv from 'string-argv'
+import fs from 'fs'
 import path from 'path'
+import YAML from 'yaml'
+import { promisify } from 'util'
 import { pathToFileURL } from 'url'
 import { IConfiguration } from './types'
 import { mergeConfigurations } from './merge_configurations'
@@ -44,16 +47,31 @@ async function loadFile(
   file: string
 ): Promise<Record<string, any>> {
   const filePath: string = path.join(cwd, file)
+  const extension = path.extname(filePath)
   let definitions
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    definitions = require(filePath)
-  } catch (error) {
-    if (error.code === 'ERR_REQUIRE_ESM') {
-      definitions = await importer(pathToFileURL(filePath))
-    } else {
-      throw error
-    }
+  switch (extension) {
+    case '.json':
+      definitions = JSON.parse(
+        await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
+      )
+      break
+    case '.yaml':
+    case '.yml':
+      definitions = YAML.parse(
+        await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
+      )
+      break
+    default:
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        definitions = require(filePath)
+      } catch (error) {
+        if (error.code === 'ERR_REQUIRE_ESM') {
+          definitions = await importer(pathToFileURL(filePath))
+        } else {
+          throw error
+        }
+      }
   }
   if (typeof definitions !== 'object') {
     throw new Error(`Configuration file ${filePath} does not export an object`)
