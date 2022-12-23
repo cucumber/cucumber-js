@@ -88,7 +88,7 @@ And see the output:
 
 ![Terminal output showing a successful test run with 1 scenario and 2 steps, all passing](./docs/images/readme-output.png)
 
-If you learn best by example, we have [a repo with several example projects](https://github.com/cucumber-examples/cucumber-js-examples), that might help you get going.
+If you learn best by example, we have [a repo with several example projects](https://github.com/cucumber/cucumber-js-examples), that might help you get going.
 
 ## Documentation
 
