@@ -124,7 +124,7 @@ export default class Worker {
     skip,
   }: IWorkerCommandRun): Promise<void> {
     const stopwatch = new RealTestRunStopwatch()
-    stopwatch.from(duration(elapsed))
+    stopwatch.from(elapsed)
     const testCaseRunner = new TestCaseRunner({
       eventBroadcaster: this.eventBroadcaster,
       stopwatch,

@@ -299,7 +299,7 @@ export default class Coordinator implements IRuntime {
       run: {
         retries,
         skip,
-        elapsed: this.stopwatch.duration().nanos(),
+        elapsed: this.stopwatch.duration(),
         pickle,
         testCase,
         gherkinDocument,
