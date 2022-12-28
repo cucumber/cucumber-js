@@ -16,7 +16,7 @@ describe('stopwatch', () => {
     })
 
     it('accounts for an initial duration', async () => {
-      const stopwatch = new RealTestRunStopwatch().from(
+      const stopwatch = new RealTestRunStopwatch(
         TimeConversion.millisecondsToDuration(300)
       )
       stopwatch.start()
@@ -81,7 +81,7 @@ describe('stopwatch', () => {
     })
 
     it('supports an initial duration', () => {
-      const stopwatch = new PredictableTestRunStopwatch().from({
+      const stopwatch = new PredictableTestRunStopwatch({
         seconds: 1,
         nanos: 200000000,
       })
