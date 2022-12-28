@@ -11,6 +11,9 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ### Added
 - Add support for YAML as a configuration file format ([#2199](https://github.com/cucumber/cucumber-js/pull/2199))
 
+### Changed
+- Replace `duration` with `luxon` for formatting durations ([#2204](https://github.com/cucumber/cucumber-js/pull/2204))
+
 ## [8.9.1] - 2022-12-16
 ### Fixed
 - Include original coordinates in `loadSupport` result ([#2197](https://github.com/cucumber/cucumber-js/pull/2197))

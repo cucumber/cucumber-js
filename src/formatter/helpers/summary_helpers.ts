@@ -1,8 +1,8 @@
-import Duration from 'duration'
 import { IColorFns } from '../get_color_fns'
 import { ITestCaseAttempt } from './event_data_collector'
 import * as messages from '@cucumber/messages'
 import { doesHaveValue } from '../../value_checker'
+import { Interval } from 'luxon'
 
 const STATUS_REPORT_ORDER = [
   messages.TestStepResultStatus.FAILED,
@@ -98,7 +98,10 @@ function getDurationSummary(durationMsg: messages.Duration): string {
   const end = new Date(
     messages.TimeConversion.durationToMilliseconds(durationMsg)
   )
-  const duration = new Duration(start, end)
-  // Use spaces in toString method for readability and to avoid %Ls which is a format
-  return duration.toString('%Ms m %S . %L s').replace(/ /g, '')
+  const duration = Interval.fromDateTimes(start, end).toDuration([
+    'minutes',
+    'seconds',
+    'milliseconds',
+  ])
+  return duration.toFormat("m'm'ss.SSS's'")
 }
