@@ -1,8 +1,8 @@
 import { describe, it } from "mocha";
-import { RealTestRunStopwatch } from "./stopwatch";
+import { PredictableTestRunStopwatch, RealTestRunStopwatch } from "./stopwatch";
 import { expect } from "chai";
 import { TimeConversion } from "@cucumber/messages";
-import { millis } from "durations";
+import { duration, millis } from "durations";
 
 describe('stopwatch', () => {
   describe("RealTestRunStopwatch", () => {
@@ -63,4 +63,37 @@ describe('stopwatch', () => {
     })
   });
 
+  describe("PredictableTestRunStopwatch", () => {
+    it("increments 1000000 nanos every time a timestamp is requested", () => {
+      const stopwatch = new PredictableTestRunStopwatch()
+      expect(stopwatch.timestamp()).to.deep.eq({
+        seconds: 0,
+        nanos: 0
+      })
+      expect(stopwatch.timestamp()).to.deep.eq({
+        seconds: 0,
+        nanos: 1000000
+      })
+      expect(stopwatch.timestamp()).to.deep.eq({
+        seconds: 0,
+        nanos: 2000000
+      })
+      expect(stopwatch.timestamp()).to.deep.eq({
+        seconds: 0,
+        nanos: 3000000
+      })
+    });
+
+    it("supports an initial duration", () => {
+      const stopwatch = new PredictableTestRunStopwatch().from(duration(1200000000))
+      expect(stopwatch.timestamp()).to.deep.eq({
+        seconds: 1,
+        nanos: 199999999
+      })
+      expect(stopwatch.timestamp()).to.deep.eq({
+        seconds: 1,
+        nanos: 201000000
+      })
+    });
+  });
 })
