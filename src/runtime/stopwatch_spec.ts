@@ -1,58 +1,68 @@
-import { describe, it } from "mocha";
-import { PredictableTestRunStopwatch, RealTestRunStopwatch } from "./stopwatch";
-import { expect } from "chai";
-import { TimeConversion } from "@cucumber/messages";
-import { duration, millis } from "durations";
+import { describe, it } from 'mocha'
+import { PredictableTestRunStopwatch, RealTestRunStopwatch } from './stopwatch'
+import { expect } from 'chai'
+import { TimeConversion } from '@cucumber/messages'
+import { duration, millis } from 'durations'
 
 describe('stopwatch', () => {
-  describe("RealTestRunStopwatch", () => {
-    it("returns a duration between the start and stop",async () => {
+  describe('RealTestRunStopwatch', () => {
+    it('returns a duration between the start and stop', async () => {
       const stopwatch = new RealTestRunStopwatch()
       stopwatch.start()
-      await new Promise(resolve => setTimeout(resolve, 1200))
+      await new Promise((resolve) => setTimeout(resolve, 1200))
       stopwatch.stop()
-      expect(TimeConversion.durationToMilliseconds({
-        seconds: stopwatch.duration().seconds(),
-        nanos: 0
-      })).to.be.closeTo(1200, 50)
-    });
+      expect(
+        TimeConversion.durationToMilliseconds({
+          seconds: stopwatch.duration().seconds(),
+          nanos: 0,
+        })
+      ).to.be.closeTo(1200, 50)
+    })
 
-    it("accounts for an initial duration",async () => {
+    it('accounts for an initial duration', async () => {
       const stopwatch = new RealTestRunStopwatch().from(millis(300))
       stopwatch.start()
-      await new Promise(resolve => setTimeout(resolve, 200))
+      await new Promise((resolve) => setTimeout(resolve, 200))
       stopwatch.stop()
-      expect(TimeConversion.durationToMilliseconds({
-        seconds: stopwatch.duration().seconds(),
-        nanos: 0
-      })).to.be.closeTo(500, 50)
-    });
+      expect(
+        TimeConversion.durationToMilliseconds({
+          seconds: stopwatch.duration().seconds(),
+          nanos: 0,
+        })
+      ).to.be.closeTo(500, 50)
+    })
 
-    it("returns accurate durations ad-hoc if not stopped", async () => {
+    it('returns accurate durations ad-hoc if not stopped', async () => {
       const stopwatch = new RealTestRunStopwatch()
       stopwatch.start()
-      await new Promise(resolve => setTimeout(resolve, 200))
-      expect(TimeConversion.durationToMilliseconds({
-        seconds: stopwatch.duration().seconds(),
-        nanos: 0
-      })).to.be.closeTo(200, 50)
-      await new Promise(resolve => setTimeout(resolve, 200))
+      await new Promise((resolve) => setTimeout(resolve, 200))
+      expect(
+        TimeConversion.durationToMilliseconds({
+          seconds: stopwatch.duration().seconds(),
+          nanos: 0,
+        })
+      ).to.be.closeTo(200, 50)
+      await new Promise((resolve) => setTimeout(resolve, 200))
       stopwatch.stop()
-      expect(TimeConversion.durationToMilliseconds({
-        seconds: stopwatch.duration().seconds(),
-        nanos: 0
-      })).to.be.closeTo(400, 50)
-    });
+      expect(
+        TimeConversion.durationToMilliseconds({
+          seconds: stopwatch.duration().seconds(),
+          nanos: 0,
+        })
+      ).to.be.closeTo(400, 50)
+    })
 
-    it("returns 0 duration if never started",async () => {
+    it('returns 0 duration if never started', async () => {
       const stopwatch = new RealTestRunStopwatch()
-      await new Promise(resolve => setTimeout(resolve, 200))
+      await new Promise((resolve) => setTimeout(resolve, 200))
       stopwatch.stop()
-      expect(TimeConversion.durationToMilliseconds({
-        seconds: stopwatch.duration().seconds(),
-        nanos: 0
-      })).to.eq(0)
-    });
+      expect(
+        TimeConversion.durationToMilliseconds({
+          seconds: stopwatch.duration().seconds(),
+          nanos: 0,
+        })
+      ).to.eq(0)
+    })
 
     it('returns a timestamp close to now', () => {
       expect(
@@ -61,39 +71,41 @@ describe('stopwatch', () => {
         )
       ).to.be.closeTo(Date.now(), 100)
     })
-  });
+  })
 
-  describe("PredictableTestRunStopwatch", () => {
-    it("increments 1000000 nanos every time a timestamp is requested", () => {
+  describe('PredictableTestRunStopwatch', () => {
+    it('increments 1000000 nanos every time a timestamp is requested', () => {
       const stopwatch = new PredictableTestRunStopwatch()
       expect(stopwatch.timestamp()).to.deep.eq({
         seconds: 0,
-        nanos: 0
+        nanos: 0,
       })
       expect(stopwatch.timestamp()).to.deep.eq({
         seconds: 0,
-        nanos: 1000000
+        nanos: 1000000,
       })
       expect(stopwatch.timestamp()).to.deep.eq({
         seconds: 0,
-        nanos: 2000000
+        nanos: 2000000,
       })
       expect(stopwatch.timestamp()).to.deep.eq({
         seconds: 0,
-        nanos: 3000000
+        nanos: 3000000,
       })
-    });
+    })
 
-    it("supports an initial duration", () => {
-      const stopwatch = new PredictableTestRunStopwatch().from(duration(1200000000))
+    it('supports an initial duration', () => {
+      const stopwatch = new PredictableTestRunStopwatch().from(
+        duration(1200000000)
+      )
       expect(stopwatch.timestamp()).to.deep.eq({
         seconds: 1,
-        nanos: 199999999
+        nanos: 199999999,
       })
       expect(stopwatch.timestamp()).to.deep.eq({
         seconds: 1,
-        nanos: 201000000
+        nanos: 201000000,
       })
-    });
-  });
+    })
+  })
 })

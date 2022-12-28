@@ -38,7 +38,9 @@ export class RealTestRunStopwatch implements ITestRunStopwatch {
   }
 
   timestamp(): messages.Timestamp {
-    return messages.TimeConversion.millisecondsSinceEpochToTimestamp(methods.Date.now())
+    return messages.TimeConversion.millisecondsSinceEpochToTimestamp(
+      methods.Date.now()
+    )
   }
 }
 
