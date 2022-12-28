@@ -14,6 +14,7 @@ declare module 'durations' {
 
   export function duration(nanoseconds: number): Duration
   export function millis(milliseconds: number): Duration
+  export function seconds(seconds: number): Duration
 
   export function stopwatch(): Stopwatch
 }

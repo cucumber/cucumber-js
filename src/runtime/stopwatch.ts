@@ -1,87 +1,93 @@
-import * as messages from '@cucumber/messages'
-import { stopwatch, Stopwatch, duration, Duration } from 'durations'
-import methods from '../time'
+import * as messages from "@cucumber/messages";
+import { stopwatch, Stopwatch, duration, Duration, seconds } from "durations";
+import methods from "../time";
 
 export interface ITestRunStopwatch {
-  from: (duration: Duration) => ITestRunStopwatch
-  start: () => ITestRunStopwatch
-  stop: () => ITestRunStopwatch
-  duration: () => Duration
-  timestamp: () => messages.Timestamp
+  from: (duration: messages.Duration) => ITestRunStopwatch;
+  start: () => ITestRunStopwatch;
+  stop: () => ITestRunStopwatch;
+  duration: () => messages.Duration;
+  timestamp: () => messages.Timestamp;
 }
 
 export class RealTestRunStopwatch implements ITestRunStopwatch {
-  private readonly stopwatch: Stopwatch = stopwatch()
-  private base: Duration = null
+  private readonly stopwatch: Stopwatch = stopwatch();
+  private base: Duration = null;
 
-  from(duration: Duration): ITestRunStopwatch {
-    this.base = duration
-    return this
+  from(initial: messages.Duration): ITestRunStopwatch {
+    this.base = convertFromMessages(initial)
+    return this;
   }
 
   start(): ITestRunStopwatch {
-    this.stopwatch.start()
-    return this
+    this.stopwatch.start();
+    return this;
   }
 
   stop(): ITestRunStopwatch {
-    this.stopwatch.stop()
-    return this
+    this.stopwatch.stop();
+    return this;
   }
 
-  duration(): Duration {
-    const current = this.stopwatch.duration()
+  duration(): messages.Duration {
+    let current = this.stopwatch.duration();
     if (this.base !== null) {
-      return duration(this.base.nanos() + current.nanos())
+      current = duration(this.base.nanos() + current.nanos());
     }
-    return current
+    return convertToMessages(current);
   }
 
   timestamp(): messages.Timestamp {
     return messages.TimeConversion.millisecondsSinceEpochToTimestamp(
       methods.Date.now()
-    )
+    );
   }
 }
 
 export class PredictableTestRunStopwatch implements ITestRunStopwatch {
-  private count = 0
-  private base: Duration = null
+  private count = 0;
+  private base: Duration = null;
 
-  from(duration: Duration): ITestRunStopwatch {
-    this.base = duration
-    return this
+  from(initial: messages.Duration): ITestRunStopwatch {
+    this.base = convertFromMessages(initial);
+    return this;
   }
 
   start(): ITestRunStopwatch {
-    return this
+    return this;
   }
 
   stop(): ITestRunStopwatch {
-    return this
+    return this;
   }
 
-  duration(): Duration {
-    const current = duration(this.count * 1000000)
+  duration(): messages.Duration {
+    let current = duration(this.count * 1000000);
     if (this.base !== null) {
-      return duration(this.base.nanos() + current.nanos())
+      current = duration(this.base.nanos() + current.nanos());
     }
-    return current
+    return convertToMessages(current);
   }
 
   timestamp(): messages.Timestamp {
-    const fakeTimestamp = this.convertToTimestamp(this.duration())
-    this.count++
-    return fakeTimestamp
+    const fakeTimestamp = this.duration();
+    this.count++;
+    return fakeTimestamp;
   }
+}
 
-  // TODO: Remove. It's impossible to convert timestamps to durations and vice-versa
-  private convertToTimestamp(duration: Duration): messages.Timestamp {
-    const seconds = Math.floor(duration.seconds())
-    const nanos = Math.floor((duration.seconds() - seconds) * 1000000000)
-    return {
-      seconds,
-      nanos,
-    }
-  }
+function convertToMessages(value: Duration): messages.Duration {
+  const seconds = Math.floor(value.seconds());
+  const nanos = Math.floor((value.seconds() - seconds) * 1000000000);
+  return {
+    seconds,
+    nanos
+  };
+}
+
+function convertFromMessages(value: messages.Duration): Duration {
+  return duration(
+    seconds(value.seconds).nanos() +
+    value.nanos
+  );
 }

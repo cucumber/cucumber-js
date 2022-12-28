@@ -12,23 +12,17 @@ describe('stopwatch', () => {
       await new Promise((resolve) => setTimeout(resolve, 1200))
       stopwatch.stop()
       expect(
-        TimeConversion.durationToMilliseconds({
-          seconds: stopwatch.duration().seconds(),
-          nanos: 0,
-        })
+        TimeConversion.durationToMilliseconds(stopwatch.duration())
       ).to.be.closeTo(1200, 50)
     })
 
     it('accounts for an initial duration', async () => {
-      const stopwatch = new RealTestRunStopwatch().from(millis(300))
+      const stopwatch = new RealTestRunStopwatch().from(TimeConversion.millisecondsToDuration(300))
       stopwatch.start()
       await new Promise((resolve) => setTimeout(resolve, 200))
       stopwatch.stop()
       expect(
-        TimeConversion.durationToMilliseconds({
-          seconds: stopwatch.duration().seconds(),
-          nanos: 0,
-        })
+        TimeConversion.durationToMilliseconds(stopwatch.duration())
       ).to.be.closeTo(500, 50)
     })
 
@@ -37,18 +31,12 @@ describe('stopwatch', () => {
       stopwatch.start()
       await new Promise((resolve) => setTimeout(resolve, 200))
       expect(
-        TimeConversion.durationToMilliseconds({
-          seconds: stopwatch.duration().seconds(),
-          nanos: 0,
-        })
+        TimeConversion.durationToMilliseconds(stopwatch.duration())
       ).to.be.closeTo(200, 50)
       await new Promise((resolve) => setTimeout(resolve, 200))
       stopwatch.stop()
       expect(
-        TimeConversion.durationToMilliseconds({
-          seconds: stopwatch.duration().seconds(),
-          nanos: 0,
-        })
+        TimeConversion.durationToMilliseconds(stopwatch.duration())
       ).to.be.closeTo(400, 50)
     })
 
@@ -57,10 +45,7 @@ describe('stopwatch', () => {
       await new Promise((resolve) => setTimeout(resolve, 200))
       stopwatch.stop()
       expect(
-        TimeConversion.durationToMilliseconds({
-          seconds: stopwatch.duration().seconds(),
-          nanos: 0,
-        })
+        TimeConversion.durationToMilliseconds(stopwatch.duration())
       ).to.eq(0)
     })
 
@@ -96,7 +81,10 @@ describe('stopwatch', () => {
 
     it('supports an initial duration', () => {
       const stopwatch = new PredictableTestRunStopwatch().from(
-        duration(1200000000)
+        {
+          seconds: 1,
+          nanos: 200000000
+        }
       )
       expect(stopwatch.timestamp()).to.deep.eq({
         seconds: 1,
