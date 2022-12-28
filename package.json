@@ -211,7 +211,6 @@
     "cli-table3": "0.6.3",
     "commander": "^9.0.0",
     "debug": "^4.3.4",
-    "durations": "^3.4.2",
     "error-stack-parser": "^2.1.4",
     "figures": "^3.2.0",
     "glob": "^7.1.6",
