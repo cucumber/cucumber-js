@@ -1,6 +1,5 @@
 import * as messages from '@cucumber/messages'
 import { TimeConversion } from '@cucumber/messages'
-import { duration, Duration, seconds } from 'durations'
 import methods from '../time'
 
 export interface ITestRunStopwatch {
@@ -53,7 +52,12 @@ export class RealTestRunStopwatch implements ITestRunStopwatch {
 export class PredictableTestRunStopwatch implements ITestRunStopwatch {
   private count = 0
 
-  constructor(private base: messages.Duration = null) {}
+  constructor(
+    private base: messages.Duration = {
+      seconds: 0,
+      nanos: 0,
+    }
+  ) {}
 
   start(): ITestRunStopwatch {
     return this
@@ -64,13 +68,10 @@ export class PredictableTestRunStopwatch implements ITestRunStopwatch {
   }
 
   duration(): messages.Duration {
-    let current = duration(this.count * 1000000)
-    if (this.base !== null) {
-      current = duration(
-        convertFromMessages(this.base).nanos() + current.nanos()
-      )
-    }
-    return convertToMessages(current)
+    return TimeConversion.addDurations(
+      this.base,
+      TimeConversion.millisecondsToDuration(this.count)
+    )
   }
 
   timestamp(): messages.Timestamp {
@@ -78,17 +79,4 @@ export class PredictableTestRunStopwatch implements ITestRunStopwatch {
     this.count++
     return fakeTimestamp
   }
-}
-
-function convertToMessages(value: Duration): messages.Duration {
-  const seconds = Math.floor(value.seconds())
-  const nanos = Math.floor((value.seconds() - seconds) * 1000000000)
-  return {
-    seconds,
-    nanos,
-  }
-}
-
-function convertFromMessages(value: messages.Duration): Duration {
-  return duration(seconds(value.seconds).nanos() + value.nanos)
 }

@@ -87,7 +87,7 @@ describe('stopwatch', () => {
       })
       expect(stopwatch.timestamp()).to.deep.eq({
         seconds: 1,
-        nanos: 199999999,
+        nanos: 200000000,
       })
       expect(stopwatch.timestamp()).to.deep.eq({
         seconds: 1,
