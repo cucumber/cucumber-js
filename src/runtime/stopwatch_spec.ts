@@ -2,7 +2,6 @@ import { describe, it } from 'mocha'
 import { PredictableTestRunStopwatch, RealTestRunStopwatch } from './stopwatch'
 import { expect } from 'chai'
 import { TimeConversion } from '@cucumber/messages'
-import { duration, millis } from 'durations'
 
 describe('stopwatch', () => {
   describe('RealTestRunStopwatch', () => {
@@ -17,7 +16,9 @@ describe('stopwatch', () => {
     })
 
     it('accounts for an initial duration', async () => {
-      const stopwatch = new RealTestRunStopwatch().from(TimeConversion.millisecondsToDuration(300))
+      const stopwatch = new RealTestRunStopwatch().from(
+        TimeConversion.millisecondsToDuration(300)
+      )
       stopwatch.start()
       await new Promise((resolve) => setTimeout(resolve, 200))
       stopwatch.stop()
@@ -44,9 +45,9 @@ describe('stopwatch', () => {
       const stopwatch = new RealTestRunStopwatch()
       await new Promise((resolve) => setTimeout(resolve, 200))
       stopwatch.stop()
-      expect(
-        TimeConversion.durationToMilliseconds(stopwatch.duration())
-      ).to.eq(0)
+      expect(TimeConversion.durationToMilliseconds(stopwatch.duration())).to.eq(
+        0
+      )
     })
 
     it('returns a timestamp close to now', () => {
@@ -80,12 +81,10 @@ describe('stopwatch', () => {
     })
 
     it('supports an initial duration', () => {
-      const stopwatch = new PredictableTestRunStopwatch().from(
-        {
-          seconds: 1,
-          nanos: 200000000
-        }
-      )
+      const stopwatch = new PredictableTestRunStopwatch().from({
+        seconds: 1,
+        nanos: 200000000,
+      })
       expect(stopwatch.timestamp()).to.deep.eq({
         seconds: 1,
         nanos: 199999999,

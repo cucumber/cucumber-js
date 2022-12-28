@@ -1,6 +1,5 @@
 import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
-import { duration } from 'durations'
 import { EventEmitter } from 'events'
 import { pathToFileURL } from 'url'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
