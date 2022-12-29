@@ -4,7 +4,7 @@ import { expect } from 'chai'
 import { TimeConversion } from '@cucumber/messages'
 
 describe('stopwatch', () => {
-  describe('RealTestRunStopwatch', () => {
+  describe('RealStopwatch', () => {
     it('returns a duration between the start and stop', async () => {
       const stopwatch = new RealStopwatch()
       stopwatch.start()
@@ -59,7 +59,7 @@ describe('stopwatch', () => {
     })
   })
 
-  describe('PredictableTestRunStopwatch', () => {
+  describe('PredictableStopwatch', () => {
     it('increments 1000000 nanos every time a timestamp is requested', () => {
       const stopwatch = new PredictableStopwatch()
       expect(stopwatch.timestamp()).to.deep.eq({
