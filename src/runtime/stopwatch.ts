@@ -1,23 +1,17 @@
-import * as messages from '@cucumber/messages'
-import { TimeConversion } from '@cucumber/messages'
+import { Duration, TimeConversion, Timestamp } from '@cucumber/messages'
 import methods from '../time'
 
 export interface IStopwatch {
   start: () => IStopwatch
   stop: () => IStopwatch
-  duration: () => messages.Duration
-  timestamp: () => messages.Timestamp
+  duration: () => Duration
+  timestamp: () => Timestamp
 }
 
 export class RealStopwatch implements IStopwatch {
   private started: number
 
-  constructor(
-    private base: messages.Duration = {
-      seconds: 0,
-      nanos: 0,
-    }
-  ) {}
+  constructor(private base: Duration = zero()) {}
 
   start(): IStopwatch {
     this.started = methods.performance.now()
@@ -30,8 +24,8 @@ export class RealStopwatch implements IStopwatch {
     return this
   }
 
-  duration(): messages.Duration {
-    if (!this.started) {
+  duration(): Duration {
+    if (typeof this.started !== 'number') {
       return this.base
     }
     return TimeConversion.addDurations(
@@ -42,22 +36,15 @@ export class RealStopwatch implements IStopwatch {
     )
   }
 
-  timestamp(): messages.Timestamp {
-    return messages.TimeConversion.millisecondsSinceEpochToTimestamp(
-      methods.Date.now()
-    )
+  timestamp(): Timestamp {
+    return TimeConversion.millisecondsSinceEpochToTimestamp(methods.Date.now())
   }
 }
 
 export class PredictableStopwatch implements IStopwatch {
   private count = 0
 
-  constructor(
-    private base: messages.Duration = {
-      seconds: 0,
-      nanos: 0,
-    }
-  ) {}
+  constructor(private base: Duration = zero()) {}
 
   start(): IStopwatch {
     return this
@@ -67,16 +54,18 @@ export class PredictableStopwatch implements IStopwatch {
     return this
   }
 
-  duration(): messages.Duration {
+  duration(): Duration {
     return TimeConversion.addDurations(
       this.base,
       TimeConversion.millisecondsToDuration(this.count)
     )
   }
 
-  timestamp(): messages.Timestamp {
+  timestamp(): Timestamp {
     const fakeTimestamp = this.duration()
     this.count++
     return fakeTimestamp
   }
 }
+
+const zero = (): Duration => ({ seconds: 0, nanos: 0 })
