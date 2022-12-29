@@ -2,14 +2,14 @@ import * as messages from '@cucumber/messages'
 import { TimeConversion } from '@cucumber/messages'
 import methods from '../time'
 
-export interface ITestRunStopwatch {
-  start: () => ITestRunStopwatch
-  stop: () => ITestRunStopwatch
+export interface IStopwatch {
+  start: () => IStopwatch
+  stop: () => IStopwatch
   duration: () => messages.Duration
   timestamp: () => messages.Timestamp
 }
 
-export class RealTestRunStopwatch implements ITestRunStopwatch {
+export class RealStopwatch implements IStopwatch {
   private started: number
 
   constructor(
@@ -19,12 +19,12 @@ export class RealTestRunStopwatch implements ITestRunStopwatch {
     }
   ) {}
 
-  start(): ITestRunStopwatch {
+  start(): IStopwatch {
     this.started = methods.performance.now()
     return this
   }
 
-  stop(): ITestRunStopwatch {
+  stop(): IStopwatch {
     this.base = this.duration()
     this.started = undefined
     return this
@@ -49,7 +49,7 @@ export class RealTestRunStopwatch implements ITestRunStopwatch {
   }
 }
 
-export class PredictableTestRunStopwatch implements ITestRunStopwatch {
+export class PredictableStopwatch implements IStopwatch {
   private count = 0
 
   constructor(
@@ -59,11 +59,11 @@ export class PredictableTestRunStopwatch implements ITestRunStopwatch {
     }
   ) {}
 
-  start(): ITestRunStopwatch {
+  start(): IStopwatch {
     return this
   }
 
-  stop(): ITestRunStopwatch {
+  stop(): IStopwatch {
     return this
   }
 

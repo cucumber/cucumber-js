@@ -6,7 +6,7 @@ import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
 import { makeRunTestRunHooks, RunsTestRunHooks } from '../run_test_run_hooks'
-import { RealTestRunStopwatch } from '../stopwatch'
+import { RealStopwatch } from '../stopwatch'
 import TestCaseRunner from '../test_case_runner'
 import {
   ICoordinatorReport,
@@ -122,7 +122,7 @@ export default class Worker {
     retries,
     skip,
   }: IWorkerCommandRun): Promise<void> {
-    const stopwatch = new RealTestRunStopwatch(elapsed)
+    const stopwatch = new RealStopwatch(elapsed)
     const testCaseRunner = new TestCaseRunner({
       eventBroadcaster: this.eventBroadcaster,
       stopwatch,
