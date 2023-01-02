@@ -12,12 +12,7 @@ interface ProtectedTimingBuiltins {
   performance: typeof performance
 }
 
-interface CustomTimingFunctions {
-  beginTiming: () => void
-  endTiming: () => number
-}
-
-const methods: Partial<ProtectedTimingBuiltins & CustomTimingFunctions> = {
+const methods: Partial<ProtectedTimingBuiltins> = {
   clearInterval: clearInterval.bind(global),
   clearTimeout: clearTimeout.bind(global),
   Date,
