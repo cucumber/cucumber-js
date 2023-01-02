@@ -8,7 +8,7 @@ import { IRuntime, IRuntimeOptions } from '..'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { ICoordinatorReport, IWorkerCommand } from './command_types'
 import { doesHaveValue } from '../../value_checker'
-import { IStopwatch, RealStopwatch } from '../stopwatch'
+import { IStopwatch, create } from '../stopwatch'
 import { assembleTestCases, IAssembledTestCases } from '../assemble_test_cases'
 import { IdGenerator } from '@cucumber/messages'
 import { ILogger } from '../../logger'
@@ -87,7 +87,7 @@ export default class Coordinator implements IRuntime {
     this.logger = logger
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
-    this.stopwatch = new RealStopwatch()
+    this.stopwatch = create()
     this.options = options
     this.newId = newId
     this.supportCodeLibrary = supportCodeLibrary

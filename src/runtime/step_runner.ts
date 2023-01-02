@@ -1,4 +1,4 @@
-import { RealStopwatch } from './stopwatch'
+import { create } from './stopwatch'
 import UserCodeRunner from '../user_code_runner'
 import * as messages from '@cucumber/messages'
 import { ITestCaseHookParameter } from '../support_code_library_builder/types'
@@ -27,7 +27,7 @@ export async function run({
   stepDefinition,
   world,
 }: IRunOptions): Promise<messages.TestStepResult> {
-  const stopwatch = new RealStopwatch().start()
+  const stopwatch = create().start()
   let error: any, result: any, invocationData: IGetInvocationDataResponse
 
   try {

@@ -12,7 +12,7 @@ import timeMethods from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
-import { RealStopwatch } from "./stopwatch";
+import { create } from "./stopwatch";
 import { assembleTestCases } from './assemble_test_cases'
 import IEnvelope = messages.Envelope
 
@@ -48,7 +48,7 @@ async function testRunner(
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
   const runner = new TestCaseRunner({
     eventBroadcaster,
-    stopwatch: new RealStopwatch(),
+    stopwatch: create(),
     gherkinDocument: options.gherkinDocument,
     newId,
     pickle: options.pickle,

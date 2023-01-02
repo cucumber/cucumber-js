@@ -1,12 +1,12 @@
 import { describe, it } from "mocha";
-import { RealStopwatch } from "./stopwatch";
+import { create } from "./stopwatch";
 import { expect } from "chai";
 import { TimeConversion } from "@cucumber/messages";
 
 describe("stopwatch", () => {
   it("returns a duration between the start and stop", async () => {
-    const stopwatch = new RealStopwatch();
-    stopwatch.start();
+    const stopwatch = create()
+    stopwatch.start()
     await new Promise((resolve) => setTimeout(resolve, 1200));
     stopwatch.stop();
     expect(
@@ -15,10 +15,10 @@ describe("stopwatch", () => {
   });
 
   it("accounts for an initial duration", async () => {
-    const stopwatch = new RealStopwatch(
+    const stopwatch = create(
       TimeConversion.millisecondsToDuration(300)
     );
-    stopwatch.start();
+    stopwatch.start()
     await new Promise((resolve) => setTimeout(resolve, 200));
     stopwatch.stop();
     expect(
@@ -27,8 +27,8 @@ describe("stopwatch", () => {
   });
 
   it("returns accurate durations ad-hoc if not stopped", async () => {
-    const stopwatch = new RealStopwatch();
-    stopwatch.start();
+    const stopwatch = create()
+    stopwatch.start()
     await new Promise((resolve) => setTimeout(resolve, 200));
     expect(
       TimeConversion.durationToMilliseconds(stopwatch.duration())
@@ -41,7 +41,7 @@ describe("stopwatch", () => {
   });
 
   it("returns 0 duration if never started", async () => {
-    const stopwatch = new RealStopwatch();
+    const stopwatch = create();
     await new Promise((resolve) => setTimeout(resolve, 200));
     stopwatch.stop();
     expect(TimeConversion.durationToMilliseconds(stopwatch.duration())).to.eq(
@@ -52,7 +52,7 @@ describe("stopwatch", () => {
   it("returns a timestamp close to now", () => {
     expect(
       TimeConversion.timestampToMillisecondsSinceEpoch(
-        new RealStopwatch().timestamp()
+        create().timestamp()
       )
     ).to.be.closeTo(Date.now(), 100);
   });

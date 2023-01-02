@@ -8,7 +8,7 @@ export interface IStopwatch {
   timestamp: () => Timestamp
 }
 
-export class RealStopwatch implements IStopwatch {
+class StopwatchImpl implements IStopwatch {
   private started: number
 
   constructor(private base: Duration = { seconds: 0, nanos: 0 }) {}
@@ -40,3 +40,5 @@ export class RealStopwatch implements IStopwatch {
     return TimeConversion.millisecondsSinceEpochToTimestamp(methods.Date.now())
   }
 }
+
+export const create = (base?: Duration): IStopwatch => new StopwatchImpl(base)
