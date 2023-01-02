@@ -1,6 +1,10 @@
 import { Duration, TimeConversion, Timestamp } from '@cucumber/messages'
 import methods from '../time'
 
+/**
+ * A utility for timing test run operations and returning duration and
+ * timestamp objects in messages-compatible formats
+ */
 export interface IStopwatch {
   start: () => IStopwatch
   stop: () => IStopwatch
