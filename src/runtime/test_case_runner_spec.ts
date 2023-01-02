@@ -124,7 +124,7 @@ describe('TestCaseRunner', () => {
             testStepStarted: {
               testCaseStartedId: '2',
               testStepId: '1',
-              timestamp: predictableTimestamp(1),
+              timestamp: predictableTimestamp(0),
             },
           },
           {
@@ -132,13 +132,13 @@ describe('TestCaseRunner', () => {
               testCaseStartedId: '2',
               testStepResult: passedTestResult,
               testStepId: '1',
-              timestamp: predictableTimestamp(2),
+              timestamp: predictableTimestamp(1),
             },
           },
           {
             testCaseFinished: {
               testCaseStartedId: '2',
-              timestamp: predictableTimestamp(3),
+              timestamp: predictableTimestamp(1),
               willBeRetried: false,
             },
           },
