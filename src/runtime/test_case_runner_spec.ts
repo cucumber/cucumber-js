@@ -263,6 +263,7 @@ describe('TestCaseRunner', () => {
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
           let willPass = false
           Given('a step', function () {
+            clock.tick(1)
             if (willPass) {
               return
             }
@@ -300,25 +301,25 @@ describe('TestCaseRunner', () => {
             testStepStarted: {
               testCaseStartedId: '2',
               testStepId: '1',
-              timestamp: predictableTimestamp(1),
+              timestamp: predictableTimestamp(0),
             },
           },
           {
             testStepFinished: {
               testCaseStartedId: '2',
               testStepResult: {
-                duration: messages.TimeConversion.millisecondsToDuration(0),
+                duration: messages.TimeConversion.millisecondsToDuration(1),
                 message: 'error',
                 status: messages.TestStepResultStatus.FAILED,
               },
               testStepId: '1',
-              timestamp: predictableTimestamp(2),
+              timestamp: predictableTimestamp(1),
             },
           },
           {
             testCaseFinished: {
               testCaseStartedId: '2',
-              timestamp: predictableTimestamp(3),
+              timestamp: predictableTimestamp(1),
               willBeRetried: true,
             },
           },
@@ -327,32 +328,32 @@ describe('TestCaseRunner', () => {
               attempt: 1,
               id: '3',
               testCaseId: '0',
-              timestamp: predictableTimestamp(4),
+              timestamp: predictableTimestamp(1),
             },
           },
           {
             testStepStarted: {
               testCaseStartedId: '3',
               testStepId: '1',
-              timestamp: predictableTimestamp(5),
+              timestamp: predictableTimestamp(1),
             },
           },
           {
             testStepFinished: {
               testCaseStartedId: '3',
               testStepResult: {
-                duration: messages.TimeConversion.millisecondsToDuration(0),
+                duration: messages.TimeConversion.millisecondsToDuration(1),
                 message: undefined,
                 status: messages.TestStepResultStatus.PASSED,
               },
               testStepId: '1',
-              timestamp: predictableTimestamp(6),
+              timestamp: predictableTimestamp(2),
             },
           },
           {
             testCaseFinished: {
               testCaseStartedId: '3',
-              timestamp: predictableTimestamp(7),
+              timestamp: predictableTimestamp(2),
               willBeRetried: false,
             },
           },
