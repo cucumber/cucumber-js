@@ -1,59 +1,53 @@
-import { describe, it } from "mocha";
-import { create } from "./stopwatch";
-import { expect } from "chai";
-import { TimeConversion } from "@cucumber/messages";
+import { describe, it } from 'mocha'
+import { create } from './stopwatch'
+import { expect } from 'chai'
+import { TimeConversion } from '@cucumber/messages'
 
-describe("stopwatch", () => {
-  it("returns a duration between the start and stop", async () => {
+describe('stopwatch', () => {
+  it('returns a duration between the start and stop', async () => {
     const stopwatch = create()
     stopwatch.start()
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-    stopwatch.stop();
+    await new Promise((resolve) => setTimeout(resolve, 1200))
+    stopwatch.stop()
     expect(
       TimeConversion.durationToMilliseconds(stopwatch.duration())
-    ).to.be.closeTo(1200, 50);
-  });
+    ).to.be.closeTo(1200, 50)
+  })
 
-  it("accounts for an initial duration", async () => {
-    const stopwatch = create(
-      TimeConversion.millisecondsToDuration(300)
-    );
+  it('accounts for an initial duration', async () => {
+    const stopwatch = create(TimeConversion.millisecondsToDuration(300))
     stopwatch.start()
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    stopwatch.stop();
+    await new Promise((resolve) => setTimeout(resolve, 200))
+    stopwatch.stop()
     expect(
       TimeConversion.durationToMilliseconds(stopwatch.duration())
-    ).to.be.closeTo(500, 50);
-  });
+    ).to.be.closeTo(500, 50)
+  })
 
-  it("returns accurate durations ad-hoc if not stopped", async () => {
+  it('returns accurate durations ad-hoc if not stopped', async () => {
     const stopwatch = create()
     stopwatch.start()
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 200))
     expect(
       TimeConversion.durationToMilliseconds(stopwatch.duration())
-    ).to.be.closeTo(200, 50);
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    stopwatch.stop();
+    ).to.be.closeTo(200, 50)
+    await new Promise((resolve) => setTimeout(resolve, 200))
+    stopwatch.stop()
     expect(
       TimeConversion.durationToMilliseconds(stopwatch.duration())
-    ).to.be.closeTo(400, 50);
-  });
+    ).to.be.closeTo(400, 50)
+  })
 
-  it("returns 0 duration if never started", async () => {
-    const stopwatch = create();
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    stopwatch.stop();
-    expect(TimeConversion.durationToMilliseconds(stopwatch.duration())).to.eq(
-      0
-    );
-  });
+  it('returns 0 duration if never started', async () => {
+    const stopwatch = create()
+    await new Promise((resolve) => setTimeout(resolve, 200))
+    stopwatch.stop()
+    expect(TimeConversion.durationToMilliseconds(stopwatch.duration())).to.eq(0)
+  })
 
-  it("returns a timestamp close to now", () => {
+  it('returns a timestamp close to now', () => {
     expect(
-      TimeConversion.timestampToMillisecondsSinceEpoch(
-        create().timestamp()
-      )
-    ).to.be.closeTo(Date.now(), 100);
-  });
-});
+      TimeConversion.timestampToMillisecondsSinceEpoch(create().timestamp())
+    ).to.be.closeTo(Date.now(), 100)
+  })
+})

@@ -12,7 +12,7 @@ import timeMethods from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
-import { create } from "./stopwatch";
+import { create } from './stopwatch'
 import { assembleTestCases } from './assemble_test_cases'
 import IEnvelope = messages.Envelope
 
