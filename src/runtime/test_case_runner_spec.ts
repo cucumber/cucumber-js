@@ -111,7 +111,7 @@ describe('TestCaseRunner', () => {
         })
 
         // Assert
-        const expectedtEnvelopes: messages.Envelope[] = [
+        const expectedEnvelopes: messages.Envelope[] = [
           {
             testCaseStarted: {
               attempt: 0,
@@ -143,7 +143,7 @@ describe('TestCaseRunner', () => {
             },
           },
         ]
-        expect(envelopes).to.eql(expectedtEnvelopes)
+        expect(envelopes).to.eql(expectedEnvelopes)
         expect(result).to.eql(messages.TestStepResultStatus.PASSED)
       })
     })
