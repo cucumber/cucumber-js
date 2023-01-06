@@ -2,21 +2,28 @@ import { performance } from 'perf_hooks'
 import * as messages from '@cucumber/messages'
 
 interface ProtectedTimingBuiltins {
+  clearImmediate: typeof clearImmediate
   clearInterval: typeof clearInterval
   clearTimeout: typeof clearTimeout
   Date: typeof Date
+  setImmediate: typeof setImmediate
   setInterval: typeof setInterval
   setTimeout: typeof setTimeout
   performance: typeof performance
 }
 
-const methods: ProtectedTimingBuiltins = {
+const methods: Partial<ProtectedTimingBuiltins> = {
   clearInterval: clearInterval.bind(global),
   clearTimeout: clearTimeout.bind(global),
   Date,
   setInterval: setInterval.bind(global),
   setTimeout: setTimeout.bind(global),
   performance,
+}
+
+if (typeof setImmediate !== 'undefined') {
+  methods.setImmediate = setImmediate.bind(global)
+  methods.clearImmediate = clearImmediate.bind(global)
 }
 
 export function durationBetweenTimestamps(
