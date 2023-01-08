@@ -197,11 +197,11 @@
   },
   "dependencies": {
     "@cucumber/ci-environment": "9.1.0",
-    "@cucumber/cucumber-expressions": "16.1.0",
+    "@cucumber/cucumber-expressions": "16.1.1",
     "@cucumber/gherkin": "25.0.2",
     "@cucumber/gherkin-streams": "5.0.1",
     "@cucumber/gherkin-utils": "8.0.2",
-    "@cucumber/html-formatter": "20.2.0",
+    "@cucumber/html-formatter": "20.2.1",
     "@cucumber/message-streams": "4.0.1",
     "@cucumber/messages": "20.0.0",
     "@cucumber/tag-expressions": "4.1.0",
@@ -238,7 +238,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "@cucumber/compatibility-kit": "11.0.1",
+    "@cucumber/compatibility-kit": "11.2.0",
     "@cucumber/query": "12.0.1",
     "@microsoft/api-documenter": "7.19.27",
     "@microsoft/api-extractor": "7.33.7",
