@@ -3,6 +3,7 @@
     "config:base",
     ":disableDependencyDashboard"
   ],
+  "rebaseWhen": "never",
   "packageRules": [
     {
       "updateTypes": ["minor", "patch", "pin", "digest"],
