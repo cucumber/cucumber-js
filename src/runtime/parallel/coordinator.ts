@@ -8,7 +8,7 @@ import { IRuntime, IRuntimeOptions } from '..'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { ICoordinatorReport, IWorkerCommand } from './command_types'
 import { doesHaveValue } from '../../value_checker'
-import { ITestRunStopwatch, RealTestRunStopwatch } from '../stopwatch'
+import { IStopwatch, create } from '../stopwatch'
 import { assembleTestCases, IAssembledTestCases } from '../assemble_test_cases'
 import { IdGenerator } from '@cucumber/messages'
 import { ILogger } from '../../logger'
@@ -52,7 +52,7 @@ export default class Coordinator implements IRuntime {
   private readonly cwd: string
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
-  private readonly stopwatch: ITestRunStopwatch
+  private readonly stopwatch: IStopwatch
   private onFinish: (success: boolean) => void
   private readonly options: IRuntimeOptions
   private readonly newId: IdGenerator.NewId
@@ -87,7 +87,7 @@ export default class Coordinator implements IRuntime {
     this.logger = logger
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
-    this.stopwatch = new RealTestRunStopwatch()
+    this.stopwatch = create()
     this.options = options
     this.newId = newId
     this.supportCodeLibrary = supportCodeLibrary
@@ -299,7 +299,7 @@ export default class Coordinator implements IRuntime {
       run: {
         retries,
         skip,
-        elapsed: this.stopwatch.duration().nanos(),
+        elapsed: this.stopwatch.duration(),
         pickle,
         testCase,
         gherkinDocument,

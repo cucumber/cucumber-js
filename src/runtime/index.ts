@@ -6,7 +6,7 @@ import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { assembleTestCases } from './assemble_test_cases'
 import { retriesForPickle, shouldCauseFailure } from './helpers'
 import { makeRunTestRunHooks, RunsTestRunHooks } from './run_test_run_hooks'
-import { ITestRunStopwatch, RealTestRunStopwatch } from './stopwatch'
+import { IStopwatch, create } from './stopwatch'
 import TestCaseRunner from './test_case_runner'
 
 export interface IRuntime {
@@ -35,7 +35,7 @@ export interface IRuntimeOptions {
 export default class Runtime implements IRuntime {
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
-  private readonly stopwatch: ITestRunStopwatch
+  private readonly stopwatch: IStopwatch
   private readonly newId: IdGenerator.NewId
   private readonly options: IRuntimeOptions
   private readonly pickleIds: string[]
@@ -53,7 +53,7 @@ export default class Runtime implements IRuntime {
   }: INewRuntimeOptions) {
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
-    this.stopwatch = new RealTestRunStopwatch()
+    this.stopwatch = create()
     this.newId = newId
     this.options = options
     this.pickleIds = pickleIds
