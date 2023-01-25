@@ -34,6 +34,7 @@ interface IJUnitTestCase {
   result: IJUnitTestCaseResult
   systemOutput: string
   steps: IJUnitTestStep[]
+  file: string
 }
 
 interface IJUnitTestCaseResult {
@@ -221,6 +222,7 @@ export default class JunitFormatter extends Formatter {
           result: this.getTestCaseResult(steps),
           systemOutput: this.formatTestSteps(steps),
           steps,
+          file: pickle.uri,
         }
       }
     )
@@ -257,6 +259,7 @@ export default class JunitFormatter extends Formatter {
         classname: test.classname,
         name: test.name,
         time: test.time,
+        file: test.file,
       })
       if (test.result.status === TestStepResultStatus.SKIPPED) {
         xmlTestCase.ele('skipped')
