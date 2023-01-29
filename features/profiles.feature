@@ -117,3 +117,19 @@ Feature: default command line arguments
       1 step (1 skipped)
       <duration-stat>
       """
+
+  Scenario: using a YAML file
+    Given a file named ".cucumber-rc.yaml" with:
+      """
+      default:
+        dryRun: true
+      """
+    When I run cucumber-js with `--config .cucumber-rc.yaml`
+    Then it outputs the text:
+      """
+      -
+
+      1 scenario (1 skipped)
+      1 step (1 skipped)
+      <duration-stat>
+      """

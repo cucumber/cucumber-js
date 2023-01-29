@@ -14,6 +14,7 @@ import { Query as GherkinQuery } from '@cucumber/gherkin-utils'
 import PickleFilter from '../pickle_filter'
 import { orderPickles } from '../cli/helpers'
 import { ISourcesCoordinates } from './types'
+import { ILogger } from '../logger'
 
 interface PickleWithDocument {
   gherkinDocument: GherkinDocument
@@ -32,7 +33,7 @@ export async function getFilteredPicklesAndErrors({
 }: {
   newId: IdGenerator.NewId
   cwd: string
-  logger: Console
+  logger: ILogger
   unexpandedFeaturePaths: string[]
   featurePaths: string[]
   coordinates: ISourcesCoordinates

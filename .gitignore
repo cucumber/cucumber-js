@@ -10,6 +10,7 @@ tmp/
 reports/*.html
 reports/*.ndjson
 reports/*.txt
+reports/*.xml
 yarn-error.log
 .vscode
 .DS_Store

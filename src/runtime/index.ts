@@ -2,12 +2,11 @@ import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
 import { EventEmitter } from 'events'
 import { EventDataCollector } from '../formatter/helpers'
-import StackTraceFilter from '../stack_trace_filter'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { assembleTestCases } from './assemble_test_cases'
 import { retriesForPickle, shouldCauseFailure } from './helpers'
 import { makeRunTestRunHooks, RunsTestRunHooks } from './run_test_run_hooks'
-import { ITestRunStopwatch, RealTestRunStopwatch } from './stopwatch'
+import { IStopwatch, create } from './stopwatch'
 import TestCaseRunner from './test_case_runner'
 
 export interface IRuntime {
@@ -36,11 +35,10 @@ export interface IRuntimeOptions {
 export default class Runtime implements IRuntime {
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
-  private readonly stopwatch: ITestRunStopwatch
+  private readonly stopwatch: IStopwatch
   private readonly newId: IdGenerator.NewId
   private readonly options: IRuntimeOptions
   private readonly pickleIds: string[]
-  private readonly stackTraceFilter: StackTraceFilter
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private success: boolean
   private runTestRunHooks: RunsTestRunHooks
@@ -55,11 +53,10 @@ export default class Runtime implements IRuntime {
   }: INewRuntimeOptions) {
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
-    this.stopwatch = new RealTestRunStopwatch()
+    this.stopwatch = create()
     this.newId = newId
     this.options = options
     this.pickleIds = pickleIds
-    this.stackTraceFilter = new StackTraceFilter()
     this.supportCodeLibrary = supportCodeLibrary
     this.success = true
     this.runTestRunHooks = makeRunTestRunHooks(
@@ -85,6 +82,7 @@ export default class Runtime implements IRuntime {
       testCase,
       retries,
       skip,
+      filterStackTraces: this.options.filterStacktraces,
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.options.worldParameters,
     })
@@ -95,9 +93,6 @@ export default class Runtime implements IRuntime {
   }
 
   async start(): Promise<boolean> {
-    if (this.options.filterStacktraces) {
-      this.stackTraceFilter.filter()
-    }
     const testRunStarted: messages.Envelope = {
       testRunStarted: {
         timestamp: this.stopwatch.timestamp(),
@@ -132,9 +127,6 @@ export default class Runtime implements IRuntime {
       },
     }
     this.eventBroadcaster.emit('envelope', testRunFinished)
-    if (this.options.filterStacktraces) {
-      this.stackTraceFilter.unfilter()
-    }
     return this.success
   }
 }

@@ -37,15 +37,22 @@ $ npm install @cucumber/cucumber
 
 Let's take this example of something to test:
 
+
+First, write your main code in `src/index.js`:
+
 ```js
 class Greeter {
   sayHello() {
     return 'hello'
   }
 }
+
+module.exports = {
+  Greeter
+}
 ```
 
-First, write your feature in `features/greeting.feature`:
+Then, write your feature in `features/greeting.feature`:
 
 ```gherkin
 Feature: Greeting
@@ -81,7 +88,7 @@ And see the output:
 
 ![Terminal output showing a successful test run with 1 scenario and 2 steps, all passing](./docs/images/readme-output.png)
 
-If you learn best by example, we have [a repo with several example projects](https://github.com/cucumber-examples/cucumber-js-examples), that might help you get going.
+If you learn best by example, we have [a repo with several example projects](https://github.com/cucumber/cucumber-js-examples), that might help you get going.
 
 ## Documentation
 
@@ -99,6 +106,7 @@ The following documentation is for `main`, which might contain some unreleased f
   * [Timeouts](./docs/support_files/timeouts.md)
   * [World](./docs/support_files/world.md)
 * Guides
+  * [Debugging](./docs/debugging.md)
   * [Dry run](./docs/dry_run.md)
   * [ES Modules](./docs/esm.md)
   * [Failing fast](./docs/fail_fast.md)

@@ -1,7 +1,6 @@
-import Time from '../time'
+import { create } from './stopwatch'
 import UserCodeRunner from '../user_code_runner'
 import * as messages from '@cucumber/messages'
-import { format } from 'assertion-error-formatter'
 import { ITestCaseHookParameter } from '../support_code_library_builder/types'
 import { IDefinition, IGetInvocationDataResponse } from '../models/definition'
 import {
@@ -9,11 +8,11 @@ import {
   doesNotHaveValue,
   valueOrDefault,
 } from '../value_checker'
-
-const { beginTiming, endTiming } = Time
+import { formatError } from './format_error'
 
 export interface IRunOptions {
   defaultTimeout: number
+  filterStackTraces: boolean
   hookParameter: ITestCaseHookParameter
   step: messages.PickleStep
   stepDefinition: IDefinition
@@ -22,12 +21,13 @@ export interface IRunOptions {
 
 export async function run({
   defaultTimeout,
+  filterStackTraces,
   hookParameter,
   step,
   stepDefinition,
   world,
 }: IRunOptions): Promise<messages.TestStepResult> {
-  beginTiming()
+  const stopwatch = create().start()
   let error: any, result: any, invocationData: IGetInvocationDataResponse
 
   try {
@@ -60,7 +60,7 @@ export async function run({
     }
   }
 
-  const duration = messages.TimeConversion.millisecondsToDuration(endTiming())
+  const duration = stopwatch.stop().duration()
   let status: messages.TestStepResultStatus
   let message: string
   if (result === 'skipped') {
@@ -68,7 +68,7 @@ export async function run({
   } else if (result === 'pending') {
     status = messages.TestStepResultStatus.PENDING
   } else if (doesHaveValue(error)) {
-    message = format(error)
+    message = formatError(error, filterStackTraces)
     status = messages.TestStepResultStatus.FAILED
   } else {
     status = messages.TestStepResultStatus.PASSED

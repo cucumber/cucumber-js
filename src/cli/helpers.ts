@@ -15,6 +15,7 @@ import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { PickleOrder } from '../models/pickle_order'
 import { builtinParameterTypes } from '../support_code_library_builder'
 import { version } from '../version'
+import { ILogger } from '../logger'
 
 interface IParseGherkinMessageStreamRequest {
   cwd?: string
@@ -27,8 +28,6 @@ interface IParseGherkinMessageStreamRequest {
 
 /**
  * Process a stream of envelopes from Gherkin and resolve to an array of filtered, ordered pickle Ids
- *
- * @deprecated use `loadSources` instead
  *
  * @param eventBroadcaster
  * @param eventDataCollector
@@ -70,7 +69,7 @@ export async function parseGherkinMessageStream({
 export function orderPickles<T = string>(
   pickleIds: T[],
   order: PickleOrder,
-  logger: Console
+  logger: ILogger
 ): void {
   const [type, seed] = OptionSplitter.split(order)
   switch (type) {

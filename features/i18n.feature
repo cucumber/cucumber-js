@@ -27,7 +27,7 @@ Feature: internationalization
       """
       ENGLISH KEYWORD  | NATIVE KEYWORDS
       Feature          | "フィーチャ", "機能"
-      Rule             | "Rule"
+      Rule             | "ルール"
       Background       | "背景"
       Scenario         | "シナリオ"
       Scenario Outline | "シナリオアウトライン", "シナリオテンプレート", "テンプレ", "シナリオテンプレ"
@@ -35,6 +35,6 @@ Feature: internationalization
       Given            | "* ", "前提"
       When             | "* ", "もし"
       Then             | "* ", "ならば"
-      And              | "* ", "かつ"
-      But              | "* ", "しかし", "但し", "ただし"
+      And              | "* ", "且つ", "かつ"
+      But              | "* ", "然し", "しかし", "但し", "ただし"
       """

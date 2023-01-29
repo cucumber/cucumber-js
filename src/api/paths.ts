@@ -3,8 +3,10 @@ import glob from 'glob'
 import path from 'path'
 import fs from 'mz/fs'
 import { ISourcesCoordinates, ISupportCodeCoordinates } from './types'
+import { ILogger } from '../logger'
 
 export async function resolvePaths(
+  logger: ILogger,
   cwd: string,
   sources: Pick<ISourcesCoordinates, 'paths'>,
   support: ISupportCodeCoordinates = {
@@ -26,11 +28,20 @@ export async function resolvePaths(
     cwd,
     unexpandedFeaturePaths
   )
+  logger.debug('Found feature files based on configuration:', featurePaths)
   const { requirePaths, importPaths } = await deriveSupportPaths(
     cwd,
     featurePaths,
     support.requirePaths,
     support.importPaths
+  )
+  logger.debug(
+    'Found support files to load via `require` based on configuration:',
+    requirePaths
+  )
+  logger.debug(
+    'Found support files to load via `import` based on configuration:',
+    importPaths
   )
   return {
     unexpandedFeaturePaths,

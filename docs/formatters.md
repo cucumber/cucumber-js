@@ -95,13 +95,17 @@ You can:
 
 ### `message`
 
-Outputs all the [Cucumber Messages](https://github.com/cucumber/common/tree/main/messages) for the test run as newline-delimited JSON, which can then be consumed by other tools.
+Outputs all the [Cucumber Messages](https://github.com/cucumber/messages) for the test run as newline-delimited JSON, which can then be consumed by other tools.
 
 ### `json`
 
 Outputs details of the test run in the legacy JSON format.
 
 *Note: this formatter is in maintenance mode and won't have new features added to it. Where you need a structured data representation of your test run, it's best to use the `message` formatter. Tools that rely on this formatter will continue to work, but are encouraged to migrate to consume the `message` output instead.*
+
+### `junit`
+
+The JUnit formatter produces an XML-based report in the standard(ish) [JUnit format](https://github.com/junit-team/junit5/blob/43638eb6a870e0d6c49224053dfeb39dcf0ef33f/platform-tests/src/test/resources/jenkins-junit.xsd). This is most commonly useful for having your CI platform pick up your tests results and factor them into its reporting. Consult your CI platform's docs for where exactly you should output this report to and what the filename should be.
 
 ### `snippets`
 

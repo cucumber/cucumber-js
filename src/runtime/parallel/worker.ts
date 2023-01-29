@@ -1,14 +1,12 @@
 import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
-import { duration } from 'durations'
 import { EventEmitter } from 'events'
 import { pathToFileURL } from 'url'
-import StackTraceFilter from '../../stack_trace_filter'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
 import { makeRunTestRunHooks, RunsTestRunHooks } from '../run_test_run_hooks'
-import { RealTestRunStopwatch } from '../stopwatch'
+import { create } from '../stopwatch'
 import TestCaseRunner from '../test_case_runner'
 import {
   ICoordinatorReport,
@@ -33,7 +31,6 @@ export default class Worker {
   private filterStacktraces: boolean
   private readonly newId: IdGenerator.NewId
   private readonly sendMessage: IMessageSender
-  private readonly stackTraceFilter: StackTraceFilter
   private supportCodeLibrary: ISupportCodeLibrary
   private worldParameters: any
   private runTestRunHooks: RunsTestRunHooks
@@ -55,11 +52,12 @@ export default class Worker {
     this.exit = exit
     this.sendMessage = sendMessage
     this.eventBroadcaster = new EventEmitter()
-    this.stackTraceFilter = new StackTraceFilter()
     this.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
-      this.sendMessage({
-        jsonEnvelope: JSON.stringify(envelope),
-      })
+      // assign `workerId` property only for the `testCaseStarted` message
+      if (envelope.testCaseStarted) {
+        envelope.testCaseStarted.workerId = this.id
+      }
+      this.sendMessage({ jsonEnvelope: JSON.stringify(envelope) })
     })
   }
 
@@ -71,7 +69,11 @@ export default class Worker {
     supportCodeIds,
     options,
   }: IWorkerCommandInitialize): Promise<void> {
-    supportCodeLibraryBuilder.reset(this.cwd, this.newId)
+    supportCodeLibraryBuilder.reset(this.cwd, this.newId, {
+      requireModules,
+      requirePaths,
+      importPaths,
+    })
     requireModules.map((module) => require(module))
     requirePaths.map((module) => require(module))
     for (const path of importPaths) {
@@ -81,9 +83,6 @@ export default class Worker {
 
     this.worldParameters = options.worldParameters
     this.filterStacktraces = filterStacktraces
-    if (this.filterStacktraces) {
-      this.stackTraceFilter.filter()
-    }
     this.runTestRunHooks = makeRunTestRunHooks(
       options.dryRun,
       this.supportCodeLibrary.defaultTimeout,
@@ -102,9 +101,6 @@ export default class Worker {
       this.supportCodeLibrary.afterTestRunHookDefinitions,
       'an AfterAll'
     )
-    if (this.filterStacktraces) {
-      this.stackTraceFilter.unfilter()
-    }
     this.exit(0)
   }
 
@@ -126,8 +122,7 @@ export default class Worker {
     retries,
     skip,
   }: IWorkerCommandRun): Promise<void> {
-    const stopwatch = new RealTestRunStopwatch()
-    stopwatch.from(duration(elapsed))
+    const stopwatch = create(elapsed)
     const testCaseRunner = new TestCaseRunner({
       eventBroadcaster: this.eventBroadcaster,
       stopwatch,
@@ -137,6 +132,7 @@ export default class Worker {
       testCase,
       retries,
       skip,
+      filterStackTraces: this.filterStacktraces,
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.worldParameters,
     })
