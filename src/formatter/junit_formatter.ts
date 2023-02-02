@@ -246,7 +246,7 @@ export default class JunitFormatter extends Formatter {
 
   private buildXmlReport(testSuite: IJUnitTestSuite): string {
     const xmlReport = xmlbuilder
-      .create('testsuite')
+      .create('testsuite', { invalidCharReplacement: '' })
       .att('failures', testSuite.failures)
       .att('skipped', testSuite.skipped)
       .att('name', testSuite.name)
