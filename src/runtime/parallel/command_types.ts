@@ -27,7 +27,7 @@ export interface ICanonicalSupportCodeIds {
 export interface IWorkerCommandRun {
   retries: number
   skip: boolean
-  elapsed: number
+  elapsed: messages.Duration
   pickle: messages.Pickle
   testCase: messages.TestCase
   gherkinDocument: messages.GherkinDocument

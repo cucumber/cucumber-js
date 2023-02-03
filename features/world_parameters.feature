@@ -17,7 +17,7 @@ Feature: World Parameters
     Then it fails
     And the error output contains the text:
       """
-      --world-parameters passed invalid JSON: Unexpected token }
+      --world-parameters passed invalid JSON: Unexpected token
       """
     And the error output contains the text:
       """

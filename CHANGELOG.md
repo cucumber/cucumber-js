@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Handle invalid characters when generating XML for JUnit formatter [#2228](https://github.com/cucumber/cucumber-js/pull/2228)
 
 ## [8.10.0] - 2022-12-27
 ### Added
