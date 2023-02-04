@@ -100,7 +100,6 @@ describe('TestCaseRunner', () => {
         const passedTestResult: messages.TestStepResult = {
           duration: messages.TimeConversion.millisecondsToDuration(1),
           status: messages.TestStepResultStatus.PASSED,
-          message: undefined,
         }
 
         // Act
@@ -343,7 +342,6 @@ describe('TestCaseRunner', () => {
               testCaseStartedId: '3',
               testStepResult: {
                 duration: messages.TimeConversion.millisecondsToDuration(1),
-                message: undefined,
                 status: messages.TestStepResultStatus.PASSED,
               },
               testStepId: '1',

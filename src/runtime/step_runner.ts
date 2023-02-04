@@ -62,13 +62,13 @@ export async function run({
 
   const duration = stopwatch.stop().duration()
   let status: messages.TestStepResultStatus
-  let message: string
+  let details = {}
   if (result === 'skipped') {
     status = messages.TestStepResultStatus.SKIPPED
   } else if (result === 'pending') {
     status = messages.TestStepResultStatus.PENDING
   } else if (doesHaveValue(error)) {
-    message = formatError(error, filterStackTraces)
+    details = formatError(error, filterStackTraces)
     status = messages.TestStepResultStatus.FAILED
   } else {
     status = messages.TestStepResultStatus.PASSED
@@ -77,7 +77,7 @@ export async function run({
   return {
     duration,
     status,
-    message,
+    ...details,
   }
 }
 
