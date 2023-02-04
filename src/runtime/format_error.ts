@@ -26,8 +26,8 @@ export function formatError(
   return {
     message,
     exception: {
-      type: error.name,
-      message: error.message,
+      type: error.name || 'Error',
+      message: typeof error === 'string' ? error : error.message,
     },
   }
 }

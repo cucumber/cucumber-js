@@ -33,4 +33,26 @@ describe('formatError', () => {
       message: 'A generally bad thing happened!',
     })
   })
+
+  it('should handle an omitted message', () => {
+    expect(
+      testFormatError(() => {
+        throw new Error()
+      }).exception
+    ).to.eql({
+      type: 'Error',
+      message: '',
+    })
+  })
+
+  it('should handle a thrown string', () => {
+    expect(
+      testFormatError(() => {
+        throw 'Yikes!'
+      }).exception
+    ).to.eql({
+      type: 'Error',
+      message: 'Yikes!',
+    })
+  })
 })

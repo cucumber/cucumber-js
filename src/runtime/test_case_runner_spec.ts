@@ -166,6 +166,10 @@ describe('TestCaseRunner', () => {
           duration: messages.TimeConversion.millisecondsToDuration(0),
           status: messages.TestStepResultStatus.FAILED,
           message: 'fail',
+          exception: {
+            type: 'Error',
+            message: 'fail',
+          },
         }
 
         // Act
@@ -267,7 +271,7 @@ describe('TestCaseRunner', () => {
               return
             }
             willPass = true
-            throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+            throw 'Oh no!' // eslint-disable-line @typescript-eslint/no-throw-literal
           })
         })
         const {
@@ -308,7 +312,11 @@ describe('TestCaseRunner', () => {
               testCaseStartedId: '2',
               testStepResult: {
                 duration: messages.TimeConversion.millisecondsToDuration(1),
-                message: 'error',
+                message: 'Oh no!',
+                exception: {
+                  type: 'Error',
+                  message: 'Oh no!',
+                },
                 status: messages.TestStepResultStatus.FAILED,
               },
               testStepId: '1',
