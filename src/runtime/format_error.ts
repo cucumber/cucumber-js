@@ -25,5 +25,9 @@ export function formatError(
   })
   return {
     message,
+    exception: {
+      type: error.name,
+      message: error.message,
+    },
   }
 }
