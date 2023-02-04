@@ -145,7 +145,7 @@ describe('JunitFormatter', () => {
           '<?xml version="1.0"?>\n' +
             '<testsuite failures="1" skipped="0" name="cucumber-js" time="0.001" tests="1">\n' +
             '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
-            '    <failure type="FAILED" message="A hook or step failed"><![CDATA[error]]></failure>\n' +
+            '    <failure type="Error" message="error"><![CDATA[error]]></failure>\n' +
             '    <system-out><![CDATA[Given a failing step......................................................failed]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
@@ -179,7 +179,7 @@ describe('JunitFormatter', () => {
           '<?xml version="1.0"?>\n' +
             '<testsuite failures="1" skipped="0" name="cucumber-js" time="0.001" tests="1">\n' +
             '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
-            '    <failure type="FAILED" message="A hook or step failed"><![CDATA[Error: include invalid character]]></failure>\n' +
+            '    <failure type="Error" message="Error: include invalid character"><![CDATA[Error: include invalid character]]></failure>\n' +
             '    <system-out><![CDATA[Given a failing step with invalid character...............................failed]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
@@ -250,7 +250,7 @@ describe('JunitFormatter', () => {
           '<?xml version="1.0"?>\n' +
             '<testsuite failures="1" skipped="0" name="cucumber-js" time="0.001" tests="1">\n' +
             '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
-            '    <failure type="PENDING" message="A step in the test case is not yet implemented"/>\n' +
+            '    <failure/>\n' +
             '    <system-out><![CDATA[Given a pending step.....................................................pending]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
@@ -322,7 +322,7 @@ describe('JunitFormatter', () => {
           '<?xml version="1.0"?>\n' +
             '<testsuite failures="1" skipped="0" name="cucumber-js" time="0" tests="1">\n' +
             '  <testcase classname="my feature" name="my scenario" time="0">\n' +
-            '    <failure type="UNDEFINED" message="A step in the test case is not defined"/>\n' +
+            '    <failure/>\n' +
             '    <system-out><![CDATA[Given a passing step...................................................undefined]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
@@ -409,7 +409,7 @@ describe('JunitFormatter', () => {
           '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
           '  </testcase>\n' +
           '  <testcase classname="my feature" name="my templated scenario [1]" time="0.001">\n' +
-          '    <failure type="FAILED" message="A hook or step failed"><![CDATA[error]]></failure>\n' +
+          '    <failure type="Error" message="error"><![CDATA[error]]></failure>\n' +
           '    <system-out><![CDATA[Given a failing step......................................................failed]]></system-out>\n' +
           '  </testcase>\n' +
           '</testsuite>'

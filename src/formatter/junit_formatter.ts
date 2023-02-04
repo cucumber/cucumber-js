@@ -4,6 +4,7 @@ import * as messages from '@cucumber/messages'
 import {
   Attachment,
   Duration,
+  Exception,
   Feature,
   getWorstTestStepResult,
   Pickle,
@@ -39,6 +40,7 @@ interface IJUnitTestCase {
 interface IJUnitTestCaseResult {
   status: TestStepResultStatus
   message?: string
+  exception?: Exception
 }
 
 interface IJUnitTestStep {
@@ -58,16 +60,6 @@ interface IBuildJUnitTestStepOptions {
   testStep: messages.TestStep
   testStepAttachments: messages.Attachment[]
   testStepResult: messages.TestStepResult
-}
-
-const statusDescriptions: Record<TestStepResultStatus, string> = {
-  UNKNOWN: `A result couldn't be established`,
-  PASSED: 'Everything went fine',
-  SKIPPED: 'The test case was skipped',
-  PENDING: 'A step in the test case is not yet implemented',
-  UNDEFINED: 'A step in the test case is not defined',
-  AMBIGUOUS: 'Multiple definitions match one of the steps in the test case',
-  FAILED: 'A hook or step failed',
 }
 
 export default class JunitFormatter extends Formatter {
@@ -262,10 +254,10 @@ export default class JunitFormatter extends Formatter {
         xmlTestCase.ele('skipped')
       } else if (test.result.status !== TestStepResultStatus.PASSED) {
         const xmlFailure = xmlTestCase.ele('failure', {
-          type: test.result.status,
-          message: statusDescriptions[test.result.status],
+          type: test.result.exception?.type,
+          message: test.result.exception?.message,
         })
-        if (test.result.message) {
+        if (test.result?.message) {
           xmlFailure.cdata(test.result.message)
         }
       }
