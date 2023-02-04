@@ -35,6 +35,11 @@ function getJUnitFormatterSupportCodeLibrary(
       throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
     })
 
+    Given('a failing step with invalid character', function () {
+      clock.tick(1)
+      throw 'Error: include \x08invalid character' // eslint-disable-line @typescript-eslint/no-throw-literal
+    })
+
     Given('a pending step', function () {
       clock.tick(1)
       return 'pending'
@@ -142,6 +147,40 @@ describe('JunitFormatter', () => {
             '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
             '    <failure type="FAILED" message="A hook or step failed"><![CDATA[error]]></failure>\n' +
             '    <system-out><![CDATA[Given a failing step......................................................failed]]></system-out>\n' +
+            '  </testcase>\n' +
+            '</testsuite>'
+        )
+      })
+
+      it('failed with invalid character', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: [
+              'Feature: my feature',
+              '  Scenario: my scenario',
+              '    Given a failing step with invalid character',
+            ].join('\n'),
+            uri: 'a.feature',
+          },
+        ]
+
+        const supportCodeLibrary = getJUnitFormatterSupportCodeLibrary(clock)
+
+        // Act
+        const output = await testFormatter({
+          sources,
+          supportCodeLibrary,
+          type: 'junit',
+        })
+
+        // Assert
+        expect(output).xml.to.deep.equal(
+          '<?xml version="1.0"?>\n' +
+            '<testsuite failures="1" skipped="0" name="cucumber-js" time="0.001" tests="1">\n' +
+            '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
+            '    <failure type="FAILED" message="A hook or step failed"><![CDATA[Error: include invalid character]]></failure>\n' +
+            '    <system-out><![CDATA[Given a failing step with invalid character...............................failed]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
         )

@@ -1,8 +1,6 @@
 import { performance } from 'perf_hooks'
 import * as messages from '@cucumber/messages'
 
-let previousTimestamp: number
-
 interface ProtectedTimingBuiltins {
   clearImmediate: typeof clearImmediate
   clearInterval: typeof clearInterval
@@ -14,21 +12,10 @@ interface ProtectedTimingBuiltins {
   performance: typeof performance
 }
 
-interface CustomTimingFunctions {
-  beginTiming: () => void
-  endTiming: () => number
-}
-
-const methods: Partial<ProtectedTimingBuiltins & CustomTimingFunctions> = {
-  beginTiming() {
-    previousTimestamp = getTimestamp()
-  },
+const methods: Partial<ProtectedTimingBuiltins> = {
   clearInterval: clearInterval.bind(global),
   clearTimeout: clearTimeout.bind(global),
   Date,
-  endTiming() {
-    return getTimestamp() - previousTimestamp
-  },
   setInterval: setInterval.bind(global),
   setTimeout: setTimeout.bind(global),
   performance,
@@ -37,10 +24,6 @@ const methods: Partial<ProtectedTimingBuiltins & CustomTimingFunctions> = {
 if (typeof setImmediate !== 'undefined') {
   methods.setImmediate = setImmediate.bind(global)
   methods.clearImmediate = clearImmediate.bind(global)
-}
-
-function getTimestamp(): number {
-  return methods.performance.now()
 }
 
 export function durationBetweenTimestamps(
