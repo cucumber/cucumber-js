@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Affirm support for Node.js 19 [#2230](https://github.com/cucumber/cucumber-js/pull/2230)
+
 ### Fixed
 - Handle invalid characters when generating XML for JUnit formatter [#2228](https://github.com/cucumber/cucumber-js/pull/2228)
 
