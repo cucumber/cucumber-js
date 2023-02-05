@@ -20,6 +20,10 @@ function getJUnitFormatterSupportCodeLibrary(
       clock.tick(1)
     })
 
+    Given('I have <![CDATA[cukes]]> in my belly', function () {
+      clock.tick(1)
+    })
+
     let willPass = false
     Given('a flaky step', function () {
       clock.tick(1)
@@ -513,6 +517,45 @@ describe('JunitFormatter', () => {
           '  </testcase>\n' +
           '  <testcase classname="(unnamed feature)" name="(unnamed rule): (unnamed scenario) [1]" time="0.001">\n' +
           '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
+          '  </testcase>\n' +
+          '</testsuite>'
+      )
+    })
+  })
+
+  describe('content containing CDATA', () => {
+    it('outputs the feature', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: [
+            'Feature: my feature',
+            '  my feature description',
+            '',
+            '  Scenario: my scenario',
+            '    my scenario description',
+            '',
+            '    Given I have <![CDATA[cukes]]> in my belly',
+          ].join('\n'),
+          uri: 'a.feature',
+        },
+      ]
+
+      const supportCodeLibrary = getJUnitFormatterSupportCodeLibrary(clock)
+
+      // Act
+      const output = await testFormatter({
+        sources,
+        supportCodeLibrary,
+        type: 'junit',
+      })
+
+      // Assert
+      expect(output).xml.to.deep.equal(
+        '<?xml version="1.0"?>\n' +
+          '<testsuite failures="0" skipped="0" name="cucumber-js" time="0.001" tests="1">\n' +
+          '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
+          '    <system-out><![CDATA[Given I have <![CDATA[cukes]]]]><![CDATA[> in my belly................................passed]]></system-out>\n' +
           '  </testcase>\n' +
           '</testsuite>'
       )
