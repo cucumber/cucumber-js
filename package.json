@@ -193,7 +193,7 @@
     "node": "12 || 14 || >=16"
   },
   "enginesTested": {
-    "node": "12 || 14 || 16 || 17 || 18"
+    "node": "12 || 14 || 16 || 17 || 18 || 19"
   },
   "dependencies": {
     "@cucumber/ci-environment": "9.1.0",
