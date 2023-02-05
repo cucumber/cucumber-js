@@ -128,7 +128,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 - Support for customising work assignment when running in parallel (see [documentation](./docs/parallel.md#custom-work-assignment)) ([#1044](https://github.com/cucumber/cucumber-js/issues/1044) [#1588](https://github.com/cucumber/cucumber-js/pull/1588))
 - Add a new option to `--format-options`: `printAttachments` (see [documentation](./docs/formatters.md#options)) ([#1136](https://github.com/cucumber/cucumber-js/issues/1136) [#1721](https://github.com/cucumber/cucumber-js/pull/1721))
 - Support for configuration to be objects instead of argv strings, and for configuration files in ESM and JSON formats (see [documentation](./docs/configuration.md#files)) ([#1952](https://github.com/cucumber/cucumber-js/pull/1952))
-- New API for running Cucumber programmatically (see [documentation](./docs/programmatic_api.md)) ([#1955](https://github.com/cucumber/cucumber-js/pull/1955))
+- New API for running Cucumber programmatically (see [documentation](./docs/javascript_api.md)) ([#1955](https://github.com/cucumber/cucumber-js/pull/1955))
 
 ### Changed
 - Switch from `colors` to `chalk` for terminal coloring ([#1895](https://github.com/cucumber/cucumber-js/pull/1895))

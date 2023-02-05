@@ -1,4 +1,4 @@
-# Run Cucumber-JS programmatically
+# JavaScript API
 
 You can run Cucumber programmatically via its JavaScript API. This isn't something most users would need to do, but if you have a niche use case or need to work Cucumber into a bigger framework, it might be what you need. The API allows you to load configuration, sources and support code and execute test runs with async functions and within the current process.
 
