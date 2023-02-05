@@ -1,84 +1,48 @@
-import * as messages from '@cucumber/messages'
-import { stopwatch, Stopwatch, duration, Duration } from 'durations'
+import { Duration, TimeConversion, Timestamp } from '@cucumber/messages'
+import methods from '../time'
 
-export interface ITestRunStopwatch {
-  from: (duration: Duration) => ITestRunStopwatch
-  start: () => ITestRunStopwatch
-  stop: () => ITestRunStopwatch
+/**
+ * A utility for timing test run operations and returning duration and
+ * timestamp objects in messages-compatible formats
+ */
+export interface IStopwatch {
+  start: () => IStopwatch
+  stop: () => IStopwatch
   duration: () => Duration
-  timestamp: () => messages.Timestamp
+  timestamp: () => Timestamp
 }
 
-export class RealTestRunStopwatch implements ITestRunStopwatch {
-  private readonly stopwatch: Stopwatch = stopwatch()
-  private base: Duration = null
+class StopwatchImpl implements IStopwatch {
+  private started: number
 
-  from(duration: Duration): ITestRunStopwatch {
-    this.base = duration
+  constructor(private base: Duration = { seconds: 0, nanos: 0 }) {}
+
+  start(): IStopwatch {
+    this.started = methods.performance.now()
     return this
   }
 
-  start(): ITestRunStopwatch {
-    this.stopwatch.start()
-    return this
-  }
-
-  stop(): ITestRunStopwatch {
-    this.stopwatch.stop()
+  stop(): IStopwatch {
+    this.base = this.duration()
+    this.started = undefined
     return this
   }
 
   duration(): Duration {
-    const current = this.stopwatch.duration()
-    if (this.base !== null) {
-      return duration(this.base.nanos() + current.nanos())
+    if (typeof this.started !== 'number') {
+      return this.base
     }
-    return current
+    return TimeConversion.addDurations(
+      this.base,
+      TimeConversion.millisecondsToDuration(
+        methods.performance.now() - this.started
+      )
+    )
   }
 
-  timestamp(): messages.Timestamp {
-    return messages.TimeConversion.millisecondsSinceEpochToTimestamp(Date.now())
+  timestamp(): Timestamp {
+    return TimeConversion.millisecondsSinceEpochToTimestamp(methods.Date.now())
   }
 }
 
-export class PredictableTestRunStopwatch implements ITestRunStopwatch {
-  private count = 0
-  private base: Duration = null
-
-  from(duration: Duration): ITestRunStopwatch {
-    this.base = duration
-    return this
-  }
-
-  start(): ITestRunStopwatch {
-    return this
-  }
-
-  stop(): ITestRunStopwatch {
-    return this
-  }
-
-  duration(): Duration {
-    const current = duration(this.count * 1000000)
-    if (this.base !== null) {
-      return duration(this.base.nanos() + current.nanos())
-    }
-    return current
-  }
-
-  timestamp(): messages.Timestamp {
-    const fakeTimestamp = this.convertToTimestamp(this.duration())
-    this.count++
-    return fakeTimestamp
-  }
-
-  // TODO: Remove. It's impossible to convert timestamps to durations and vice-versa
-  private convertToTimestamp(duration: Duration): messages.Timestamp {
-    const seconds = Math.floor(duration.seconds())
-    const nanos = Math.floor((duration.seconds() - seconds) * 1000000000)
-    return {
-      seconds,
-      nanos,
-    }
-  }
-}
+export const create = (base?: Duration): IStopwatch => new StopwatchImpl(base)

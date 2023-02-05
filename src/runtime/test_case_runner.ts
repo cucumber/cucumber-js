@@ -13,12 +13,12 @@ import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
 import { IDefinition } from '../models/definition'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { ITestRunStopwatch } from './stopwatch'
+import { IStopwatch } from './stopwatch'
 import StepDefinition from '../models/step_definition'
 
 export interface INewTestCaseRunnerOptions {
   eventBroadcaster: EventEmitter
-  stopwatch: ITestRunStopwatch
+  stopwatch: IStopwatch
   gherkinDocument: messages.GherkinDocument
   newId: IdGenerator.NewId
   pickle: messages.Pickle
@@ -35,7 +35,7 @@ export default class TestCaseRunner {
   private currentTestCaseStartedId: string
   private currentTestStepId: string
   private readonly eventBroadcaster: EventEmitter
-  private readonly stopwatch: ITestRunStopwatch
+  private readonly stopwatch: IStopwatch
   private readonly gherkinDocument: messages.GherkinDocument
   private readonly newId: IdGenerator.NewId
   private readonly pickle: messages.Pickle
