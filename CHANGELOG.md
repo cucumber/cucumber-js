@@ -10,6 +10,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ## [Unreleased]
 ### Added
 - Affirm support for Node.js 19 [#2230](https://github.com/cucumber/cucumber-js/pull/2230)
+- Include some exception details in the result of a test step for downstream tools [#2229](https://github.com/cucumber/cucumber-js/pull/2229)
 
 ### Fixed
 - Handle invalid characters when generating XML for JUnit formatter [#2228](https://github.com/cucumber/cucumber-js/pull/2228)

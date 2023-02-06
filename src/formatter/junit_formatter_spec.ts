@@ -20,6 +20,10 @@ function getJUnitFormatterSupportCodeLibrary(
       clock.tick(1)
     })
 
+    Given('I have <![CDATA[cukes]]> in my belly', function () {
+      clock.tick(1)
+    })
+
     let willPass = false
     Given('a flaky step', function () {
       clock.tick(1)
@@ -145,7 +149,7 @@ describe('JunitFormatter', () => {
           '<?xml version="1.0"?>\n' +
             '<testsuite failures="1" skipped="0" name="cucumber-js" time="0.001" tests="1">\n' +
             '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
-            '    <failure type="FAILED" message="A hook or step failed"><![CDATA[error]]></failure>\n' +
+            '    <failure type="Error" message="error"><![CDATA[error]]></failure>\n' +
             '    <system-out><![CDATA[Given a failing step......................................................failed]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
@@ -179,7 +183,7 @@ describe('JunitFormatter', () => {
           '<?xml version="1.0"?>\n' +
             '<testsuite failures="1" skipped="0" name="cucumber-js" time="0.001" tests="1">\n' +
             '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
-            '    <failure type="FAILED" message="A hook or step failed"><![CDATA[Error: include invalid character]]></failure>\n' +
+            '    <failure type="Error" message="Error: include invalid character"><![CDATA[Error: include invalid character]]></failure>\n' +
             '    <system-out><![CDATA[Given a failing step with invalid character...............................failed]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
@@ -250,7 +254,7 @@ describe('JunitFormatter', () => {
           '<?xml version="1.0"?>\n' +
             '<testsuite failures="1" skipped="0" name="cucumber-js" time="0.001" tests="1">\n' +
             '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
-            '    <failure type="PENDING" message="A step in the test case is not yet implemented"/>\n' +
+            '    <failure/>\n' +
             '    <system-out><![CDATA[Given a pending step.....................................................pending]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
@@ -322,7 +326,7 @@ describe('JunitFormatter', () => {
           '<?xml version="1.0"?>\n' +
             '<testsuite failures="1" skipped="0" name="cucumber-js" time="0" tests="1">\n' +
             '  <testcase classname="my feature" name="my scenario" time="0">\n' +
-            '    <failure type="UNDEFINED" message="A step in the test case is not defined"/>\n' +
+            '    <failure/>\n' +
             '    <system-out><![CDATA[Given a passing step...................................................undefined]]></system-out>\n' +
             '  </testcase>\n' +
             '</testsuite>'
@@ -409,7 +413,7 @@ describe('JunitFormatter', () => {
           '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
           '  </testcase>\n' +
           '  <testcase classname="my feature" name="my templated scenario [1]" time="0.001">\n' +
-          '    <failure type="FAILED" message="A hook or step failed"><![CDATA[error]]></failure>\n' +
+          '    <failure type="Error" message="error"><![CDATA[error]]></failure>\n' +
           '    <system-out><![CDATA[Given a failing step......................................................failed]]></system-out>\n' +
           '  </testcase>\n' +
           '</testsuite>'
@@ -513,6 +517,45 @@ describe('JunitFormatter', () => {
           '  </testcase>\n' +
           '  <testcase classname="(unnamed feature)" name="(unnamed rule): (unnamed scenario) [1]" time="0.001">\n' +
           '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
+          '  </testcase>\n' +
+          '</testsuite>'
+      )
+    })
+  })
+
+  describe('content containing CDATA', () => {
+    it('outputs the feature', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: [
+            'Feature: my feature',
+            '  my feature description',
+            '',
+            '  Scenario: my scenario',
+            '    my scenario description',
+            '',
+            '    Given I have <![CDATA[cukes]]> in my belly',
+          ].join('\n'),
+          uri: 'a.feature',
+        },
+      ]
+
+      const supportCodeLibrary = getJUnitFormatterSupportCodeLibrary(clock)
+
+      // Act
+      const output = await testFormatter({
+        sources,
+        supportCodeLibrary,
+        type: 'junit',
+      })
+
+      // Assert
+      expect(output).xml.to.deep.equal(
+        '<?xml version="1.0"?>\n' +
+          '<testsuite failures="0" skipped="0" name="cucumber-js" time="0.001" tests="1">\n' +
+          '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
+          '    <system-out><![CDATA[Given I have <![CDATA[cukes]]]]><![CDATA[> in my belly................................passed]]></system-out>\n' +
           '  </testcase>\n' +
           '</testsuite>'
       )
