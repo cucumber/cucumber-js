@@ -44,6 +44,22 @@ setParallelCanAssign(function (pickleInQuestion, picklesInProgress) {
 })
 ```
 
+Additionally, you can make use of the third argument to get information regarding the worker and decide weather or not to run a scenario.
+
+Example:
+```javascript
+setParallelCanAssign(function (pickleInQuestion, picklesInProgress, worker) {
+  const inQuestionTags = pickleInQuestion.tags.map(tag => tag.name);
+  // Does the scenario have a tag that matches this worker (E.g. @WORKER_0)?
+  if (inQuestionTags.includes(`WORKER_${worker.id}`)) {
+    // If there's already a scenario inProgress for this worker, don't run it
+    return picklesInProgress.every((p) => !p.tags.map(t=> t.name).includes(`WORKER_${worker.id}`))
+  }
+  // No other restrictions
+  return true
+})
+```
+
 For convenience, the following helpers exist to build a `canAssignFn`:
 
 ```javascript
