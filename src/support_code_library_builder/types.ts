@@ -5,11 +5,13 @@ import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
 import { IWorld } from './world'
+import { IWorker } from '../runtime/parallel/coordinator'
 
 export type DefineStepPattern = string | RegExp
 export type ParallelAssignmentValidator = (
   pickle: messages.Pickle,
-  runningPickles: messages.Pickle[]
+  runningPickles: messages.Pickle[],
+  worker: IWorker
 ) => boolean
 export interface ITestCaseHookParameter {
   gherkinDocument: messages.GherkinDocument

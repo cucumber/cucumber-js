@@ -37,7 +37,7 @@ const enum WorkerState {
   'new',
 }
 
-interface IWorker {
+export interface IWorker {
   state: WorkerState
   process: ChildProcess
   id: string
@@ -246,13 +246,15 @@ export default class Coordinator implements IRuntime {
     })
   }
 
-  nextPicklePlacement(): IPicklePlacement {
+  nextPicklePlacement(worker: IWorker): IPicklePlacement {
     for (let index = 0; index < this.pickleIds.length; index++) {
       const placement = this.placementAt(index)
+      
       if (
         this.supportCodeLibrary.parallelCanAssign(
           placement.pickle,
-          Object.values(this.inProgressPickles)
+          Object.values(this.inProgressPickles),
+          worker
         )
       ) {
         return placement
@@ -279,7 +281,7 @@ export default class Coordinator implements IRuntime {
 
     const picklePlacement = force
       ? this.placementAt(0)
-      : this.nextPicklePlacement()
+      : this.nextPicklePlacement(worker)
 
     if (picklePlacement === null) {
       return
