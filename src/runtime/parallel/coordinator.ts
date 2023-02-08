@@ -249,7 +249,6 @@ export default class Coordinator implements IRuntime {
   nextPicklePlacement(worker: IWorker): IPicklePlacement {
     for (let index = 0; index < this.pickleIds.length; index++) {
       const placement = this.placementAt(index)
-      
       if (
         this.supportCodeLibrary.parallelCanAssign(
           placement.pickle,
