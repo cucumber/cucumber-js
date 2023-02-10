@@ -43,3 +43,13 @@ Feature: Gherkin parse failure
       | pickle          | 1     |
       | parseError      | 2     |
 
+  Scenario: Formatters handle the truncated test run
+    Given a file named "features/a.feature" with:
+      """
+      Feature: a feature name
+        Scenario: a scenario name
+          Given a step
+          Parse Error
+      """
+    When I run cucumber-js with all formatters
+    Then it fails
