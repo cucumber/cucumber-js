@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [8.11.0] - 2023-02-10
 ### Added
 - Affirm support for Node.js 19 [#2230](https://github.com/cucumber/cucumber-js/pull/2230)
 - Include some exception details in the result of a test step for downstream tools [#2229](https://github.com/cucumber/cucumber-js/pull/2229)
@@ -1465,7 +1467,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.10.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.11.0...HEAD
+[8.11.0]: https://github.com/cucumber/cucumber-js/compare/v8.10.0...v8.11.0
 [8.10.0]: https://github.com/cucumber/cucumber-js/compare/v8.9.1...v8.10.0
 [8.9.1]: https://github.com/cucumber/cucumber-js/compare/v8.9.0...v8.9.1
 [8.9.0]: https://github.com/cucumber/cucumber-js/compare/v8.8.0...v8.9.0
