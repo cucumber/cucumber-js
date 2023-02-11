@@ -6,7 +6,7 @@ module.exports = [
         description: '',
         id: 'a-feature;a-scenario',
         keyword: 'Scenario Outline',
-        line: 2,
+        line: 6,
         name: 'a scenario',
         steps: [
           {
@@ -30,7 +30,7 @@ module.exports = [
         description: '',
         id: 'a-feature;a-scenario',
         keyword: 'Scenario Outline',
-        line: 2,
+        line: 7,
         name: 'a scenario',
         steps: [
           {
@@ -54,7 +54,7 @@ module.exports = [
         description: '',
         id: 'a-feature;a-scenario',
         keyword: 'Scenario Outline',
-        line: 2,
+        line: 8,
         name: 'a scenario',
         steps: [
           {
