@@ -1,0 +1,24 @@
+name: 'Close stale issues'
+
+permissions:
+  issues: write
+  pull-requests: write
+
+on:
+  schedule:
+    - cron: '30 1 * * *'
+
+jobs:
+  incomplete-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v7
+        with:
+          stale-issue-label: ':hourglass: stale'
+          stale-issue-message: 'This issue is stale because it has been open for 3 weeks with no activity. Remove the stale label or comment or this will be closed in another 5 days.'
+          close-issue-message: 'This issue was closed because it has been stalled for 5 days with no activity.'
+          only-issue-labels: ':baby_bottle: incomplete'
+          days-before-stale: 21
+          days-before-close: 5
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
