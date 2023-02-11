@@ -190,10 +190,10 @@
   },
   "types": "./lib/index.d.ts",
   "engines": {
-    "node": "12 || 14 || >=16"
+    "node": "14 || 16 || >=18"
   },
   "enginesTested": {
-    "node": "12 || 14 || 16 || 17 || 18 || 19"
+    "node": "14 || 16 || 18 || 19"
   },
   "dependencies": {
     "@cucumber/ci-environment": "9.1.0",
