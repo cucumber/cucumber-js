@@ -14,12 +14,23 @@ export interface IAttachment {
 }
 
 export type IAttachFunction = (attachment: IAttachment) => void
-export type ICreateAttachment = (
-  data: Buffer | Readable | string,
-  mediaType?: string,
-  callback?: () => void
-) => void | Promise<void>
-export type ICreateLog = (text: string) => void | Promise<void>
+
+export type ICreateStringAttachment = (data: string, mediaType?: string) => void
+export type ICreateBufferAttachment = (data: Buffer, mediaType: string) => void
+export type ICreateStreamAttachment = (
+  data: Readable,
+  mediaType: string
+) => Promise<void>
+export type ICreateStreamAttachmentWithCallback = (
+  data: Readable,
+  mediaType: string,
+  callback: () => void
+) => void
+export type ICreateAttachment = ICreateStringAttachment &
+  ICreateBufferAttachment &
+  ICreateStreamAttachment &
+  ICreateStreamAttachmentWithCallback
+export type ICreateLog = (text: string) => void
 
 export default class AttachmentManager {
   private readonly onAttachment: IAttachFunction
