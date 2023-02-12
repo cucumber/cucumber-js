@@ -45,31 +45,6 @@ describe('JavascriptSnippetSyntax', () => {
       })
     })
 
-    describe('generator interface', () => {
-      it('returns the proper snippet', function () {
-        // Arrange
-        const syntax = new JavascriptSnippetSyntax(SnippetInterface.Generator)
-        const buildOptions: ISnippetSyntaxBuildOptions = {
-          comment: 'comment',
-          functionName: 'functionName',
-          generatedExpressions: generateExpressions('"abc" def "ghi"'),
-          stepParameterNames: [],
-        }
-
-        // Act
-        const result = syntax.build(buildOptions)
-
-        // Assert
-        expect(result).to.eql(
-          reindent(`
-            functionName('{string} def {string}', function *(string, string2) {
-              // comment
-              return 'pending';
-            });`)
-        )
-      })
-    })
-
     describe('promise interface', () => {
       it('returns the proper snippet', function () {
         // Arrange
