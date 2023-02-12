@@ -8,7 +8,6 @@ export const version = cucumber.version
 
 export const Formatter = cucumber.Formatter
 export const FormatterBuilder = cucumber.FormatterBuilder
-export const JsonFormatter = cucumber.JsonFormatter
 export const ProgressFormatter = cucumber.ProgressFormatter
 export const RerunFormatter = cucumber.RerunFormatter
 export const SnippetsFormatter = cucumber.SnippetsFormatter
@@ -38,6 +37,7 @@ export const wrapPromiseWithTimeout = cucumber.wrapPromiseWithTimeout
 
 // Deprecated
 export const Cli = cucumber.Cli
+export const JsonFormatter = cucumber.JsonFormatter
 export const parseGherkinMessageStream = cucumber.parseGherkinMessageStream
 export const PickleFilter = cucumber.PickleFilter
 export const Runtime = cucumber.Runtime
