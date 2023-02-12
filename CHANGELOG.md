@@ -10,7 +10,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 ## [Unreleased]
 ### Fixed
 - Exit correctly when there's a Gherkin parse failure [#2233](https://github.com/cucumber/cucumber-js/pull/2233)
-- Refer to correct example line in JSON formatter ([#2236](https://github.com/cucumber/cucumber-js/pull/2236)) 
+- Refer to correct example line in JSON formatter ([#2236](https://github.com/cucumber/cucumber-js/pull/2236))
+- Expose correct overload types for `this.attach` function ([#2238](https://github.com/cucumber/cucumber-js/pull/2238))
 
 ## [8.11.0] - 2023-02-10
 ### Added
