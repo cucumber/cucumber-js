@@ -10,11 +10,13 @@ Assuming a current major version of `N`:
 2. Later, a major version (e.g. `N+1.0.0`) is released; the deprecation is highlighted in the release notes
 3. Later still, another major version (e.g. `N+2.0.0`) is released with the deprecated functionality removed
 
+In some cases, we might wait longer than `N+2.0.0` before removing functionality if the ecosystem needs more time to adapt.
+
 ## Current deprecations
 
 ### `Cli`
 
-Deprecated in `8.7.0`, will be removed in `10.0.0`.
+Deprecated in `8.7.0`, will be removed in `10.0.0` or later.
 
 The `Cli` class is used internally to represent an instance of the command-line program invoked via `cucumber-js`. It can be used to run Cucumber programmatically, but is poorly suited for this.
 
@@ -22,7 +24,7 @@ To adapt, pivot to the `runCucumber` function from the [JavaScript API](./javasc
 
 ### `defineStep`
 
-Deprecated in `8.3.0`, will be removed in `10.0.0`.
+Deprecated in `8.3.0`, will be removed in `10.0.0` or later.
 
 `defineStep` is a way to generically define a step without tying it to any of the `Given`, `When` or `Then` keywords. This leads to ambiguity in the business language and is considered an antipattern; steps should be clearly applicable to one of those keywords, being a context, action or outcome respectively.
 
@@ -30,7 +32,7 @@ To adapt, review your steps and define them with the appropriate keyword, or jus
 
 ### `parseGherkinMessageStream`
 
-Deprecated in `8.0.0`, will be removed in `10.0.0`.
+Deprecated in `8.0.0`, will be removed in `10.0.0` or later.
 
 `parseGherkinMessageStream` is a way to process a stream of envelopes from Gherkin and resolve to an array of filtered, ordered pickle Ids. Its interface includes internal implementation details from Cucumber which are difficult to assemble.
 
@@ -38,7 +40,7 @@ To adapt, pivot to the `loadSources` function from the [JavaScript API](./javasc
 
 ### `PickleFilter`
 
-Deprecated in `8.7.0`, will be removed in `10.0.0`.
+Deprecated in `8.7.0`, will be removed in `10.0.0` or later.
 
 The `PickleFilter` class is used to provide a filter to the `parseGherkinMessageStream` function above.
 
@@ -46,7 +48,7 @@ To adapt, pivot to the `loadSources` function from the [JavaScript API](./javasc
 
 ### `Runtime`
 
-Deprecated in `8.7.0`, will be removed in `10.0.0`.
+Deprecated in `8.7.0`, will be removed in `10.0.0` or later.
 
 The `Runtime` class is used internally to represent an instance of the serial test case runner. Its interface includes internal implementation details from Cucumber which are difficult to assemble.
 
