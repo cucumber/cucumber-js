@@ -22,14 +22,6 @@ The `Cli` class is used internally to represent an instance of the command-line 
 
 To adapt, pivot to the `runCucumber` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
 
-### `defineStep`
-
-Deprecated in `8.3.0`, will be removed in `10.0.0` or later.
-
-`defineStep` is a way to generically define a step without tying it to any of the `Given`, `When` or `Then` keywords. This leads to ambiguity in the business language and is considered an antipattern; steps should be clearly applicable to one of those keywords, being a context, action or outcome respectively.
-
-To adapt, review your steps and define them with the appropriate keyword, or just switch to `Given` as a starting point. We're working on adding [an opt-in "strict mode" for keywords](https://github.com/cucumber/cucumber-js/issues/2043) which will yield an error when the keyword in the Gherkin text doesn't match that of the step definition, and could be used to pinpoint such issues in your project.
-
 ### `parseGherkinMessageStream`
 
 Deprecated in `8.0.0`, will be removed in `10.0.0` or later.

@@ -34,6 +34,7 @@ export const AfterStep = methods.AfterStep
 export const Before = methods.Before
 export const BeforeAll = methods.BeforeAll
 export const BeforeStep = methods.BeforeStep
+export const defineStep = methods.defineStep
 export const defineParameterType = methods.defineParameterType
 export const Given = methods.Given
 export const setDefaultTimeout = methods.setDefaultTimeout
@@ -65,13 +66,6 @@ export { wrapPromiseWithTimeout } from './time'
 export const Cli = deprecate(
   _Cli,
   '`Cli` is deprecated, use `runCucumber` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
-)
-/**
- * @deprecated use `Given`, `When` or `Then` instead; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
- */
-export const defineStep = deprecate(
-  methods.defineStep,
-  '`defineStep` is deprecated, use `Given`, `When` or `Then` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
 )
 /**
  * @deprecated use `loadSources` instead; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
