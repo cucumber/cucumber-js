@@ -82,7 +82,7 @@ export const PickleFilter = deprecate(
   '`PickleFilter` is deprecated, use `loadSources` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
 )
 /**
- * @deprecated use `loadSources` instead; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
+ * @deprecated use `runCucumber` instead; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
  */
 export const Runtime = deprecate(
   _Runtime,
