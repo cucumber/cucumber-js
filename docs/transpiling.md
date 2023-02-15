@@ -1,6 +1,6 @@
 # Transpiling
 
-Step definitions and support files can be written in syntax/language that compiles to JavaScript, and just-in-time compiled when you run Cucumber.
+Step definitions and support files can be written in syntax/language that compiles to JavaScript, and just-in-time compiled when you run Cucumber. The output of the transpiler must match the module format expected by node, and you must use the correct cucumber directive to import the code, "import" for esm and "require" for CommonJS.
 
 For example, you might want to use [Babel](https://babeljs.io/):
 
@@ -15,9 +15,10 @@ Your `tsconfig.json` should have these `compilerOptions` on:
 
 ```json
 "allowSyntheticDefaultImports": true,
-"resolveJsonModule": true,
-"module": "CommonJS"
+"resolveJsonModule": true
 ```
+
+In addition, the "module" option should either not be present, or explicitly set to "CommonJS" which is the default.  For ESM projects see below.
 
 Other than that, a pretty standard TypeScript setup should work as expected.
 
@@ -32,10 +33,27 @@ If you are using [ts-node](https://github.com/TypeStrong/ts-node):
 
 #### ESM
 
-For ESM projects, you can use `ts-node`'s ESM loader and then `import` your TypeScript files:
+For ESM projects, you can use `ts-node`'s ESM loader and then import your TypeScript files. Doing this will require setting an environment variable. the cleanest way to do this is to include the [cross-env](https://www.npmjs.com/package/cross-env) package with `npm i -D cross-env`
 
-```shell
-$ NODE_OPTIONS="--loader ts-node/esm" cucumber-js --import 'step-definitions/**/*.ts'
+Then change your npm test script invocation in the package.json file to:
+
+```json
+{
+  "scripts: {
+    "test": "cross-env NODE_OPTIONS=\"--loader ts-node/esm\" cucumber-js"
+  }
+}
+```
+
+To use ESM modules set the `"type": "module"` in the package.json file.
+
+Your cucumber.js file will need to be an ESM module and contain the following at a minimum:
+
+```javascript
+export default {
+  requireModule: ['ts-node/register'], 
+  import: ['features/steps/**/*.ts'],
+}
 ```
 
 Don't forget to set your `tsconfig.json` to emit JavaScript with `import` and `export` statements:
@@ -69,3 +87,8 @@ If you're using step definition code that's _already_ transpiled (maybe because 
 
 1. Ensure source maps are emitted by your transpiler. You can verify by checking for a comment starting with `//# sourceMappingURL=` at the end of your transpiled file(s).
 2. Ensure source maps are enabled at runtime. Node.js supports this natively via [the `--enable-source-maps` flag](https://nodejs.org/docs/latest/api/cli.html#--enable-source-maps).
+3. Ensure you are using the require directive to import CommonJS formatted code and import for ESM formatted code.
+
+##Summary
+- Transpiling allows you to convert your step definitions from any language that can compile to JavaScript - most frequently Typescript.
+- There are two formats for modules in JavaScript: CommonJS and ESM. You must make sure the transpiler outputs what Cucumber expects to input.
