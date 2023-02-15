@@ -16,6 +16,7 @@ Your `tsconfig.json` should have these `compilerOptions` on:
 ```json
 "allowSyntheticDefaultImports": true,
 "resolveJsonModule": true,
+"module": "CommonJS"
 ```
 
 Other than that, a pretty standard TypeScript setup should work as expected.
