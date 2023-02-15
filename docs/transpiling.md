@@ -1,6 +1,6 @@
 # Transpiling
 
-Step definitions and support files can be written in syntax/language that compiles to JavaScript, and just-in-time compiled when you run Cucumber. The output of the transpiler must match the module format expected by node, and you must use the correct cucumber directive to import the code, "import" for esm and "require" for CommonJS.
+Step definitions and support files can be written in syntax/language that compiles to JavaScript, and just-in-time compiled when you run Cucumber. The output of the transpiler must match the module format expected by node, and you must use the correct Cucumber directive to import the code, "import" for esm and "require" for CommonJS.
 
 For example, you might want to use [Babel](https://babeljs.io/):
 
