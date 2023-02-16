@@ -8,12 +8,7 @@ export const version = cucumber.version
 
 export const Formatter = cucumber.Formatter
 export const FormatterBuilder = cucumber.FormatterBuilder
-export const ProgressFormatter = cucumber.ProgressFormatter
-export const RerunFormatter = cucumber.RerunFormatter
-export const SnippetsFormatter = cucumber.SnippetsFormatter
 export const SummaryFormatter = cucumber.SummaryFormatter
-export const UsageFormatter = cucumber.UsageFormatter
-export const UsageJsonFormatter = cucumber.UsageJsonFormatter
 export const formatterHelpers = cucumber.formatterHelpers
 
 export const After = cucumber.After
@@ -38,6 +33,11 @@ export const wrapPromiseWithTimeout = cucumber.wrapPromiseWithTimeout
 // Deprecated
 export const Cli = cucumber.Cli
 export const JsonFormatter = cucumber.JsonFormatter
+export const ProgressFormatter = cucumber.ProgressFormatter
+export const RerunFormatter = cucumber.RerunFormatter
+export const SnippetsFormatter = cucumber.SnippetsFormatter
+export const UsageFormatter = cucumber.UsageFormatter
+export const UsageJsonFormatter = cucumber.UsageJsonFormatter
 export const parseGherkinMessageStream = cucumber.parseGherkinMessageStream
 export const PickleFilter = cucumber.PickleFilter
 export const Runtime = cucumber.Runtime
