@@ -23,8 +23,6 @@ export default class JavaScriptSnippetSyntax implements ISnippetSnytax {
     let functionKeyword = 'function '
     if (this.snippetInterface === SnippetInterface.AsyncAwait) {
       functionKeyword = 'async ' + functionKeyword
-    } else if (this.snippetInterface === SnippetInterface.Generator) {
-      functionKeyword += '*'
     }
 
     let implementation: string
