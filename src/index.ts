@@ -1,12 +1,6 @@
 import { default as _Cli } from './cli'
 import * as cliHelpers from './cli/helpers'
 import * as formatterHelpers from './formatter/helpers'
-import { default as _JsonFormatter } from './formatter/json_formatter'
-import { default as _ProgressFormatter } from './formatter/progress_formatter'
-import { default as _RerunFormatter } from './formatter/rerun_formatter'
-import { default as _SnippetsFormatter } from './formatter/snippets_formatter'
-import { default as _UsageFormatter } from './formatter/usage_formatter'
-import { default as _UsageJsonFormatter } from './formatter/usage_json_formatter'
 import { default as _PickleFilter } from './pickle_filter'
 import * as parallelCanAssignHelpers from './support_code_library_builder/parallel_can_assign_helpers'
 import { default as _Runtime } from './runtime'
@@ -23,7 +17,13 @@ export { version } from './version'
 // Formatters
 export { default as Formatter, IFormatterOptions } from './formatter'
 export { default as FormatterBuilder } from './formatter/builder'
+export { default as JsonFormatter } from './formatter/json_formatter'
+export { default as ProgressFormatter } from './formatter/progress_formatter'
+export { default as RerunFormatter } from './formatter/rerun_formatter'
+export { default as SnippetsFormatter } from './formatter/snippets_formatter'
 export { default as SummaryFormatter } from './formatter/summary_formatter'
+export { default as UsageFormatter } from './formatter/usage_formatter'
+export { default as UsageJsonFormatter } from './formatter/usage_json_formatter'
 export { formatterHelpers }
 
 // Support Code Functions
@@ -66,48 +66,6 @@ export { wrapPromiseWithTimeout } from './time'
 export const Cli = deprecate(
   _Cli,
   '`Cli` is deprecated, use `runCucumber` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
-)
-/**
- * @deprecated see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
- */
-export const JsonFormatter = deprecate(
-  _JsonFormatter,
-  'Extending `JsonFormatter` is deprecated; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
-)
-/**
- * @deprecated see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
- */
-export const ProgressFormatter = deprecate(
-  _ProgressFormatter,
-  'Extending `ProgressFormatter` is deprecated; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
-)
-/**
- * @deprecated see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
- */
-export const RerunFormatter = deprecate(
-  _RerunFormatter,
-  'Extending `RerunFormatter` is deprecated; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
-)
-/**
- * @deprecated see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
- */
-export const SnippetsFormatter = deprecate(
-  _SnippetsFormatter,
-  'Extending `SnippetsFormatter` is deprecated; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
-)
-/**
- * @deprecated see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
- */
-export const UsageFormatter = deprecate(
-  _UsageFormatter,
-  'Extending `UsageFormatter` is deprecated; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
-)
-/**
- * @deprecated see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
- */
-export const UsageJsonFormatter = deprecate(
-  _UsageJsonFormatter,
-  'Extending `UsageJsonFormatter` is deprecated; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
 )
 /**
  * @deprecated use `loadSources` instead; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>

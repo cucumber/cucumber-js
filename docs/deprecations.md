@@ -22,14 +22,6 @@ The `Cli` class is used internally to represent an instance of the command-line 
 
 To adapt, pivot to the `runCucumber` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
 
-### `JsonFormatter`
-
-Deprecated in `8.12.0`, will be removed in `10.0.0` or later.
-
-This formatter is going to be rewritten and the existing class removed. If you're implementing your own formatter, consider extending `Formatter` or `SummaryFormatter` instead.
-
-Note that using the `json` formatter with the `format` option is unaffected; this is just about the implementation class being exposed.
-
 ### `parseGherkinMessageStream`
 
 Deprecated in `8.0.0`, will be removed in `10.0.0` or later.
