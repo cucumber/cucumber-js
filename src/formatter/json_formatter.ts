@@ -218,7 +218,9 @@ export default class JsonFormatter extends Formatter {
       description,
       id: this.formatScenarioId({ feature, pickle, gherkinExampleRuleMap }),
       keyword: gherkinScenarioMap[pickle.astNodeIds[0]].keyword,
-      line: gherkinScenarioLocationMap[pickle.astNodeIds[0]].line,
+      line: gherkinScenarioLocationMap[
+        pickle.astNodeIds[pickle.astNodeIds.length - 1]
+      ].line,
       name: pickle.name,
       steps,
       tags: this.getScenarioTags({ feature, pickle, gherkinScenarioMap }),

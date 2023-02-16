@@ -30,6 +30,31 @@ Feature: Formatters
     Then the json formatter output matches the fixture "formatters/passed-scenario.json"
     Then the html formatter output is complete
 
+  Scenario: passed from Scenario Outline
+    Given a file named "features/a.feature" with:
+      """
+      Feature: a feature
+        Scenario Outline: a scenario
+          Given a <thing>
+        Examples:
+          | thing |
+          | hop   |
+          | step  |
+          | jump  |
+      """
+    Given a file named "features/step_definitions/steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+
+      Given('a hop', function() {})
+      Given('a step', function() {})
+      Given('a jump', function() {})
+      """
+    When I run cucumber-js with all formatters
+    Then the message formatter output matches the fixture "formatters/passed-scenario-outline.message.json"
+    Then the json formatter output matches the fixture "formatters/passed-scenario-outline.json"
+    Then the html formatter output is complete
+
   Scenario: passed from Rule
     Given a file named "features/a.feature" with:
       """
