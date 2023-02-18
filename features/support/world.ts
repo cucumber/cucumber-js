@@ -1,4 +1,4 @@
-import { Cli, setWorldConstructor } from '../../'
+import { setWorldConstructor } from '../../'
 import { execFile } from 'child_process'
 import { expect } from 'chai'
 import toString from 'stream-to-string'
@@ -12,6 +12,8 @@ import * as messageStreams from '@cucumber/message-streams'
 import FakeReportServer from '../../test/fake_report_server'
 import { doesHaveValue } from '../../src/value_checker'
 import util from 'util'
+import { IRunEnvironment, loadConfiguration, runCucumber } from '../../lib/api'
+import { ArgvParser } from '../../lib/configuration'
 
 const asyncPipeline = util.promisify(pipeline)
 
@@ -83,16 +85,20 @@ export class World {
     } else {
       const stdout = new PassThrough()
       const stderr = new PassThrough()
-      const cli = new Cli({
-        argv: args,
-        cwd,
-        stdout,
-        stderr,
-        env,
-      })
+      const environment: IRunEnvironment = { cwd, stdout, stderr, env }
+      const { options, configuration: argvConfiguration } =
+        ArgvParser.parse(args)
+      const { runConfiguration } = await loadConfiguration(
+        {
+          file: options.config,
+          profiles: options.profile,
+          provided: argvConfiguration,
+        },
+        environment
+      )
       let error: any
       try {
-        const { success } = await cli.run()
+        const { success } = await runCucumber(runConfiguration, environment)
         if (!success) {
           error = new Error('CLI exited with non-zero')
           error.code = 42
