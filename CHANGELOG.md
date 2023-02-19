@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Removed
+- BREAKING CHANGE: Remove support for Node.js versions 12 and 17 ([#2237](https://github.com/cucumber/cucumber-js/pull/2237))
+- BREAKING CHANGE: Remove "generator" snippet interface ([#2241](https://github.com/cucumber/cucumber-js/pull/2241))
 
 ## [8.11.1] - 2023-02-12
 ### Fixed
