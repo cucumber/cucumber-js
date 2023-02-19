@@ -1,29 +1,18 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "github>cucumber/renovate-config"
-  ],
+  "extends": ["github>cucumber/renovate-config"],
   "rebaseWhen": "never",
   "packageRules": [
     {
-      "packagePatterns": [
-        "eslint",
-        "prettier"
-      ],
+      "packagePatterns": ["eslint", "prettier"],
       "groupName": "eslint packages"
     },
     {
-      "packagePatterns": [
-        "mocha",
-        "chai",
-        "sinon"
-      ],
+      "packagePatterns": ["mocha", "chai", "sinon"],
       "groupName": "unit test packages"
     },
     {
-      "packagePatterns": [
-        "@cucumber"
-      ],
+      "packagePatterns": ["@cucumber"],
       "groupName": "cucumber packages"
     }
   ]

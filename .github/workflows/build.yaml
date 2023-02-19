@@ -24,13 +24,13 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v3
-    - name: with Node.js ${{ matrix.node-version }} on ${{ matrix.os }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm i -g npm@8
-    - run: npm install-test
+      - uses: actions/checkout@v3
+      - name: with Node.js ${{ matrix.node-version }} on ${{ matrix.os }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm i -g npm@8
+      - run: npm install-test
 
   coverage:
     runs-on: ubuntu-latest
