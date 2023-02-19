@@ -86,21 +86,21 @@ export class World {
       const stdout = new PassThrough()
       const stderr = new PassThrough()
       const environment: IRunEnvironment = { cwd, stdout, stderr, env }
-      const { options, configuration: argvConfiguration } =
-        ArgvParser.parse(args)
-      const { runConfiguration } = await loadConfiguration(
-        {
-          file: options.config,
-          profiles: options.profile,
-          provided: argvConfiguration,
-        },
-        environment
-      )
       let error: any
       try {
+        const { options, configuration: argvConfiguration } =
+          ArgvParser.parse(args)
+        const { runConfiguration } = await loadConfiguration(
+          {
+            file: options.config,
+            profiles: options.profile,
+            provided: argvConfiguration,
+          },
+          environment
+        )
         const { success } = await runCucumber(runConfiguration, environment)
         if (!success) {
-          error = new Error('CLI exited with non-zero')
+          error = new Error('runCucumber was not successful')
           error.code = 42
         }
       } catch (err) {
