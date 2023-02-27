@@ -1,11 +1,7 @@
 {
   "default": {
-    "requireModule": [
-      "ts-node/register"
-    ],
-    "require": [
-      "features/**/*.ts"
-    ],
+    "requireModule": ["ts-node/register"],
+    "require": ["features/**/*.ts"],
     "format": [
       "progress-bar",
       "rerun:@rerun.txt",
