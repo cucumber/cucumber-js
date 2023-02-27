@@ -9,6 +9,11 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [Unreleased]
 
+## [9.0.0] - 2023-02-27
+### Removed
+- BREAKING CHANGE: Remove support for Node.js versions 12 and 17 ([#2237](https://github.com/cucumber/cucumber-js/pull/2237))
+- BREAKING CHANGE: Remove "generator" snippet interface ([#2241](https://github.com/cucumber/cucumber-js/pull/2241))
+
 ## [8.11.1] - 2023-02-12
 ### Fixed
 - Exit correctly when there's a Gherkin parse failure [#2233](https://github.com/cucumber/cucumber-js/pull/2233)
@@ -1473,7 +1478,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.11.1...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.0.0...HEAD
+[9.0.0]: https://github.com/cucumber/cucumber-js/compare/v8.11.1...v9.0.0
 [8.11.1]: https://github.com/cucumber/cucumber-js/compare/v8.11.0...v8.11.1
 [8.11.0]: https://github.com/cucumber/cucumber-js/compare/v8.10.0...v8.11.0
 [8.10.0]: https://github.com/cucumber/cucumber-js/compare/v8.9.1...v8.10.0
