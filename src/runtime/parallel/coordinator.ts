@@ -30,7 +30,7 @@ export interface INewCoordinatorOptions {
   numberOfWorkers: number
 }
 
-const enum WorkerState {
+export const enum WorkerState {
   'idle',
   'closed',
   'running',
