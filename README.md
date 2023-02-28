@@ -116,6 +116,7 @@ The following documentation is for `main`, which might contain some unreleased f
   * [Profiles for composable configuration](./docs/profiles.md)
   * [Rerunning just failures](./docs/rerun.md)
   * [Retrying flaky scenarios](./docs/retry.md)
+  * [JavaScript API for running programmatically](./docs/javascript_api.md)
   * [Snippets for undefined steps](./docs/snippets.md)
   * [Transpiling (from TypeScript etc)](./docs/transpiling.md)
 * [FAQ](./docs/faq.md)

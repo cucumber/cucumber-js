@@ -9,6 +9,25 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [Unreleased]
 
+## [9.0.0] - 2023-02-27
+### Removed
+- BREAKING CHANGE: Remove support for Node.js versions 12 and 17 ([#2237](https://github.com/cucumber/cucumber-js/pull/2237))
+- BREAKING CHANGE: Remove "generator" snippet interface ([#2241](https://github.com/cucumber/cucumber-js/pull/2241))
+
+## [8.11.1] - 2023-02-12
+### Fixed
+- Exit correctly when there's a Gherkin parse failure [#2233](https://github.com/cucumber/cucumber-js/pull/2233)
+- Refer to correct example line in JSON formatter ([#2236](https://github.com/cucumber/cucumber-js/pull/2236))
+- Expose correct overload types for `this.attach` function ([#2238](https://github.com/cucumber/cucumber-js/pull/2238))
+
+## [8.11.0] - 2023-02-10
+### Added
+- Affirm support for Node.js 19 [#2230](https://github.com/cucumber/cucumber-js/pull/2230)
+- Include some exception details in the result of a test step for downstream tools [#2229](https://github.com/cucumber/cucumber-js/pull/2229)
+
+### Fixed
+- Handle invalid characters when generating XML for JUnit formatter [#2228](https://github.com/cucumber/cucumber-js/pull/2228)
+
 ## [8.10.0] - 2022-12-27
 ### Added
 - Add support for YAML as a configuration file format ([#2199](https://github.com/cucumber/cucumber-js/pull/2199))
@@ -1459,7 +1478,10 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.10.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.0.0...HEAD
+[9.0.0]: https://github.com/cucumber/cucumber-js/compare/v8.11.1...v9.0.0
+[8.11.1]: https://github.com/cucumber/cucumber-js/compare/v8.11.0...v8.11.1
+[8.11.0]: https://github.com/cucumber/cucumber-js/compare/v8.10.0...v8.11.0
 [8.10.0]: https://github.com/cucumber/cucumber-js/compare/v8.9.1...v8.10.0
 [8.9.1]: https://github.com/cucumber/cucumber-js/compare/v8.9.0...v8.9.1
 [8.9.0]: https://github.com/cucumber/cucumber-js/compare/v8.8.0...v8.9.0
