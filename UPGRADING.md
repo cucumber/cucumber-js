@@ -2,6 +2,22 @@
 
 This document describes breaking changes and how to upgrade. For a complete list of changes including minor and patch releases, please refer to the [changelog](./CHANGELOG.md).
 
+## 9.0.0
+
+### Generator snippet interface
+
+Generator step definitions were removed in `8.0.0`; we've now removed the associated snippet interface too. So if you have some configuration like:
+
+```json
+{
+  "formatOptions": {
+    "snippetInterface": "generator"
+  }
+}
+```
+
+Then you'll need to change that value to one of `synchronous`, `async-await`, `promise` or `callback`.
+
 ## 8.0.0
 
 ### Generator step definitions
