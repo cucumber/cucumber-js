@@ -55,7 +55,31 @@ describe('resolvePaths', () => {
       expect(importPaths).to.eql([esmSupportCodePath])
     })
 
-    it('deduplicates the .feature files before returning', async function () {
+    it('deduplicates features based on overlapping expressions', async function () {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const relativeFeaturePath = path.join('features', 'a.feature')
+      const featurePath = path.join(cwd, relativeFeaturePath)
+      await fsExtra.outputFile(featurePath, '')
+      // Act
+      const { featurePaths } = await resolvePaths(
+        new FakeLogger(),
+        cwd,
+        {
+          paths: ['features/*.feature', 'features/a.feature'],
+        },
+        {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+        }
+      )
+
+      // Assert
+      expect(featurePaths).to.eql([featurePath])
+    })
+
+    it('deduplicates features based on multiple targets of same path', async function () {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
       const relativeFeaturePath = path.join('features', 'a.feature')
