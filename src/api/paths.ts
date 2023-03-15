@@ -73,7 +73,7 @@ async function expandPaths(
       return expanded.flat()
     })
   )
-  const normalized = expandedPaths.flat().map((x) => path.normalize(x));
+  const normalized = expandedPaths.flat().map((x) => path.normalize(x))
   return [...new Set(normalized)]
 }
 
