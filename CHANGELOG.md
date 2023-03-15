@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [9.0.1] - 2023-03-15
 ### Fixed
 - Ensure feature paths are properly deduplicated ([#2258](https://github.com/cucumber/cucumber-js/pull/2258))
 
@@ -1480,7 +1482,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.0.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.0.1...HEAD
+[9.0.1]: https://github.com/cucumber/cucumber-js/compare/v9.0.0...v9.0.1
 [9.0.0]: https://github.com/cucumber/cucumber-js/compare/v8.11.1...v9.0.0
 [8.11.1]: https://github.com/cucumber/cucumber-js/compare/v8.11.0...v8.11.1
 [8.11.0]: https://github.com/cucumber/cucumber-js/compare/v8.10.0...v8.11.0
