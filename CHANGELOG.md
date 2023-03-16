@@ -383,7 +383,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 - print text step attachments ([#1041](https://github.com/cucumber/cucumber-js/pull/1041), DevSide)
 
 ### Fixed
-- cucumber-expressions: Upgrade from 5.0.7 to [5.0.13](https://github.com/cucumber/cucumber/blob/master/cucumber-expressions/CHANGELOG.md#5013---2018-01-21)
+- cucumber-expressions: Upgrade from 5.0.7 to [5.0.13](https://github.com/cucumber/cucumber-expressions/blob/main/CHANGELOG.md#5013---2018-01-21)
 - fix error serialization in parallel mode
 
 ## [4.0.0] - 2018-01-24
@@ -416,8 +416,8 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 - json formatter: format step result exception ([#973](https://github.com/cucumber/cucumber-js/pull/973) Valerio Innocenti Sedili)
 
 ### Fixed
-- cucumber-expressions: Upgrade from 5.0.3 to [5.0.6](https://github.com/cucumber/cucumber/blob/master/cucumber-expressions/CHANGELOG.md#506---2017-11-28)
-- tag-expressions: Upgrade from 1.0.1 to [1.1.1](https://github.com/cucumber/cucumber/blob/master/tag-expressions/CHANGELOG.md#111---2017-12-01)
+- cucumber-expressions: Upgrade from 5.0.3 to [5.0.6](https://github.com/cucumber/cucumber-expressions/blob/main/CHANGELOG.md#506---2017-11-28)
+- tag-expressions: Upgrade from 1.0.1 to [1.1.1](https://github.com/cucumber/tag-expressions/blob/main/CHANGELOG.md#111---2017-12-01)
 
 ## [3.1.0] - 2017-10-25
 ### Added
