@@ -35,7 +35,7 @@ The built in parameter types are:
 Defines a hook which is run after each scenario.
 
 * `options`: An object with the following keys:
-  * `tags`: String tag expression used to apply this hook to only specific scenarios. See [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/) for more information.
+  * `tags`: String tag expression used to apply this hook to only specific scenarios. See [cucumber-tag-expressions](https://github.com/cucumber/tag-expressions) for more information.
   * `timeout`: A hook-specific timeout, to override the default timeout.
 * `fn`: A function, defined as follows:
   * The first argument will be an object of the form `{pickle, gherkinDocument, result, willBeRetried, testCaseStartedId}`
@@ -66,7 +66,7 @@ Multiple `AfterAll` hooks are executed in the **reverse** order that they are de
 Defines a hook which is run after each step.
 
 * `options`: An object with the following keys:
-  * `tags`: String tag expression used to apply this hook to only specific scenarios. See [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/) for more information.
+  * `tags`: String tag expression used to apply this hook to only specific scenarios. See [cucumber-tag-expressions](https://github.com/cucumber/tag-expressions) for more information.
   * `timeout`: A hook-specific timeout, to override the default timeout.
 * `fn`: A function, defined as follows:
   * The first argument will be an object of the form `{pickle, pickleStep, gherkinDocument, result, testCaseStartedId, testStepId}`

@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
+Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
 
@@ -221,7 +221,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [7.3.0] - 2021-06-17
 ### Added
-- Experimental support for [Markdown](https://github.com/cucumber/common/blob/main/gherkin/MARKDOWN_WITH_GHERKIN.md)
+- Experimental support for [Markdown](https://github.com/cucumber/gherkin/blob/main/MARKDOWN_WITH_GHERKIN.md)
 ([#1645](https://github.com/cucumber/cucumber-js/pull/1645))
 
 ### Changed
@@ -284,7 +284,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 - The npm module has changed name from `cucumber` to `@cucumber/cucumber` -  `require`/`import` statements must be changed from `cucumber` to `@cucumber/cucumber`
 - TypeScript users must rename `TableDefinition` to `DataTable`
 - Drop support for Node.js 8, add support for Node.js 14
-- Events are now based on [cucumber-messages](https://github.com/cucumber/cucumber/tree/master/messages)
+- Events are now based on [cucumber-messages](https://github.com/cucumber/messages)
 - `event-protocol` formatter has been removed and replaced with `message`
 - Formatters
 - Remove long-deprecated `typeName` from options object for `defineParameterType` in favour of `name`
@@ -294,7 +294,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 - Custom formatters are now loaded via the regular require paths relative to the current directory, unless it begins with a dot (e.g. `--format=./relpath/to/formatter`). Previously this was always loaded as a file relative to the current directory.
 
 ### Deprecated
-- `json` formatter is deprecated and will be removed in next major release. Custom formatters should migrate to use the `message` formatter, or the [standalone JSON formatter](https://github.com/cucumber/cucumber/tree/master/json-formatter) as a stopgap.
+- `json` formatter is deprecated and will be removed in next major release. Custom formatters should migrate to use the `message` formatter, or the [standalone JSON formatter](https://github.com/cucumber/json-formatter) as a stopgap.
 
 ### Fixed
 - don't execute BeforeAll and AfterAll hooks when in dry-run
@@ -383,7 +383,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 - print text step attachments ([#1041](https://github.com/cucumber/cucumber-js/pull/1041), DevSide)
 
 ### Fixed
-- cucumber-expressions: Upgrade from 5.0.7 to [5.0.13](https://github.com/cucumber/cucumber/blob/master/cucumber-expressions/CHANGELOG.md#5013---2018-01-21)
+- cucumber-expressions: Upgrade from 5.0.7 to [5.0.13](https://github.com/cucumber/cucumber-expressions/blob/main/CHANGELOG.md#5013---2018-01-21)
 - fix error serialization in parallel mode
 
 ## [4.0.0] - 2018-01-24
@@ -416,8 +416,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 - json formatter: format step result exception ([#973](https://github.com/cucumber/cucumber-js/pull/973) Valerio Innocenti Sedili)
 
 ### Fixed
-- cucumber-expressions: Upgrade from 5.0.3 to [5.0.6](https://github.com/cucumber/cucumber/blob/master/cucumber-expressions/CHANGELOG.md#506---2017-11-28)
-- tag-expressions: Upgrade from 1.0.1 to [1.1.1](https://github.com/cucumber/cucumber/blob/master/tag-expressions/CHANGELOG.md#111---2017-12-01)
+- cucumber-expressions: Upgrade from 5.0.3 to [5.0.6](https://github.com/cucumber/cucumber-expressions/blob/main/CHANGELOG.md#506---2017-11-28)
+- tag-expressions: Upgrade from 1.0.1 to [1.1.1](https://github.com/cucumber/tag-expressions/blob/main/CHANGELOG.md#111---2017-12-01)
 
 ## [3.1.0] - 2017-10-25
 ### Added
@@ -609,7 +609,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 - `--require <DIR|FILE>`: the required files are no longer reordered to require anything in a `support` directory first
 - `--snippet-interface <INTERFACE>` has moved to `--format-options '{"snippetInterface": "<INTERFACE>"}'`
 - `--snippet-syntax <SYNTAX>` has moved to `--format-options '{"snippetSyntax": "<SYNTAX>"}'`
-- `--tags <EXPRESSION>` now uses [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/). It is no longer repeatable and new values will override previous
+- `--tags <EXPRESSION>` now uses [cucumber-tag-expressions](https://github.com/cucumber/tag-expressions). It is no longer repeatable and new values will override previous
 - `--tags @dev` stays the same
 - `--tags ~@dev` becomes `--tags 'not @dev'`
 - `--tags @foo,@bar` becomes  `--tags '@foo or @bar'`
@@ -624,9 +624,9 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 - When attaching buffers or strings, the callback argument is ignored.
 - Hooks
 - Hooks now receive a [ScenarioResult](/src/models/scenario_result.js) instead of the Scenario
-- The `tags` option for hook should now be a string instead of an array and uses [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/)
+- The `tags` option for hook should now be a string instead of an array and uses [cucumber-tag-expressions](https://github.com/cucumber/tag-expressions)
 - Step Definitions
-- String patterns were removed in favor [cucumber-expressions](https://docs.cucumber.io/cucumber-expressions/)
+- String patterns were removed in favor [cucumber-expressions](https://github.com/cucumber/cucumber-expressions)
 - capture groups matching `(-?\d+)` will be automatically converted to an integer using `parseInt`
 - capture groups matching `(-?\d*\.?\d+)` will be automatically converted to a float using `parseFloat`
 - Regular Expressions

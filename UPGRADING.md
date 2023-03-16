@@ -140,7 +140,7 @@ Now in `@cucumber/cucumber`:
 
 ### Formatters
 
-The underlying event/data model for cucumber-js is now [cucumber-messages](https://github.com/cucumber/cucumber/tree/master/messages), a shared standard across all official Cucumber implementations. This replaces the old "event protocol".
+The underlying event/data model for cucumber-js is now [cucumber-messages](https://github.com/cucumber/messages), a shared standard across all official Cucumber implementations. This replaces the old "event protocol".
 
 If you maintain any custom formatters, you'll need to refactor them to work with the new model. The basics of a `Formatter` class are the same, and the `EventDataCollector` is still there to help you with tracking down data, but the names of events and shape of their data is different. It's worth checking out the implementations of the built-in formatters if you need a pointer.
 
