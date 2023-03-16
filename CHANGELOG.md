@@ -284,7 +284,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 - The npm module has changed name from `cucumber` to `@cucumber/cucumber` -  `require`/`import` statements must be changed from `cucumber` to `@cucumber/cucumber`
 - TypeScript users must rename `TableDefinition` to `DataTable`
 - Drop support for Node.js 8, add support for Node.js 14
-- Events are now based on [cucumber-messages](https://github.com/cucumber/cucumber/tree/master/messages)
+- Events are now based on [cucumber-messages](https://github.com/cucumber/messages)
 - `event-protocol` formatter has been removed and replaced with `message`
 - Formatters
 - Remove long-deprecated `typeName` from options object for `defineParameterType` in favour of `name`
