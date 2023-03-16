@@ -609,7 +609,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 - `--require <DIR|FILE>`: the required files are no longer reordered to require anything in a `support` directory first
 - `--snippet-interface <INTERFACE>` has moved to `--format-options '{"snippetInterface": "<INTERFACE>"}'`
 - `--snippet-syntax <SYNTAX>` has moved to `--format-options '{"snippetSyntax": "<SYNTAX>"}'`
-- `--tags <EXPRESSION>` now uses [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/). It is no longer repeatable and new values will override previous
+- `--tags <EXPRESSION>` now uses [cucumber-tag-expressions](https://github.com/cucumber/tag-expressions). It is no longer repeatable and new values will override previous
 - `--tags @dev` stays the same
 - `--tags ~@dev` becomes `--tags 'not @dev'`
 - `--tags @foo,@bar` becomes  `--tags '@foo or @bar'`
@@ -624,9 +624,9 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 - When attaching buffers or strings, the callback argument is ignored.
 - Hooks
 - Hooks now receive a [ScenarioResult](/src/models/scenario_result.js) instead of the Scenario
-- The `tags` option for hook should now be a string instead of an array and uses [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/)
+- The `tags` option for hook should now be a string instead of an array and uses [cucumber-tag-expressions](https://github.com/cucumber/tag-expressions)
 - Step Definitions
-- String patterns were removed in favor [cucumber-expressions](https://docs.cucumber.io/cucumber-expressions/)
+- String patterns were removed in favor [cucumber-expressions](https://github.com/cucumber/cucumber-expressions)
 - capture groups matching `(-?\d+)` will be automatically converted to an integer using `parseInt`
 - capture groups matching `(-?\d*\.?\d+)` will be automatically converted to a float using `parseFloat`
 - Regular Expressions
