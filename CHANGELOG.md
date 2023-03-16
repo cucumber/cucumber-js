@@ -221,7 +221,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [7.3.0] - 2021-06-17
 ### Added
-- Experimental support for [Markdown](https://github.com/cucumber/common/blob/main/gherkin/MARKDOWN_WITH_GHERKIN.md)
+- Experimental support for [Markdown](https://github.com/cucumber/gherkin/blob/main/MARKDOWN_WITH_GHERKIN.md)
 ([#1645](https://github.com/cucumber/cucumber-js/pull/1645))
 
 ### Changed
