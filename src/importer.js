@@ -7,7 +7,10 @@
  * @return {Promise<any>} Promise that resolves to the loaded module
  */
 async function importer(descriptor) {
-  return await import(descriptor)
+  return await import(descriptor).catch((e) => {
+    throw new Error(`Cucumber expected an ES module at '${descriptor}' but found a CommonJS module.
+    Either change the file to ES syntax or use the --require directive instead of --import`)
+  }) 
 }
 
 module.exports = { importer }

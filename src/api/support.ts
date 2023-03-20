@@ -6,6 +6,15 @@ import { pathToFileURL } from 'url'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
 
+function tryRequire(path:string) {
+  try {
+    return require(path);
+  } catch (e) {
+    throw new Error(`Cucumber expected a CommonJS module at '${path}' but found an ES module.
+    Either change the file to CommonJS syntax or use the --import directive instead of --require`)
+  }
+}
+
 export async function getSupportCodeLibrary({
   cwd,
   newId,
@@ -24,10 +33,13 @@ export async function getSupportCodeLibrary({
     requirePaths,
     importPaths,
   })
-  requireModules.map((module) => require(module))
-  requirePaths.map((path) => require(path))
+
+  requireModules.map((module) => tryRequire(module))
+  requirePaths.map((path) => tryRequire(path))
+  
   for (const path of importPaths) {
     await importer(pathToFileURL(path))
   }
+ 
   return supportCodeLibraryBuilder.finalize()
 }
