@@ -24,10 +24,13 @@ export async function getSupportCodeLibrary({
     requirePaths,
     importPaths,
   })
+  const importPromises:Array<Promise<void>> = []
+
   requireModules.map((module) => require(module))
   requirePaths.map((path) => require(path))
-  for (const path of importPaths) {
-    await importer(pathToFileURL(path))
-  }
+  importPaths.map((path) => importPromises.push(importer(pathToFileURL(path))))
+
+  await Promise.all(importPromises)
+
   return supportCodeLibraryBuilder.finalize()
 }
