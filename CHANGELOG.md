@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+- Perform dynamic imports in parallel using Promise.all instead of sequentially by awaiting in a loop ([#2263](https://github.com/cucumber/cucumber-js/pull/2263))
 
 ## [9.0.1] - 2023-03-15
 ### Fixed
