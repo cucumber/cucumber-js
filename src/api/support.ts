@@ -10,7 +10,7 @@ function tryRequire(path: string) {
   try {
     return require(path)
   } catch (error) {
-    if (error.message === 'Cannot use import statement outside a module') {
+    if (error.code === 'ERR_REQUIRE_ESM') {
       throw new Error(`Cucumber expected a CommonJS module at '${path}' but found an ES module.
       Either change the file to CommonJS syntax or use the --import directive instead of --require`)
     } else {
