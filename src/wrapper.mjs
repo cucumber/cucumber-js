@@ -23,10 +23,12 @@ export const AfterStep = cucumber.AfterStep
 export const Before = cucumber.Before
 export const BeforeAll = cucumber.BeforeAll
 export const BeforeStep = cucumber.BeforeStep
+export const defineStep = cucumber.defineStep
 export const defineParameterType = cucumber.defineParameterType
 export const Given = cucumber.Given
 export const setDefaultTimeout = cucumber.setDefaultTimeout
-export const setDefinitionFunctionWrapper = cucumber.setDefinitionFunctionWrapper
+export const setDefinitionFunctionWrapper =
+  cucumber.setDefinitionFunctionWrapper
 export const setWorldConstructor = cucumber.setWorldConstructor
 export const Then = cucumber.Then
 export const When = cucumber.When
@@ -37,7 +39,6 @@ export const wrapPromiseWithTimeout = cucumber.wrapPromiseWithTimeout
 
 // Deprecated
 export const Cli = cucumber.Cli
-export const defineStep = cucumber.defineStep
 export const parseGherkinMessageStream = cucumber.parseGherkinMessageStream
 export const PickleFilter = cucumber.PickleFilter
 export const Runtime = cucumber.Runtime

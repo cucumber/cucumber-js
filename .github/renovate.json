@@ -1,14 +1,8 @@
 {
-  "extends": [
-    "config:base",
-    ":disableDependencyDashboard"
-  ],
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>cucumber/renovate-config"],
   "rebaseWhen": "never",
   "packageRules": [
-    {
-      "updateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true
-    },
     {
       "packagePatterns": ["eslint", "prettier"],
       "groupName": "eslint packages"
@@ -21,8 +15,5 @@
       "packagePatterns": ["@cucumber"],
       "groupName": "cucumber packages"
     }
-  ],
-  "schedule": [
-    "on the first day of the month"
   ]
 }

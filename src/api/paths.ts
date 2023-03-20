@@ -73,7 +73,8 @@ async function expandPaths(
       return expanded.flat()
     })
   )
-  return expandedPaths.flat().map((x) => path.normalize(x))
+  const normalized = expandedPaths.flat().map((x) => path.normalize(x))
+  return [...new Set(normalized)]
 }
 
 async function getUnexpandedFeaturePaths(
@@ -126,7 +127,6 @@ async function expandFeaturePaths(
   featurePaths: string[]
 ): Promise<string[]> {
   featurePaths = featurePaths.map((p) => p.replace(/(:\d+)*$/g, '')) // Strip line numbers
-  featurePaths = [...new Set(featurePaths)] // Deduplicate the feature files
   return await expandPaths(cwd, featurePaths, '.feature')
 }
 

@@ -1,4 +1,4 @@
-import Time from '../time'
+import { create } from './stopwatch'
 import UserCodeRunner from '../user_code_runner'
 import * as messages from '@cucumber/messages'
 import { ITestCaseHookParameter } from '../support_code_library_builder/types'
@@ -9,8 +9,6 @@ import {
   valueOrDefault,
 } from '../value_checker'
 import { formatError } from './format_error'
-
-const { beginTiming, endTiming } = Time
 
 export interface IRunOptions {
   defaultTimeout: number
@@ -29,7 +27,7 @@ export async function run({
   stepDefinition,
   world,
 }: IRunOptions): Promise<messages.TestStepResult> {
-  beginTiming()
+  const stopwatch = create().start()
   let error: any, result: any, invocationData: IGetInvocationDataResponse
 
   try {
@@ -62,15 +60,15 @@ export async function run({
     }
   }
 
-  const duration = messages.TimeConversion.millisecondsToDuration(endTiming())
+  const duration = stopwatch.stop().duration()
   let status: messages.TestStepResultStatus
-  let message: string
+  let details = {}
   if (result === 'skipped') {
     status = messages.TestStepResultStatus.SKIPPED
   } else if (result === 'pending') {
     status = messages.TestStepResultStatus.PENDING
   } else if (doesHaveValue(error)) {
-    message = formatError(error, filterStackTraces)
+    details = formatError(error, filterStackTraces)
     status = messages.TestStepResultStatus.FAILED
   } else {
     status = messages.TestStepResultStatus.PASSED
@@ -79,7 +77,7 @@ export async function run({
   return {
     duration,
     status,
-    message,
+    ...details,
   }
 }
 

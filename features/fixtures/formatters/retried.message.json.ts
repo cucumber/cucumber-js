@@ -142,6 +142,10 @@ module.exports = [
         },
         status: 'FAILED',
         message: 'Error: my error',
+        exception: {
+          type: 'Error',
+          message: 'my error',
+        },
       },
       timestamp: {
         seconds: 0,

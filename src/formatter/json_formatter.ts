@@ -83,7 +83,7 @@ interface UriToTestCaseAttemptsMap {
 
 export default class JsonFormatter extends Formatter {
   public static readonly documentation: string =
-    'Prints the feature as JSON. The JSON format is in maintenance mode. Please consider using the message formatter with the standalone json-formatter (https://github.com/cucumber/cucumber/tree/master/json-formatter).'
+    'Prints the feature as JSON. The JSON format is in maintenance mode. Please consider using the message formatter with the standalone json-formatter (https://github.com/cucumber/json-formatter).'
 
   constructor(options: IFormatterOptions) {
     super(options)
@@ -218,7 +218,9 @@ export default class JsonFormatter extends Formatter {
       description,
       id: this.formatScenarioId({ feature, pickle, gherkinExampleRuleMap }),
       keyword: gherkinScenarioMap[pickle.astNodeIds[0]].keyword,
-      line: gherkinScenarioLocationMap[pickle.astNodeIds[0]].line,
+      line: gherkinScenarioLocationMap[
+        pickle.astNodeIds[pickle.astNodeIds.length - 1]
+      ].line,
       name: pickle.name,
       steps,
       tags: this.getScenarioTags({ feature, pickle, gherkinScenarioMap }),

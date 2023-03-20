@@ -36,9 +36,15 @@ interface IJUnitTestCase {
   steps: IJUnitTestStep[]
 }
 
+interface IJUnitTestCaseFailure {
+  type: string
+  message?: string
+  detail: string
+}
+
 interface IJUnitTestCaseResult {
   status: TestStepResultStatus
-  message?: string
+  failure?: IJUnitTestCaseFailure
 }
 
 interface IJUnitTestStep {
@@ -58,16 +64,6 @@ interface IBuildJUnitTestStepOptions {
   testStep: messages.TestStep
   testStepAttachments: messages.Attachment[]
   testStepResult: messages.TestStepResult
-}
-
-const statusDescriptions: Record<TestStepResultStatus, string> = {
-  UNKNOWN: `A result couldn't be established`,
-  PASSED: 'Everything went fine',
-  SKIPPED: 'The test case was skipped',
-  PENDING: 'A step in the test case is not yet implemented',
-  UNDEFINED: 'A step in the test case is not defined',
-  AMBIGUOUS: 'Multiple definitions match one of the steps in the test case',
-  FAILED: 'A hook or step failed',
 }
 
 export default class JunitFormatter extends Formatter {
@@ -134,8 +130,20 @@ export default class JunitFormatter extends Formatter {
   }
 
   private getTestCaseResult(steps: IJUnitTestStep[]): IJUnitTestCaseResult {
-    const worstResult = getWorstTestStepResult(steps.map((step) => step.result))
-    return worstResult
+    const { status, message, exception } = getWorstTestStepResult(
+      steps.map((step) => step.result)
+    )
+    return {
+      status,
+      failure:
+        message || exception
+          ? {
+              type: exception?.type,
+              message: exception?.message,
+              detail: message,
+            }
+          : undefined,
+    }
   }
 
   private durationToSeconds(duration: Duration): number {
@@ -246,7 +254,7 @@ export default class JunitFormatter extends Formatter {
 
   private buildXmlReport(testSuite: IJUnitTestSuite): string {
     const xmlReport = xmlbuilder
-      .create('testsuite')
+      .create('testsuite', { invalidCharReplacement: '' })
       .att('failures', testSuite.failures)
       .att('skipped', testSuite.skipped)
       .att('name', testSuite.name)
@@ -262,11 +270,11 @@ export default class JunitFormatter extends Formatter {
         xmlTestCase.ele('skipped')
       } else if (test.result.status !== TestStepResultStatus.PASSED) {
         const xmlFailure = xmlTestCase.ele('failure', {
-          type: test.result.status,
-          message: statusDescriptions[test.result.status],
+          type: test.result.failure?.type,
+          message: test.result.failure?.message,
         })
-        if (test.result.message) {
-          xmlFailure.cdata(test.result.message)
+        if (test.result?.failure) {
+          xmlFailure.cdata(test.result.failure.detail)
         }
       }
       xmlTestCase.ele('system-out', {}).cdata(test.systemOutput)

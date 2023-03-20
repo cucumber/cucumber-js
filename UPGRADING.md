@@ -2,6 +2,22 @@
 
 This document describes breaking changes and how to upgrade. For a complete list of changes including minor and patch releases, please refer to the [changelog](./CHANGELOG.md).
 
+## 9.0.0
+
+### Generator snippet interface
+
+Generator step definitions were removed in `8.0.0`; we've now removed the associated snippet interface too. So if you have some configuration like:
+
+```json
+{
+  "formatOptions": {
+    "snippetInterface": "generator"
+  }
+}
+```
+
+Then you'll need to change that value to one of `synchronous`, `async-await`, `promise` or `callback`.
+
 ## 8.0.0
 
 ### Generator step definitions
@@ -124,7 +140,7 @@ Now in `@cucumber/cucumber`:
 
 ### Formatters
 
-The underlying event/data model for cucumber-js is now [cucumber-messages](https://github.com/cucumber/cucumber/tree/master/messages), a shared standard across all official Cucumber implementations. This replaces the old "event protocol".
+The underlying event/data model for cucumber-js is now [cucumber-messages](https://github.com/cucumber/messages), a shared standard across all official Cucumber implementations. This replaces the old "event protocol".
 
 If you maintain any custom formatters, you'll need to refactor them to work with the new model. The basics of a `Formatter` class are the same, and the `EventDataCollector` is still there to help you with tracking down data, but the names of events and shape of their data is different. It's worth checking out the implementations of the built-in formatters if you need a pointer.
 
