@@ -83,7 +83,6 @@ Feature: ES modules support
     Then it runs 2 scenarios
     And it passes
 
-  @dev
   Scenario: ES module invoked with --require
     Given a file named "features/a.feature" with:
       """
