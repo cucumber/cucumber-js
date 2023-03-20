@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Ensure attached string literals are base64-encoded in JSON reports ([#2260](https://github.com/cucumber/cucumber-js/issues/2260))
 
 ## [9.0.1] - 2023-03-15
 ### Fixed
