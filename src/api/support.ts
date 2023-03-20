@@ -19,12 +19,13 @@ export async function getSupportCodeLibrary({
   requirePaths: string[]
   importPaths: string[]
 }): Promise<ISupportCodeLibrary> {
+  const importPromises: Array<Promise<void>> = []
+
   supportCodeLibraryBuilder.reset(cwd, newId, {
     requireModules,
     requirePaths,
     importPaths,
   })
-  const importPromises:Array<Promise<void>> = []
 
   requireModules.map((module) => require(module))
   requirePaths.map((path) => require(path))
