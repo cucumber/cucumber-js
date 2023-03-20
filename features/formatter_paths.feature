@@ -33,10 +33,16 @@ Feature: Formatter Paths
       <duration-stat>
       """
 
-  Scenario: Invalid path
-    When I run cucumber-js with `-f summary:invalid/summary.txt`
-    Then it fails
-    And the error output contains the text:
+  Scenario: Created relative path
+    When I run cucumber-js with `-f summary:some/long/path/for/reports/summary.txt`
+    Then the file "some/long/path/for/reports/summary.txt" has the text:
       """
-      ENOENT
+      1 scenario (1 passed)
+      1 step (1 passed)
+      <duration-stat>
       """
+
+  Scenario: No permission to create relative path
+    Given the OS does not allow cucumber to create directories
+    When I run cucumber-js with `-f summary:some/long/path/for/reports/summary.txt`
+    Then I should see a warning that the summary file could not be created
