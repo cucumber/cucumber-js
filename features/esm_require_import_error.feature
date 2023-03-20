@@ -5,7 +5,6 @@ Feature: ES and CommonJS Error disabiguation
   CommonJS modules, but when developers cross these up
   cucumber-js needs to throw an understandable error.
 
-  @dev1
   Scenario: ES module invoked with --require
     Given a file named "features/a.feature" with:
       """
@@ -26,7 +25,6 @@ Feature: ES and CommonJS Error disabiguation
         Error: Cucumber expected a CommonJS module 
       """
 
-  @dev2
   Scenario: CommonJS module invoked with --import
     Given a file named "features/a.feature" with:
       """
