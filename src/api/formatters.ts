@@ -78,8 +78,10 @@ export async function initializeFormatters({
       (async (target, type) => {
         const absoluteTarget = path.resolve(cwd, target)
 
-        if (!(await fs.exists(absoluteTarget))) {
+        try {
           await mkdirp(path.dirname(absoluteTarget))
+        } catch (error) {
+          logger.warn('Failed to ensure directory for formatter target exists')
         }
 
         const stream: IFormatterStream = fs.createWriteStream(null, {
