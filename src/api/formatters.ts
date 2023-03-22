@@ -80,14 +80,17 @@ export async function initializeFormatters({
 
         try {
           await mkdirp(path.dirname(absoluteTarget))
-        } catch (error) {
-          logger.warn('Failed to ensure directory for formatter target exists')
-        }
 
-        const stream: IFormatterStream = fs.createWriteStream(null, {
-          fd: await fs.open(absoluteTarget, 'w'),
-        })
-        formatters.push(await initializeFormatter(stream, target, type))
+          const stream: IFormatterStream = fs.createWriteStream(null, {
+            fd: await fs.open(absoluteTarget, 'w'),
+          })
+
+          formatters.push(await initializeFormatter(stream, target, type))
+        } catch (error) {
+          logger.warn(
+            `Cucumber was unable to create file "${absoluteTarget}". Check the access permissions of the directory. The test will continue from here, but no report file will be generated.`
+          )
+        }
       })(target, type)
     )
   })
