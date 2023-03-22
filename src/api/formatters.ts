@@ -87,9 +87,7 @@ export async function initializeFormatters({
 
           formatters.push(await initializeFormatter(stream, target, type))
         } catch (error) {
-          logger.warn(
-            `Cucumber was unable to create file "${absoluteTarget}". Check the access permissions of the directory. The test will continue from here, but no report file will be generated.`
-          )
+          throw new Error(`Cucumber was unable to create file "${absoluteTarget}".`)
         }
       })(target, type)
     )
