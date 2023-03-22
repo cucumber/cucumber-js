@@ -32,6 +32,9 @@ export async function setupEnvironment(): Promise<Partial<IRunEnvironment>> {
 }
 
 export async function teardownEnvironment(environment: IRunEnvironment) {
-  await fs.rmdir(environment.cwd, { recursive: true })
-  environment.stdout.end()
+  return new Promise((resolve) => {
+    fs.rm(environment.cwd, { recursive: true }, resolve)
+  }).then(() => {
+    environment.stdout.end()
+  })
 }
