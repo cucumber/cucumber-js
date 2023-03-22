@@ -87,7 +87,9 @@ export async function initializeFormatters({
 
           formatters.push(await initializeFormatter(stream, target, type))
         } catch (error) {
-          throw new Error(`Cucumber was unable to create file "${absoluteTarget}".`)
+          throw new Error(
+            `Cucumber was unable to create file "${absoluteTarget}".`
+          )
         }
       })(target, type)
     )
