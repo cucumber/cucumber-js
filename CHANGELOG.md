@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
-
+- Reporters create sub-directory automatically instead of failing ([#2266](https://github.com/cucumber/cucumber-js/pull/2266))
 ## [9.0.1] - 2023-03-15
 ### Fixed
 - Ensure feature paths are properly deduplicated ([#2258](https://github.com/cucumber/cucumber-js/pull/2258))

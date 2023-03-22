@@ -16,7 +16,7 @@ For each value you provide, `TYPE` should be one of:
 * A relative path to a local formatter implementation e.g. `./my-customer-formatter.js`
 * An absolute path to a local formatter implementation in the form of a `file://` URL
 
-If `PATH` is supplied, the formatter prints to the given file, otherwise it prints to `stdout`.
+If `PATH` is supplied, the formatter prints to the given file, otherwise it prints to `stdout`. If the path includes directories that do not yet exist they will be created.
 
 For example, this configuration would give you a progress bar as you run, plus JSON and HTML report files:
 
@@ -30,7 +30,7 @@ Some notes on specifying Formatters:
 
 ## Options
 
-Many formatters, including the built-in ones, support some configurability via options. You can provide this data as an object literal via the `formatOptions` configuration option, like this:
+Many formatters, including the built-in ones, support some configuration via options. You can provide this data as an object literal via the `formatOptions` configuration option, like this:
 
 - In a configuration file `{ formatOptions: { someOption: true } }`
 - On the CLI `$ cucumber-js --format-options '{"someOption":true}'`
