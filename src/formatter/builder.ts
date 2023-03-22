@@ -102,13 +102,13 @@ const FormatterBuilder = {
     descriptor: string,
     cwd: string
   ) {
-    let normalised: URL | string = descriptor
+    let normalized: URL | string = descriptor
     if (descriptor.startsWith('.')) {
-      normalised = pathToFileURL(path.resolve(cwd, descriptor))
+      normalized = pathToFileURL(path.resolve(cwd, descriptor))
     } else if (descriptor.startsWith('file://')) {
-      normalised = new URL(descriptor)
+      normalized = new URL(descriptor)
     }
-    let CustomClass = await FormatterBuilder.loadFile(normalised)
+    let CustomClass = await FormatterBuilder.loadFile(normalized)
     CustomClass = FormatterBuilder.resolveConstructor(CustomClass)
     if (doesHaveValue(CustomClass)) {
       return CustomClass
