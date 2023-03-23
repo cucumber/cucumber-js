@@ -9,6 +9,7 @@ import fs from 'mz/fs'
 import path from 'path'
 import { IRunOptionsFormats } from './types'
 import { ILogger } from '../logger'
+import { mkdirp } from 'mkdirp'
 
 export async function initializeFormatters({
   env,
@@ -70,12 +71,28 @@ export async function initializeFormatters({
     await initializeFormatter(stdout, 'stdout', configuration.stdout)
   )
 
-  for (const [target, type] of Object.entries(configuration.files)) {
-    const stream: IFormatterStream = fs.createWriteStream(null, {
-      fd: await fs.open(path.resolve(cwd, target), 'w'),
-    })
-    formatters.push(await initializeFormatter(stream, target, type))
-  }
+  const streamPromises: Promise<void>[] = []
+
+  Object.entries(configuration.files).forEach(([target, type]) => {
+    streamPromises.push(
+      (async (target, type) => {
+        const absoluteTarget = path.resolve(cwd, target)
+
+        try {
+          await mkdirp(path.dirname(absoluteTarget))
+        } catch (error) {
+          logger.warn('Failed to ensure directory for formatter target exists')
+        }
+
+        const stream: IFormatterStream = fs.createWriteStream(null, {
+          fd: await fs.open(absoluteTarget, 'w'),
+        })
+        formatters.push(await initializeFormatter(stream, target, type))
+      })(target, type)
+    )
+  })
+
+  await Promise.all(streamPromises)
 
   return async function () {
     await Promise.all(formatters.map(async (f) => await f.finished()))
