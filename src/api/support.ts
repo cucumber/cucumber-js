@@ -2,22 +2,10 @@ import { IdGenerator } from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
 import { pathToFileURL } from 'url'
+import tryRequire from '../try_require'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
-
-function tryRequire(path: string) {
-  try {
-    return require(path)
-  } catch (error) {
-    if (error.code === 'ERR_REQUIRE_ESM') {
-      throw new Error(`Cucumber expected a CommonJS module at '${path}' but found an ES module.
-      Either change the file to CommonJS syntax or use the --import directive instead of --require`)
-    } else {
-      throw error
-    }
-  }
-}
 
 export async function getSupportCodeLibrary({
   cwd,
