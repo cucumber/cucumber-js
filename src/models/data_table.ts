@@ -13,7 +13,7 @@ export default class DataTable {
     }
   }
 
-  hashes(): any[] {
+  hashes(): Record<string, string>[] {
     const copy = this.raw()
     const keys = copy[0]
     const valuesArray = copy.slice(1)
