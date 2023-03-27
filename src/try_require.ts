@@ -11,7 +11,9 @@ export default function tryRequire(path: string) {
     if (error.code === 'ERR_REQUIRE_ESM') {
       throw Error(
         `Cucumber expected a CommonJS module at '${path}' but found an ES module.
-      Either change the file to CommonJS syntax or use the --import directive instead of --require`
+      Either change the file to CommonJS syntax or use the --import directive instead of --require.
+      
+      Original Error message: ${error.message}`
       )
     } else {
       throw error
