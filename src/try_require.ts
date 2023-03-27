@@ -13,7 +13,7 @@ export default function tryRequire(path: string) {
         `Cucumber expected a CommonJS module at '${path}' but found an ES module.
       Either change the file to CommonJS syntax or use the --import directive instead of --require.
       
-      Original Error message: ${error.message}`
+      Original error message: ${error.message}`
       )
     } else {
       throw error
