@@ -8,8 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [9.1.0] - 2023-03-28
 ### Added
 - Formatters create sub-directory automatically instead of failing ([#2266](https://github.com/cucumber/cucumber-js/pull/2266))
+- Include a less cryptic error message when trying to `require` an ES module ([#2264](https://github.com/cucumber/cucumber-js/pull/2264))
+
+### Changed
+- Change hashes type from `any` to `Record<string, string>` in `DataTable` ([#2270](https://github.com/cucumber/cucumber-js/pull/2270))
 
 ## [9.0.1] - 2023-03-15
 ### Fixed
@@ -1484,7 +1490,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.0.1...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.1.0...HEAD
+[9.1.0]: https://github.com/cucumber/cucumber-js/compare/v9.0.1...v9.1.0
 [9.0.1]: https://github.com/cucumber/cucumber-js/compare/v9.0.0...v9.0.1
 [9.0.0]: https://github.com/cucumber/cucumber-js/compare/v8.11.1...v9.0.0
 [8.11.1]: https://github.com/cucumber/cucumber-js/compare/v8.11.0...v8.11.1
