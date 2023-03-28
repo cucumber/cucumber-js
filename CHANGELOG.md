@@ -11,6 +11,9 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Added
 - Formatters create sub-directory automatically instead of failing ([#2266](https://github.com/cucumber/cucumber-js/pull/2266))
 
+### Changed
+- Change hashes type from `any` to `Record<string, string>` in `DataTable` ([#2270](https://github.com/cucumber/cucumber-js/pull/2270))
+
 ## [9.0.1] - 2023-03-15
 ### Fixed
 - Ensure feature paths are properly deduplicated ([#2258](https://github.com/cucumber/cucumber-js/pull/2258))
