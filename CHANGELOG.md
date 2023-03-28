@@ -8,9 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
-- Change the error message emitted when trying to import a CommonJS module with the --import directive or require an ES module with the --require directive to one less cryptic than that emitted by NodeJS ([#2264](https://github.com/cucumber/cucumber-js/pull/2264))
+
 ### Added
 - Formatters create sub-directory automatically instead of failing ([#2266](https://github.com/cucumber/cucumber-js/pull/2266))
+- Include a less cryptic error message when trying to `require` an ES module ([#2264](https://github.com/cucumber/cucumber-js/pull/2264))
 
 ### Changed
 - Change hashes type from `any` to `Record<string, string>` in `DataTable` ([#2270](https://github.com/cucumber/cucumber-js/pull/2270))
