@@ -33,13 +33,13 @@ If you are using [ts-node](https://github.com/TypeStrong/ts-node):
 
 #### ESM
 
-For ESM projects, you can use `ts-node`'s ESM loader and then import your TypeScript files. Doing this will require setting an environment variable. the cleanest way to do this is to include the [cross-env](https://www.npmjs.com/package/cross-env) package with `npm i -D cross-env`
+For ESM projects, you can use `ts-node`'s ESM loader and then import your TypeScript files. Doing this will require setting an environment variable. The cleanest way to do this is to include the [cross-env](https://www.npmjs.com/package/cross-env) package with `npm i -D cross-env`
 
 Then change your npm test script invocation in the package.json file to:
 
 ```json
 {
-  "scripts: {
+  "scripts": {
     "test": "cross-env NODE_OPTIONS=\"--loader ts-node/esm\" cucumber-js"
   }
 }
