@@ -1,41 +1,43 @@
 # Transpiling
 
-Step definitions and support files can be written in syntax/language that compiles to JavaScript, and just-in-time compiled when you run Cucumber. The output of the transpiler must match the module format expected by node, and you must use the correct Cucumber directive to import the code, "import" for esm and "require" for CommonJS.
+Step definitions and support files can be written in a syntax or language that compiles to JavaScript, and just-in-time compiled when you run Cucumber. The output of the transpiler must match the module format expected by node, and you must use the correct Cucumber directive to import the code, "import" for esm and "require" for CommonJS.
 
 For example, you might want to use [Babel](https://babeljs.io/):
 
 - In a configuration file `{ requireModule: ['@babel/register'] }`
 - On the CLI `$ cucumber-js --require-module @babel/register`
 
-This would mean any support code loaded with the `require` option would be transpiled first.
+This would mean any support code loaded with the `require` option would be transpiled first then loaded into Cucumber.
 
 ## TypeScript
 
-Your `tsconfig.json` should have these `compilerOptions` on:
+Your `tsconfig.json` should have these `compilerOptions`:
 
 ```json
 "allowSyntheticDefaultImports": true,
-"resolveJsonModule": true
+"resolveJsonModule": true,
+
 ```
 
-In addition, the "module" option should either not be present, or explicitly set to "CommonJS" which is the default.  For ESM projects see below.
+Typescript's output must match Cucumber's expected import, and this is controlled by the "module" option in the `tsconfig.json`.  The default is "CommonJS", but if your project is setup to be an ESM project then Typescript will need to output some generation of ES code to Cucumber. If you aren't sure use "ESNext".
+
+Cucumber doesn't load `*.ts` files by default. The glob pattern `step-definitions/**/*.ts` will load them from the default step definition location.
 
 Other than that, a pretty standard TypeScript setup should work as expected.
 
-You'll also need to specify where your support code is, since `.ts` files won't be picked up by default.
-
 ### With ts-node
 
-If you are using [ts-node](https://github.com/TypeStrong/ts-node):
+[TS-Node](https://github.com/TypeStrong/ts-node): is the one of the most popular ways to load TypeScript files. 
 
 - In a configuration file `{ requireModule: ['ts-node/register'], require: ['step-definitions/**/*.ts'] }`
 - On the CLI `$ cucumber-js --require-module ts-node/register --require 'step-definitions/**/*.ts'`
 
-#### ESM
+If you are using ts-node in a CommonJS project then this configuration will work, but if you have an ESM project there are additional steps.
 
-For ESM projects, you can use `ts-node`'s ESM loader and then import your TypeScript files. Doing this will require setting an environment variable. The cleanest way to do this is to include the [cross-env](https://www.npmjs.com/package/cross-env) package with `npm i -D cross-env`
+* Set TypeScript to export to an ES format such as "ESNext" using the `ts-config.json` file. 
+* Then use `ts-node`'s ESM loader to import your TypeScript. 
 
-Then change your npm test script invocation in the package.json file to:
+That last step requires setting an environment variable. The cleanest way to do this is to include the [cross-env](https://www.npmjs.com/package/cross-env) package with `npm i -D cross-env`. With that package installed make the following change to your npm test script invocation in the package.json file:
 
 ```json
 {
@@ -45,26 +47,6 @@ Then change your npm test script invocation in the package.json file to:
 }
 ```
 
-To use ESM modules set the `"type": "module"` in the package.json file.
-
-Your cucumber.js file will need to be an ESM module and contain the following at a minimum:
-
-```javascript
-export default {
-  requireModule: ['ts-node/register'], 
-  import: ['features/steps/**/*.ts'],
-}
-```
-
-Don't forget to set your `tsconfig.json` to emit JavaScript with `import` and `export` statements:
-
-```json
-{
-  "compilerOptions": {
-    "module": "esnext"
-  }
-}
-```
 
 ### With Babel
 
