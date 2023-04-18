@@ -21,7 +21,7 @@ Your `tsconfig.json` should have these `compilerOptions`:
 
 Typescript's output must match Cucumber's expected import, and this is controlled by the "module" option in the `tsconfig.json`.  The default is "CommonJS", but if your project is setup to be an ESM project then Typescript will need to output some generation of ES code to Cucumber. If you aren't sure use "ESNext".
 
-Cucumber doesn't load `*.ts` files by default. The glob pattern `step-definitions/**/*.ts` will load them from the default step definition location.
+You'll also need to specify where your support code is, since `.ts` files won't be picked up by default.
 
 Other than that, a pretty standard TypeScript setup should work as expected.
 
@@ -32,21 +32,12 @@ Other than that, a pretty standard TypeScript setup should work as expected.
 - In a configuration file `{ requireModule: ['ts-node/register'], require: ['step-definitions/**/*.ts'] }`
 - On the CLI `$ cucumber-js --require-module ts-node/register --require 'step-definitions/**/*.ts'`
 
-If you are using ts-node in a CommonJS project then this configuration will work, but if you have an ESM project there are additional steps.
+If you are using ts-node in a CommonJS project then this configuration will work, but if you have an ESM project you should follow these steps.
 
-* Set TypeScript to export to an ES format such as "ESNext" using the `ts-config.json` file. 
-* Then use `ts-node`'s ESM loader to import your TypeScript. 
-
-That last step requires setting an environment variable. The cleanest way to do this is to include the [cross-env](https://www.npmjs.com/package/cross-env) package with `npm i -D cross-env`. With that package installed make the following change to your npm test script invocation in the package.json file:
-
-```json
-{
-  "scripts": {
-    "test": "cross-env NODE_OPTIONS=\"--loader ts-node/esm\" cucumber-js"
-  }
-}
-```
-
+- In a configuration file `{ loader: ['ts-node/register'], import: ['step-definitions/**/*.ts'] }`
+- On the CLI `$ cucumber-js --loader ts-node/register --import 'step-definitions/**/*.ts'`
+- Set TypeScript to export to an ES format such as "ESNext" using the `ts-config.json` file. 
+* Set a NODE_OPTIONS environment flag to use the ts-node esm loader: `NODE_OPTIONS=\"--loader ts-node/esm\"`
 
 ### With Babel
 
