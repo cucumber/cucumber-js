@@ -39,6 +39,16 @@ If you are using ts-node in a CommonJS project then this configuration will work
 - Set TypeScript to export to an ES format such as "ESNext" using the `ts-config.json` file. 
 * Set a NODE_OPTIONS environment flag to use the ts-node esm loader: `NODE_OPTIONS=\"--loader ts-node/esm\"`
 
+Note: One possible way to set an environment is to use the [cross-env](https://www.npmjs.com/package/cross-env) package with `npm i -D cross-env`. If you go this route the package.json script line for cucumber will read something like this:
+
+```json
+{
+  "scripts": {
+    "test": "cross-env NODE_OPTIONS=\"--loader ts-node/esm\" cucumber-js"
+  }
+}
+```
+
 ### With Babel
 
 If you are using babel with [@babel/preset-typescript](https://babeljs.io/docs/en/babel-preset-typescript):
