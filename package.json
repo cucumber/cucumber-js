@@ -217,6 +217,7 @@
     "@cucumber/tag-expressions": "5.0.1",
     "assertion-error-formatter": "^3.0.0",
     "capital-case": "^1.0.4",
+    "chai-xml": "^0.4.1",
     "chalk": "^4.1.2",
     "cli-table3": "0.6.3",
     "commander": "^10.0.0",
@@ -279,7 +280,6 @@
     "@typescript-eslint/parser": "5.48.0",
     "chai": "4.3.7",
     "chai-exclude": "2.1.0",
-    "chai-xml": "^0.4.0",
     "coffeescript": "2.7.0",
     "dependency-lint": "7.1.0",
     "dirty-chai": "2.0.1",
@@ -306,10 +306,7 @@
     "typescript": "4.9.4"
   },
   "overrides": {
-    "ansi-regex": "^5.0.1",
-    "chai-xml": {
-      "xml2js": "^0.5.0"
-    }
+    "ansi-regex": "^5.0.1"
   },
   "scripts": {
     "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.node.json && shx cp src/importer.js lib/ && shx cp src/wrapper.mjs lib/ && shx cp src/api/wrapper.mjs lib/api/",
