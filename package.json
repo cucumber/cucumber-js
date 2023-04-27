@@ -244,7 +244,7 @@
     "util-arity": "^1.1.0",
     "verror": "^1.10.0",
     "xmlbuilder": "^15.1.1",
-    "yaml": "2.2.1",
+    "yaml": "^2.2.2",
     "yup": "^0.32.11"
   },
   "devDependencies": {
