@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Upgrade `yaml` to address security vulnerability ([#2281](https://github.com/cucumber/cucumber-js/pull/2281))
 
 ## [9.1.0] - 2023-03-28
 ### Added
