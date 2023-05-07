@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [9.1.2] - 2023-05-07
 ### Changed
 - Only show global install warning in debug mode ([#2285](https://github.com/cucumber/cucumber-js/pull/2285))
 
@@ -1499,7 +1501,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.1.1...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.1.2...HEAD
+[9.1.2]: https://github.com/cucumber/cucumber-js/compare/v9.1.1...v9.1.2
 [9.1.1]: https://github.com/cucumber/cucumber-js/compare/v9.1.0...v9.1.1
 [9.1.0]: https://github.com/cucumber/cucumber-js/compare/v9.0.1...v9.1.0
 [9.0.1]: https://github.com/cucumber/cucumber-js/compare/v9.0.0...v9.0.1
