@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Export `ISupportCodeLibrary` type on `/api` entry point ([#2284](https://github.com/cucumber/cucumber-js/pull/2284))
 
 ## [9.1.1] - 2023-05-02
 ### Fixed
