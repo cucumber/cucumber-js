@@ -128,8 +128,8 @@ export interface IRunConfiguration {
  * @public
  */
 export type ISupportCodeCoordinatesOrLibrary =
-| ISupportCodeCoordinates
-| ISupportCodeLibrary
+  | ISupportCodeCoordinates
+  | ISupportCodeLibrary
 
 /**
  * @public
