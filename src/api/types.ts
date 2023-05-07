@@ -134,6 +134,11 @@ export type ISupportCodeCoordinatesOrLibrary =
 /**
  * @public
  */
+export type { ISupportCodeLibrary }
+
+/**
+ * @public
+ */
 export interface IRunOptions {
   sources: ISourcesCoordinates
   support: ISupportCodeCoordinatesOrLibrary
