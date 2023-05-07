@@ -30,7 +30,7 @@ Unlike many libraries, Cucumber is _stateful_; you call functions to register yo
 
 Some libraries with a command-line interface are designed to be installed globally. Not Cucumber though - for the reasons above, you need to install it as a dependency in your project.
 
-We'll emit a warning if it looks like Cucumber is installed globally.
+We'll emit a warning when in [debug mode](./debugging.md) if it looks like Cucumber is installed globally.
 
 ### Duplicate dependency
 
