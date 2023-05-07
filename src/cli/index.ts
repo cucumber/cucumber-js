@@ -39,7 +39,10 @@ export default class Cli {
   }
 
   async run(): Promise<ICliRunResult> {
-    await validateInstall()
+    const debugEnabled = debug.enabled('cucumber')
+    if (debugEnabled) {
+      await validateInstall()
+    }
     const { options, configuration: argvConfiguration } = ArgvParser.parse(
       this.argv
     )
@@ -59,12 +62,13 @@ export default class Cli {
         success: true,
       }
     }
+
     const environment = {
       cwd: this.cwd,
       stdout: this.stdout,
       stderr: this.stderr,
       env: this.env,
-      debug: debug.enabled('cucumber'),
+      debug: debugEnabled,
     }
     const { useConfiguration: configuration, runConfiguration } =
       await loadConfiguration(
