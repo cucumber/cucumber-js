@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- Only show global install warning in debug mode ([#2285](https://github.com/cucumber/cucumber-js/pull/2285))
+
 ### Fixed
 - Export `ISupportCodeLibrary` type on `/api` entry point ([#2284](https://github.com/cucumber/cucumber-js/pull/2284))
 
