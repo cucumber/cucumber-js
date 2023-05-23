@@ -18,6 +18,7 @@ import {
   getGherkinStepMap,
 } from './helpers/gherkin_document_parser'
 import { getPickleStepMap, getStepKeyword } from './helpers/pickle_parser'
+import { valueOrDefault } from '../value_checker'
 
 interface IJUnitTestSuite {
   name: string
@@ -68,10 +69,15 @@ interface IBuildJUnitTestStepOptions {
 
 export default class JunitFormatter extends Formatter {
   private readonly names: Record<string, string[]> = {}
+  private readonly suiteName: string
   public static readonly documentation: string = 'Outputs JUnit report'
 
   constructor(options: IFormatterOptions) {
     super(options)
+    this.suiteName = valueOrDefault(
+      options.parsedArgvOptions.junit?.suiteName,
+      'cucumber-js'
+    )
     options.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
         this.onTestRunFinished()
@@ -242,7 +248,7 @@ export default class JunitFormatter extends Formatter {
     const failures = tests.length - passed - skipped
 
     const testSuite: IJUnitTestSuite = {
-      name: 'cucumber-js',
+      name: this.suiteName,
       tests,
       failures,
       skipped,
