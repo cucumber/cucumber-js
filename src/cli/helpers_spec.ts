@@ -106,7 +106,7 @@ describe('helpers', () => {
   describe('emitSupportCodeMessages', () => {
     it('emits messages for parameter types', () => {
       const parameterTypeRegistry = new SourcedParameterTypeRegistry()
-      parameterTypeRegistry.defineParameterType(
+      parameterTypeRegistry.defineSourcedParameterType(
         new ParameterType<string>(
           'flight',
           ['([A-Z]{3})-([A-Z]{3})'],
@@ -114,7 +114,11 @@ describe('helpers', () => {
           () => 'argh',
           true,
           false
-        )
+        ),
+        {
+          line: 4,
+          uri: 'features/support/parameter-types.js'
+        }
       )
 
       const envelopes = testEmitSupportCodeMessages({
@@ -129,6 +133,12 @@ describe('helpers', () => {
             preferForRegularExpressionMatch: false,
             regularExpressions: ['([A-Z]{3})-([A-Z]{3})'],
             useForSnippets: true,
+            sourceReference: {
+              uri: 'features/support/parameter-types.js',
+              location: {
+                line: 4
+              }
+            }
           },
         },
       ]
