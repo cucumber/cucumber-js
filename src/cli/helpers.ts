@@ -15,7 +15,7 @@ import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { PickleOrder } from '../models/pickle_order'
 import { version } from '../version'
 import { ILogger } from '../logger'
-import { ILineAndUri } from "../types";
+import { ILineAndUri } from '../types'
 
 interface IParseGherkinMessageStreamRequest {
   cwd?: string
@@ -122,9 +122,9 @@ export async function emitMetaMessage(
 const makeSourceReference = (source: ILineAndUri) => ({
   uri: source.uri,
   location: {
-    line: source.line
-  }
-});
+    line: source.line,
+  },
+})
 
 function emitParameterTypes(
   supportCodeLibrary: ISupportCodeLibrary,
@@ -136,7 +136,8 @@ function emitParameterTypes(
     if (parameterType.builtin) {
       continue
     }
-    const source = supportCodeLibrary.parameterTypeRegistry.lookupSource(parameterType)
+    const source =
+      supportCodeLibrary.parameterTypeRegistry.lookupSource(parameterType)
     const envelope: messages.Envelope = {
       parameterType: {
         id: newId(),
@@ -144,7 +145,7 @@ function emitParameterTypes(
         preferForRegularExpressionMatch: parameterType.preferForRegexpMatch,
         regularExpressions: parameterType.regexpStrings,
         useForSnippets: parameterType.useForSnippets,
-        sourceReference: makeSourceReference(source)
+        sourceReference: makeSourceReference(source),
       },
     }
     eventBroadcaster.emit('envelope', envelope)

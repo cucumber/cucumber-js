@@ -4,7 +4,7 @@ import TestStepHookDefinition from '../models/test_step_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { IWorld } from './world'
-import { SourcedParameterTypeRegistry } from "./sourced_parameter_type_registry";
+import { SourcedParameterTypeRegistry } from './sourced_parameter_type_registry'
 
 export type DefineStepPattern = string | RegExp
 export type ParallelAssignmentValidator = (

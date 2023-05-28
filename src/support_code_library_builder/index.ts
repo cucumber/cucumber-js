@@ -33,7 +33,7 @@ import {
 import World from './world'
 import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
 import { GherkinStepKeyword } from '../models/gherkin_step_keyword'
-import { SourcedParameterTypeRegistry } from "./sourced_parameter_type_registry";
+import { SourcedParameterTypeRegistry } from './sourced_parameter_type_registry'
 
 interface IStepDefinitionConfig {
   code: any
