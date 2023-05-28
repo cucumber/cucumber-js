@@ -13,7 +13,6 @@ import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { PickleOrder } from '../models/pickle_order'
-import { builtinParameterTypes } from '../support_code_library_builder'
 import { version } from '../version'
 import { ILogger } from '../logger'
 import { ILineAndUri } from "../types";
@@ -134,7 +133,7 @@ function emitParameterTypes(
 ): void {
   for (const parameterType of supportCodeLibrary.parameterTypeRegistry
     .parameterTypes) {
-    if (builtinParameterTypes.includes(parameterType.name)) {
+    if (parameterType.builtin) {
       continue
     }
     const source = supportCodeLibrary.parameterTypeRegistry.lookupSource(parameterType)

@@ -65,20 +65,6 @@ interface ITestRunHookDefinitionConfig {
   uri: string
 }
 
-export const builtinParameterTypes = [
-  'bigdecimal',
-  'biginteger',
-  'byte',
-  'double',
-  'float',
-  'int',
-  'long',
-  'short',
-  'string',
-  'word',
-  '',
-]
-
 export class SupportCodeLibraryBuilder {
   public readonly methods: IDefineSupportCodeMethods
 
