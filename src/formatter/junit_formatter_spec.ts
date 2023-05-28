@@ -561,4 +561,79 @@ describe('JunitFormatter', () => {
       )
     })
   })
+
+  describe('custom test suite name', () => {
+    it('outputs with the custom name', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: [
+            'Feature: my feature',
+            '  Scenario: my scenario',
+            '    Given a passing step',
+          ].join('\n'),
+          uri: 'a.feature',
+        },
+      ]
+
+      const supportCodeLibrary = getJUnitFormatterSupportCodeLibrary(clock)
+
+      // Act
+      const output = await testFormatter({
+        parsedArgvOptions: {
+          junit: {
+            suiteName: 'my test suite',
+          },
+        },
+        sources,
+        supportCodeLibrary,
+        type: 'junit',
+      })
+
+      // Assert
+      expect(output).xml.to.deep.equal(
+        '<?xml version="1.0"?>\n' +
+          '<testsuite failures="0" skipped="0" name="my test suite" time="0.001" tests="1">\n' +
+          '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
+          '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
+          '  </testcase>\n' +
+          '</testsuite>'
+      )
+    })
+  })
+
+  describe('no custom test suite name', () => {
+    it('outputs with cucumber-js as test suite name', async () => {
+      // Arrange
+      const sources = [
+        {
+          data: [
+            'Feature: my feature',
+            '  Scenario: my scenario',
+            '    Given a passing step',
+          ].join('\n'),
+          uri: 'a.feature',
+        },
+      ]
+
+      const supportCodeLibrary = getJUnitFormatterSupportCodeLibrary(clock)
+
+      // Act
+      const output = await testFormatter({
+        sources,
+        supportCodeLibrary,
+        type: 'junit',
+      })
+
+      // Assert
+      expect(output).xml.to.deep.equal(
+        '<?xml version="1.0"?>\n' +
+          '<testsuite failures="0" skipped="0" name="cucumber-js" time="0.001" tests="1">\n' +
+          '  <testcase classname="my feature" name="my scenario" time="0.001">\n' +
+          '    <system-out><![CDATA[Given a passing step......................................................passed]]></system-out>\n' +
+          '  </testcase>\n' +
+          '</testsuite>'
+      )
+    })
+  })
 })
