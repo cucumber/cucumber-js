@@ -166,7 +166,8 @@ export class SupportCodeLibraryBuilder {
 
   defineParameterType(options: IParameterTypeDefinition<any>): void {
     const parameterType = buildParameterType(options)
-    this.parameterTypeRegistry.defineParameterType(parameterType)
+    const source = getDefinitionLineAndUri(this.cwd)
+    this.parameterTypeRegistry.defineSourcedParameterType(parameterType, source)
   }
 
   defineStep(
