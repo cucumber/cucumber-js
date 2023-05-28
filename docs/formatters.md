@@ -107,6 +107,10 @@ Outputs details of the test run in the legacy JSON format.
 
 The JUnit formatter produces an XML-based report in the standard(ish) [JUnit format](https://github.com/junit-team/junit5/blob/43638eb6a870e0d6c49224053dfeb39dcf0ef33f/platform-tests/src/test/resources/jenkins-junit.xsd). This is most commonly useful for having your CI platform pick up your tests results and factor them into its reporting. Consult your CI platform's docs for where exactly you should output this report to and what the filename should be.
 
+Options specific to this formatter:
+
+- `suiteName` - value to go in the `name` attribute of the `testsuite` element in the output (defaults to `cucumber-js`)
+
 ### `snippets`
 
 The Snippets Formatter doesn't output anything regarding the test run; it just prints [Snippets to implement any undefined steps](./snippets.md). This is useful when you want to quickly zero in on the steps you have to implement and grab the snippet code for them in one go.
