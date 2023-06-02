@@ -1,6 +1,9 @@
 import { atMostOnePicklePerTag } from './parallel_can_assign_helpers'
 import * as messages from '@cucumber/messages'
+import { IWorker, WorkerState } from '../runtime/parallel/coordinator'
 import { expect } from 'chai'
+
+const worker: IWorker = { state: WorkerState.new, process: null, id: '1' }
 
 function pickleWithTags(tagNames: string[]): messages.Pickle {
   return {
@@ -24,7 +27,7 @@ describe('parallel can assign helpers', () => {
       const inProgress: messages.Pickle[] = []
 
       // Act
-      const result = testCanAssignFn(inQuestion, inProgress)
+      const result = testCanAssignFn(inQuestion, inProgress, worker)
 
       // Assert
       expect(result).to.eql(true)
@@ -39,7 +42,7 @@ describe('parallel can assign helpers', () => {
       ]
 
       // Act
-      const result = testCanAssignFn(inQuestion, inProgress)
+      const result = testCanAssignFn(inQuestion, inProgress, worker)
 
       // Assert
       expect(result).to.eql(true)
@@ -51,7 +54,7 @@ describe('parallel can assign helpers', () => {
       const inProgress: messages.Pickle[] = [pickleWithTags(['@simple'])]
 
       // Act
-      const result = testCanAssignFn(inQuestion, inProgress)
+      const result = testCanAssignFn(inQuestion, inProgress, worker)
 
       // Assert
       expect(result).to.eql(true)
@@ -63,7 +66,7 @@ describe('parallel can assign helpers', () => {
       const inProgress: messages.Pickle[] = [pickleWithTags(['@complex'])]
 
       // Act
-      const result = testCanAssignFn(inQuestion, inProgress)
+      const result = testCanAssignFn(inQuestion, inProgress, worker)
 
       // Assert
       expect(result).to.eql(false)
