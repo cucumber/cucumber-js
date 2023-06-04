@@ -10,6 +10,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ## [Unreleased]
 ### Added
 - New option for JUnit test suite name to be passed in `formatOptions` ([#2265](https://github.com/cucumber/cucumber-js/issues/2265))
+- Include source reference in emitted messages for parameter types ([#2287](https://github.com/cucumber/cucumber-js/pull/2287))
 
 ## [9.1.2] - 2023-05-07
 ### Changed
