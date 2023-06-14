@@ -33,7 +33,7 @@ export default class RerunFormatter extends Formatter {
     this.separator = valueOrDefault(rerunOptions.separator, DEFAULT_SEPARATOR)
   }
 
-  logFailedTestCases(): void {
+  getFailureMap(): UriToLinesMap {
     const mapping: UriToLinesMap = {}
     this.eventDataCollector
       .getTestCaseAttempts()
@@ -52,12 +52,23 @@ export default class RerunFormatter extends Formatter {
           }
         }
       )
-    const text = Object.keys(mapping)
+
+    return mapping
+  }
+
+  formatFailedTestCases(): string {
+    const mapping = this.getFailureMap()
+
+    return Object.keys(mapping)
       .map((uri) => {
         const lines = mapping[uri]
         return `${uri}:${lines.join(':')}`
       })
       .join(this.separator)
-    this.log(text)
+  }
+
+  logFailedTestCases(): void {
+    const failedTestCases = this.formatFailedTestCases()
+    this.log(failedTestCases)
   }
 }
