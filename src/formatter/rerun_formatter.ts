@@ -13,6 +13,10 @@ interface UriToLinesMap {
   [uri: string]: number[]
 }
 
+function isFailedAttempt(worstTestStepResult: messages.TestStepResult) {
+  return worstTestStepResult.status !== messages.TestStepResultStatus.PASSED
+}
+
 export default class RerunFormatter extends Formatter {
   private readonly separator: string
   public static readonly documentation: string =
@@ -34,9 +38,7 @@ export default class RerunFormatter extends Formatter {
     this.eventDataCollector
       .getTestCaseAttempts()
       .forEach(({ gherkinDocument, pickle, worstTestStepResult }) => {
-        if (
-          worstTestStepResult.status !== messages.TestStepResultStatus.PASSED
-        ) {
+        if (isFailedAttempt(worstTestStepResult)) {
           const relativeUri = pickle.uri
           const line =
             getGherkinScenarioLocationMap(gherkinDocument)[
