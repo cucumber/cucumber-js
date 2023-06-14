@@ -12,6 +12,9 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 - New option for JUnit test suite name to be passed in `formatOptions` ([#2265](https://github.com/cucumber/cucumber-js/issues/2265))
 - Logging and calculation is decoupled in `logFailedTestCases()` for easier customization ([#2290](https://github.com/cucumber/cucumber-js/issues/2290))
 
+### Changed
+- separator of `RerunFormatter` is changed to protected from private ([#2290](https://github.com/cucumber/cucumber-js/issues/2290))
+
 ### Fixed
 - Correctly interpret retried scenarios in rerun formatter ([#2290](https://github.com/cucumber/cucumber-js/issues/2290))
 

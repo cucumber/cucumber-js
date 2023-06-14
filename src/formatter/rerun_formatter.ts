@@ -18,7 +18,7 @@ function isFailedAttempt(worstTestStepResult: messages.TestStepResult) {
 }
 
 export default class RerunFormatter extends Formatter {
-  private readonly separator: string
+  protected readonly separator: string
   public static readonly documentation: string =
     'Prints failing files with line numbers.'
 
