@@ -11,6 +11,9 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Added
 - New option for JUnit test suite name to be passed in `formatOptions` ([#2265](https://github.com/cucumber/cucumber-js/issues/2265))
 
+### Fixed
+- Correctly interpret retried scenarios in rerun formatter ([#2290](https://github.com/cucumber/cucumber-js/issues/2290))
+
 ## [9.1.2] - 2023-05-07
 ### Changed
 - Only show global install warning in debug mode ([#2285](https://github.com/cucumber/cucumber-js/pull/2285))

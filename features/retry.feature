@@ -571,7 +571,7 @@ Feature: Retry flaky tests
       And scenario "Failing" attempt 1 step "Given a failing step" has status "failed"
       And scenario "Passing" step "Given a passing step" has status "skipped"
 
-  Scenario: RerunFormatter accidentally reports retried attempts too
+  Scenario: RerunFormatter does not report attempts that are retried
     Given a file named "features/a.feature" with:
       """
       Feature:
@@ -595,6 +595,6 @@ Feature: Retry flaky tests
     When I run cucumber-js with `--retry 1 --format rerun`
     Then it outputs the text:
       """
-       features/a.feature:2:2
+       features/a.feature:2
       """
     And it fails

@@ -37,19 +37,21 @@ export default class RerunFormatter extends Formatter {
     const mapping: UriToLinesMap = {}
     this.eventDataCollector
       .getTestCaseAttempts()
-      .forEach(({ gherkinDocument, pickle, worstTestStepResult }) => {
-        if (isFailedAttempt(worstTestStepResult)) {
-          const relativeUri = pickle.uri
-          const line =
-            getGherkinScenarioLocationMap(gherkinDocument)[
-              pickle.astNodeIds[pickle.astNodeIds.length - 1]
-            ].line
-          if (doesNotHaveValue(mapping[relativeUri])) {
-            mapping[relativeUri] = []
+      .forEach(
+        ({ gherkinDocument, pickle, worstTestStepResult, willBeRetried }) => {
+          if (isFailedAttempt(worstTestStepResult) && !willBeRetried) {
+            const relativeUri = pickle.uri
+            const line =
+              getGherkinScenarioLocationMap(gherkinDocument)[
+                pickle.astNodeIds[pickle.astNodeIds.length - 1]
+              ].line
+            if (doesNotHaveValue(mapping[relativeUri])) {
+              mapping[relativeUri] = []
+            }
+            mapping[relativeUri].push(line)
           }
-          mapping[relativeUri].push(line)
         }
-      })
+      )
     const text = Object.keys(mapping)
       .map((uri) => {
         const lines = mapping[uri]
