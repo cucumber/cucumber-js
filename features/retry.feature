@@ -27,7 +27,7 @@ Feature: Retry flaky tests
         Scenario: Failing
           Given a failing step
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
 
@@ -47,7 +47,7 @@ Feature: Retry flaky tests
         Scenario: Failing
           Given a failing step
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
 
@@ -67,7 +67,7 @@ Feature: Retry flaky tests
         Scenario: Flaky
           Given a flaky step
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
 
@@ -107,7 +107,7 @@ Feature: Retry flaky tests
         Scenario: Flaky
           Given a flaky step
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
 
@@ -149,7 +149,7 @@ Feature: Retry flaky tests
         Scenario: Good
           Given a good step
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
 
@@ -197,7 +197,7 @@ Feature: Retry flaky tests
         Scenario: Good
           Given a good step
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
 
@@ -246,7 +246,7 @@ Feature: Retry flaky tests
         Scenario: Bad
           Given a bad step
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
 
@@ -305,7 +305,7 @@ Feature: Retry flaky tests
         Scenario: Failing
           Given a failing step
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
 
@@ -330,7 +330,7 @@ Feature: Retry flaky tests
         Scenario: Flaky
           Given a flaky step
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
 
@@ -357,7 +357,7 @@ Feature: Retry flaky tests
         Scenario: Flaky
           Given a flaky step
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
 
@@ -386,7 +386,7 @@ Feature: Retry flaky tests
         Scenario: Also Flaky
           Given an other flaky step
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
 
@@ -430,7 +430,7 @@ Feature: Retry flaky tests
         Scenario: Third Flaky
           Given one more flaky step
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
 
@@ -479,7 +479,7 @@ Feature: Retry flaky tests
         Scenario: Flaky
           Given a flaky step
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Before, After, Given, setWorldConstructor} = require('@cucumber/cucumber')
 
@@ -526,7 +526,7 @@ Feature: Retry flaky tests
         Scenario: Passing
           Given a passing step
       """
-      Given a file named "features/step_definitions/cucumber_steps.js" with:
+      And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
 
@@ -558,7 +558,7 @@ Feature: Retry flaky tests
         Scenario: Passing
           Given a passing step
       """
-      Given a file named "features/step_definitions/cucumber_steps.js" with:
+      And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
 
@@ -578,7 +578,7 @@ Feature: Retry flaky tests
         Scenario: Flaky
           Given a flaky step
       """
-    Given a file named "features/step_definitions/cucumber_steps.js" with:
+    And a file named "features/step_definitions/cucumber_steps.js" with:
       """
       const {Given} = require('@cucumber/cucumber')
 
