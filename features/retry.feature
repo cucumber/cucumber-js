@@ -570,3 +570,31 @@ Feature: Retry flaky tests
       And scenario "Failing" attempt 0 step "Given a failing step" has status "failed"
       And scenario "Failing" attempt 1 step "Given a failing step" has status "failed"
       And scenario "Passing" step "Given a passing step" has status "skipped"
+
+  Scenario: RerunFormatter accidentally reports retried attempts too
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        Scenario: Flaky
+          Given a flaky step
+      """
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+
+      let attemptCountdown = 2
+
+      Given(/^a flaky step$/, function() {
+        if (attemptCountdown == 0) {
+          return
+        }
+        attemptCountdown = attemptCountdown - 1
+        throw 'fail'
+      })
+      """
+    When I run cucumber-js with `--retry 1 --format rerun`
+    Then it outputs the text:
+      """
+       features/a.feature:2:2
+      """
+    And it fails
