@@ -3,8 +3,8 @@ import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
-import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
 import { IWorld } from './world'
+import { SourcedParameterTypeRegistry } from './sourced_parameter_type_registry'
 
 export type DefineStepPattern = string | RegExp
 export type ParallelAssignmentValidator = (
@@ -156,7 +156,7 @@ export interface ISupportCodeLibrary {
   readonly defaultTimeout: number
   readonly stepDefinitions: StepDefinition[]
   readonly undefinedParameterTypes: messages.UndefinedParameterType[]
-  readonly parameterTypeRegistry: ParameterTypeRegistry
+  readonly parameterTypeRegistry: SourcedParameterTypeRegistry
   readonly World: any
   readonly parallelCanAssign: ParallelAssignmentValidator
 }
