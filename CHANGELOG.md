@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [9.2.0] - 2023-06-22
 ### Added
 - New option for JUnit test suite name to be passed in `formatOptions` ([#2265](https://github.com/cucumber/cucumber-js/issues/2265))
 - Include source reference in emitted messages for parameter types ([#2287](https://github.com/cucumber/cucumber-js/pull/2287))
@@ -1507,7 +1509,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.1.2...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.2.0...HEAD
+[9.2.0]: https://github.com/cucumber/cucumber-js/compare/v9.1.2...v9.2.0
 [9.1.2]: https://github.com/cucumber/cucumber-js/compare/v9.1.1...v9.1.2
 [9.1.1]: https://github.com/cucumber/cucumber-js/compare/v9.1.0...v9.1.1
 [9.1.0]: https://github.com/cucumber/cucumber-js/compare/v9.0.1...v9.1.0
