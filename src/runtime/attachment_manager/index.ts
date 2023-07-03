@@ -19,15 +19,15 @@ export interface ICreateAttachmentOptions {
   mediaType: string
   fileName?: string
 }
-export type ICreateStringAttachment = (data: string, mediaType?: string | ICreateAttachmentOptions) => void
-export type ICreateBufferAttachment = (data: Buffer, mediaType: string | ICreateAttachmentOptions) => void
+export type ICreateStringAttachment = (data: string, mediaTypeOrOptions?: string | ICreateAttachmentOptions) => void
+export type ICreateBufferAttachment = (data: Buffer, mediaTypeOrOptions: string | ICreateAttachmentOptions) => void
 export type ICreateStreamAttachment = (
   data: Readable,
-  mediaType: string | ICreateAttachmentOptions
+  mediaTypeOrOptions: string | ICreateAttachmentOptions
 ) => Promise<void>
 export type ICreateStreamAttachmentWithCallback = (
   data: Readable,
-  mediaType: string | ICreateAttachmentOptions,
+  mediaTypeOrOptions: string | ICreateAttachmentOptions,
   callback: () => void
 ) => void
 export type ICreateAttachment = ICreateStringAttachment &
@@ -49,32 +49,32 @@ export default class AttachmentManager {
 
   create(
     data: Buffer | Readable | string,
-    mediaType?: string | ICreateAttachmentOptions,
+    mediaTypeOrOptions?: string | ICreateAttachmentOptions,
     callback?: () => void
   ): void | Promise<void> {
     if (Buffer.isBuffer(data)) {
-      if (doesNotHaveValue(mediaType)) {
+      if (doesNotHaveValue(mediaTypeOrOptions)) {
         throw Error('Buffer attachments must specify a media type')
       }
-      this.createBufferAttachment(data, mediaType)
+      this.createBufferAttachment(data, mediaTypeOrOptions)
     } else if (isStream.readable(data)) {
-      if (doesNotHaveValue(mediaType)) {
+      if (doesNotHaveValue(mediaTypeOrOptions)) {
         throw Error('Stream attachments must specify a media type')
       }
-      return this.createStreamAttachment(data, mediaType, callback)
+      return this.createStreamAttachment(data, mediaTypeOrOptions, callback)
     } else if (typeof data === 'string') {
-      if (doesNotHaveValue(mediaType)) {
-        mediaType = 'text/plain'
+      if (doesNotHaveValue(mediaTypeOrOptions)) {
+        mediaTypeOrOptions = 'text/plain'
       }
-      if (mediaType.startsWith('base64:')) {
+      if (mediaTypeOrOptions.startsWith('base64:')) {
         this.createStringAttachment(data, {
           encoding: messages.AttachmentContentEncoding.BASE64,
-          contentType: mediaType.replace('base64:', ''),
+          contentType: mediaTypeOrOptions.replace('base64:', ''),
         })
       } else {
         this.createStringAttachment(data, {
           encoding: messages.AttachmentContentEncoding.IDENTITY,
-          contentType: mediaType,
+          contentType: mediaTypeOrOptions,
         })
       }
     } else {
