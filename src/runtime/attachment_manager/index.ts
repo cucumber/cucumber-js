@@ -15,15 +15,19 @@ export interface IAttachment {
 
 export type IAttachFunction = (attachment: IAttachment) => void
 
-export type ICreateStringAttachment = (data: string, mediaType?: string) => void
-export type ICreateBufferAttachment = (data: Buffer, mediaType: string) => void
+export interface ICreateAttachmentOptions {
+  mediaType: string
+  fileName?: string
+}
+export type ICreateStringAttachment = (data: string, mediaType?: string | ICreateAttachmentOptions) => void
+export type ICreateBufferAttachment = (data: Buffer, mediaType: string | ICreateAttachmentOptions) => void
 export type ICreateStreamAttachment = (
   data: Readable,
-  mediaType: string
+  mediaType: string | ICreateAttachmentOptions
 ) => Promise<void>
 export type ICreateStreamAttachmentWithCallback = (
   data: Readable,
-  mediaType: string,
+  mediaType: string | ICreateAttachmentOptions,
   callback: () => void
 ) => void
 export type ICreateAttachment = ICreateStringAttachment &
@@ -45,7 +49,7 @@ export default class AttachmentManager {
 
   create(
     data: Buffer | Readable | string,
-    mediaType?: string,
+    mediaType?: string | ICreateAttachmentOptions,
     callback?: () => void
   ): void | Promise<void> {
     if (Buffer.isBuffer(data)) {
