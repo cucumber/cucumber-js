@@ -87,19 +87,25 @@ When('the {word} png is attached', async function (filename) {
   )
 })
 
-When('a PDF document is attached with a filename', async function (this: World) {
-  await this.attach(
-    fs.createReadStream(
-      path.join(
-        process.cwd(),
-        'node_modules',
-        '@cucumber',
-        'compatibility-kit',
-        'features',
-        'attachments',
-        'document.pdf'
-      )
-    ),
-    'application/pdf'
-  )
-})
+When(
+  'a PDF document is attached with a filename',
+  async function (this: World) {
+    await this.attach(
+      fs.createReadStream(
+        path.join(
+          process.cwd(),
+          'node_modules',
+          '@cucumber',
+          'compatibility-kit',
+          'features',
+          'attachments',
+          'document.pdf'
+        )
+      ),
+      {
+        mediaType: 'application/pdf',
+        fileName: 'document.pdf',
+      }
+    )
+  }
+)
