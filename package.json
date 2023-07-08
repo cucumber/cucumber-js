@@ -249,7 +249,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "@cucumber/compatibility-kit": "11.3.0",
+    "@cucumber/compatibility-kit": "^12.0.0",
     "@cucumber/query": "12.0.1",
     "@microsoft/api-documenter": "7.19.27",
     "@microsoft/api-extractor": "7.33.7",
