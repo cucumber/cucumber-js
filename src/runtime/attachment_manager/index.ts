@@ -62,17 +62,17 @@ export default class AttachmentManager {
     // eslint-disable-next-line prefer-const
     let { mediaType, fileName } = normaliseOptions(mediaTypeOrOptions)
     if (Buffer.isBuffer(data)) {
-      if (doesNotHaveValue(mediaTypeOrOptions)) {
+      if (doesNotHaveValue(mediaType)) {
         throw Error('Buffer attachments must specify a media type')
       }
       this.createBufferAttachment(data, mediaType, fileName)
     } else if (isStream.readable(data)) {
-      if (doesNotHaveValue(mediaTypeOrOptions)) {
+      if (doesNotHaveValue(mediaType)) {
         throw Error('Stream attachments must specify a media type')
       }
       return this.createStreamAttachment(data, mediaType, fileName, callback)
     } else if (typeof data === 'string') {
-      if (doesNotHaveValue(mediaTypeOrOptions)) {
+      if (doesNotHaveValue(mediaType)) {
         mediaType = 'text/plain'
       }
       if (mediaType.startsWith('base64:')) {
