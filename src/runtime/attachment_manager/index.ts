@@ -59,39 +59,43 @@ export default class AttachmentManager {
     mediaTypeOrOptions?: string | ICreateAttachmentOptions,
     callback?: () => void
   ): void | Promise<void> {
-    // eslint-disable-next-line prefer-const
-    let { mediaType, fileName } = normaliseOptions(mediaTypeOrOptions)
+    const options = normaliseOptions(mediaTypeOrOptions)
     if (Buffer.isBuffer(data)) {
-      if (doesNotHaveValue(mediaType)) {
+      if (doesNotHaveValue(options.mediaType)) {
         throw Error('Buffer attachments must specify a media type')
       }
-      this.createBufferAttachment(data, mediaType, fileName)
+      this.createBufferAttachment(data, options.mediaType, options.fileName)
     } else if (isStream.readable(data)) {
-      if (doesNotHaveValue(mediaType)) {
+      if (doesNotHaveValue(options.mediaType)) {
         throw Error('Stream attachments must specify a media type')
       }
-      return this.createStreamAttachment(data, mediaType, fileName, callback)
+      return this.createStreamAttachment(
+        data,
+        options.mediaType,
+        options.fileName,
+        callback
+      )
     } else if (typeof data === 'string') {
-      if (doesNotHaveValue(mediaType)) {
-        mediaType = 'text/plain'
+      if (doesNotHaveValue(options.mediaType)) {
+        options.mediaType = 'text/plain'
       }
-      if (mediaType.startsWith('base64:')) {
+      if (options.mediaType.startsWith('base64:')) {
         this.createStringAttachment(
           data,
           {
             encoding: messages.AttachmentContentEncoding.BASE64,
-            contentType: mediaType.replace('base64:', ''),
+            contentType: options.mediaType.replace('base64:', ''),
           },
-          fileName
+          options.fileName
         )
       } else {
         this.createStringAttachment(
           data,
           {
             encoding: messages.AttachmentContentEncoding.IDENTITY,
-            contentType: mediaType,
+            contentType: options.mediaType,
           },
-          fileName
+          options.fileName
         )
       }
     } else {
