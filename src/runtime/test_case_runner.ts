@@ -61,23 +61,26 @@ export default class TestCaseRunner {
     supportCodeLibrary,
     worldParameters,
   }: INewTestCaseRunnerOptions) {
-    this.attachmentManager = new AttachmentManager(({ data, media }) => {
-      if (doesNotHaveValue(this.currentTestStepId)) {
-        throw new Error(
-          'Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.'
-        )
+    this.attachmentManager = new AttachmentManager(
+      ({ data, media, fileName }) => {
+        if (doesNotHaveValue(this.currentTestStepId)) {
+          throw new Error(
+            'Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.'
+          )
+        }
+        const attachment: messages.Envelope = {
+          attachment: {
+            body: data,
+            contentEncoding: media.encoding,
+            mediaType: media.contentType,
+            fileName,
+            testCaseStartedId: this.currentTestCaseStartedId,
+            testStepId: this.currentTestStepId,
+          },
+        }
+        this.eventBroadcaster.emit('envelope', attachment)
       }
-      const attachment: messages.Envelope = {
-        attachment: {
-          body: data,
-          contentEncoding: media.encoding,
-          mediaType: media.contentType,
-          testCaseStartedId: this.currentTestCaseStartedId,
-          testStepId: this.currentTestStepId,
-        },
-      }
-      this.eventBroadcaster.emit('envelope', attachment)
-    })
+    )
     this.eventBroadcaster = eventBroadcaster
     this.stopwatch = stopwatch
     this.gherkinDocument = gherkinDocument
