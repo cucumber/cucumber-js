@@ -64,6 +64,40 @@ describe('AttachmentManager', () => {
           )
         })
       })
+
+      describe('with mime type and filename', () => {
+        it('adds the data and media and filename', function () {
+          // Arrange
+          const attachments: IAttachment[] = []
+          const attachmentManager = new AttachmentManager((x) =>
+            attachments.push(x)
+          )
+
+          // Act
+          const result = attachmentManager.create(Buffer.from('my string'), {
+            mediaType: 'text/special',
+            fileName: 'foo.txt',
+          })
+
+          // Assert
+          expect(result).to.eql(undefined)
+          expect(attachments).to.eql([
+            {
+              data: 'bXkgc3RyaW5n',
+              media: {
+                contentType: 'text/special',
+                encoding: 'BASE64',
+              },
+              fileName: 'foo.txt',
+            },
+          ])
+          const decodedData = Buffer.from(
+            attachments[0].data,
+            'base64'
+          ).toString()
+          expect(decodedData).to.eql('my string')
+        })
+      })
     })
 
     describe('readable stream', () => {
@@ -138,6 +172,93 @@ describe('AttachmentManager', () => {
                   contentType: 'text/special',
                   encoding: 'BASE64',
                 },
+              },
+            ])
+            const decodedData = Buffer.from(
+              attachments[0].data,
+              'base64'
+            ).toString()
+            expect(decodedData).to.eql('my string')
+          })
+        })
+      })
+
+      describe('with mime type and filename', () => {
+        describe('with callback', () => {
+          it('does not return a promise and adds the data and media and filename', async function () {
+            // Arrange
+            const attachments: IAttachment[] = []
+            const attachmentManager = new AttachmentManager((x) =>
+              attachments.push(x)
+            )
+            const readableStream = new stream.PassThrough()
+            let result: any
+
+            // Act
+            await new Promise<void>((resolve) => {
+              result = attachmentManager.create(
+                readableStream,
+                {
+                  mediaType: 'text/special',
+                  fileName: 'foo.txt',
+                },
+                resolve
+              )
+              setTimeout(() => {
+                readableStream.write('my string')
+                readableStream.end()
+              }, 25)
+            })
+
+            // Assert
+            expect(result).to.eql(undefined)
+            expect(attachments).to.eql([
+              {
+                data: 'bXkgc3RyaW5n',
+                media: {
+                  contentType: 'text/special',
+                  encoding: 'BASE64',
+                },
+                fileName: 'foo.txt',
+              },
+            ])
+            const decodedData = Buffer.from(
+              attachments[0].data,
+              'base64'
+            ).toString()
+            expect(decodedData).to.eql('my string')
+          })
+        })
+
+        describe('without callback', () => {
+          it('returns a promise and adds the data and media and filename', async function () {
+            // Arrange
+            const attachments: IAttachment[] = []
+            const attachmentManager = new AttachmentManager((x) =>
+              attachments.push(x)
+            )
+            const readableStream = new stream.PassThrough()
+
+            // Act
+            const result = attachmentManager.create(readableStream, {
+              mediaType: 'text/special',
+              fileName: 'foo.txt',
+            })
+            setTimeout(() => {
+              readableStream.write('my string')
+              readableStream.end()
+            }, 25)
+            await result
+
+            // Assert
+            expect(attachments).to.eql([
+              {
+                data: 'bXkgc3RyaW5n',
+                media: {
+                  contentType: 'text/special',
+                  encoding: 'BASE64',
+                },
+                fileName: 'foo.txt',
               },
             ])
             const decodedData = Buffer.from(
@@ -251,6 +372,35 @@ describe('AttachmentManager', () => {
                 contentType: 'text/plain',
                 encoding: 'IDENTITY',
               },
+            },
+          ])
+        })
+      })
+
+      describe('with media type and filename', () => {
+        it('adds the data and media and filename', function () {
+          // Arrange
+          const attachments: IAttachment[] = []
+          const attachmentManager = new AttachmentManager((x) =>
+            attachments.push(x)
+          )
+
+          // Act
+          const result = attachmentManager.create('my string', {
+            mediaType: 'text/special',
+            fileName: 'foo.txt',
+          })
+
+          // Assert
+          expect(result).to.eql(undefined)
+          expect(attachments).to.eql([
+            {
+              data: 'my string',
+              media: {
+                contentType: 'text/special',
+                encoding: 'IDENTITY',
+              },
+              fileName: 'foo.txt',
             },
           ])
         })

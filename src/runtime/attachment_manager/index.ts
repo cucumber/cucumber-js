@@ -11,6 +11,7 @@ export interface IAttachmentMedia {
 export interface IAttachment {
   data: string
   media: IAttachmentMedia
+  fileName?: string
 }
 
 export type IAttachFunction = (attachment: IAttachment) => void
@@ -19,8 +20,14 @@ export interface ICreateAttachmentOptions {
   mediaType: string
   fileName?: string
 }
-export type ICreateStringAttachment = (data: string, mediaTypeOrOptions?: string | ICreateAttachmentOptions) => void
-export type ICreateBufferAttachment = (data: Buffer, mediaTypeOrOptions: string | ICreateAttachmentOptions) => void
+export type ICreateStringAttachment = (
+  data: string,
+  mediaTypeOrOptions?: string | ICreateAttachmentOptions
+) => void
+export type ICreateBufferAttachment = (
+  data: Buffer,
+  mediaTypeOrOptions: string | ICreateAttachmentOptions
+) => void
 export type ICreateStreamAttachment = (
   data: Readable,
   mediaTypeOrOptions: string | ICreateAttachmentOptions
@@ -52,30 +59,40 @@ export default class AttachmentManager {
     mediaTypeOrOptions?: string | ICreateAttachmentOptions,
     callback?: () => void
   ): void | Promise<void> {
+    // eslint-disable-next-line prefer-const
+    let { mediaType, fileName } = normaliseOptions(mediaTypeOrOptions)
     if (Buffer.isBuffer(data)) {
       if (doesNotHaveValue(mediaTypeOrOptions)) {
         throw Error('Buffer attachments must specify a media type')
       }
-      this.createBufferAttachment(data, mediaTypeOrOptions)
+      this.createBufferAttachment(data, mediaType, fileName)
     } else if (isStream.readable(data)) {
       if (doesNotHaveValue(mediaTypeOrOptions)) {
         throw Error('Stream attachments must specify a media type')
       }
-      return this.createStreamAttachment(data, mediaTypeOrOptions, callback)
+      return this.createStreamAttachment(data, mediaType, fileName, callback)
     } else if (typeof data === 'string') {
       if (doesNotHaveValue(mediaTypeOrOptions)) {
-        mediaTypeOrOptions = 'text/plain'
+        mediaType = 'text/plain'
       }
-      if (mediaTypeOrOptions.startsWith('base64:')) {
-        this.createStringAttachment(data, {
-          encoding: messages.AttachmentContentEncoding.BASE64,
-          contentType: mediaTypeOrOptions.replace('base64:', ''),
-        })
+      if (mediaType.startsWith('base64:')) {
+        this.createStringAttachment(
+          data,
+          {
+            encoding: messages.AttachmentContentEncoding.BASE64,
+            contentType: mediaType.replace('base64:', ''),
+          },
+          fileName
+        )
       } else {
-        this.createStringAttachment(data, {
-          encoding: messages.AttachmentContentEncoding.IDENTITY,
-          contentType: mediaTypeOrOptions,
-        })
+        this.createStringAttachment(
+          data,
+          {
+            encoding: messages.AttachmentContentEncoding.IDENTITY,
+            contentType: mediaType,
+          },
+          fileName
+        )
       }
     } else {
       throw Error(
@@ -84,17 +101,26 @@ export default class AttachmentManager {
     }
   }
 
-  createBufferAttachment(data: Buffer, mediaType: string): void {
-    this.createStringAttachment(data.toString('base64'), {
-      encoding: messages.AttachmentContentEncoding.BASE64,
-      contentType: mediaType,
-    })
+  createBufferAttachment(
+    data: Buffer,
+    mediaType: string,
+    fileName?: string
+  ): void {
+    this.createStringAttachment(
+      data.toString('base64'),
+      {
+        encoding: messages.AttachmentContentEncoding.BASE64,
+        contentType: mediaType,
+      },
+      fileName
+    )
   }
 
   createStreamAttachment(
     data: Readable,
     mediaType: string,
-    callback: () => void
+    fileName?: string,
+    callback?: () => void
   ): void | Promise<void> {
     const promise = new Promise<void>((resolve, reject) => {
       const buffers: Uint8Array[] = []
@@ -102,7 +128,7 @@ export default class AttachmentManager {
         buffers.push(chunk)
       })
       data.on('end', () => {
-        this.createBufferAttachment(Buffer.concat(buffers), mediaType)
+        this.createBufferAttachment(Buffer.concat(buffers), mediaType, fileName)
         resolve()
       })
       data.on('error', reject)
@@ -114,7 +140,29 @@ export default class AttachmentManager {
     }
   }
 
-  createStringAttachment(data: string, media: IAttachmentMedia): void {
-    this.onAttachment({ data, media })
+  createStringAttachment(
+    data: string,
+    media: IAttachmentMedia,
+    fileName?: string
+  ): void {
+    const attachment: IAttachment = { data, media }
+    if (fileName) {
+      attachment.fileName = fileName
+    }
+    this.onAttachment(attachment)
   }
+}
+
+function normaliseOptions(
+  mediaTypeOrOptions?: string | ICreateAttachmentOptions
+): Partial<ICreateAttachmentOptions> {
+  if (!mediaTypeOrOptions) {
+    return {}
+  }
+  if (typeof mediaTypeOrOptions === 'string') {
+    return {
+      mediaType: mediaTypeOrOptions,
+    }
+  }
+  return mediaTypeOrOptions
 }
