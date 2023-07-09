@@ -149,11 +149,11 @@ export default class AttachmentManager {
     media: IAttachmentMedia,
     fileName?: string
   ): void {
-    const attachment: IAttachment = { data, media }
-    if (fileName) {
-      attachment.fileName = fileName
-    }
-    this.onAttachment(attachment)
+    this.onAttachment({
+      data,
+      media,
+      ...(fileName ? { fileName } : {}),
+    })
   }
 }
 
