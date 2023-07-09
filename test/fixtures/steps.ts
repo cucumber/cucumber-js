@@ -35,7 +35,10 @@ export function getBaseSupportCodeLibrary(): ISupportCodeLibrary {
     Given('attachment step1', async function (this: World) {
       await this.attach('Some info')
       await this.attach('{"name": "some JSON"}', 'application/json')
-      await this.attach(Buffer.from([137, 80, 78, 71]), 'image/png')
+      await this.attach(Buffer.from([137, 80, 78, 71]), {
+        mediaType: 'image/png',
+        fileName: 'screenshot.png',
+      })
     })
 
     Given('attachment step2', async function (this: World) {

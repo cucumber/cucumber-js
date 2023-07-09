@@ -98,15 +98,20 @@ It can be used to debug scenarios, especially in parallel mode.
 
 ```javascript
 // Step definition
-Given(/^a basic step$/, function() {
+Given('a basic step', async function() {
   this.attach('Some info.')
   this.attach('{"some": "JSON"}}', { mediaType: 'application/json' })
+  this.attach((await driver.takeScreenshot()), {
+    mediaType: 'base64:image/png',
+    fileName: 'screenshot.png'
+  })
 })
 
 // Result format
 // ✔ Given a basic step # path:line
 //    Attachment (text/plain): Some info.
 //    Attachment (application/json)
+//    Attachment (image/png): screenshot.png
 ```
 
 ## Logging
