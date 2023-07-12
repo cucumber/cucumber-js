@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Support attachments with filenames ([#2297](https://github.com/cucumber/cucumber-js/pull/2297))
 
 ## [9.2.0] - 2023-06-22
 ### Added

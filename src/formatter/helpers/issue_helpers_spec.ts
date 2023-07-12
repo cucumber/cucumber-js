@@ -260,8 +260,8 @@ describe('IssueHelpers', () => {
                ${figures.tick} Given attachment step1 # steps.ts:35
                    Attachment (text/plain): Some info
                    Attachment (application/json)
-                   Attachment (image/png)
-               ${figures.cross} When attachment step2 # steps.ts:41
+                   Attachment (image/png): screenshot.png
+               ${figures.cross} When attachment step2 # steps.ts:44
                    Attachment (text/plain): Other info
                    error
                - Then a passing step # steps.ts:29
@@ -290,7 +290,7 @@ describe('IssueHelpers', () => {
             reindent(`
               1) Scenario: my scenario # a.feature:2
                  ${figures.tick} Given attachment step1 # steps.ts:35
-                 ${figures.cross} When attachment step2 # steps.ts:41
+                 ${figures.cross} When attachment step2 # steps.ts:44
                      error
                  - Then a passing step # steps.ts:29
 

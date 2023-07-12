@@ -69,8 +69,13 @@ function formatStep({
     text += indentString(`${colorFn(argumentsText)}\n`, 4)
   }
   if (valueOrDefault(printAttachments, true)) {
-    attachments.forEach(({ body, mediaType }) => {
-      const message = mediaType === 'text/plain' ? `: ${body}` : ''
+    attachments.forEach(({ body, mediaType, fileName }) => {
+      let message = ''
+      if (mediaType === 'text/plain') {
+        message = `: ${body}`
+      } else if (fileName) {
+        message = `: ${fileName}`
+      }
       text += indentString(`Attachment (${mediaType})${message}\n`, 4)
     })
   }
