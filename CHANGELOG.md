@@ -10,6 +10,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ## [Unreleased]
 ### Added
 - Support attachments with filenames ([#2297](https://github.com/cucumber/cucumber-js/pull/2297))
+- Support downloading attachments from HTML report ([#2300](https://github.com/cucumber/cucumber-js/pull/2300))
 
 ## [9.2.0] - 2023-06-22
 ### Added
