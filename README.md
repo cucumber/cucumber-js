@@ -14,7 +14,7 @@
 [![backers](https://opencollective.com/cucumber/backers/badge.svg)](https://opencollective.com/cucumber)
 [![sponsors](https://opencollective.com/cucumber/sponsors/badge.svg)](https://opencollective.com/cucumber)
 
-[Cucumber](https://cucumber.io) is a tool for running automated tests written in plain language. Because they're
+[Cucumber](https://github.com/cucumber) is a tool for running automated tests written in plain language. Because they're
 written in plain language, they can be read by anyone on your team. Because they can be
 read by anyone, you can use them to help improve communication, collaboration and trust on
 your team.
