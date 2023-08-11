@@ -35,6 +35,7 @@ The built in parameter types are:
 Defines a hook which is run after each scenario.
 
 * `options`: An object with the following keys:
+  * `name`: An optional name for this hook
   * `tags`: String tag expression used to apply this hook to only specific scenarios. See [cucumber-tag-expressions](https://github.com/cucumber/tag-expressions) for more information.
   * `timeout`: A hook-specific timeout, to override the default timeout.
 * `fn`: A function, defined as follows:
