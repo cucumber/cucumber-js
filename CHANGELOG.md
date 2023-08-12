@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Removed
+- Remove Cucumber Reports suggestion ([#2311](https://github.com/cucumber/cucumber-js/pull/2311))
+
 ### Fixed
 - Fix type import from cucumber-expressions ([#2310](https://github.com/cucumber/cucumber-js/pull/2310))
 
