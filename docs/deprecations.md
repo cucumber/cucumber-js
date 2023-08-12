@@ -46,6 +46,14 @@ The `Runtime` class is used internally to represent an instance of the serial te
 
 To adapt, pivot to the `runCucumber` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
 
+### publishQuiet
+
+Deprecated in `9.4.0`. Will be removed in `11.0.0` or later.
+
+The `publishQuiet` option (or `--publish-quiet` on the CLI) was used to hide the banner suggesting to use Cucumber Reports. The banner has since been removed, so the option now does nothing.
+
+To adapt, remove the option from your configuration files and CLI commands (especially the latter, since the CLI will fail on unrecognised options).
+
 ## Previous deprecations
 
 For deprecations that have been completed (i.e. the functionality removed), see [UPGRADING.md](../UPGRADING.md).
