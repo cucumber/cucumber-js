@@ -15,6 +15,9 @@ export interface IConfiguration {
   paths: string[]
   parallel: number
   publish: boolean
+  /**
+   * @deprecated you can remove it from your configuration; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
+   */
   publishQuiet: boolean
   require: string[]
   requireModule: string[]
