@@ -8,11 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
-### Removed
-- Remove Cucumber Reports suggestion ([#2311](https://github.com/cucumber/cucumber-js/pull/2311))
 
+## [9.4.0] - 2023-08-12
 ### Fixed
 - Fix type import from cucumber-expressions ([#2310](https://github.com/cucumber/cucumber-js/pull/2310))
+
+### Removed
+- Remove Cucumber Reports suggestion ([#2311](https://github.com/cucumber/cucumber-js/pull/2311))
 
 ## [9.3.0] - 2023-07-14
 ### Added
@@ -1519,7 +1521,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.3.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.4.0...HEAD
+[9.4.0]: https://github.com/cucumber/cucumber-js/compare/v9.3.0...v9.4.0
 [9.3.0]: https://github.com/cucumber/cucumber-js/compare/v9.2.0...v9.3.0
 [9.2.0]: https://github.com/cucumber/cucumber-js/compare/v9.1.2...v9.2.0
 [9.1.2]: https://github.com/cucumber/cucumber-js/compare/v9.1.1...v9.1.2
