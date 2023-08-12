@@ -1,4 +1,4 @@
-import { ArgvParser, isTruthyString } from '../configuration'
+import { ArgvParser } from '../configuration'
 import { IFormatterStream } from '../formatter'
 import { loadConfiguration, runCucumber } from '../api'
 import { getKeywords, getLanguages } from './i18n'
@@ -6,7 +6,6 @@ import { validateInstall } from './install_validator'
 import debug from 'debug'
 
 export interface ICliRunResult {
-  shouldAdvertisePublish: boolean
   shouldExitImmediately: boolean
   success: boolean
 }
@@ -49,7 +48,6 @@ export default class Cli {
     if (options.i18nLanguages) {
       this.stdout.write(getLanguages())
       return {
-        shouldAdvertisePublish: false,
         shouldExitImmediately: true,
         success: true,
       }
@@ -57,7 +55,6 @@ export default class Cli {
     if (options.i18nKeywords) {
       this.stdout.write(getKeywords(options.i18nKeywords))
       return {
-        shouldAdvertisePublish: false,
         shouldExitImmediately: true,
         success: true,
       }
@@ -81,10 +78,6 @@ export default class Cli {
       )
     const { success } = await runCucumber(runConfiguration, environment)
     return {
-      shouldAdvertisePublish:
-        !runConfiguration.formats.publish &&
-        !configuration.publishQuiet &&
-        !isTruthyString(this.env.CUCUMBER_PUBLISH_QUIET),
       shouldExitImmediately: configuration.forceExit,
       success,
     }
