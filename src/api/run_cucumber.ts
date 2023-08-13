@@ -50,7 +50,14 @@ export async function runCucumber(
           requireModules: supportCoordinates.requireModules,
         })
 
-  const plugins = await initializePlugins(logger, configuration, environment)
+  const plugins = await initializePlugins(
+    logger,
+    {
+      ...configuration,
+      support: supportCoordinates,
+    },
+    environment
+  )
 
   const eventBroadcaster = new EventEmitter()
   if (onMessage) {

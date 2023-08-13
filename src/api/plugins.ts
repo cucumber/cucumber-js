@@ -1,6 +1,6 @@
 import { Plugin, PluginManager } from '../plugin'
 import publishPlugin from '../publish'
-import { IRunEnvironment, IRunOptions } from './types'
+import { IRunConfiguration, IRunEnvironment } from './types'
 import { ILogger } from '../logger'
 
 const INTERNAL_PLUGINS: Record<string, Plugin> = {
@@ -9,7 +9,7 @@ const INTERNAL_PLUGINS: Record<string, Plugin> = {
 
 export async function initializePlugins(
   logger: ILogger,
-  configuration: IRunOptions,
+  configuration: IRunConfiguration,
   environment: IRunEnvironment
 ): Promise<PluginManager> {
   // eventually we'll load plugin packages here
