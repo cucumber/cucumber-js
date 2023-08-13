@@ -10,7 +10,7 @@ export class PluginManager {
   private handlers: HandlerRegistry = { message: [] }
   private cleanupFns: PluginCleanup[] = []
 
-  constructor(private pluginFns: Plugin[]) {}
+  constructor(private plugins: Plugin[]) {}
 
   private async register<K extends keyof PluginEvents>(
     event: K,
@@ -24,8 +24,8 @@ export class PluginManager {
     configuration: IRunConfiguration,
     environment: IRunEnvironment
   ) {
-    for (const pluginFn of this.pluginFns) {
-      const cleanupFn = await pluginFn({
+    for (const pluginFn of this.plugins) {
+      const cleanupFn = await pluginFn.coordinator({
         on: this.register.bind(this),
         logger,
         configuration,

@@ -18,4 +18,11 @@ export interface PluginContext {
 
 export type PluginCleanup = () => any | void | Promise<any | void>
 
-export type Plugin = (context: PluginContext) => Promise<PluginCleanup | void>
+export type CoordinatorPluginFunction = (
+  context: PluginContext
+) => Promise<PluginCleanup | void>
+
+export interface Plugin {
+  type: 'plugin'
+  coordinator: CoordinatorPluginFunction
+}
