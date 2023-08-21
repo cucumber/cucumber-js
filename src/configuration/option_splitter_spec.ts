@@ -26,8 +26,12 @@ describe('OptionSplitter', () => {
     },
     {
       description: 'splits file URLs for UNC path',
-      input: 'file://hostname/custom/formatter:file://hostname/formatter/output.txt',
-      output: ['file://hostname/custom/formatter', 'file://hostname/formatter/output.txt'],
+      input:
+        'file://hostname/custom/formatter:file://hostname/formatter/output.txt',
+      output: [
+        'file://hostname/custom/formatter',
+        'file://hostname/formatter/output.txt',
+      ],
     },
     {
       description: 'splits file URLs for absolute windows path',
@@ -38,7 +42,8 @@ describe('OptionSplitter', () => {
       ],
     },
     {
-      description: 'splits file URLs for absolute windows path with "/" as directory separator',
+      description:
+        'splits file URLs for absolute windows path with "/" as directory separator',
       input: 'file:///C:/custom/formatter:file:///C:/formatter/output.txt',
       output: [
         'file:///C:/custom/formatter',
@@ -54,7 +59,8 @@ describe('OptionSplitter', () => {
       ],
     },
     {
-      description: 'splits valid file URLs for absolute windows path with "/" as directory separator',
+      description:
+        'splits valid file URLs for absolute windows path with "/" as directory separator',
       input: 'file:///C:/custom/formatter:file:///C:/formatter/output.txt',
       output: [
         'file:///C:/custom/formatter',
@@ -64,30 +70,23 @@ describe('OptionSplitter', () => {
     {
       description: 'splits absolute unix paths',
       input: '/custom/formatter:/formatter/output.txt',
-      output: [
-        '/custom/formatter',
-        '/formatter/output.txt',
-      ],
+      output: ['/custom/formatter', '/formatter/output.txt'],
     },
     {
       description: 'splits absolute windows paths',
       input: 'C:\\custom\\formatter:C:\\formatter\\output.txt',
-      output: [
-        'C:\\custom\\formatter',
-        'C:\\formatter\\output.txt',
-      ],
+      output: ['C:\\custom\\formatter', 'C:\\formatter\\output.txt'],
     },
     {
-      description: 'splits absolute windows paths with "/" as directory separator',
+      description:
+        'splits absolute windows paths with "/" as directory separator',
       input: 'C:/custom/formatter:C:/formatter/output.txt',
-      output: [
-        'C:/custom/formatter',
-        'C:/formatter/output.txt',
-      ],
+      output: ['C:/custom/formatter', 'C:/formatter/output.txt'],
     },
     {
       description: 'splits UNC paths',
-      input: '\\\\hostname\\custom\\formatter:\\\\hostname\\formatter\\output.txt',
+      input:
+        '\\\\hostname\\custom\\formatter:\\\\hostname\\formatter\\output.txt',
       output: [
         '\\\\hostname\\custom\\formatter',
         '\\\\hostname\\formatter\\output.txt',
