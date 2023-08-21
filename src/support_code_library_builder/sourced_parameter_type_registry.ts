@@ -1,5 +1,7 @@
-import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
-import ParameterType from '@cucumber/cucumber-expressions/dist/cjs/src/ParameterType'
+import {
+  ParameterType,
+  ParameterTypeRegistry,
+} from '@cucumber/cucumber-expressions'
 import { ILineAndUri } from '../types'
 
 export class SourcedParameterTypeRegistry extends ParameterTypeRegistry {

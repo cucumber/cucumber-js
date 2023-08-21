@@ -43,7 +43,7 @@ export async function loadConfiguration(
     options.provided
   )
   logger.debug('Resolved configuration:', original)
-  validateConfiguration(original)
+  validateConfiguration(original, logger)
   const runnable = await convertConfiguration(original, env)
   return {
     useConfiguration: original,
