@@ -12,6 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        name: Configure Git
+      - run: |
+          git config --global user.email blinq.io@blinq.io
+          git config --global user.name blinq.io 
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
