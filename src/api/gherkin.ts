@@ -64,10 +64,12 @@ export async function getFilteredPicklesAndErrors({
       if (envelope.gherkinDocument && envelope.gherkinDocument.feature) {
         envelope.gherkinDocument.feature.children =
           envelope.gherkinDocument.feature.children.map((scenario) => {
-            scenario.scenario.steps = scenario.scenario.steps.map((step) => {
-              step.text = generateTestData(step.text, variables).newContent
-              return step
-            })
+            if (scenario.scenario) {
+              scenario.scenario.steps = scenario.scenario.steps.map((step) => {
+                step.text = generateTestData(step.text, variables).newContent
+                return step
+              })
+            }
             return scenario
           })
       }
