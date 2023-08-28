@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "lib": ["es2019"],
+    "lib": ["es2019", "ES2021.String"],
     "module": "commonjs",
     "noImplicitAny": true,
     "noImplicitReturns": true,
