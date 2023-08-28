@@ -15,6 +15,7 @@ import PickleFilter from '../pickle_filter'
 import { orderPickles } from '../cli/helpers'
 import { ISourcesCoordinates } from './types'
 import { ILogger } from '../logger'
+import { generateTestData } from '../formatter/feature_data_format'
 
 interface PickleWithDocument {
   gherkinDocument: GherkinDocument
@@ -44,6 +45,8 @@ export async function getFilteredPicklesAndErrors({
 }> {
   const gherkinQuery = new GherkinQuery()
   const parseErrors: ParseError[] = []
+  let variables: any
+
   await gherkinFromPaths(
     featurePaths,
     {
@@ -52,6 +55,30 @@ export async function getFilteredPicklesAndErrors({
       defaultDialect: coordinates.defaultDialect,
     },
     (envelope) => {
+      if (envelope.source) {
+        const data = generateTestData(envelope.source.data)
+        envelope.source.data = data.newContent
+        variables = data.variables
+      }
+
+      if (envelope.gherkinDocument && envelope.gherkinDocument.feature) {
+        envelope.gherkinDocument.feature.children =
+          envelope.gherkinDocument.feature.children.map((scenario) => {
+            scenario.scenario.steps = scenario.scenario.steps.map((step) => {
+              step.text = generateTestData(step.text, variables).newContent
+              return step
+            })
+            return scenario
+          })
+      }
+
+      if (envelope.pickle) {
+        envelope.pickle.steps = envelope.pickle.steps.map((step) => {
+          step.text = generateTestData(step.text, variables).newContent
+          return step
+        })
+      }
+
       gherkinQuery.update(envelope)
       if (envelope.parseError) {
         parseErrors.push(envelope.parseError)
