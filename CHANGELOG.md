@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Support array notation of formats with path in configuration files ([#2318](https://github.com/cucumber/cucumber-js/pull/2318))
 
 ## [9.4.0] - 2023-08-12
 ### Fixed
