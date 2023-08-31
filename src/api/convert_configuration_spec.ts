@@ -47,7 +47,7 @@ describe('convertConfiguration', () => {
           'summary',
           'message',
           'json:./report.json',
-          'html:./report.html',
+          ['html', './report.html'],
         ],
       },
       {}

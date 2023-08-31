@@ -42,7 +42,7 @@ function convertFormats(
   env: NodeJS.ProcessEnv
 ) {
   const splitFormats: string[][] = flatConfiguration.format.map((item) =>
-    OptionSplitter.split(item)
+    Array.isArray(item) ? item : OptionSplitter.split(item)
   )
   return {
     stdout:
