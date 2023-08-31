@@ -6,22 +6,19 @@ cucumber-js provides many built-in Formatters, plus building blocks with which y
 
 You can specify one or more formats via the `format` configuration option:
 
-- In a configuration file `{ format: ['<TYPE[:PATH]>'] }`
-- On the CLI `$ cucumber-js --format <TYPE[:PATH]>`
+- In a configuration file `{ format: ['progress-bar', ['html', 'cucumber-report.html']] }`
+- On the CLI `$ cucumber-js --format progress-bar --format html:cucumber-report.html`
 
-For each value you provide, `TYPE` should be one of:
+For each format you specify, you have to provide one or two values. The first (required) is to identify the formatter. It can take a few forms:
 
-* The name of one of the built-in formatters (below) e.g. `progress`
+* The name of one of the built-in formatters (below) e.g. `progress-bar`
 * A module/package name e.g. `@cucumber/pretty-formatter`
 * A relative path to a local formatter implementation e.g. `./my-customer-formatter.js`
 * An absolute path to a local formatter implementation in the form of a `file://` URL
 
-If `PATH` is supplied, the formatter prints to the given file, otherwise it prints to `stdout`. If the path includes directories that do not yet exist they will be created.
+Without a second value, the formatter will print to `stdout`. The second value, if present, is a path to where the formatter output should be written. If the path includes directories that do not yet exist, they will be created.
 
-For example, this configuration would give you a progress bar as you run, plus JSON and HTML report files:
-
-- In a configuration file `{ format: ['progress-bar', 'json:cucumber-report.json', 'html:cucumber-report.html'] }`
-- On the CLI `$ cucumber-js --format progress-bar --format json:cucumber-report.json --format html:cucumber-report.html`
+On the CLI, when specifying both a name and path, you'll need to use `:` as a delimiter. In a configuration file you can do this too, but you can also provide an array with the two values as separate strings, which is recommended. 
 
 Some notes on specifying Formatters:
 
