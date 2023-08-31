@@ -31,7 +31,7 @@ export class PluginManager {
         configuration,
         environment,
       })
-      if (cleanupFn) {
+      if (typeof cleanupFn === 'function') {
         this.cleanupFns.push(cleanupFn)
       }
     }
