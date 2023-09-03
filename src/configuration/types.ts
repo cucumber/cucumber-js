@@ -1,12 +1,14 @@
 import { FormatOptions } from '../formatter'
 import { PickleOrder } from '../models/pickle_order'
 
+type FormatsConfiguration = Array<string | [string, string]>
+
 export interface IConfiguration {
   backtrace: boolean
   dryRun: boolean
   forceExit: boolean
   failFast: boolean
-  format: string[]
+  format: FormatsConfiguration
   formatOptions: FormatOptions
   import: string[]
   language: string
