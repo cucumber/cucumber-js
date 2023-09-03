@@ -35,8 +35,13 @@ export const publishPlugin: Plugin = async ({
   stream.pipe(readerStream)
   stream.on('error', (error: Error) => logger.error(error.message))
   on('message', (value) => stream.write(JSON.stringify(value) + '\n'))
-  return () => stream.end()
+  return () =>
+    new Promise<void>((resolve) => {
+      stream.on('finish', () => resolve())
+      stream.end()
+    })
 }
+
 /*
 This is because the Cucumber Reports service returns a pre-formatted console message
 including ANSI escapes, so if our stderr stream doesn't support those we need to
