@@ -39,7 +39,7 @@ describe('convertConfiguration', () => {
     })
   })
 
-  it('should map multiple formatters', async () => {
+  it('should map multiple formatters with string and array notations', async () => {
     const result = await convertConfiguration(
       {
         ...DEFAULT_CONFIGURATION,
@@ -47,7 +47,7 @@ describe('convertConfiguration', () => {
           'summary',
           'message',
           'json:./report.json',
-          'html:./report.html',
+          ['html', './report.html'],
         ],
       },
       {}
