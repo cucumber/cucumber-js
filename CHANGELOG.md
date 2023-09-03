@@ -11,6 +11,9 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Added
 - Support array notation of formats with path in configuration files ([#2318](https://github.com/cucumber/cucumber-js/pull/2318))
 
+### Fixed
+- Wait for stream to finish at end of publish plugin ([#2322](https://github.com/cucumber/cucumber-js/pull/2322))
+
 ## [9.4.0] - 2023-08-12
 ### Fixed
 - Fix type import from cucumber-expressions ([#2310](https://github.com/cucumber/cucumber-js/pull/2310))
