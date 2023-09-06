@@ -1,20 +1,26 @@
 import { faker } from '@faker-js/faker'
 
-const generateTestData = (featureFileContent: string, vars?: any) => {
+const generateTestData = (
+  featureFileContent: string,
+  vars?: any,
+  fakeData?: {
+    var: string
+    fake: string
+  }[]
+) => {
   const regexp = /\{\{([^}]+)\}\}/g
+  const variableRegex = /^([a-zA-Z0-9_]*)=(.*)/g
   let newContent = featureFileContent
-  let match
+  let match: RegExpExecArray
   const metches = []
   // collect all matches
   while ((match = regexp.exec(featureFileContent)) !== null) {
     metches.push(match)
   }
   // find all variables in the matches
-  let variables: any = {}
-  const variableRegex = /^([a-zA-Z0-9_]*)=(.*)/g
+  const variables: any = { ...vars }
 
-  if (vars) {
-    variables = vars
+  if (Object.keys(variables).length > 0) {
     for (let i = 0; i < metches.length; i++) {
       const _match = metches[i]
       const value = _match[1]
@@ -52,24 +58,33 @@ const generateTestData = (featureFileContent: string, vars?: any) => {
 
   regexp.lastIndex = 0
   const otherFakeData = []
-  while ((match = regexp.exec(newContent)) !== null) {
+  const duplicateFakeData = fakeData ? [...fakeData] : []
+  let fakeIndex = 0
+
+  while ((match = regexp.exec(featureFileContent)) !== null) {
     try {
-      const fake = faker.helpers.fake(match[0])
+      const fake =
+        duplicateFakeData && duplicateFakeData.length > 0
+          ? duplicateFakeData.shift().fake
+          : faker.helpers.fake(match[0])
       otherFakeData.push({
         var: match[0],
         fake,
       })
       newContent = newContent.replace(match[0], fake)
+      fakeIndex++
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log('unknown faker variable:' + match[0])
     }
   }
+
   return {
     newContent,
     variables,
     otherFakeData,
     changed: newContent !== featureFileContent,
+    fakeIndex,
   }
 }
 

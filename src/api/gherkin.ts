@@ -45,7 +45,12 @@ export async function getFilteredPicklesAndErrors({
 }> {
   const gherkinQuery = new GherkinQuery()
   const parseErrors: ParseError[] = []
-  let variables: any
+  let variables: any,
+    fakeData: {
+      var: string
+      fake: string
+    }[],
+    pickleIndex = 0
 
   await gherkinFromPaths(
     featurePaths,
@@ -59,6 +64,7 @@ export async function getFilteredPicklesAndErrors({
         const data = generateTestData(envelope.source.data)
         envelope.source.data = data.newContent
         variables = data.variables
+        fakeData = data.otherFakeData
       }
 
       if (envelope.gherkinDocument && envelope.gherkinDocument.feature) {
@@ -66,7 +72,11 @@ export async function getFilteredPicklesAndErrors({
           envelope.gherkinDocument.feature.children.map((scenario) => {
             if (scenario.scenario) {
               scenario.scenario.steps = scenario.scenario.steps.map((step) => {
-                step.text = generateTestData(step.text, variables).newContent
+                step.text = generateTestData(
+                  step.text,
+                  variables,
+                  fakeData
+                ).newContent
                 return step
               })
             }
@@ -76,9 +86,19 @@ export async function getFilteredPicklesAndErrors({
 
       if (envelope.pickle) {
         envelope.pickle.steps = envelope.pickle.steps.map((step) => {
-          step.text = generateTestData(step.text, variables).newContent
+          const generateData = generateTestData(step.text, variables, fakeData)
+          step.text = generateData.newContent
+          pickleIndex =
+            generateData.fakeIndex > pickleIndex
+              ? generateData.fakeIndex
+              : pickleIndex
           return step
         })
+
+        for (let i = 0; i < pickleIndex; i++) {
+          fakeData.shift()
+        }
+        pickleIndex = 0
       }
 
       gherkinQuery.update(envelope)
