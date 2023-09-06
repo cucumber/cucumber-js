@@ -1,7 +1,7 @@
 import { FormatOptions } from '../formatter'
 import { PickleOrder } from '../models/pickle_order'
 
-type FormatsConfiguration = Array<string | [string, string]>
+type FormatsConfiguration = Array<string | [string, string?]>
 
 export interface IConfiguration {
   backtrace: boolean
