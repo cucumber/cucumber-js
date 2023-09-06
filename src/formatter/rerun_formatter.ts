@@ -13,8 +13,12 @@ interface UriToLinesMap {
   [uri: string]: number[]
 }
 
+function isFailedAttempt(worstTestStepResult: messages.TestStepResult) {
+  return worstTestStepResult.status !== messages.TestStepResultStatus.PASSED
+}
+
 export default class RerunFormatter extends Formatter {
-  private readonly separator: string
+  protected readonly separator: string
   public static readonly documentation: string =
     'Prints failing files with line numbers.'
 
@@ -29,31 +33,42 @@ export default class RerunFormatter extends Formatter {
     this.separator = valueOrDefault(rerunOptions.separator, DEFAULT_SEPARATOR)
   }
 
-  logFailedTestCases(): void {
+  getFailureMap(): UriToLinesMap {
     const mapping: UriToLinesMap = {}
     this.eventDataCollector
       .getTestCaseAttempts()
-      .forEach(({ gherkinDocument, pickle, worstTestStepResult }) => {
-        if (
-          worstTestStepResult.status !== messages.TestStepResultStatus.PASSED
-        ) {
-          const relativeUri = pickle.uri
-          const line =
-            getGherkinScenarioLocationMap(gherkinDocument)[
-              pickle.astNodeIds[pickle.astNodeIds.length - 1]
-            ].line
-          if (doesNotHaveValue(mapping[relativeUri])) {
-            mapping[relativeUri] = []
+      .forEach(
+        ({ gherkinDocument, pickle, worstTestStepResult, willBeRetried }) => {
+          if (isFailedAttempt(worstTestStepResult) && !willBeRetried) {
+            const relativeUri = pickle.uri
+            const line =
+              getGherkinScenarioLocationMap(gherkinDocument)[
+                pickle.astNodeIds[pickle.astNodeIds.length - 1]
+              ].line
+            if (doesNotHaveValue(mapping[relativeUri])) {
+              mapping[relativeUri] = []
+            }
+            mapping[relativeUri].push(line)
           }
-          mapping[relativeUri].push(line)
         }
-      })
-    const text = Object.keys(mapping)
+      )
+
+    return mapping
+  }
+
+  formatFailedTestCases(): string {
+    const mapping = this.getFailureMap()
+
+    return Object.keys(mapping)
       .map((uri) => {
         const lines = mapping[uri]
         return `${uri}:${lines.join(':')}`
       })
       .join(this.separator)
-    this.log(text)
+  }
+
+  logFailedTestCases(): void {
+    const failedTestCases = this.formatFailedTestCases()
+    this.log(failedTestCases)
   }
 }

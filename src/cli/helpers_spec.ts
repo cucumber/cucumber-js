@@ -16,13 +16,13 @@ import StepDefinition from '../models/step_definition'
 import {
   CucumberExpression,
   ParameterType,
-  ParameterTypeRegistry,
   RegularExpression,
 } from '@cucumber/cucumber-expressions'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { PickleOrder } from '../models/pickle_order'
+import { SourcedParameterTypeRegistry } from '../support_code_library_builder/sourced_parameter_type_registry'
 
 const noopFunction = (): void => {
   // no code
@@ -79,7 +79,7 @@ function testEmitSupportCodeMessages(
         afterTestCaseHookDefinitions: [],
         afterTestStepHookDefinitions: [],
         defaultTimeout: 0,
-        parameterTypeRegistry: new ParameterTypeRegistry(),
+        parameterTypeRegistry: new SourcedParameterTypeRegistry(),
         undefinedParameterTypes: [],
         World: null,
         parallelCanAssign: () => true,
@@ -105,8 +105,8 @@ describe('helpers', () => {
   })
   describe('emitSupportCodeMessages', () => {
     it('emits messages for parameter types', () => {
-      const parameterTypeRegistry = new ParameterTypeRegistry()
-      parameterTypeRegistry.defineParameterType(
+      const parameterTypeRegistry = new SourcedParameterTypeRegistry()
+      parameterTypeRegistry.defineSourcedParameterType(
         new ParameterType<string>(
           'flight',
           ['([A-Z]{3})-([A-Z]{3})'],
@@ -114,7 +114,11 @@ describe('helpers', () => {
           () => 'argh',
           true,
           false
-        )
+        ),
+        {
+          line: 4,
+          uri: 'features/support/parameter-types.js',
+        }
       )
 
       const envelopes = testEmitSupportCodeMessages({
@@ -129,6 +133,12 @@ describe('helpers', () => {
             preferForRegularExpressionMatch: false,
             regularExpressions: ['([A-Z]{3})-([A-Z]{3})'],
             useForSnippets: true,
+            sourceReference: {
+              uri: 'features/support/parameter-types.js',
+              location: {
+                line: 4,
+              },
+            },
           },
         },
       ]
@@ -149,7 +159,7 @@ describe('helpers', () => {
             pattern: 'I have {int} cukes in my belly',
             expression: new CucumberExpression(
               'I have {int} cukes in my belly',
-              new ParameterTypeRegistry()
+              new SourcedParameterTypeRegistry()
             ),
           }),
         ],
@@ -188,7 +198,7 @@ describe('helpers', () => {
             pattern: /I have (\d+) cukes in my belly/,
             expression: new RegularExpression(
               /I have (\d+) cukes in my belly/,
-              new ParameterTypeRegistry()
+              new SourcedParameterTypeRegistry()
             ),
           }),
         ],

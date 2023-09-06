@@ -14,6 +14,7 @@ import {
   IWorkerCommandInitialize,
   IWorkerCommandRun,
 } from './command_types'
+import tryRequire from '../../try_require'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../../importer')
@@ -74,8 +75,8 @@ export default class Worker {
       requirePaths,
       importPaths,
     })
-    requireModules.map((module) => require(module))
-    requirePaths.map((module) => require(module))
+    requireModules.map((module) => tryRequire(module))
+    requirePaths.map((module) => tryRequire(module))
     for (const path of importPaths) {
       await importer(pathToFileURL(path))
     }

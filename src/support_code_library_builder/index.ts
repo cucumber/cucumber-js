@@ -12,7 +12,6 @@ import arity from 'util-arity'
 
 import {
   CucumberExpression,
-  ParameterTypeRegistry,
   RegularExpression,
 } from '@cucumber/cucumber-expressions'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
@@ -34,6 +33,7 @@ import {
 import World from './world'
 import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
 import { GherkinStepKeyword } from '../models/gherkin_step_keyword'
+import { SourcedParameterTypeRegistry } from './sourced_parameter_type_registry'
 
 interface IStepDefinitionConfig {
   code: any
@@ -65,20 +65,6 @@ interface ITestRunHookDefinitionConfig {
   uri: string
 }
 
-export const builtinParameterTypes = [
-  'bigdecimal',
-  'biginteger',
-  'byte',
-  'double',
-  'float',
-  'int',
-  'long',
-  'short',
-  'string',
-  'word',
-  '',
-]
-
 export class SupportCodeLibraryBuilder {
   public readonly methods: IDefineSupportCodeMethods
 
@@ -93,7 +79,7 @@ export class SupportCodeLibraryBuilder {
   private defaultTimeout: number
   private definitionFunctionWrapper: any
   private newId: IdGenerator.NewId
-  private parameterTypeRegistry: ParameterTypeRegistry
+  private parameterTypeRegistry: SourcedParameterTypeRegistry
   private stepDefinitionConfigs: IStepDefinitionConfig[]
   private World: any
   private parallelCanAssign: ParallelAssignmentValidator
@@ -166,7 +152,8 @@ export class SupportCodeLibraryBuilder {
 
   defineParameterType(options: IParameterTypeDefinition<any>): void {
     const parameterType = buildParameterType(options)
-    this.parameterTypeRegistry.defineParameterType(parameterType)
+    const source = getDefinitionLineAndUri(this.cwd)
+    this.parameterTypeRegistry.defineSourcedParameterType(parameterType, source)
   }
 
   defineStep(
@@ -481,7 +468,7 @@ export class SupportCodeLibraryBuilder {
     this.beforeTestStepHookDefinitionConfigs = []
     this.definitionFunctionWrapper = null
     this.defaultTimeout = 5000
-    this.parameterTypeRegistry = new ParameterTypeRegistry()
+    this.parameterTypeRegistry = new SourcedParameterTypeRegistry()
     this.stepDefinitionConfigs = []
     this.parallelCanAssign = () => true
     this.World = World

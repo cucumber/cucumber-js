@@ -3,16 +3,11 @@
  * but other code abstracts those to remain composable and testable. */
 import Cli, { ICliRunResult } from './'
 import VError from 'verror'
-import publishBanner from './publish_banner'
 import { validateNodeEngineVersion } from './validate_node_engine_version'
 
 function logErrorMessageAndExit(message: string): void {
   console.error(message)
   process.exit(1)
-}
-
-function displayPublishAdvertisementBanner(): void {
-  console.error(publishBanner)
 }
 
 export default async function run(): Promise<void> {
@@ -38,10 +33,6 @@ export default async function run(): Promise<void> {
     result = await cli.run()
   } catch (error) {
     logErrorMessageAndExit(VError.fullStack(error))
-  }
-
-  if (result.shouldAdvertisePublish) {
-    displayPublishAdvertisementBanner()
   }
 
   const exitCode = result.success ? 0 : 1

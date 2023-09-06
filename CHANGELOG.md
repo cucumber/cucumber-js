@@ -11,6 +11,56 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Fixed
 - Ensure attached string literals are base64-encoded in JSON reports ([#2260](https://github.com/cucumber/cucumber-js/issues/2260))
 
+## [9.5.1] - 2023-09-06
+### Fixed
+- Allow single-item arrays as a format ([#2324](https://github.com/cucumber/cucumber-js/pull/2324))
+
+## [9.5.0] - 2023-09-03
+### Added
+- Support array notation of formats with path in configuration files ([#2318](https://github.com/cucumber/cucumber-js/pull/2318))
+
+### Fixed
+- Wait for stream to finish at end of publish plugin ([#2322](https://github.com/cucumber/cucumber-js/pull/2322))
+
+## [9.4.0] - 2023-08-12
+### Fixed
+- Fix type import from cucumber-expressions ([#2310](https://github.com/cucumber/cucumber-js/pull/2310))
+
+### Removed
+- Remove Cucumber Reports suggestion ([#2311](https://github.com/cucumber/cucumber-js/pull/2311))
+
+## [9.3.0] - 2023-07-14
+### Added
+- Support attachments with filenames ([#2297](https://github.com/cucumber/cucumber-js/pull/2297))
+- Support downloading attachments from HTML report ([#2300](https://github.com/cucumber/cucumber-js/pull/2300))
+
+## [9.2.0] - 2023-06-22
+### Added
+- New option for JUnit test suite name to be passed in `formatOptions` ([#2265](https://github.com/cucumber/cucumber-js/issues/2265))
+- Include source reference in emitted messages for parameter types ([#2287](https://github.com/cucumber/cucumber-js/pull/2287))
+
+### Fixed
+- Correctly interpret retried scenarios in rerun formatter ([#2292](https://github.com/cucumber/cucumber-js/pull/2292))
+
+## [9.1.2] - 2023-05-07
+### Changed
+- Only show global install warning in debug mode ([#2285](https://github.com/cucumber/cucumber-js/pull/2285))
+
+### Fixed
+- Export `ISupportCodeLibrary` type on `/api` entry point ([#2284](https://github.com/cucumber/cucumber-js/pull/2284))
+
+## [9.1.1] - 2023-05-02
+### Fixed
+- Upgrade `yaml` to address security vulnerability ([#2281](https://github.com/cucumber/cucumber-js/pull/2281))
+
+## [9.1.0] - 2023-03-28
+### Added
+- Formatters create sub-directory automatically instead of failing ([#2266](https://github.com/cucumber/cucumber-js/pull/2266))
+- Include a less cryptic error message when trying to `require` an ES module ([#2264](https://github.com/cucumber/cucumber-js/pull/2264))
+
+### Changed
+- Change hashes type from `any` to `Record<string, string>` in `DataTable` ([#2270](https://github.com/cucumber/cucumber-js/pull/2270))
+
 ## [9.0.1] - 2023-03-15
 ### Fixed
 - Ensure feature paths are properly deduplicated ([#2258](https://github.com/cucumber/cucumber-js/pull/2258))
@@ -1484,7 +1534,15 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.0.1...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.5.1...HEAD
+[9.5.1]: https://github.com/cucumber/cucumber-js/compare/v9.5.0...v9.5.1
+[9.5.0]: https://github.com/cucumber/cucumber-js/compare/v9.4.0...v9.5.0
+[9.4.0]: https://github.com/cucumber/cucumber-js/compare/v9.3.0...v9.4.0
+[9.3.0]: https://github.com/cucumber/cucumber-js/compare/v9.2.0...v9.3.0
+[9.2.0]: https://github.com/cucumber/cucumber-js/compare/v9.1.2...v9.2.0
+[9.1.2]: https://github.com/cucumber/cucumber-js/compare/v9.1.1...v9.1.2
+[9.1.1]: https://github.com/cucumber/cucumber-js/compare/v9.1.0...v9.1.1
+[9.1.0]: https://github.com/cucumber/cucumber-js/compare/v9.0.1...v9.1.0
 [9.0.1]: https://github.com/cucumber/cucumber-js/compare/v9.0.0...v9.0.1
 [9.0.0]: https://github.com/cucumber/cucumber-js/compare/v8.11.1...v9.0.0
 [8.11.1]: https://github.com/cucumber/cucumber-js/compare/v8.11.0...v8.11.1

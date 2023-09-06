@@ -14,39 +14,52 @@ After(function () {
 ```
 
 By default, text is saved with a MIME type of `text/plain`.  You can also specify
-a different MIME type:
+a different MIME type as part of a second argument:
 
 ```javascript
 var {After} = require('@cucumber/cucumber');
 
 After(function () {
-  this.attach('{"name": "some JSON"}', 'application/json');
+  this.attach('{"name": "some JSON"}', { mediaType: 'application/json' });
+});
+```
+
+If you'd like, you can also specify a filename to be used if the attachment is made available to download as a file via a formatter:
+
+```javascript
+var {After} = require('@cucumber/cucumber');
+
+After(function () {
+  this.attach('{"name": "some JSON"}', {
+    mediaType: 'application/json',
+    fileName: 'results.json'
+  });
 });
 ```
 
 Images and other binary data can be attached using a [stream.Readable](https://nodejs.org/api/stream.html).
 The data will be `base64` encoded in the output.
-You should wait for the stream to be read before continuing by providing a callback or waiting for the returned promise to resolve.
+You should wait for the stream to be read before continuing by awaiting the returned promise or providing a callback.
 
 ```javascript
 var {After, Status} = require('@cucumber/cucumber');
+
+// Awaiting the promise
+After(async function (testCase) {
+  if (testCase.result.status === Status.FAILED) {
+    var stream = getScreenshotOfError();
+    await this.attach(stream, { mediaType: 'image/png' });
+  }
+});
 
 // Passing a callback
 After(function (testCase, callback) {
   if (testCase.result.status === Status.FAILED) {
     var stream = getScreenshotOfError();
-    this.attach(stream, 'image/png', callback);
+    this.attach(stream, { mediaType: 'image/png' }, callback);
   }
   else {
     callback();
-  }
-});
-
-// Returning the promise
-After(function (testCase) {
-  if (testCase.result.status === Status.FAILED) {
-    var stream = getScreenshotOfError();
-    return this.attach(stream, 'image/png');
   }
 });
 ```
@@ -60,38 +73,23 @@ var {After, Status} = require('@cucumber/cucumber');
 After(function (testCase) {
   if (testCase.result.status === Status.FAILED) {
     var buffer = getScreenshotOfError();
-    this.attach(buffer, 'image/png');
+    this.attach(buffer, { mediaType: 'image/png' });
   }
 });
 ```
 
-If you've already got a base64-encoded string, you can prefix your mime type with `base64:` to indicate this:
-
-```javascript
-var {After, Status} = require('@cucumber/cucumber');
-
-After(function (testCase) {
-  if (testCase.result.status === Status.FAILED) {
-    var base64String = getScreenshotOfError();
-    this.attach(base64String, 'base64:image/png');
-  }
-});
-```
-
-Here is an example of saving a screenshot using [Selenium WebDriver](https://www.npmjs.com/package/selenium-webdriver)
+If you've already got a base64-encoded string, you can prefix your mime type with `base64:` to indicate this. Here's an example of saving a screenshot using [Selenium WebDriver](https://www.npmjs.com/package/selenium-webdriver)
 when a scenario fails:
 
 ```javascript
 var {After, Status} = require('@cucumber/cucumber');
 
-After(function (testCase) {
-  var world = this;
+After(async function (testCase) {
   if (testCase.result.status === Status.FAILED) {
-    return webDriver.takeScreenshot().then(function(screenShot) {
-      world.attach(screenShot, 'base64:image/png');
-    });
+    const screenshot = await driver.takeScreenshot()
+    this.attach(screenshot, { mediaType: 'base64:image/png' })
   }
-});
+})
 ```
 
 Attachments are also printed by the progress, progress-bar and summary formatters.
@@ -100,15 +98,20 @@ It can be used to debug scenarios, especially in parallel mode.
 
 ```javascript
 // Step definition
-Given(/^a basic step$/, function() {
+Given('a basic step', async function() {
   this.attach('Some info.')
-  this.attach('{"some", "JSON"}}', 'application/json')
+  this.attach('{"some": "JSON"}}', { mediaType: 'application/json' })
+  this.attach((await driver.takeScreenshot()), {
+    mediaType: 'base64:image/png',
+    fileName: 'screenshot.png'
+  })
 })
 
 // Result format
 // ✔ Given a basic step # path:line
 //    Attachment (text/plain): Some info.
 //    Attachment (application/json)
+//    Attachment (image/png): screenshot.png
 ```
 
 ## Logging
