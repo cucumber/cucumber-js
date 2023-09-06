@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Allow single-item arrays as a format ([#2324](https://github.com/cucumber/cucumber-js/pull/2324))
 
 ## [9.5.0] - 2023-09-03
 ### Added
