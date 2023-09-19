@@ -32,7 +32,7 @@ Feature: Github
             | random_repo_name
 ```
 
-Now, instead of picking a random name by ourselfs, we could fake data using the following syntax and get a random value -
+Now, instead of picking a random name by ourselfs, we could fake data using the [faker](https://www.npmjs.com/package/@faker-js/faker) library and get a random value -
 
 ```gherkin
 Feature: Github
@@ -48,14 +48,20 @@ We could also save our fake data (or any data really) as a variable for future u
 ```gherkin
 Feature: Github
     Scenario Outline: Create a new repository
-        Given Create a new repository name "<repo>" and put the repo's name in the description "<description>"
+        Given Create a new repository name "<repo>"
         Examples:
-            |  repo                 | description   |
-            | {{repo=string.alpha(10)}} | {{repo}}  |
+            |  repo                 
+            | {{repo=string.alpha(10)}}
+
+    Scenario Outline: Create a second repository
+        Given Create a new repository with the same name as before "<repo>"
+        Examples:
+            |  repo                 
+            | {{repo}}
 ```
 
-In that example, we saved repo as a variable with value of fake data and used it again as the description
-value, both repo and description will have the same fake value.
+In that example, we saved repo as a variable with a value of some fake data and used it again as the second repo
+value, both repos will have the same fake value.
 
 ## Documentation
 
