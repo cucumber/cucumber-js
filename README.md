@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="./docs/images/logo.png" alt="">
+  <img src="./docs/images/icon.png" alt="">
   <br>
   Cucumber - Blinq.io
 </h1>
