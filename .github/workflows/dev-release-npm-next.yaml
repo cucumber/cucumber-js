@@ -15,15 +15,15 @@ jobs:
         name: Configure Git
       - run: |
           git config --global user.email blinq.io@blinq.io
-          git config --global user.name blinq.io 
+          git config --global user.name blinq.io
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'npm'
           cache-dependency-path: package-lock.json
-      - run: npm version prerelease --preid=next
+      - run: npm version patch
       - run: git push --follow-tags origin dev
-        
+
   publish-npm:
     name: Publish NPM module
     runs-on: ubuntu-latest
