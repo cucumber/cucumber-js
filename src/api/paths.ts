@@ -1,5 +1,4 @@
-import { promisify } from 'util'
-import glob from 'glob'
+import { glob } from 'glob'
 import path from 'path'
 import fs from 'mz/fs'
 import { ISourcesCoordinates, ISupportCodeCoordinates } from './types'
@@ -58,14 +57,14 @@ async function expandPaths(
 ): Promise<string[]> {
   const expandedPaths = await Promise.all(
     unexpandedPaths.map(async (unexpandedPath) => {
-      const matches = await promisify(glob)(unexpandedPath, {
+      const matches = await glob(unexpandedPath, {
         absolute: true,
         cwd,
       })
       const expanded = await Promise.all(
         matches.map(async (match) => {
           if (path.extname(match) === '') {
-            return await promisify(glob)(`${match}/**/*${defaultExtension}`)
+            return glob(`${match}/**/*${defaultExtension}`)
           }
           return [match]
         })
