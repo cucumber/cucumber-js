@@ -59,12 +59,15 @@ async function expandPaths(
     unexpandedPaths.map(async (unexpandedPath) => {
       const matches = await glob(unexpandedPath, {
         absolute: true,
+        windowsPathsNoEscape: true,
         cwd,
       })
       const expanded = await Promise.all(
         matches.map(async (match) => {
           if (path.extname(match) === '') {
-            return glob(`${match}/**/*${defaultExtension}`)
+            return glob(`${match}/**/*${defaultExtension}`, {
+              windowsPathsNoEscape: true,
+            })
           }
           return [match]
         })
