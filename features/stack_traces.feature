@@ -48,7 +48,7 @@ Feature: Stack traces
       {
         "compilerOptions": {
           "module": "esnext",
-          "moduleResolution": "esnext"
+          "moduleResolution": "nodenext"
         }
       }
       """
