@@ -9,6 +9,17 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ## [Unreleased]
 
+## [9.5.1] - 2023-09-06
+### Fixed
+- Allow single-item arrays as a format ([#2324](https://github.com/cucumber/cucumber-js/pull/2324))
+
+## [9.5.0] - 2023-09-03
+### Added
+- Support array notation of formats with path in configuration files ([#2318](https://github.com/cucumber/cucumber-js/pull/2318))
+
+### Fixed
+- Wait for stream to finish at end of publish plugin ([#2322](https://github.com/cucumber/cucumber-js/pull/2322))
+
 ## [9.4.0] - 2023-08-12
 ### Fixed
 - Fix type import from cucumber-expressions ([#2310](https://github.com/cucumber/cucumber-js/pull/2310))
@@ -1521,7 +1532,9 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.4.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.5.1...HEAD
+[9.5.1]: https://github.com/cucumber/cucumber-js/compare/v9.5.0...v9.5.1
+[9.5.0]: https://github.com/cucumber/cucumber-js/compare/v9.4.0...v9.5.0
 [9.4.0]: https://github.com/cucumber/cucumber-js/compare/v9.3.0...v9.4.0
 [9.3.0]: https://github.com/cucumber/cucumber-js/compare/v9.2.0...v9.3.0
 [9.2.0]: https://github.com/cucumber/cucumber-js/compare/v9.1.2...v9.2.0

@@ -39,7 +39,7 @@ describe('convertConfiguration', () => {
     })
   })
 
-  it('should map multiple formatters', async () => {
+  it('should map multiple formatters with string notation', async () => {
     const result = await convertConfiguration(
       {
         ...DEFAULT_CONFIGURATION,
@@ -48,6 +48,31 @@ describe('convertConfiguration', () => {
           'message',
           'json:./report.json',
           'html:./report.html',
+        ],
+      },
+      {}
+    )
+
+    expect(result.formats).to.eql({
+      stdout: 'message',
+      files: {
+        './report.html': 'html',
+        './report.json': 'json',
+      },
+      publish: false,
+      options: {},
+    })
+  })
+
+  it('should map multiple formatters with array notation', async () => {
+    const result = await convertConfiguration(
+      {
+        ...DEFAULT_CONFIGURATION,
+        format: [
+          ['summary'],
+          ['message'],
+          ['json', './report.json'],
+          ['html', './report.html'],
         ],
       },
       {}
