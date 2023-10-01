@@ -52,7 +52,7 @@ Feature: Stack traces
         }
       }
       """
-      Given my env includes "{\"NODE_OPTIONS\":\"--loader ts-node/esm\"}"
+      Given my env includes "{\"NODE_OPTIONS\":\"--loader ts-node/esm --enable-source-maps\"}"
       When I run cucumber-js with `--import features/steps.ts`
       Then the output contains the text:
       """
