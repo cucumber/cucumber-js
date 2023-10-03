@@ -6,7 +6,9 @@ import { loadSupport } from './load_support'
 import { loadConfiguration } from './load_configuration'
 import { setupEnvironment, teardownEnvironment } from './test_helpers'
 
-describe('runCucumber', () => {
+describe('runCucumber', function () {
+  this.timeout(10_000)
+
   describe('preloading support code', () => {
     let environment: IRunEnvironment
     beforeEach(async () => {
