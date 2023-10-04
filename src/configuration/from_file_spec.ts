@@ -179,5 +179,17 @@ p1:
       const result = await fromFile(logger, cwd, 'cucumber.yml', ['p1'])
       expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
     })
+
+    it('should throw for an unsupported format', async () => {
+      const { logger, cwd } = await setup('cucumber.foo', `{}`)
+      try {
+        await fromFile(logger, cwd, 'cucumber.foo', ['p1'])
+        expect.fail('should have thrown')
+      } catch (error) {
+        expect(error.message).to.eq(
+          'Unsupported configuration file extension ".foo"'
+        )
+      }
+    })
   })
 })

@@ -78,7 +78,7 @@ async function loadFile(
       }
       break
     default:
-      throw new Error(`Unsupported configuration file extension ${extension}`)
+      throw new Error(`Unsupported configuration file extension "${extension}"`)
   }
   if (typeof definitions !== 'object') {
     throw new Error(`Configuration file ${filePath} does not export an object`)
