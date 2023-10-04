@@ -9,6 +9,7 @@ import { mergeConfigurations } from './merge_configurations'
 import ArgvParser from './argv_parser'
 import { checkSchema } from './check_schema'
 import { ILogger } from '../logger'
+import readPkgUp from 'read-pkg-up'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
@@ -61,22 +62,33 @@ async function loadFile(
         await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
       )
       break
-    default:
-      try {
+    case '.cjs':
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      definitions = require(filePath)
+      break
+    case '.mjs':
+      definitions = await importer(pathToFileURL(filePath))
+      break
+    case '.js':
+      if (await isModule(filePath)) {
+        definitions = await importer(pathToFileURL(filePath))
+      } else {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         definitions = require(filePath)
-      } catch (error) {
-        if (error.code === 'ERR_REQUIRE_ESM') {
-          definitions = await importer(pathToFileURL(filePath))
-        } else {
-          throw error
-        }
       }
+      break
+    default:
+      throw new Error(`Unsupported configuration file extension ${extension}`)
   }
   if (typeof definitions !== 'object') {
     throw new Error(`Configuration file ${filePath} does not export an object`)
   }
   return definitions
+}
+
+async function isModule(filePath: string) {
+  const parentPackage = await readPkgUp({ cwd: path.dirname(filePath) })
+  return parentPackage?.packageJson?.type === 'module'
 }
 
 function extractConfiguration(
