@@ -20,7 +20,7 @@ export async function fromFile(
   file: string,
   profiles: string[] = []
 ): Promise<Partial<IConfiguration>> {
-  const definitions = await loadFile(cwd, file)
+  const definitions = await loadFile(logger, cwd, file)
   if (!definitions.default) {
     logger.debug('No default profile defined in configuration file')
     definitions.default = {}
@@ -44,6 +44,7 @@ export async function fromFile(
 }
 
 async function loadFile(
+  logger: ILogger,
   cwd: string,
   file: string
 ): Promise<Record<string, any>> {
@@ -63,16 +64,28 @@ async function loadFile(
       )
       break
     case '.cjs':
+      logger.debug(
+        `Loading configuration file "${file}" as CommonJS based on file extension`
+      )
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       definitions = require(filePath)
       break
     case '.mjs':
+      logger.debug(
+        `Loading configuration file "${file}" as ESM based on file extension`
+      )
       definitions = await importer(pathToFileURL(filePath))
       break
     case '.js':
       if (await isModule(filePath)) {
+        logger.debug(
+          `Loading configuration file "${file}" as ESM based on package type`
+        )
         definitions = await importer(pathToFileURL(filePath))
       } else {
+        logger.debug(
+          `Loading configuration file "${file}" as CommonJS based on package type`
+        )
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         definitions = require(filePath)
       }
