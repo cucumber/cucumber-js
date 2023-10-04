@@ -65,29 +65,38 @@ async function loadFile(
       break
     case '.cjs':
       logger.debug(
-        `Loading configuration file "${file}" as CommonJS based on file extension`
+        `Loading configuration file "${file}" as CommonJS based on extension`
       )
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       definitions = require(filePath)
       break
     case '.mjs':
       logger.debug(
-        `Loading configuration file "${file}" as ESM based on file extension`
+        `Loading configuration file "${file}" as ESM based on extension`
       )
       definitions = await importer(pathToFileURL(filePath))
       break
     case '.js':
-      if (await isModule(filePath)) {
-        logger.debug(
-          `Loading configuration file "${file}" as ESM based on package type`
-        )
-        definitions = await importer(pathToFileURL(filePath))
-      } else {
-        logger.debug(
-          `Loading configuration file "${file}" as CommonJS based on package type`
-        )
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        definitions = require(filePath)
+      {
+        const parentPackage = await readPackageJson(filePath)
+        if (!parentPackage) {
+          logger.debug(
+            `Loading configuration file "${file}" as CommonJS based on absence of a parent package`
+          )
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          definitions = require(filePath)
+        } else if (parentPackage.type === 'module') {
+          logger.debug(
+            `Loading configuration file "${file}" as ESM based on package "${parentPackage.name}" type`
+          )
+          definitions = await importer(pathToFileURL(filePath))
+        } else {
+          logger.debug(
+            `Loading configuration file "${file}" as CommonJS based on package "${parentPackage.name}" type`
+          )
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          definitions = require(filePath)
+        }
       }
       break
     default:
@@ -99,9 +108,9 @@ async function loadFile(
   return definitions
 }
 
-async function isModule(filePath: string) {
+async function readPackageJson(filePath: string) {
   const parentPackage = await readPkgUp({ cwd: path.dirname(filePath) })
-  return parentPackage?.packageJson?.type === 'module'
+  return parentPackage?.packageJson
 }
 
 function extractConfiguration(
