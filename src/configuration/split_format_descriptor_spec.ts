@@ -1,8 +1,9 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import { splitFormatDescriptor } from './split_format_descriptor'
+import { FakeLogger } from '../../test/fake_logger'
 
-describe('OptionSplitter', () => {
+describe('splitFormatDescriptor', () => {
   const examples = [
     {
       description: "doesn't split when nothing to split on, adds empty string",
@@ -182,7 +183,8 @@ describe('OptionSplitter', () => {
 
   examples.forEach(({ description, input, output }) => {
     it(description, () => {
-      expect(splitFormatDescriptor(input)).to.eql(output)
+      const logger = new FakeLogger()
+      expect(splitFormatDescriptor(logger, input)).to.eql(output)
     })
   })
 })

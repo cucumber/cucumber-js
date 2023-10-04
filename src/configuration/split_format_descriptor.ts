@@ -1,4 +1,9 @@
-export function splitFormatDescriptor(option: string): string[] {
+import { ILogger } from '../logger'
+
+export function splitFormatDescriptor(
+  logger: ILogger,
+  option: string
+): string[] {
   let result: string[]
   let match1, match2
 
