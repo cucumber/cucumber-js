@@ -87,12 +87,12 @@ async function loadFile(
           definitions = require(filePath)
         } else if (parentPackage.type === 'module') {
           logger.debug(
-            `Loading configuration file "${file}" as ESM based on package "${parentPackage.name}" type`
+            `Loading configuration file "${file}" as ESM based on "${parentPackage.name}" package type`
           )
           definitions = await importer(pathToFileURL(filePath))
         } else {
           logger.debug(
-            `Loading configuration file "${file}" as CommonJS based on package "${parentPackage.name}" type`
+            `Loading configuration file "${file}" as CommonJS based on "${parentPackage.name}" package type`
           )
           // eslint-disable-next-line @typescript-eslint/no-var-requires
           definitions = require(filePath)
