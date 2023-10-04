@@ -2,6 +2,7 @@ import stringArgv from 'string-argv'
 import fs from 'fs'
 import path from 'path'
 import YAML from 'yaml'
+import readPkgUp from 'read-pkg-up'
 import { promisify } from 'util'
 import { pathToFileURL } from 'url'
 import { IConfiguration } from './types'
@@ -9,7 +10,6 @@ import { mergeConfigurations } from './merge_configurations'
 import ArgvParser from './argv_parser'
 import { checkSchema } from './check_schema'
 import { ILogger } from '../logger'
-import readPkgUp from 'read-pkg-up'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { importer } = require('../importer')
