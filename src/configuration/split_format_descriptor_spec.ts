@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { OptionSplitter } from './option_splitter'
+import { splitFormatDescriptor } from './split_format_descriptor'
 
 describe('OptionSplitter', () => {
   const examples = [
@@ -182,7 +182,7 @@ describe('OptionSplitter', () => {
 
   examples.forEach(({ description, input, output }) => {
     it(description, () => {
-      expect(OptionSplitter.split(input)).to.eql(output)
+      expect(splitFormatDescriptor(input)).to.eql(output)
     })
   })
 })

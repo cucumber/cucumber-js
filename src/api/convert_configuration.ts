@@ -1,7 +1,7 @@
 import {
   IConfiguration,
   isTruthyString,
-  OptionSplitter,
+  splitFormatDescriptor,
 } from '../configuration'
 import { IPublishConfig } from '../formatter'
 import { IRunConfiguration } from './types'
@@ -42,7 +42,7 @@ function convertFormats(
   env: NodeJS.ProcessEnv
 ) {
   const splitFormats: string[][] = flatConfiguration.format.map((item) =>
-    Array.isArray(item) ? item : OptionSplitter.split(item)
+    Array.isArray(item) ? item : splitFormatDescriptor(item)
   )
   return {
     stdout:
