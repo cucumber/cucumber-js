@@ -9,7 +9,10 @@ export function splitFormatDescriptor(
     if (result[1]) {
       expected += `:"${result[1]}"`
     }
-    logger.warn(`Should be ${expected}`)
+    logger.warn(
+      `Each part of a user-specified format should be quoted; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md#ambiguous-colons-in-formats
+Change to ${expected}`
+    )
   }
   let result: string[]
   let match1, match2
