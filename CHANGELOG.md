@@ -10,6 +10,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ## [Unreleased]
 ### Fixed
 - Improve handling of formatter paths ([#2315](https://github.com/cucumber/cucumber-js/pull/2315))
+- Warn on ambiguous colons in formatter paths ([#2335](https://github.com/cucumber/cucumber-js/pull/2335))
 
 ## [9.5.1] - 2023-09-06
 ### Fixed
