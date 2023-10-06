@@ -4,6 +4,13 @@ export function splitFormatDescriptor(
   logger: ILogger,
   option: string
 ): string[] {
+  const doWarning = (result: string[]) => {
+    let expected = `"${result[0]}"`
+    if (result[1]) {
+      expected += `:"${result[1]}"`
+    }
+    logger.warn(`Should be ${expected}`)
+  }
   let result: string[]
   let match1, match2
 
@@ -16,11 +23,17 @@ export function splitFormatDescriptor(
     // "foo":bar
     else {
       result = [match1[1], match1[2]]
+      if (result[1].includes(':')) {
+        doWarning(result)
+      }
     }
   }
   // foo:"bar"
   else if ((match1 = option.match(/^(.*):"([^"]*)"$/)) !== null) {
     result = [match1[1], match1[2]]
+    if (result[0].includes(':')) {
+      doWarning(result)
+    }
   }
   // "foo"
   else if ((match1 = option.match(/^"([^"]*)"$/)) !== null) {
@@ -36,6 +49,7 @@ export function splitFormatDescriptor(
     } else {
       result = [option, '']
     }
+    doWarning(result)
   }
   // C:\foo or C:/foo
   else if ((match1 = option.match(/^([a-zA-Z]:[/\\])(.*)$/)) !== null) {
@@ -45,10 +59,14 @@ export function splitFormatDescriptor(
     } else {
       result = [option, '']
     }
+    doWarning(result)
   }
   // foo:bar
   else if ((match1 = option.match(/^([^:]*):(.*)$/)) !== null) {
     result = [match1[1], match1[2]]
+    if (option.split(':').length > 2) {
+      doWarning(result)
+    }
   }
   // foo
   else {

@@ -24,6 +24,8 @@ describe('splitFormatDescriptor', () => {
       description: 'splits file URLs for absolute unix path',
       input: 'file:///custom/formatter:file:///formatter/output.txt',
       output: ['file:///custom/formatter', 'file:///formatter/output.txt'],
+      warning:
+        'Should be "file:///custom/formatter":"file:///formatter/output.txt"',
     },
     {
       description: 'splits file URLs for UNC path',
@@ -33,6 +35,8 @@ describe('splitFormatDescriptor', () => {
         'file://hostname/custom/formatter',
         'file://hostname/formatter/output.txt',
       ],
+      warning:
+        'Should be "file://hostname/custom/formatter":"file://hostname/formatter/output.txt"',
     },
     {
       description: 'splits file URLs for absolute windows path',
@@ -41,6 +45,8 @@ describe('splitFormatDescriptor', () => {
         'file://C:\\custom\\formatter',
         'file://C:\\formatter\\output.txt',
       ],
+      warning:
+        'Should be "file://C:\\custom\\formatter":"file://C:\\formatter\\output.txt"',
     },
     {
       description:
@@ -50,6 +56,8 @@ describe('splitFormatDescriptor', () => {
         'file:///C:/custom/formatter',
         'file:///C:/formatter/output.txt',
       ],
+      warning:
+        'Should be "file:///C:/custom/formatter":"file:///C:/formatter/output.txt"',
     },
     {
       description: 'splits valid file URLs for absolute windows path',
@@ -58,6 +66,8 @@ describe('splitFormatDescriptor', () => {
         'file:///C:\\custom\\formatter',
         'file:///C:\\formatter\\output.txt',
       ],
+      warning:
+        'Should be "file:///C:\\custom\\formatter":"file:///C:\\formatter\\output.txt"',
     },
     {
       description:
@@ -67,6 +77,8 @@ describe('splitFormatDescriptor', () => {
         'file:///C:/custom/formatter',
         'file:///C:/formatter/output.txt',
       ],
+      warning:
+        'Should be "file:///C:/custom/formatter":"file:///C:/formatter/output.txt"',
     },
     {
       description: 'splits absolute unix paths',
@@ -77,12 +89,14 @@ describe('splitFormatDescriptor', () => {
       description: 'splits absolute windows paths',
       input: 'C:\\custom\\formatter:C:\\formatter\\output.txt',
       output: ['C:\\custom\\formatter', 'C:\\formatter\\output.txt'],
+      warning: 'Should be "C:\\custom\\formatter":"C:\\formatter\\output.txt"',
     },
     {
       description:
         'splits absolute windows paths with "/" as directory separator',
       input: 'C:/custom/formatter:C:/formatter/output.txt',
       output: ['C:/custom/formatter', 'C:/formatter/output.txt'],
+      warning: 'Should be "C:/custom/formatter":"C:/formatter/output.txt"',
     },
     {
       description: 'splits UNC paths',
@@ -111,48 +125,56 @@ describe('splitFormatDescriptor', () => {
         'does not split a single file URL for absolute unix path, adds empty string',
       input: 'file:///custom/formatter',
       output: ['file:///custom/formatter', ''],
+      warning: 'Should be "file:///custom/formatter"',
     },
     {
       description:
         'does not split a single file URL for UNC path, adds empty string',
       input: 'file://hostname/custom/formatter',
       output: ['file://hostname/custom/formatter', ''],
+      warning: 'Should be "file://hostname/custom/formatter"',
     },
     {
       description:
         'does not split a single file URL for absolute windows path, adds empty string',
       input: 'file://C:\\custom\\formatter',
       output: ['file://C:\\custom\\formatter', ''],
+      warning: 'Should be "file://C:\\custom\\formatter"',
     },
     {
       description:
         'does not split a single file URL for absolute windows path with "/" as directory separator, adds empty string',
       input: 'file://C:/custom/formatter',
       output: ['file://C:/custom/formatter', ''],
+      warning: 'Should be "file://C:/custom/formatter"',
     },
     {
       description:
         'does not split a valid single file URL for absolute windows path, adds empty string',
       input: 'file:///C:\\custom\\formatter',
       output: ['file:///C:\\custom\\formatter', ''],
+      warning: 'Should be "file:///C:\\custom\\formatter"',
     },
     {
       description:
         'does not split a valid single file URL for absolute windows path with "/" as directory separator, adds empty string',
       input: 'file:///C:/custom/formatter',
       output: ['file:///C:/custom/formatter', ''],
+      warning: 'Should be "file:///C:/custom/formatter"',
     },
     {
       description:
         'does not split a single absolute windows path, adds empty string',
       input: 'C:\\custom\\formatter',
       output: ['C:\\custom\\formatter', ''],
+      warning: 'Should be "C:\\custom\\formatter"',
     },
     {
       description:
         'does not split a single absolute windows path with "/" as directory separator, adds empty string',
       input: 'C:/custom/formatter',
       output: ['C:/custom/formatter', ''],
+      warning: 'Should be "C:/custom/formatter"',
     },
     {
       description: 'does not split quoted values: case 1',
@@ -163,11 +185,13 @@ describe('splitFormatDescriptor', () => {
       description: 'does not split quoted values: case 2',
       input: '"foo:bar":baz:qux',
       output: ['foo:bar', 'baz:qux'],
+      warning: 'Should be "foo:bar":"baz:qux"',
     },
     {
       description: 'does not split quoted values: case 3',
       input: 'foo:bar:"baz:qux"',
       output: ['foo:bar', 'baz:qux'],
+      warning: 'Should be "foo:bar":"baz:qux"',
     },
     {
       description: 'does not split quoted values: case 4',
@@ -178,13 +202,19 @@ describe('splitFormatDescriptor', () => {
       description: 'splits string contains multiple ":"',
       input: 'foo:bar:baz:qux',
       output: ['foo', 'bar:baz:qux'],
+      warning: 'Should be "foo":"bar:baz:qux"',
     },
   ]
 
-  examples.forEach(({ description, input, output }) => {
+  examples.forEach(({ description, input, output, warning }) => {
     it(description, () => {
       const logger = new FakeLogger()
       expect(splitFormatDescriptor(logger, input)).to.eql(output)
+      if (warning) {
+        expect(logger.warn).to.have.been.calledWith(warning)
+      } else {
+        expect(logger.warn).not.to.have.been.called()
+      }
     })
   })
 })
