@@ -54,6 +54,17 @@ The `publishQuiet` option (or `--publish-quiet` on the CLI) was used to hide the
 
 To adapt, remove the option from your configuration files and CLI commands (especially the latter, since the CLI will fail on unrecognised options).
 
+### Ambiguous colons in formats
+
+Deprecated in `9.6.0`. Will be removed in `11.0.0` or later.
+
+User-specified formats where either the formatter name/path or the target path (or both) contains colon(s) are ambiguous because the separator between the two parts is also a colon. Cucumber tries to detect and handle things like Windows drives and `file://` URLs on a best-effort basis, but this logic is being removed in favour of wrapping values in double-quotes.
+
+| Before                                       | After                                            |
+|----------------------------------------------|--------------------------------------------------|
+| `html:file://hostname/formatter/report.html` | `"html":"file://hostname/formatter/report.html"` |
+| `file://C:\custom\formatter`                 | `"file://C:\custom\formatter"`                   |
+
 ## Previous deprecations
 
 For deprecations that have been completed (i.e. the functionality removed), see [UPGRADING.md](../UPGRADING.md).

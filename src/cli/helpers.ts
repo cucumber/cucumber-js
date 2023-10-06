@@ -3,7 +3,6 @@ import { EventEmitter } from 'events'
 import PickleFilter from '../pickle_filter'
 import { EventDataCollector } from '../formatter/helpers'
 import { doesHaveValue } from '../value_checker'
-import { OptionSplitter } from '../configuration'
 import { Readable } from 'stream'
 import os from 'os'
 import * as messages from '@cucumber/messages'
@@ -71,7 +70,7 @@ export function orderPickles<T = string>(
   order: PickleOrder,
   logger: ILogger
 ): void {
-  const [type, seed] = OptionSplitter.split(order)
+  const [type, seed] = splitOrder(order)
   switch (type) {
     case 'defined':
       break
@@ -89,6 +88,13 @@ export function orderPickles<T = string>(
         'Unrecgonized order type. Should be `defined` or `random`'
       )
   }
+}
+
+function splitOrder(order: string) {
+  if (!order.includes(':')) {
+    return [order, '']
+  }
+  return order.split(':')
 }
 
 export async function emitMetaMessage(
