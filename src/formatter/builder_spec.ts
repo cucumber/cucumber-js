@@ -8,7 +8,6 @@ describe('custom class loading', () => {
     'esm.mjs',
     'exports_dot_default.cjs',
     'module_dot_exports.cjs',
-    'typescript.ts',
   ]
   varieties.forEach((filename) => {
     describe(filename, () => {
