@@ -2,7 +2,10 @@ import { Given, defineParameterType } from '../../../src'
 import { expect } from 'chai'
 
 class Flight {
-  constructor(public readonly from: string, public readonly to: string) {}
+  constructor(
+    public readonly from: string,
+    public readonly to: string
+  ) {}
 }
 
 defineParameterType({

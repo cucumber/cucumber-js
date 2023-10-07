@@ -123,9 +123,9 @@ const FormatterBuilder = {
     let result
     try {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      result = require(typeof urlOrName === 'string'
-        ? urlOrName
-        : fileURLToPath(urlOrName))
+      result = require(
+        typeof urlOrName === 'string' ? urlOrName : fileURLToPath(urlOrName)
+      )
     } catch (error) {
       if (error.code === 'ERR_REQUIRE_ESM') {
         result = await importer(urlOrName)
