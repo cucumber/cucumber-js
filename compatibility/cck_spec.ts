@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { config, expect, use } from 'chai'
 import chaiExclude from 'chai-exclude'
-import glob from 'glob'
+import { glob } from 'glob'
 import fs from 'fs'
 import path from 'path'
 import { PassThrough, pipeline, Writable } from 'stream'
@@ -20,8 +20,9 @@ const CCK_IMPLEMENTATIONS_PATH = 'compatibility/features'
 config.truncateThreshold = 100
 use(chaiExclude)
 
-describe('Cucumber Compatibility Kit', () => {
-  glob.sync(`${CCK_FEATURES_PATH}/**/*.ndjson`).forEach((fixturePath) => {
+describe('Cucumber Compatibility Kit', async () => {
+  const ndjsonFiles = await glob(`${CCK_FEATURES_PATH}/**/*.ndjson`)
+  ndjsonFiles.forEach((fixturePath) => {
     const match = /^.+\/(.+)(\.feature(?:\.md)?)\.ndjson$/.exec(fixturePath)
     const suiteName = match[1]
     const extension = match[2]
