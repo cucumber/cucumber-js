@@ -201,10 +201,10 @@
   },
   "types": "./lib/index.d.ts",
   "engines": {
-    "node": "14 || 16 || >=18"
+    "node": "18 || >=20"
   },
   "enginesTested": {
-    "node": "14 || 16 || 18 || 19"
+    "node": "18 || 20"
   },
   "dependencies": {
     "@cucumber/ci-environment": "9.2.0",
@@ -268,7 +268,7 @@
     "@types/mocha": "10.0.1",
     "@types/mustache": "4.2.2",
     "@types/mz": "2.7.4",
-    "@types/node": "18.11.18",
+    "@types/node": "20.8.3",
     "@types/progress": "2.0.5",
     "@types/semver": "7.5.0",
     "@types/sinon-chai": "3.2.9",

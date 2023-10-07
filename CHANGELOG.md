@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Add support for Node.js 20 ([#2331](https://github.com/cucumber/cucumber-js/pull/2331))
+
+### Removed
+- BREAKING CHANGE: Drop support for Node.js 14, 16 and 19 ([#2331](https://github.com/cucumber/cucumber-js/pull/2331))
 
 ## [9.6.0] - 2023-10-07
 ### Fixed
