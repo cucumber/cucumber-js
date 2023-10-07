@@ -14,6 +14,9 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Removed
 - BREAKING CHANGE: Drop support for Node.js 14, 16 and 19 ([#2331](https://github.com/cucumber/cucumber-js/pull/2331))
 
+### Fixed
+- Ensure attached string literals are base64-encoded in JSON reports ([#2260](https://github.com/cucumber/cucumber-js/issues/2260))
+
 ## [9.6.0] - 2023-10-07
 ### Fixed
 - Improve handling of formatter paths ([#2315](https://github.com/cucumber/cucumber-js/pull/2315))
