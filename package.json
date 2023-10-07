@@ -201,10 +201,10 @@
   },
   "types": "./lib/index.d.ts",
   "engines": {
-    "node": "14 || 16 || >=18"
+    "node": "18 || >=20"
   },
   "enginesTested": {
-    "node": "14 || 16 || 18 || 19"
+    "node": "18 || 20"
   },
   "dependencies": {
     "@cucumber/ci-environment": "9.2.0",
@@ -224,7 +224,7 @@
     "debug": "^4.3.4",
     "error-stack-parser": "^2.1.4",
     "figures": "^3.2.0",
-    "glob": "^7.1.6",
+    "glob": "^10.3.10",
     "has-ansi": "^4.0.1",
     "indent-string": "^4.0.0",
     "is-installed-globally": "^0.4.0",
@@ -261,7 +261,7 @@
     "@types/dirty-chai": "2.0.2",
     "@types/express": "4.17.15",
     "@types/fs-extra": "9.0.13",
-    "@types/glob": "7.2.0",
+    "@types/glob": "8.1.0",
     "@types/has-ansi": "5.0.0",
     "@types/lodash.merge": "4.6.7",
     "@types/lodash.mergewith": "4.6.7",
@@ -269,7 +269,7 @@
     "@types/mocha": "10.0.1",
     "@types/mustache": "4.2.2",
     "@types/mz": "2.7.4",
-    "@types/node": "18.11.18",
+    "@types/node": "20.8.3",
     "@types/progress": "2.0.5",
     "@types/semver": "7.5.0",
     "@types/sinon-chai": "3.2.9",

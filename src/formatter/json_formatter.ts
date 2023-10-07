@@ -293,7 +293,11 @@ export default class JsonFormatter extends Formatter {
     }
     if (testStepAttachments?.length > 0) {
       data.embeddings = testStepAttachments.map((attachment) => ({
-        data: attachment.body,
+        data:
+          attachment.contentEncoding ===
+          messages.AttachmentContentEncoding.IDENTITY
+            ? Buffer.from(attachment.body).toString('base64')
+            : attachment.body,
         mime_type: attachment.mediaType,
       }))
     }
