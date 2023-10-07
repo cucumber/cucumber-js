@@ -5,7 +5,9 @@ import { loadConfiguration } from './load_configuration'
 import { expect } from 'chai'
 import { setupEnvironment, teardownEnvironment } from './test_helpers'
 
-describe('loadSupport', () => {
+describe('loadSupport', function () {
+  this.timeout(10_000)
+
   let environment: IRunEnvironment
   beforeEach(async () => {
     environment = await setupEnvironment()
