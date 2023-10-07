@@ -1,8 +1,9 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { OptionSplitter } from './option_splitter'
+import { splitFormatDescriptor } from './split_format_descriptor'
+import { FakeLogger } from '../../test/fake_logger'
 
-describe('OptionSplitter', () => {
+describe('splitFormatDescriptor', () => {
   const examples = [
     {
       description: "doesn't split when nothing to split on, adds empty string",
@@ -23,6 +24,8 @@ describe('OptionSplitter', () => {
       description: 'splits file URLs for absolute unix path',
       input: 'file:///custom/formatter:file:///formatter/output.txt',
       output: ['file:///custom/formatter', 'file:///formatter/output.txt'],
+      warning:
+        'Change to "file:///custom/formatter":"file:///formatter/output.txt"',
     },
     {
       description: 'splits file URLs for UNC path',
@@ -32,6 +35,8 @@ describe('OptionSplitter', () => {
         'file://hostname/custom/formatter',
         'file://hostname/formatter/output.txt',
       ],
+      warning:
+        'Change to "file://hostname/custom/formatter":"file://hostname/formatter/output.txt"',
     },
     {
       description: 'splits file URLs for absolute windows path',
@@ -40,6 +45,8 @@ describe('OptionSplitter', () => {
         'file://C:\\custom\\formatter',
         'file://C:\\formatter\\output.txt',
       ],
+      warning:
+        'Change to "file://C:\\custom\\formatter":"file://C:\\formatter\\output.txt"',
     },
     {
       description:
@@ -49,6 +56,8 @@ describe('OptionSplitter', () => {
         'file:///C:/custom/formatter',
         'file:///C:/formatter/output.txt',
       ],
+      warning:
+        'Change to "file:///C:/custom/formatter":"file:///C:/formatter/output.txt"',
     },
     {
       description: 'splits valid file URLs for absolute windows path',
@@ -57,6 +66,8 @@ describe('OptionSplitter', () => {
         'file:///C:\\custom\\formatter',
         'file:///C:\\formatter\\output.txt',
       ],
+      warning:
+        'Change to "file:///C:\\custom\\formatter":"file:///C:\\formatter\\output.txt"',
     },
     {
       description:
@@ -66,6 +77,8 @@ describe('OptionSplitter', () => {
         'file:///C:/custom/formatter',
         'file:///C:/formatter/output.txt',
       ],
+      warning:
+        'Change to "file:///C:/custom/formatter":"file:///C:/formatter/output.txt"',
     },
     {
       description: 'splits absolute unix paths',
@@ -76,12 +89,14 @@ describe('OptionSplitter', () => {
       description: 'splits absolute windows paths',
       input: 'C:\\custom\\formatter:C:\\formatter\\output.txt',
       output: ['C:\\custom\\formatter', 'C:\\formatter\\output.txt'],
+      warning: 'Change to "C:\\custom\\formatter":"C:\\formatter\\output.txt"',
     },
     {
       description:
         'splits absolute windows paths with "/" as directory separator',
       input: 'C:/custom/formatter:C:/formatter/output.txt',
       output: ['C:/custom/formatter', 'C:/formatter/output.txt'],
+      warning: 'Change to "C:/custom/formatter":"C:/formatter/output.txt"',
     },
     {
       description: 'splits UNC paths',
@@ -110,48 +125,56 @@ describe('OptionSplitter', () => {
         'does not split a single file URL for absolute unix path, adds empty string',
       input: 'file:///custom/formatter',
       output: ['file:///custom/formatter', ''],
+      warning: 'Change to "file:///custom/formatter"',
     },
     {
       description:
         'does not split a single file URL for UNC path, adds empty string',
       input: 'file://hostname/custom/formatter',
       output: ['file://hostname/custom/formatter', ''],
+      warning: 'Change to "file://hostname/custom/formatter"',
     },
     {
       description:
         'does not split a single file URL for absolute windows path, adds empty string',
       input: 'file://C:\\custom\\formatter',
       output: ['file://C:\\custom\\formatter', ''],
+      warning: 'Change to "file://C:\\custom\\formatter"',
     },
     {
       description:
         'does not split a single file URL for absolute windows path with "/" as directory separator, adds empty string',
       input: 'file://C:/custom/formatter',
       output: ['file://C:/custom/formatter', ''],
+      warning: 'Change to "file://C:/custom/formatter"',
     },
     {
       description:
         'does not split a valid single file URL for absolute windows path, adds empty string',
       input: 'file:///C:\\custom\\formatter',
       output: ['file:///C:\\custom\\formatter', ''],
+      warning: 'Change to "file:///C:\\custom\\formatter"',
     },
     {
       description:
         'does not split a valid single file URL for absolute windows path with "/" as directory separator, adds empty string',
       input: 'file:///C:/custom/formatter',
       output: ['file:///C:/custom/formatter', ''],
+      warning: 'Change to "file:///C:/custom/formatter"',
     },
     {
       description:
         'does not split a single absolute windows path, adds empty string',
       input: 'C:\\custom\\formatter',
       output: ['C:\\custom\\formatter', ''],
+      warning: 'Change to "C:\\custom\\formatter"',
     },
     {
       description:
         'does not split a single absolute windows path with "/" as directory separator, adds empty string',
       input: 'C:/custom/formatter',
       output: ['C:/custom/formatter', ''],
+      warning: 'Change to "C:/custom/formatter"',
     },
     {
       description: 'does not split quoted values: case 1',
@@ -162,11 +185,13 @@ describe('OptionSplitter', () => {
       description: 'does not split quoted values: case 2',
       input: '"foo:bar":baz:qux',
       output: ['foo:bar', 'baz:qux'],
+      warning: 'Change to "foo:bar":"baz:qux"',
     },
     {
       description: 'does not split quoted values: case 3',
       input: 'foo:bar:"baz:qux"',
       output: ['foo:bar', 'baz:qux'],
+      warning: 'Change to "foo:bar":"baz:qux"',
     },
     {
       description: 'does not split quoted values: case 4',
@@ -177,12 +202,20 @@ describe('OptionSplitter', () => {
       description: 'splits string contains multiple ":"',
       input: 'foo:bar:baz:qux',
       output: ['foo', 'bar:baz:qux'],
+      warning: 'Change to "foo":"bar:baz:qux"',
     },
   ]
 
-  examples.forEach(({ description, input, output }) => {
+  examples.forEach(({ description, input, output, warning }) => {
     it(description, () => {
-      expect(OptionSplitter.split(input)).to.eql(output)
+      const logger = new FakeLogger()
+      expect(splitFormatDescriptor(logger, input)).to.eql(output)
+      if (warning) {
+        expect(logger.warn).to.have.been.called()
+        expect(logger.warn.firstCall.firstArg as string).to.contain(warning)
+      } else {
+        expect(logger.warn).not.to.have.been.called()
+      }
     })
   })
 })

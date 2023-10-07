@@ -7,7 +7,7 @@ cucumber-js provides many built-in Formatters, plus building blocks with which y
 You can specify one or more formats via the `format` configuration option:
 
 - In a configuration file `{ format: ['progress-bar', ['html', 'cucumber-report.html']] }`
-- On the CLI `$ cucumber-js --format progress-bar --format html:cucumber-report.html`
+- On the CLI `$ cucumber-js --format progress-bar --format "html":"cucumber-report.html"`
 
 For each format you specify, you have to provide one or two values. The first (required) is to identify the formatter. It can take a few forms:
 
@@ -18,7 +18,7 @@ For each format you specify, you have to provide one or two values. The first (r
 
 Without a second value, the formatter will print to `stdout`. The second value, if present, is a path to where the formatter output should be written. If the path includes directories that do not yet exist, they will be created.
 
-On the CLI, when specifying both a name and path, you'll need to use `:` as a delimiter. In a configuration file you can do this too, but you can also provide an array with the two values as separate strings, which is recommended. 
+On the CLI, when specifying both a name and path, you'll need to use `:` as a delimiter and wrap each side of it with double quotes. In a configuration file you can do this too, but you can also provide an array with the two values as separate strings, which is recommended. 
 
 Some notes on specifying Formatters:
 
