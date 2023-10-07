@@ -15,8 +15,6 @@ import { Writable as WritableStream } from 'stream'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 import { pathToFileURL } from 'url'
 import Formatters from './helpers/formatters'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { importer } = require('../importer')
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
@@ -120,7 +118,7 @@ const FormatterBuilder = {
   },
 
   async loadFile(urlOrName: URL | string) {
-    return await importer(urlOrName)
+    return await import(urlOrName.toString())
   },
 
   resolveConstructor(ImportedCode: any) {

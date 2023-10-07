@@ -11,9 +11,6 @@ import ArgvParser from './argv_parser'
 import { checkSchema } from './check_schema'
 import { ILogger } from '../logger'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { importer } = require('../importer')
-
 export async function fromFile(
   logger: ILogger,
   cwd: string,
@@ -74,7 +71,7 @@ async function loadFile(
       logger.debug(
         `Loading configuration file "${file}" as ESM based on extension`
       )
-      definitions = await importer(pathToFileURL(filePath))
+      definitions = await import(pathToFileURL(filePath).toString())
       break
     case '.js':
       {
@@ -89,7 +86,7 @@ async function loadFile(
           logger.debug(
             `Loading configuration file "${file}" as ESM based on "${parentPackage.name}" package type`
           )
-          definitions = await importer(pathToFileURL(filePath))
+          definitions = await import(pathToFileURL(filePath).toString())
         } else {
           logger.debug(
             `Loading configuration file "${file}" as CommonJS based on "${parentPackage.name}" package type`
