@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [9.6.0] - 2023-10-07
 ### Fixed
 - Improve handling of formatter paths ([#2315](https://github.com/cucumber/cucumber-js/pull/2315))
 - Warn on ambiguous colons in formatter paths ([#2335](https://github.com/cucumber/cucumber-js/pull/2335))
@@ -1535,7 +1537,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.5.1...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.6.0...HEAD
+[9.6.0]: https://github.com/cucumber/cucumber-js/compare/v9.5.1...v9.6.0
 [9.5.1]: https://github.com/cucumber/cucumber-js/compare/v9.5.0...v9.5.1
 [9.5.0]: https://github.com/cucumber/cucumber-js/compare/v9.4.0...v9.5.0
 [9.4.0]: https://github.com/cucumber/cucumber-js/compare/v9.3.0...v9.4.0
