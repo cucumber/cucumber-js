@@ -41,8 +41,18 @@ Feature: Stack traces
       """
       And it fails
 
+    @esm
     Scenario: esm
-      Given my env includes "{\"NODE_OPTIONS\":\"--loader ts-node/esm\"}"
+      Given a file named "tsconfig.json" with:
+      """
+      {
+        "compilerOptions": {
+          "module": "esnext",
+          "moduleResolution": "nodenext"
+        }
+      }
+      """
+      Given my env includes "{\"NODE_OPTIONS\":\"--loader ts-node/esm --enable-source-maps\"}"
       When I run cucumber-js with `--import features/steps.ts`
       Then the output contains the text:
       """
