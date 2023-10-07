@@ -1,12 +1,14 @@
 import {
   IConfiguration,
   isTruthyString,
-  OptionSplitter,
+  splitFormatDescriptor,
 } from '../configuration'
 import { IPublishConfig } from '../formatter'
 import { IRunConfiguration } from './types'
+import { ILogger } from '../logger'
 
 export async function convertConfiguration(
+  logger: ILogger,
   flatConfiguration: IConfiguration,
   env: NodeJS.ProcessEnv
 ): Promise<IRunConfiguration> {
@@ -33,16 +35,17 @@ export async function convertConfiguration(
       strict: flatConfiguration.strict,
       worldParameters: flatConfiguration.worldParameters,
     },
-    formats: convertFormats(flatConfiguration, env),
+    formats: convertFormats(logger, flatConfiguration, env),
   }
 }
 
 function convertFormats(
+  logger: ILogger,
   flatConfiguration: IConfiguration,
   env: NodeJS.ProcessEnv
 ) {
   const splitFormats: string[][] = flatConfiguration.format.map((item) =>
-    Array.isArray(item) ? item : OptionSplitter.split(item)
+    Array.isArray(item) ? item : splitFormatDescriptor(logger, item)
   )
   return {
     stdout:

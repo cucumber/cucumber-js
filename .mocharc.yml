@@ -7,4 +7,4 @@ forbid-pending: true
 recursive: true
 reporter: dot
 require: 'ts-node/register'
-timeout: 5000
+timeout: 3000

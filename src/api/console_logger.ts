@@ -3,8 +3,10 @@ import { Writable } from 'stream'
 import { ILogger } from '../logger'
 
 export class ConsoleLogger implements ILogger {
-  private console: Console = new Console(this.stream)
-  constructor(private stream: Writable, private debugEnabled: boolean) {}
+  private console: Console
+  constructor(private stream: Writable, private debugEnabled: boolean) {
+    this.console = new Console(this.stream)
+  }
 
   debug(...content: any[]): void {
     if (this.debugEnabled) {
