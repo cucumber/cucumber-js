@@ -1,9 +1,9 @@
 import { IColorFns } from './get_color_fns'
 import { EventDataCollector } from './helpers'
 import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
-import { Writable } from 'stream'
+import { Writable } from 'node:stream'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 import { valueOrDefault } from '../value_checker'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 

@@ -5,13 +5,13 @@ import {
   emitSupportCodeMessages,
   parseGherkinMessageStream,
 } from './helpers'
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 import PickleFilter from '../pickle_filter'
 import * as messages from '@cucumber/messages'
 import { IdGenerator, SourceMediaType } from '@cucumber/messages'
 import { EventDataCollector } from '../formatter/helpers'
 import { GherkinStreams } from '@cucumber/gherkin-streams'
-import { Readable } from 'stream'
+import { Readable } from 'node:stream'
 import StepDefinition from '../models/step_definition'
 import {
   CucumberExpression,

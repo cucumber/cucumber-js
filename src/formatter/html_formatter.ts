@@ -2,8 +2,8 @@ import Formatter, { IFormatterOptions } from '.'
 import * as messages from '@cucumber/messages'
 import resolvePkg from 'resolve-pkg'
 import CucumberHtmlStream from '@cucumber/html-formatter'
-import { finished } from 'stream'
-import { promisify } from 'util'
+import { finished } from 'node:stream'
+import { promisify } from 'node:util'
 
 export default class HtmlFormatter extends Formatter {
   private readonly _htmlStream: CucumberHtmlStream

@@ -1,5 +1,5 @@
 import { glob } from 'glob'
-import path from 'path'
+import path from 'node:path'
 import fs from 'mz/fs'
 import { ISourcesCoordinates, ISupportCodeCoordinates } from './types'
 import { ILogger } from '../logger'

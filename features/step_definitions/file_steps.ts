@@ -4,7 +4,7 @@ import hasAnsi from 'has-ansi'
 import { normalizeText } from '../support/helpers'
 import fs from 'mz/fs'
 import fsExtra from 'fs-extra'
-import path from 'path'
+import path from 'node:path'
 import Mustache from 'mustache'
 import { World } from '../support/world'
 

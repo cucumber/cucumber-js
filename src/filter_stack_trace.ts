@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import { valueOrDefault } from './value_checker'
 import { StackFrame } from 'error-stack-parser'
 

@@ -1,9 +1,9 @@
 import { Given, Then, DataTable } from '../..'
 import { World } from '../support/world'
 import { expect } from 'chai'
-import { URL } from 'url'
+import { URL } from 'node:url'
 import FakeReportServer from '../../test/fake_report_server'
-import assert from 'assert'
+import assert from 'node:assert'
 
 Given(
   'a report server is running on {string}',

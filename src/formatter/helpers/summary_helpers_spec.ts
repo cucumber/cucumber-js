@@ -11,7 +11,7 @@ import { IRuntimeOptions } from '../../runtime'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesNotHaveValue } from '../../value_checker'
 import * as messages from '@cucumber/messages'
-import { PassThrough } from 'stream'
+import { PassThrough } from 'node:stream'
 
 interface ITestFormatSummaryOptions {
   runtimeOptions?: Partial<IRuntimeOptions>

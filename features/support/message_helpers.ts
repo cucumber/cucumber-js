@@ -3,7 +3,7 @@ import {
   getPickleStepMap,
   getStepKeyword,
 } from '../../src/formatter/helpers/pickle_parser'
-import util from 'util'
+import util from 'node:util'
 import * as messages from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 import { doesHaveValue, doesNotHaveValue } from '../../src/value_checker'

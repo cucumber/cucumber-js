@@ -6,7 +6,7 @@ import * as parallelCanAssignHelpers from './support_code_library_builder/parall
 import { default as _Runtime } from './runtime'
 import supportCodeLibraryBuilder from './support_code_library_builder'
 import * as messages from '@cucumber/messages'
-import { deprecate } from 'util'
+import { deprecate } from 'node:util'
 
 // Top level
 export { default as supportCodeLibraryBuilder } from './support_code_library_builder'

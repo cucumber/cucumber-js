@@ -1,5 +1,5 @@
 import { Envelope, IdGenerator, ParseError } from '@cucumber/messages'
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 import { EventDataCollector } from '../formatter/helpers'
 import { emitMetaMessage, emitSupportCodeMessages } from '../cli/helpers'
 import { IRunOptions, IRunEnvironment, IRunResult } from './types'

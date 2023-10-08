@@ -1,7 +1,7 @@
 import { Before, When, World } from '../../../src'
 import { ReadableStreamBuffer } from 'stream-buffers'
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 
 Before((): void => undefined)
 

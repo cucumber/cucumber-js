@@ -7,7 +7,7 @@ import { getTestCaseAttempts } from '../../../test/formatter_helpers'
 import { reindent } from 'reindent-template-literals'
 import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
 import FormatterBuilder from '../builder'
-import { PassThrough } from 'stream'
+import { PassThrough } from 'node:stream'
 
 async function testFormatIssue(
   sourceData: string,

@@ -1,8 +1,8 @@
 import { expect } from 'chai'
-import { promisify } from 'util'
-import fs from 'fs'
+import { promisify } from 'node:util'
+import fs from 'node:fs'
 import tmp, { DirOptions } from 'tmp'
-import path from 'path'
+import path from 'node:path'
 import { fromFile } from './from_file'
 import { FakeLogger } from '../../test/fake_logger'
 

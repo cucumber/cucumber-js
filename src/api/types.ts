@@ -3,7 +3,7 @@ import { FormatOptions, IPublishConfig } from '../formatter'
 import { PickleOrder } from '../models/pickle_order'
 import { IRuntimeOptions } from '../runtime'
 import { IConfiguration } from '../configuration'
-import { Writable } from 'stream'
+import { Writable } from 'node:stream'
 
 /**
  * @public

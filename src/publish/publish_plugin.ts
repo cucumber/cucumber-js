@@ -1,6 +1,6 @@
 import { Plugin } from '../plugin'
 import HttpStream from './http_stream'
-import { Writable } from 'stream'
+import { Writable } from 'node:stream'
 import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
 import stripAnsi from 'strip-ansi'

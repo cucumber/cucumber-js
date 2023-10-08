@@ -1,6 +1,6 @@
 import getColorFns from './get_color_fns'
 import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascript_snippet_syntax'
-import path from 'path'
+import path from 'node:path'
 import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import Formatter, {
@@ -9,11 +9,11 @@ import Formatter, {
   IFormatterLogFn,
 } from '.'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 import EventDataCollector from './helpers/event_data_collector'
-import { Writable as WritableStream } from 'stream'
+import { Writable as WritableStream } from 'node:stream'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
-import { pathToFileURL } from 'url'
+import { pathToFileURL } from 'node:url'
 import Formatters from './helpers/formatters'
 
 interface IGetStepDefinitionSnippetBuilderOptions {

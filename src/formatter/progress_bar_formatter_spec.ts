@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import sinon from 'sinon'
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 import { EventDataCollector } from './helpers'
 import {
   getEnvelopesAndEventDataCollector,
@@ -18,9 +18,9 @@ import * as messages from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import ProgressBarFormatter from './progress_bar_formatter'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { PassThrough } from 'stream'
+import { PassThrough } from 'node:stream'
 import ProgressBar from 'progress'
-import { promisify } from 'util'
+import { promisify } from 'node:util'
 
 interface ITestProgressBarFormatterOptions {
   runtimeOptions?: Partial<IRuntimeOptions>

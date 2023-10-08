@@ -8,7 +8,7 @@ import {
   stripMetaMessages,
 } from '../support/formatter_output_helpers'
 import fs from 'mz/fs'
-import path from 'path'
+import path from 'node:path'
 import { World } from '../support/world'
 
 use(chaiExclude)

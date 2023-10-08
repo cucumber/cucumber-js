@@ -3,7 +3,7 @@ import AttachmentManager from './attachment_manager'
 import StepRunner from './step_runner'
 import * as messages from '@cucumber/messages'
 import { getWorstTestStepResult, IdGenerator } from '@cucumber/messages'
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 import {
   ISupportCodeLibrary,
   ITestCaseHookParameter,

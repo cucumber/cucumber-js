@@ -1,5 +1,5 @@
 import { IRunEnvironment } from './types'
-import path from 'path'
+import path from 'node:path'
 import { loadSupport } from './load_support'
 import { loadConfiguration } from './load_configuration'
 import { expect } from 'chai'

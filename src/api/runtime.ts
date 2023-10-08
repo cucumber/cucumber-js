@@ -1,5 +1,5 @@
 import Runtime, { IRuntime } from '../runtime'
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 import { EventDataCollector } from '../formatter/helpers'
 import { IdGenerator } from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'

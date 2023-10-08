@@ -1,7 +1,7 @@
 import { formatIssue, formatSummary, isIssue } from './helpers'
 import Formatter, { IFormatterOptions } from './'
 import ProgressBar from 'progress'
-import { WriteStream as TtyWriteStream } from 'tty'
+import { WriteStream as TtyWriteStream } from 'node:tty'
 import * as messages from '@cucumber/messages'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import { formatUndefinedParameterType } from './helpers/issue_helpers'

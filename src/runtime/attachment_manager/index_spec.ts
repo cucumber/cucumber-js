@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import AttachmentManager, { IAttachment } from './'
-import stream, { Readable } from 'stream'
+import stream, { Readable } from 'node:stream'
 
 describe('AttachmentManager', () => {
   describe('create()', () => {

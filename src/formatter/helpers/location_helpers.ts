@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import { doesHaveValue } from '../../value_checker'
 import { ILineAndUri } from '../../types'
 
