@@ -1,7 +1,7 @@
+import { Writable } from 'node:stream'
 import chalk from 'chalk'
 import { ColorInfo, supportsColor } from 'supports-color'
 import { TestStepResultStatus } from '@cucumber/messages'
-import { Writable } from 'node:stream'
 import { doesNotHaveValue } from '../value_checker'
 
 export type IColorFn = (text: string) => string

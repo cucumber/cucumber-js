@@ -1,6 +1,6 @@
 import path from 'node:path'
-import { valueOrDefault } from './value_checker'
 import { StackFrame } from 'error-stack-parser'
+import { valueOrDefault } from './value_checker'
 
 const projectRootPath = path.join(__dirname, '..')
 const projectChildDirs = ['src', 'lib', 'node_modules']

@@ -1,16 +1,16 @@
+import fs from 'node:fs'
+import path from 'node:path'
+import { PassThrough, pipeline, Writable } from 'node:stream'
+import util from 'node:util'
 import { describe, it } from 'mocha'
 import { config, expect, use } from 'chai'
 import chaiExclude from 'chai-exclude'
 import { glob } from 'glob'
-import fs from 'node:fs'
-import path from 'node:path'
-import { PassThrough, pipeline, Writable } from 'node:stream'
-import { ignorableKeys } from '../features/support/formatter_output_helpers'
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
-import util from 'node:util'
-import { runCucumber, IRunConfiguration } from '../src/api'
 import { Envelope } from '@cucumber/messages'
+import { ignorableKeys } from '../features/support/formatter_output_helpers'
+import { runCucumber, IRunConfiguration } from '../src/api'
 
 const asyncPipeline = util.promisify(pipeline)
 const PROJECT_PATH = path.join(__dirname, '..')

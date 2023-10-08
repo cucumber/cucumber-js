@@ -1,5 +1,5 @@
-import fs from 'mz/fs'
 import path from 'node:path'
+import fs from 'mz/fs'
 
 const DEFAULT_FILENAMES = [
   'cucumber.js',

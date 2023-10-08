@@ -1,8 +1,8 @@
+import path from 'node:path'
 import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
-import path from 'node:path'
-import PickleFilter from './pickle_filter'
 import { parse } from '../test/gherkin_helpers'
+import PickleFilter from './pickle_filter'
 
 describe('PickleFilter', () => {
   const cwd = '/project'

@@ -1,8 +1,8 @@
-import { DataTable, Then, When } from '../../'
 import { expect } from 'chai'
-import { normalizeText } from '../support/helpers'
 import stringArgv from 'string-argv'
 import Mustache from 'mustache'
+import { normalizeText } from '../support/helpers'
+import { DataTable, Then, When } from '../../'
 import {
   doesHaveValue,
   doesNotHaveValue,

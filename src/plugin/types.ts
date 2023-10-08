@@ -1,5 +1,5 @@
-import { IRunEnvironment, IRunOptions } from '../api'
 import { Envelope } from '@cucumber/messages'
+import { IRunEnvironment, IRunOptions } from '../api'
 import { ILogger } from '../logger'
 
 export interface PluginEvents {

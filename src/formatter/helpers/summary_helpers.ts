@@ -1,8 +1,8 @@
-import { IColorFns } from '../get_color_fns'
-import { ITestCaseAttempt } from './event_data_collector'
 import * as messages from '@cucumber/messages'
-import { doesHaveValue } from '../../value_checker'
 import { Interval } from 'luxon'
+import { IColorFns } from '../get_color_fns'
+import { doesHaveValue } from '../../value_checker'
+import { ITestCaseAttempt } from './event_data_collector'
 
 const STATUS_REPORT_ORDER = [
   messages.TestStepResultStatus.FAILED,

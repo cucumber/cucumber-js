@@ -1,5 +1,5 @@
-import isStream from 'is-stream'
 import { Readable } from 'node:stream'
+import isStream from 'is-stream'
 import * as messages from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 

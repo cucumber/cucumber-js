@@ -1,7 +1,7 @@
-import { DataTable, Then } from '../../'
-import { World } from '../support/world'
 import messages from '@cucumber/messages'
 import { expect } from 'chai'
+import { DataTable, Then } from '../../'
+import { World } from '../support/world'
 
 function getSetsOfPicklesRunningAtTheSameTime(
   envelopes: messages.Envelope[]

@@ -1,6 +1,6 @@
-import { DataTable, Then } from '../../'
-import { expect } from 'chai'
 import path from 'node:path'
+import { expect } from 'chai'
+import { DataTable, Then } from '../../'
 import { World } from '../support/world'
 import { IUsage } from '../../src/formatter/helpers/usage_helpers'
 

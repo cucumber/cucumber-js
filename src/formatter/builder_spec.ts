@@ -1,7 +1,7 @@
-import { expect } from 'chai'
-import FormatterBuilder from './builder'
 import { pathToFileURL } from 'node:url'
 import path from 'node:path'
+import { expect } from 'chai'
+import FormatterBuilder from './builder'
 
 describe('custom class loading', () => {
   const varieties = [

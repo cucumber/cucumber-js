@@ -1,10 +1,10 @@
-import { expect } from 'chai'
 import { promisify } from 'node:util'
 import fs from 'node:fs'
-import tmp, { DirOptions } from 'tmp'
 import path from 'node:path'
-import { fromFile } from './from_file'
+import tmp, { DirOptions } from 'tmp'
+import { expect } from 'chai'
 import { FakeLogger } from '../../test/fake_logger'
+import { fromFile } from './from_file'
 
 async function setup(
   file: string = 'cucumber.json',

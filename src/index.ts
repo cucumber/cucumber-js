@@ -1,3 +1,5 @@
+import { deprecate } from 'node:util'
+import * as messages from '@cucumber/messages'
 import { default as _Cli } from './cli'
 import * as cliHelpers from './cli/helpers'
 import * as formatterHelpers from './formatter/helpers'
@@ -5,8 +7,6 @@ import { default as _PickleFilter } from './pickle_filter'
 import * as parallelCanAssignHelpers from './support_code_library_builder/parallel_can_assign_helpers'
 import { default as _Runtime } from './runtime'
 import supportCodeLibraryBuilder from './support_code_library_builder'
-import * as messages from '@cucumber/messages'
-import { deprecate } from 'node:util'
 
 // Top level
 export { default as supportCodeLibraryBuilder } from './support_code_library_builder'

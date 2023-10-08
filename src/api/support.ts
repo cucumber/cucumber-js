@@ -1,7 +1,7 @@
+import { pathToFileURL } from 'node:url'
 import { IdGenerator } from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
-import { pathToFileURL } from 'node:url'
 import tryRequire from '../try_require'
 
 export async function getSupportCodeLibrary({

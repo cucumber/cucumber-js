@@ -1,5 +1,5 @@
-import { SupportCodeLibraryBuilder } from '../src/support_code_library_builder'
 import { IdGenerator } from '@cucumber/messages'
+import { SupportCodeLibraryBuilder } from '../src/support_code_library_builder'
 import { IRuntimeOptions } from '../src/runtime'
 import {
   IDefineSupportCodeMethods,

@@ -1,15 +1,15 @@
-import stringArgv from 'string-argv'
 import fs from 'node:fs'
 import path from 'node:path'
-import YAML from 'yaml'
-import readPkgUp from 'read-pkg-up'
 import { promisify } from 'node:util'
 import { pathToFileURL } from 'node:url'
+import stringArgv from 'string-argv'
+import YAML from 'yaml'
+import readPkgUp from 'read-pkg-up'
+import { ILogger } from '../logger'
 import { IConfiguration } from './types'
 import { mergeConfigurations } from './merge_configurations'
 import ArgvParser from './argv_parser'
 import { checkSchema } from './check_schema'
-import { ILogger } from '../logger'
 
 export async function fromFile(
   logger: ILogger,

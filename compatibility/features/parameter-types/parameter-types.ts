@@ -1,5 +1,5 @@
-import { Given, defineParameterType } from '../../../src'
 import { expect } from 'chai'
+import { Given, defineParameterType } from '../../../src'
 
 class Flight {
   constructor(

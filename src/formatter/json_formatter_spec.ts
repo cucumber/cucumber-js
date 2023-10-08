@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
+import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import { testFormatter } from '../../test/formatter_helpers'
 import {
   getJsonFormatterSupportCodeLibrary,
   getJsonFormatterSupportCodeLibraryWithHooks,
 } from '../../test/fixtures/json_formatter_steps'
-import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 import { IJsonFeature, IJsonScenario } from '../../lib/formatter/json_formatter'
 

@@ -1,6 +1,6 @@
 import * as messages from '@cucumber/messages'
-import { ITestCaseHookParameter } from '../support_code_library_builder/types'
 import { Expression } from '@cucumber/cucumber-expressions'
+import { ITestCaseHookParameter } from '../support_code_library_builder/types'
 import { GherkinStepKeyword } from './gherkin_step_keyword'
 
 export interface IGetInvocationDataRequest {

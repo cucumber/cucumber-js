@@ -1,6 +1,6 @@
+import { EventEmitter } from 'node:events'
 import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
-import { EventEmitter } from 'node:events'
 import { EventDataCollector } from '../formatter/helpers'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { assembleTestCases } from './assemble_test_cases'

@@ -1,5 +1,4 @@
 import xmlbuilder from 'xmlbuilder'
-import Formatter, { IFormatterOptions } from './'
 import * as messages from '@cucumber/messages'
 import {
   Attachment,
@@ -11,14 +10,15 @@ import {
   TestStepResult,
   TestStepResultStatus,
 } from '@cucumber/messages'
-import { ITestCaseAttempt } from './helpers/event_data_collector'
 import { doesHaveValue } from '../value_checker'
+import { valueOrDefault } from '../value_checker'
+import { ITestCaseAttempt } from './helpers/event_data_collector'
 import {
   getGherkinExampleRuleMap,
   getGherkinStepMap,
 } from './helpers/gherkin_document_parser'
 import { getPickleStepMap, getStepKeyword } from './helpers/pickle_parser'
-import { valueOrDefault } from '../value_checker'
+import Formatter, { IFormatterOptions } from './'
 
 interface IJUnitTestSuite {
   name: string

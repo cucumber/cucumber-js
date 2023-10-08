@@ -1,9 +1,9 @@
+import debug from 'debug'
 import { ArgvParser } from '../configuration'
 import { IFormatterStream } from '../formatter'
 import { loadConfiguration, runCucumber } from '../api'
 import { getKeywords, getLanguages } from './i18n'
 import { validateInstall } from './install_validator'
-import debug from 'debug'
 
 export interface ICliRunResult {
   shouldExitImmediately: boolean

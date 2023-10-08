@@ -1,11 +1,11 @@
-import { Given, Then } from '../../'
+import path from 'node:path'
 import { expect } from 'chai'
 import hasAnsi from 'has-ansi'
-import { normalizeText } from '../support/helpers'
 import fs from 'mz/fs'
 import fsExtra from 'fs-extra'
-import path from 'node:path'
 import Mustache from 'mustache'
+import { normalizeText } from '../support/helpers'
+import { Given, Then } from '../../'
 import { World } from '../support/world'
 
 Given(

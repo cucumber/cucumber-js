@@ -1,7 +1,7 @@
 import { Server } from 'node:net'
-import express from 'express'
 import { pipeline, Writable } from 'node:stream'
 import http from 'node:http'
+import express from 'express'
 import { doesHaveValue } from '../src/value_checker'
 
 type Callback = (err?: Error | null) => void
