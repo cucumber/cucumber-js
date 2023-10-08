@@ -2,7 +2,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "lib": ["es2022"],
-    "module": "commonjs",
+    "module": "node16",
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
