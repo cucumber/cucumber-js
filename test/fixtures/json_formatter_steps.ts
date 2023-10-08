@@ -26,8 +26,25 @@ export function getJsonFormatterSupportCodeLibrary(
       throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
     })
 
-    Given('a step that attaches', async function (this: World) {
-      await this.attach(Buffer.from([137, 80, 78, 71]), 'image/png')
+    Given(
+      'a step that attaches buffer \\(image\\/png)',
+      async function (this: World) {
+        await this.attach(Buffer.from([137, 80, 78, 71]), 'image/png')
+      }
+    )
+
+    Given(
+      'a step that attaches base64-encoded string',
+      async function (this: World) {
+        await this.attach(
+          Buffer.from('foo').toString('base64'),
+          'base64:text/plain'
+        )
+      }
+    )
+
+    Given('a step that attaches string literal', async function (this: World) {
+      await this.attach('foo', 'text/plain')
     })
 
     Given('a step {int}', function (_int: Number) {})

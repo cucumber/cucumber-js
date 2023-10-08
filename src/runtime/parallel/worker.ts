@@ -16,8 +16,6 @@ import {
 } from './command_types'
 import tryRequire from '../../try_require'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { importer } = require('../../importer')
 const { uuid } = IdGenerator
 
 type IExitFunction = (exitCode: number, error?: Error, message?: string) => void
@@ -78,7 +76,7 @@ export default class Worker {
     requireModules.map((module) => tryRequire(module))
     requirePaths.map((module) => tryRequire(module))
     for (const path of importPaths) {
-      await importer(pathToFileURL(path))
+      await import(pathToFileURL(path).toString())
     }
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize(supportCodeIds)
 

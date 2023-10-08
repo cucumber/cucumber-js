@@ -11,8 +11,15 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Added
 - Add support for Node.js 20 ([#2331](https://github.com/cucumber/cucumber-js/pull/2331))
 
+### Changed
+- BREAKING CHANGE: Use appropriate module loading mechanism for configuration files ([#2334](https://github.com/cucumber/cucumber-js/pull/2334))
+- BREAKING CHANGE: Use `await import()` to load all custom formatters and snippet syntaxes ([#2334](https://github.com/cucumber/cucumber-js/pull/2334))
+
 ### Removed
 - BREAKING CHANGE: Drop support for Node.js 14, 16 and 19 ([#2331](https://github.com/cucumber/cucumber-js/pull/2331))
+
+### Fixed
+- Ensure attached string literals are base64-encoded in JSON reports ([#2260](https://github.com/cucumber/cucumber-js/issues/2260))
 
 ## [9.6.0] - 2023-10-07
 ### Fixed

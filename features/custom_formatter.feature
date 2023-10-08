@@ -30,9 +30,9 @@ Feature: custom formatter
           this.log(testCaseAttempt.gherkinDocument.feature.name + ' / ' + testCaseAttempt.pickle.name + '\n')
           const parsed = formatterHelpers.parseTestCaseAttempt({
             cwd: this.cwd,
-            snippetBuilder: this.snippetBuilder, 
+            snippetBuilder: this.snippetBuilder,
             supportCodeLibrary: this.supportCodeLibrary,
-            testCaseAttempt 
+            testCaseAttempt
           })
           parsed.testSteps.forEach(testStep => {
             this.log('  ' + testStep.keyword + (testStep.text || '') + ' - ' + Status[testStep.result.status] + '\n')
@@ -83,9 +83,9 @@ Feature: custom formatter
           this.log(testCaseAttempt.gherkinDocument.feature.name + ' / ' + testCaseAttempt.pickle.name + '\n')
           const parsed = formatterHelpers.parseTestCaseAttempt({
             cwd: this.cwd,
-            snippetBuilder: this.snippetBuilder, 
+            snippetBuilder: this.snippetBuilder,
             supportCodeLibrary: this.supportCodeLibrary,
-            testCaseAttempt 
+            testCaseAttempt
           })
           parsed.testSteps.forEach(testStep => {
             this.log('  ' + testStep.keyword + (testStep.text || '') + ' - ' + Status[testStep.result.status] + '\n')
@@ -139,7 +139,6 @@ Feature: custom formatter
     Then it passes
     Examples:
       | EXT  | IMPORT_STATEMENT                                  | EXPORT_STATEMENT                  |
-      | .ts  | import {Formatter} from '@cucumber/cucumber'      | export default CustomFormatter    |
       | .mjs | import {Formatter} from '@cucumber/cucumber'      | export default CustomFormatter    |
       | .js  | const {Formatter} = require('@cucumber/cucumber') | module.exports = CustomFormatter  |
       | .js  | const {Formatter} = require('@cucumber/cucumber') | exports.default = CustomFormatter |
