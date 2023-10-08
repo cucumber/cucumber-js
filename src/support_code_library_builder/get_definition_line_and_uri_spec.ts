@@ -1,6 +1,6 @@
-import assert from 'assert'
+import assert from 'node:assert'
+import path from 'node:path'
 import { getDefinitionLineAndUri } from './get_definition_line_and_uri'
-import path from 'path'
 
 describe(getDefinitionLineAndUri.name, () => {
   it('correctly gets the filename of the caller', () => {

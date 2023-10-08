@@ -1,8 +1,8 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { convertConfiguration } from './convert_configuration'
 import { DEFAULT_CONFIGURATION } from '../configuration'
 import { FakeLogger } from '../../test/fake_logger'
+import { convertConfiguration } from './convert_configuration'
 
 describe('convertConfiguration', () => {
   it('should convert defaults correctly', async () => {

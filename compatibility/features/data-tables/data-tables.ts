@@ -1,5 +1,5 @@
-import { When, Then, DataTable } from '../../../src'
 import { expect } from 'chai'
+import { When, Then, DataTable } from '../../../src'
 
 type World = {
   transposed: DataTable

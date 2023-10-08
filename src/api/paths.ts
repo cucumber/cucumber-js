@@ -1,8 +1,8 @@
+import path from 'node:path'
 import { glob } from 'glob'
-import path from 'path'
 import fs from 'mz/fs'
-import { ISourcesCoordinates, ISupportCodeCoordinates } from './types'
 import { ILogger } from '../logger'
+import { ISourcesCoordinates, ISupportCodeCoordinates } from './types'
 
 export async function resolvePaths(
   logger: ILogger,

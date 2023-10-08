@@ -1,8 +1,3 @@
-import {
-  IRunEnvironment,
-  IResolvedConfiguration,
-  ILoadConfigurationOptions,
-} from './types'
 import { locateFile } from '../configuration/locate_file'
 import {
   DEFAULT_CONFIGURATION,
@@ -10,9 +5,14 @@ import {
   mergeConfigurations,
 } from '../configuration'
 import { validateConfiguration } from '../configuration/validate_configuration'
+import { ILogger } from '../logger'
 import { convertConfiguration } from './convert_configuration'
 import { mergeEnvironment } from './environment'
-import { ILogger } from '../logger'
+import {
+  IRunEnvironment,
+  IResolvedConfiguration,
+  ILoadConfigurationOptions,
+} from './types'
 import { ConsoleLogger } from './console_logger'
 
 /**

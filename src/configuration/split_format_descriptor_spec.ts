@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { splitFormatDescriptor } from './split_format_descriptor'
 import { FakeLogger } from '../../test/fake_logger'
+import { splitFormatDescriptor } from './split_format_descriptor'
 
 describe('splitFormatDescriptor', () => {
   const examples = [

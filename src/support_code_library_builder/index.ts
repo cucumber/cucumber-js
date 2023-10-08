@@ -1,20 +1,20 @@
-import { buildParameterType } from './build_parameter_type'
-import { getDefinitionLineAndUri } from './get_definition_line_and_uri'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
+import arity from 'util-arity'
+import {
+  CucumberExpression,
+  RegularExpression,
+} from '@cucumber/cucumber-expressions'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { formatLocation } from '../formatter/helpers'
-import validateArguments from './validate_arguments'
-import arity from 'util-arity'
-
-import {
-  CucumberExpression,
-  RegularExpression,
-} from '@cucumber/cucumber-expressions'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
+import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
+import { GherkinStepKeyword } from '../models/gherkin_step_keyword'
+import validateArguments from './validate_arguments'
+
 import {
   DefineStepPattern,
   IDefineStepOptions,
@@ -31,8 +31,8 @@ import {
   IDefineStep,
 } from './types'
 import World from './world'
-import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
-import { GherkinStepKeyword } from '../models/gherkin_step_keyword'
+import { getDefinitionLineAndUri } from './get_definition_line_and_uri'
+import { buildParameterType } from './build_parameter_type'
 import { SourcedParameterTypeRegistry } from './sourced_parameter_type_registry'
 
 interface IStepDefinitionConfig {

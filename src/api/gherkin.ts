@@ -13,8 +13,8 @@ import {
 import { Query as GherkinQuery } from '@cucumber/gherkin-utils'
 import PickleFilter from '../pickle_filter'
 import { orderPickles } from '../cli/helpers'
-import { ISourcesCoordinates } from './types'
 import { ILogger } from '../logger'
+import { ISourcesCoordinates } from './types'
 
 interface PickleWithDocument {
   gherkinDocument: GherkinDocument

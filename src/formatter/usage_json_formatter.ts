@@ -1,7 +1,7 @@
+import * as messages from '@cucumber/messages'
+import { doesHaveValue } from '../value_checker'
 import { getUsage } from './helpers'
 import Formatter, { IFormatterOptions } from './'
-import { doesHaveValue } from '../value_checker'
-import * as messages from '@cucumber/messages'
 import IEnvelope = messages.Envelope
 
 export default class UsageJsonFormatter extends Formatter {

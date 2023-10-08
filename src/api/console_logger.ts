@@ -1,10 +1,13 @@
-import { Console } from 'console'
-import { Writable } from 'stream'
+import { Console } from 'node:console'
+import { Writable } from 'node:stream'
 import { ILogger } from '../logger'
 
 export class ConsoleLogger implements ILogger {
   private console: Console
-  constructor(private stream: Writable, private debugEnabled: boolean) {
+  constructor(
+    private stream: Writable,
+    private debugEnabled: boolean
+  ) {
     this.console = new Console(this.stream)
   }
 

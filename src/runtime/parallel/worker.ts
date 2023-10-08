@@ -1,20 +1,20 @@
+import { EventEmitter } from 'node:events'
+import { pathToFileURL } from 'node:url'
 import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
-import { EventEmitter } from 'events'
-import { pathToFileURL } from 'url'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
 import { makeRunTestRunHooks, RunsTestRunHooks } from '../run_test_run_hooks'
 import { create } from '../stopwatch'
 import TestCaseRunner from '../test_case_runner'
+import tryRequire from '../../try_require'
 import {
   ICoordinatorReport,
   IWorkerCommand,
   IWorkerCommandInitialize,
   IWorkerCommandRun,
 } from './command_types'
-import tryRequire from '../../try_require'
 
 const { uuid } = IdGenerator
 

@@ -1,5 +1,5 @@
-import { IConfiguration } from './types'
 import mergeWith from 'lodash.mergewith'
+import { IConfiguration } from './types'
 
 const ADDITIVE_ARRAYS = [
   'format',

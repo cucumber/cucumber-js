@@ -1,10 +1,10 @@
-import { formatIssue, formatSummary, isFailure, isWarning } from './helpers'
-import Formatter, { IFormatterOptions } from './'
-import { doesHaveValue } from '../value_checker'
 import * as messages from '@cucumber/messages'
+import { doesHaveValue } from '../value_checker'
+import { durationBetweenTimestamps } from '../time'
+import { formatIssue, formatSummary, isFailure, isWarning } from './helpers'
 import { ITestCaseAttempt } from './helpers/event_data_collector'
 import { formatUndefinedParameterTypes } from './helpers/issue_helpers'
-import { durationBetweenTimestamps } from '../time'
+import Formatter, { IFormatterOptions } from './'
 
 interface ILogIssuesRequest {
   issues: ITestCaseAttempt[]

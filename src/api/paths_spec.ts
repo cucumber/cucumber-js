@@ -1,12 +1,12 @@
-import { promisify } from 'util'
+import { promisify } from 'node:util'
+import path from 'node:path'
 import tmp, { DirOptions } from 'tmp'
 import fsExtra from 'fs-extra'
-import path from 'path'
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { resolvePaths } from './paths'
 import { FakeLogger } from '../../test/fake_logger'
 import { ILogger } from '../logger'
+import { resolvePaths } from './paths'
 
 async function buildTestWorkingDirectory(): Promise<string> {
   const cwd = await promisify<DirOptions, string>(tmp.dir)({

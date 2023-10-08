@@ -10,9 +10,12 @@ parserOptions:
 plugins:
   - import
   - node
+  - unicorn
   - '@typescript-eslint'
 rules:
   'no-console': 'error'
+  'import/order': 'error'
+  'unicorn/prefer-node-protocol': 'error'
   # requires strictNullChecks compiler option, produces many errors with messages objects
   '@typescript-eslint/strict-boolean-expressions': off
   '@typescript-eslint/no-explicit-any': off

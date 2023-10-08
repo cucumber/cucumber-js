@@ -1,20 +1,20 @@
-import getColorFns from './get_color_fns'
-import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascript_snippet_syntax'
-import path from 'path'
-import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
+import path from 'node:path'
+import { EventEmitter } from 'node:events'
+import { Writable as WritableStream } from 'node:stream'
+import { pathToFileURL } from 'node:url'
+import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
+import EventDataCollector from './helpers/event_data_collector'
+import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
+import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascript_snippet_syntax'
+import getColorFns from './get_color_fns'
+import Formatters from './helpers/formatters'
 import Formatter, {
   FormatOptions,
   IFormatterCleanupFn,
   IFormatterLogFn,
 } from '.'
-import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { EventEmitter } from 'events'
-import EventDataCollector from './helpers/event_data_collector'
-import { Writable as WritableStream } from 'stream'
-import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
-import { pathToFileURL } from 'url'
-import Formatters from './helpers/formatters'
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string

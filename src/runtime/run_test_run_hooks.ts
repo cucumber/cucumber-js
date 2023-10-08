@@ -1,5 +1,5 @@
-import UserCodeRunner from '../user_code_runner'
 import VError from 'verror'
+import UserCodeRunner from '../user_code_runner'
 import { formatLocation } from '../formatter/helpers'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
