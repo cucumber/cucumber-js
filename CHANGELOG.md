@@ -14,6 +14,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Changed
 - BREAKING CHANGE: Use appropriate module loading mechanism for configuration files ([#2334](https://github.com/cucumber/cucumber-js/pull/2334))
 - BREAKING CHANGE: Use `await import()` to load all custom formatters and snippet syntaxes ([#2334](https://github.com/cucumber/cucumber-js/pull/2334))
+- BREAKING CHANGE: Use `await import()` for default support code loading ([#2337](https://github.com/cucumber/cucumber-js/pull/2337))
 
 ### Removed
 - BREAKING CHANGE: Drop support for Node.js 14, 16 and 19 ([#2331](https://github.com/cucumber/cucumber-js/pull/2331))
