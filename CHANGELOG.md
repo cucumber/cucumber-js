@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Honour order of paths in configuration ([#2345](https://github.com/cucumber/cucumber-js/pull/2345))
 
 ## [10.0.0] - 2023-10-09
 ### Added
