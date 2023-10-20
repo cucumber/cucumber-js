@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [10.0.1] - 2023-10-20
 ### Fixed
 - Honour order of paths in configuration ([#2345](https://github.com/cucumber/cucumber-js/pull/2345))
 
@@ -1554,7 +1556,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.0.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.0.1...HEAD
+[10.0.1]: https://github.com/cucumber/cucumber-js/compare/v10.0.0...v10.0.1
 [10.0.0]: https://github.com/cucumber/cucumber-js/compare/v9.6.0...v10.0.0
 [9.6.0]: https://github.com/cucumber/cucumber-js/compare/v9.5.1...v9.6.0
 [9.5.1]: https://github.com/cucumber/cucumber-js/compare/v9.5.0...v9.5.1
