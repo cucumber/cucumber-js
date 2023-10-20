@@ -72,11 +72,10 @@ async function expandPaths(
           return [match]
         })
       )
-      return expanded.flat()
+      return expanded.flat().sort()
     })
   )
   const normalized = expandedPaths.flat().map((x) => path.normalize(x))
-  normalized.sort()
   return [...new Set(normalized)]
 }
 
