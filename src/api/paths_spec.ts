@@ -200,6 +200,58 @@ describe('resolvePaths', () => {
     })
   })
 
+  describe('multiple paths ordering', async () => {
+    it('should honour the provided order of multiple files', async () => {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const featurePathA = path.join(cwd, 'features', 'a.feature')
+      const featurePathB = path.join(cwd, 'features', 'b.feature')
+      await fsExtra.outputFile(featurePathA, '')
+      await fsExtra.outputFile(featurePathB, '')
+      // Act
+      const { featurePaths } = await resolvePaths(
+        new FakeLogger(),
+        cwd,
+        {
+          paths: ['features/b.feature', 'features/a.feature'],
+        },
+        {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+        }
+      )
+
+      // Assert
+      expect(featurePaths).to.eql([featurePathB, featurePathA])
+    })
+
+    it('should honour the provided order of multiple directories', async () => {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const featurePathA = path.join(cwd, 'features-a', 'something.feature')
+      const featurePathB = path.join(cwd, 'features-b', 'something.feature')
+      await fsExtra.outputFile(featurePathA, '')
+      await fsExtra.outputFile(featurePathB, '')
+      // Act
+      const { featurePaths } = await resolvePaths(
+        new FakeLogger(),
+        cwd,
+        {
+          paths: ['features-b', 'features-a'],
+        },
+        {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+        }
+      )
+
+      // Assert
+      expect(featurePaths).to.eql([featurePathB, featurePathA])
+    })
+  })
+
   describe('path to an empty rerun file', () => {
     it('returns empty featurePaths and support code paths', async function () {
       // Arrange
