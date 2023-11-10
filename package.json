@@ -302,7 +302,6 @@
     "shx": "0.3.4",
     "sinon": "15.0.1",
     "sinon-chai": "3.7.0",
-    "stream-buffers": "3.0.2",
     "stream-to-string": "1.2.0",
     "ts-node": "10.9.1",
     "tsd": "0.25.0",
