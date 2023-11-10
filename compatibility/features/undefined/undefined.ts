@@ -4,6 +4,6 @@ Given('an implemented step', function () {
   // no-op
 })
 
-Given('a step that we expect to be skipped', function () {
+Given('a step that will be skipped', function () {
   // no-op
 })
