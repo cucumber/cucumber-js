@@ -208,14 +208,14 @@
   },
   "dependencies": {
     "@cucumber/ci-environment": "9.2.0",
-    "@cucumber/cucumber-expressions": "16.1.2",
-    "@cucumber/gherkin": "26.2.0",
+    "@cucumber/cucumber-expressions": "17.0.0",
+    "@cucumber/gherkin": "27.0.0",
     "@cucumber/gherkin-streams": "5.0.1",
-    "@cucumber/gherkin-utils": "8.0.2",
+    "@cucumber/gherkin-utils": "8.0.5",
     "@cucumber/html-formatter": "20.4.0",
     "@cucumber/message-streams": "4.0.1",
-    "@cucumber/messages": "22.0.0",
-    "@cucumber/tag-expressions": "5.0.1",
+    "@cucumber/messages": "23.0.0",
+    "@cucumber/tag-expressions": "6.0.0",
     "assertion-error-formatter": "^3.0.0",
     "capital-case": "^1.0.4",
     "chalk": "^4.1.2",
@@ -250,7 +250,7 @@
     "yup": "1.2.0"
   },
   "devDependencies": {
-    "@cucumber/compatibility-kit": "^12.0.0",
+    "@cucumber/compatibility-kit": "14.1.0",
     "@cucumber/query": "12.0.1",
     "@microsoft/api-documenter": "7.19.27",
     "@microsoft/api-extractor": "7.33.7",
