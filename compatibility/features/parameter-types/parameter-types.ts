@@ -1,4 +1,4 @@
-import { expect } from 'chai'
+import assert from 'node:assert'
 import { Given, defineParameterType } from '../../../src'
 
 class Flight {
@@ -16,11 +16,7 @@ defineParameterType({
   },
 })
 
-Given(
-  '{flight} has been delayed {int} minutes',
-  function (flight: Flight, delay: number) {
-    expect(flight.from).to.eq('LHR')
-    expect(flight.to).to.eq('CDG')
-    expect(delay).to.eq(45)
-  }
-)
+Given('{flight} has been delayed', function (flight: Flight) {
+  assert.strictEqual(flight.from, 'LHR')
+  assert.strictEqual(flight.to, 'CDG')
+})

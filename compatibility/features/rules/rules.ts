@@ -1,42 +1,28 @@
 import assert from 'node:assert'
 import { Given, When, Then } from '../../../src'
 
-Given(
-  'there are {int} {float} coins inside',
-  function (count: number, denomination: number) {
-    // TODO: implement this
-    assert(count)
-    assert(denomination)
-  }
-)
-
-Given('there are no chocolates inside', function () {
-  // TODO: implement this
+Given('the customer has {int} cents', function (money) {
+  this.money = money
 })
 
-Given('there are {int} chocolates inside', function (chocolateCount: number) {
-  // TODO: implement this
-  assert(chocolateCount)
+Given('there are chocolate bars in stock', function () {
+  this.stock = ['Mars']
 })
 
-When(
-  'the customer tries to buy a {float} chocolate with a {float} coin',
-  function (price: number, paid: number) {
-    // TODO: implement this
-    assert(price)
-    assert(paid)
+Given('there are no chocolate bars in stock', function () {
+  this.stock = []
+})
+
+When('the customer tries to buy a {int} cent chocolate bar', function (price) {
+  if (this.money >= price) {
+    this.chocolate = this.stock.pop()
   }
-)
+})
 
 Then('the sale should not happen', function () {
-  // TODO: implement this
+  assert.strictEqual(this.chocolate, undefined)
 })
 
-Then(
-  "the customer's change should be {int} {float} coin(s)",
-  function (count: number, denomination: number) {
-    // TODO: implement this
-    assert(count)
-    assert(denomination)
-  }
-)
+Then('the sale should happen', function () {
+  assert.ok(this.chocolate)
+})
