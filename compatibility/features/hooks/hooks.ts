@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { When, Before, After, World } from '../../../src'
+import { When, Before, After } from '../../../src'
 
 Before(function () {
   // no-op
@@ -14,19 +14,19 @@ When('a step passes', function () {
   // no-op
 })
 
-When('a step throws an exception', function () {
+When('a step fails', function () {
   throw new Error('Exception in step')
 })
 
 After(function () {
-  throw new Error('Exception in hook')
+  // no-op
 })
 
 After('@some-tag or @some-other-tag', function () {
   throw new Error('Exception in conditional hook')
 })
 
-After('@with-attachment', async function (this: World) {
+After('@with-attachment', async function () {
   await this.attach(
     fs.createReadStream(
       path.join(
