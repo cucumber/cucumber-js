@@ -12,17 +12,17 @@ const generateTestData = (
   const variableRegex = /^([a-zA-Z0-9_]*)=(.*)/g
   let newContent = featureFileContent
   let match: RegExpExecArray
-  const metches = []
+  const matches = []
   // collect all matches
   while ((match = regexp.exec(featureFileContent)) !== null) {
-    metches.push(match)
+    matches.push(match)
   }
   // find all variables in the matches
   const variables: any = { ...vars }
 
   if (Object.keys(variables).length > 0) {
-    for (let i = 0; i < metches.length; i++) {
-      const _match = metches[i]
+    for (let i = 0; i < matches.length; i++) {
+      const _match = matches[i]
       const value = _match[1]
       const variableMatch = variableRegex.exec(value)
       if (variableMatch !== null) {
@@ -35,8 +35,8 @@ const generateTestData = (
       newContent = newContent.replaceAll(`{{${variable.var}}}`, variable.fake)
     }
   } else {
-    for (let i = 0; i < metches.length; i++) {
-      const _match = metches[i]
+    for (let i = 0; i < matches.length; i++) {
+      const _match = matches[i]
       const value = _match[1]
       const variableMatch = variableRegex.exec(value)
       if (variableMatch !== null) {
