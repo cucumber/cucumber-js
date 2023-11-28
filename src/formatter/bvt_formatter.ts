@@ -1,7 +1,7 @@
 import * as messages from '@cucumber/messages'
 import Formatter, { IFormatterOptions } from '.'
 import ReportGenerator from './helpers/report_generator'
-export default class JsonReportFormatter extends Formatter {
+export default class BVTFormatter extends Formatter {
   private reportGenerator = new ReportGenerator()
   constructor(options: IFormatterOptions) {
     super(options)

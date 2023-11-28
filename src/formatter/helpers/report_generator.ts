@@ -261,6 +261,7 @@ export default class ReportGenerator {
       url,
     } = attachment
     const testStep = this.testStepMap.get(testStepId)
+    if (testStep.pickleStepId === undefined) return
     const pickleStep = this.pickleStepMap.get(testStep.pickleStepId)
     const stepProgess =
       this.report.testCaseMap[testCaseStartedId].steps[pickleStep.id]
@@ -272,6 +273,7 @@ export default class ReportGenerator {
     const { testStepId, testCaseStartedId, testStepResult, timestamp } =
       testStepFinished
     const testStep = this.testStepMap.get(testStepId)
+    if (testStep.pickleStepId === undefined) return
     const pickleStep = this.pickleStepMap.get(testStep.pickleStepId)
     const stepProgess =
       this.report.testCaseMap[testCaseStartedId].steps[pickleStep.id]

@@ -1,5 +1,6 @@
 import Formatter from '../.'
 import JsonFormatter from '../json_formatter'
+import BVTFormatter from '../bvt_formatter'
 import MessageFormatter from '../message_formatter'
 import ProgressBarFormatter from '../progress_bar_formatter'
 import ProgressFormatter from '../progress_formatter'
@@ -15,6 +16,7 @@ const Formatters = {
   getFormatters(): Record<string, typeof Formatter> {
     return {
       json: JsonFormatter,
+      bvt: BVTFormatter,
       message: MessageFormatter,
       html: HtmlFormatter,
       progress: ProgressFormatter,
