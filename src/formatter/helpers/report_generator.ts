@@ -1,8 +1,8 @@
 import * as messages from '@cucumber/messages'
 
-type JsonTimestamp = messages.Timestamp
-type JsonException = messages.Exception
-type JsonStepType = messages.PickleStepType
+// type JsonException = messages.Exception
+type JsonTimestamp = number //messages.Timestamp
+type JsonStepType = 'Unknown' | 'Context' | 'Action' | 'Outcome'
 
 type JsonResultUnknown = {
   status: 'UNKNOWN'
@@ -18,24 +18,24 @@ type JsonResultAmbiguous = {
 }
 type JsonResultStarted = {
   status: 'STARTED'
-  startTimestamp: JsonTimestamp
+  startTime: JsonTimestamp
 }
 type JsonResultPending = {
   status: 'PENDING'
-  startTimestamp: JsonTimestamp
-  endTimestamp: JsonTimestamp
+  startTime: JsonTimestamp
+  endTime: JsonTimestamp
 }
 type JsonResultPassed = {
   status: 'PASSED'
-  startTimestamp: JsonTimestamp
-  endTimestamp: JsonTimestamp
+  startTime: JsonTimestamp
+  endTime: JsonTimestamp
 }
 type JsonResultFailed = {
   status: 'FAILED'
-  startTimestamp: JsonTimestamp
-  endTimestamp: JsonTimestamp
+  startTime: JsonTimestamp
+  endTime: JsonTimestamp
   message?: string
-  exception?: JsonException
+  // exception?: JsonException
 }
 
 type JsonCommandResult = JsonResultPassed | JsonResultFailed
@@ -57,14 +57,11 @@ type JsonReportResult = JsonTestResult
 
 type JsonCommand = {
   type: string
+  value?: string
   text: string
-  screenShotId?: string
-  reasoning?: string
-  description: string
-  value: string
+  screenshotPath?: string
   result: JsonCommandResult
 }
-
 type JsonStep = {
   type: JsonStepType
   text: string
@@ -78,12 +75,12 @@ type JsonTestProgress = {
   uri: string
   scenarioName: string
   parameters: Record<string, string>
-  steps: Record<string, JsonStep>
+  steps: JsonStep[]
   result: JsonTestResult
 }
 
 type JsonReport = {
-  testCaseMap: Record<string, JsonTestProgress>
+  testCases : JsonTestProgress[]
   result: JsonReportResult
 }
 
@@ -92,13 +89,14 @@ export default class ReportGenerator {
     result: {
       status: 'UNKNOWN',
     },
-    testCaseMap: {},
+    testCases: [] as JsonTestProgress[],
   }
   private gherkinDocumentMap = new Map<string, messages.GherkinDocument>()
   private pickleMap = new Map<string, messages.Pickle>()
-  private pickleStepMap = new Map<string, messages.PickleStep>()
   private testCaseMap = new Map<string, messages.TestCase>()
   private testStepMap = new Map<string, messages.TestStep>()
+  private stepProgressMap = new Map<string, JsonStep>()
+  private testProgressMap = new Map<string, JsonTestProgress>()
 
   handleMessage(envelope: messages.Envelope) {
     const type = Object.keys(envelope)[0] as keyof messages.Envelope
@@ -176,14 +174,14 @@ export default class ReportGenerator {
   }
   private onPickle(pickle: messages.Pickle) {
     this.pickleMap.set(pickle.id, pickle)
-    pickle.steps.forEach((step) => {
-      this.pickleStepMap.set(step.id, step)
-    })
+  }
+  private getTimeStamp(timestamp: messages.Timestamp) {
+    return timestamp.seconds * 1000 + timestamp.nanos / 1000000
   }
   private onTestRunStarted(testRunStarted: messages.TestRunStarted) {
     this.report.result = {
       status: 'STARTED',
-      startTimestamp: testRunStarted.timestamp,
+      startTime: this.getTimeStamp(testRunStarted.timestamp),
     }
   }
   private onTestCase(testCase: messages.TestCase) {
@@ -207,19 +205,19 @@ export default class ReportGenerator {
     const featureName = doc.feature.name
 
     const scenarioName = pickle.name
-    const steps = pickle.steps.reduce((s, step) => {
-      s[step.id] = {
+
+    const steps:JsonStep[] = pickle.steps.map((step) => {
+      this.stepProgressMap.set(step.id, {
         type: step.type,
         text: step.text,
         commands: [],
         result: {
           status: 'UNKNOWN',
         },
-      }
-      return s
-    }, {} as JsonTestProgress['steps'])
-
-    this.report.testCaseMap[id] = {
+      })
+      return this.stepProgressMap.get(step.id) 
+    })
+    this.testProgressMap.set(id, {
       id,
       uri: pickle.uri,
       featureName,
@@ -229,9 +227,10 @@ export default class ReportGenerator {
       steps,
       result: {
         status: 'STARTED',
-        startTimestamp: timestamp,
+        startTime: this.getTimeStamp(timestamp),
       },
-    }
+    })
+    this.report.testCases.push(this.testProgressMap.get(id))
   }
   private onTestStepStarted(testStepStarted: messages.TestStepStarted) {
     const { testStepId, timestamp, testCaseStartedId } = testStepStarted
@@ -239,15 +238,11 @@ export default class ReportGenerator {
     if (testStep === undefined)
       throw new Error(`testStep with id ${testStepId} not found`)
     if (testStep.pickleStepId === undefined) return
-    const pickleStep = this.pickleStepMap.get(testStep.pickleStepId)
-    const stepProgess =
-      this.report.testCaseMap[testCaseStartedId].steps[pickleStep.id]
+    const stepProgess = this.stepProgressMap.get(testStep.pickleStepId)
     stepProgess.result = {
       status: 'STARTED',
-      startTimestamp: timestamp,
+      startTime: this.getTimeStamp(timestamp),
     }
-    this.report.testCaseMap[testCaseStartedId].steps[pickleStep.id] =
-      stepProgess
   }
   private onAttachment(attachment: messages.Attachment) {
     const {
@@ -262,9 +257,7 @@ export default class ReportGenerator {
     } = attachment
     const testStep = this.testStepMap.get(testStepId)
     if (testStep.pickleStepId === undefined) return
-    const pickleStep = this.pickleStepMap.get(testStep.pickleStepId)
-    const stepProgess =
-      this.report.testCaseMap[testCaseStartedId].steps[pickleStep.id]
+    const stepProgess = this.stepProgressMap.get(testStep.pickleStepId)
     if (mediaType === 'application/json') {
       stepProgess.commands.push(JSON.parse(body) as JsonCommand)
     }
@@ -274,19 +267,17 @@ export default class ReportGenerator {
       testStepFinished
     const testStep = this.testStepMap.get(testStepId)
     if (testStep.pickleStepId === undefined) return
-    const pickleStep = this.pickleStepMap.get(testStep.pickleStepId)
-    const stepProgess =
-      this.report.testCaseMap[testCaseStartedId].steps[pickleStep.id]
+    const stepProgess = this.stepProgressMap.get(testStep.pickleStepId)
     const prevStepResult = stepProgess.result as {
       status: 'STARTED'
-      startTimestamp: JsonTimestamp
+      startTime: JsonTimestamp
     }
     stepProgess.result = {
       status: testStepResult.status,
-      startTimestamp: prevStepResult.startTimestamp,
-      endTimestamp: timestamp,
+      startTime: prevStepResult.startTime,
+      endTime: this.getTimeStamp(timestamp),
       message: testStepResult.message,
-      exception: testStepResult.exception,
+      // exception: testStepResult.exception,
     }
   }
   private getTestCaseResult(steps: JsonStep[]) {
@@ -296,7 +287,7 @@ export default class ReportGenerator {
           return {
             status: step.result.status,
             message: step.result.message,
-            exception: step.result.exception,
+            // exception: step.result.exception,
           } as const
         case 'AMBIGUOUS':
         case 'UNDEFINED':
@@ -313,31 +304,31 @@ export default class ReportGenerator {
   }
   private onTestCaseFinished(testCaseFinished: messages.TestCaseFinished) {
     const { testCaseStartedId, timestamp } = testCaseFinished
-    const testProgress = this.report.testCaseMap[testCaseStartedId]
+    const testProgress = this.testProgressMap.get(testCaseStartedId)
     const prevResult = testProgress.result as {
       status: 'STARTED'
-      startTimestamp: JsonTimestamp
+      startTime: JsonTimestamp
     }
     const steps = Object.values(testProgress.steps)
     const result = this.getTestCaseResult(steps)
     testProgress.result = {
       ...result,
-      startTimestamp: prevResult.startTimestamp,
-      endTimestamp: timestamp,
+      startTime: prevResult.startTime,
+      endTime: this.getTimeStamp(timestamp),
     }
   }
   private onTestRunFinished(testRunFinished: messages.TestRunFinished) {
     const { timestamp, success, exception, message } = testRunFinished
     const prevResult = this.report.result as {
       status: 'STARTED'
-      startTimestamp: JsonTimestamp
+      startTime: JsonTimestamp
     }
     this.report.result = {
       status: success ? 'PASSED' : 'FAILED',
-      startTimestamp: prevResult.startTimestamp,
-      endTimestamp: timestamp,
+      startTime: prevResult.startTime,
+      endTime: this.getTimeStamp(timestamp),
       message,
-      exception,
+      // exception,
     }
   }
 }
