@@ -24,8 +24,8 @@ export class PluginManager {
     configuration: IRunConfiguration,
     environment: IRunEnvironment
   ) {
-    for (const pluginFn of this.plugins) {
-      const cleanupFn = await pluginFn.coordinator({
+    for (const plugin of this.plugins) {
+      const cleanupFn = await plugin.coordinator({
         on: this.register.bind(this),
         logger,
         configuration,
