@@ -1,13 +1,13 @@
+import { PassThrough } from 'node:stream'
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import getColorFns from '../get_color_fns'
-import { formatIssue } from './issue_helpers'
 import figures from 'figures'
-import { getTestCaseAttempts } from '../../../test/formatter_helpers'
 import { reindent } from 'reindent-template-literals'
+import { getTestCaseAttempts } from '../../../test/formatter_helpers'
+import getColorFns from '../get_color_fns'
 import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
 import FormatterBuilder from '../builder'
-import { PassThrough } from 'stream'
+import { formatIssue } from './issue_helpers'
 
 async function testFormatIssue(
   sourceData: string,

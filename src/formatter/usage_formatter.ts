@@ -1,8 +1,8 @@
+import Table from 'cli-table3'
+import * as messages from '@cucumber/messages'
+import { doesHaveValue } from '../value_checker'
 import { formatLocation, getUsage } from './helpers'
 import Formatter, { IFormatterOptions } from './'
-import Table from 'cli-table3'
-import { doesHaveValue } from '../value_checker'
-import * as messages from '@cucumber/messages'
 import IEnvelope = messages.Envelope
 
 export default class UsageFormatter extends Formatter {

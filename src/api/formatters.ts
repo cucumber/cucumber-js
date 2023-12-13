@@ -1,15 +1,15 @@
+import { EventEmitter } from 'node:events'
+import { promisify } from 'node:util'
+import { WriteStream as TtyWriteStream } from 'node:tty'
+import path from 'node:path'
+import fs from 'mz/fs'
+import { mkdirp } from 'mkdirp'
 import Formatter, { IFormatterStream } from '../formatter'
-import { EventEmitter } from 'events'
 import { EventDataCollector } from '../formatter/helpers'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import { promisify } from 'util'
-import { WriteStream as TtyWriteStream } from 'tty'
 import FormatterBuilder from '../formatter/builder'
-import fs from 'mz/fs'
-import path from 'path'
-import { IRunOptionsFormats } from './types'
 import { ILogger } from '../logger'
-import { mkdirp } from 'mkdirp'
+import { IRunOptionsFormats } from './types'
 
 export async function initializeFormatters({
   env,

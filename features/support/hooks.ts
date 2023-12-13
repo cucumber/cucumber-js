@@ -1,6 +1,6 @@
-import { After, Before, formatterHelpers, ITestCaseHookParameter } from '../../'
+import path from 'node:path'
 import fsExtra from 'fs-extra'
-import path from 'path'
+import { After, Before, formatterHelpers, ITestCaseHookParameter } from '../../'
 import { doesHaveValue } from '../../src/value_checker'
 import { World } from './world'
 import { warnUserAboutEnablingDeveloperMode } from './warn_user_about_enabling_developer_mode'

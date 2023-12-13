@@ -1,3 +1,5 @@
+import { IdGenerator } from '@cucumber/messages'
+import { ILogger } from '../logger'
 import {
   ILoadSourcesResult,
   IPlannedPickle,
@@ -6,11 +8,9 @@ import {
   ISourcesError,
 } from './types'
 import { resolvePaths } from './paths'
-import { IdGenerator } from '@cucumber/messages'
 import { mergeEnvironment } from './environment'
 import { getFilteredPicklesAndErrors } from './gherkin'
 import { ConsoleLogger } from './console_logger'
-import { ILogger } from '../logger'
 
 /**
  * Load and parse features, produce a filtered and ordered test plan and/or parse errors.

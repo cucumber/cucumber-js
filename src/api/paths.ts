@@ -1,9 +1,8 @@
-import { promisify } from 'util'
-import glob from 'glob'
-import path from 'path'
+import path from 'node:path'
+import { glob } from 'glob'
 import fs from 'mz/fs'
-import { ISourcesCoordinates, ISupportCodeCoordinates } from './types'
 import { ILogger } from '../logger'
+import { ISourcesCoordinates, ISupportCodeCoordinates } from './types'
 
 export async function resolvePaths(
   logger: ILogger,
@@ -58,19 +57,22 @@ async function expandPaths(
 ): Promise<string[]> {
   const expandedPaths = await Promise.all(
     unexpandedPaths.map(async (unexpandedPath) => {
-      const matches = await promisify(glob)(unexpandedPath, {
+      const matches = await glob(unexpandedPath, {
         absolute: true,
+        windowsPathsNoEscape: true,
         cwd,
       })
       const expanded = await Promise.all(
         matches.map(async (match) => {
           if (path.extname(match) === '') {
-            return await promisify(glob)(`${match}/**/*${defaultExtension}`)
+            return glob(`${match}/**/*${defaultExtension}`, {
+              windowsPathsNoEscape: true,
+            })
           }
           return [match]
         })
       )
-      return expanded.flat()
+      return expanded.flat().sort()
     })
   )
   const normalized = expandedPaths.flat().map((x) => path.normalize(x))
@@ -144,9 +146,8 @@ async function deriveSupportPaths(
     unexpandedImportPaths.length === 0
   ) {
     const defaultPaths = getFeatureDirectoryPaths(cwd, featurePaths)
-    const requirePaths = await expandPaths(cwd, defaultPaths, '.js')
-    const importPaths = await expandPaths(cwd, defaultPaths, '.mjs')
-    return { requirePaths, importPaths }
+    const importPaths = await expandPaths(cwd, defaultPaths, '.@(js|cjs|mjs)')
+    return { requirePaths: [], importPaths }
   }
   const requirePaths =
     unexpandedRequirePaths.length > 0

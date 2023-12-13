@@ -9,8 +9,8 @@
 
 [![#StandWithUkraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://vshymanskyy.github.io/StandWithUkraine)
 [![npm](https://img.shields.io/npm/v/@cucumber/cucumber.svg)](https://www.npmjs.com/package/@cucumber/cucumber)
-[![build](https://github.com/cucumber/cucumber-js/workflows/Build/badge.svg)](https://github.com/cucumber/cucumber-js/actions)
-[![coverage](https://coveralls.io/repos/github/cucumber/cucumber-js/badge.svg?branch=master)](https://coveralls.io/github/cucumber/cucumber-js?branch=master)
+[![build](https://github.com/cucumber/cucumber-js/actions/workflows/build.yaml/badge.svg)](https://github.com/cucumber/cucumber-js/actions)
+[![coverage](https://coveralls.io/repos/github/cucumber/cucumber-js/badge.svg?branch=main)](https://coveralls.io/github/cucumber/cucumber-js?branch=master)
 [![backers](https://opencollective.com/cucumber/backers/badge.svg)](https://opencollective.com/cucumber)
 [![sponsors](https://opencollective.com/cucumber/sponsors/badge.svg)](https://opencollective.com/cucumber)
 

@@ -1,22 +1,20 @@
-import getColorFns from './get_color_fns'
-import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascript_snippet_syntax'
-import path from 'path'
-import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
+import path from 'node:path'
+import { EventEmitter } from 'node:events'
+import { Writable as WritableStream } from 'node:stream'
+import { pathToFileURL } from 'node:url'
+import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
+import EventDataCollector from './helpers/event_data_collector'
+import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
+import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascript_snippet_syntax'
+import getColorFns from './get_color_fns'
+import Formatters from './helpers/formatters'
 import Formatter, {
   FormatOptions,
   IFormatterCleanupFn,
   IFormatterLogFn,
 } from '.'
-import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { EventEmitter } from 'events'
-import EventDataCollector from './helpers/event_data_collector'
-import { Writable as WritableStream } from 'stream'
-import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
-import { fileURLToPath, pathToFileURL } from 'url'
-import Formatters from './helpers/formatters'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { importer } = require('../importer')
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
@@ -120,20 +118,7 @@ const FormatterBuilder = {
   },
 
   async loadFile(urlOrName: URL | string) {
-    let result
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      result = require(typeof urlOrName === 'string'
-        ? urlOrName
-        : fileURLToPath(urlOrName))
-    } catch (error) {
-      if (error.code === 'ERR_REQUIRE_ESM') {
-        result = await importer(urlOrName)
-      } else {
-        throw error
-      }
-    }
-    return result
+    return await import(urlOrName.toString())
   },
 
   resolveConstructor(ImportedCode: any) {
@@ -147,6 +132,11 @@ const FormatterBuilder = {
       typeof ImportedCode.default === 'function'
     ) {
       return ImportedCode.default
+    } else if (
+      typeof ImportedCode.default === 'object' &&
+      typeof ImportedCode.default.default === 'function'
+    ) {
+      return ImportedCode.default.default
     }
     return null
   },

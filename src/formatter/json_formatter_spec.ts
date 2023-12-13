@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
+import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import { testFormatter } from '../../test/formatter_helpers'
 import {
   getJsonFormatterSupportCodeLibrary,
   getJsonFormatterSupportCodeLibraryWithHooks,
 } from '../../test/fixtures/json_formatter_steps'
-import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 import { IJsonFeature, IJsonScenario } from '../../lib/formatter/json_formatter'
 
@@ -249,7 +249,7 @@ describe('JsonFormatter', () => {
           keyword: 'Given ',
           line: 3,
           match: {
-            location: 'json_formatter_steps.ts:39',
+            location: 'json_formatter_steps.ts:56',
           },
           name: 'a passing step',
           result: {
@@ -261,15 +261,15 @@ describe('JsonFormatter', () => {
       })
     })
 
-    describe('with attachments', () => {
-      it('outputs the step with embeddings', async function () {
+    describe('with attachments (buffer)', () => {
+      it('outputs the step with embeddings (preserving base64 encoding)', async function () {
         // Arrange
         const sources = [
           {
             data: [
               'Feature: my feature',
               '  Scenario: my scenario',
-              '    Given a step that attaches',
+              '    Given a step that attaches buffer (image/png)',
             ].join('\n'),
             uri: 'a.feature',
           },
@@ -289,6 +289,72 @@ describe('JsonFormatter', () => {
           {
             data: 'iVBORw==',
             mime_type: 'image/png',
+          },
+        ])
+      })
+    })
+
+    describe('with attachments (bas64-encoded string)', () => {
+      it('outputs the step with embeddings (preserving base64 encoding)i', async function () {
+        // Arrange
+        const sources = [
+          {
+            data: [
+              'Feature: my feature',
+              '  Scenario: my scenario',
+              '    Given a step that attaches base64-encoded string',
+            ].join('\n'),
+            uri: 'a.feature',
+          },
+        ]
+
+        const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+
+        // Act
+        const output = await testFormatter({
+          sources,
+          supportCodeLibrary,
+          type: 'json',
+        })
+
+        const steps = JSON.parse(output)[0].elements[0].steps
+        expect(steps[0].embeddings).to.deep.eq([
+          {
+            data: 'Zm9v',
+            mime_type: 'text/plain',
+          },
+        ])
+      })
+    })
+
+    describe('with attachments (string literal)', () => {
+      it('outputs the step with embeddings (base64-encoded)', async function () {
+        // Arrange
+        const sources = [
+          {
+            data: [
+              'Feature: my feature',
+              '  Scenario: my scenario',
+              '    Given a step that attaches string literal',
+            ].join('\n'),
+            uri: 'a.feature',
+          },
+        ]
+
+        const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+
+        // Act
+        const output = await testFormatter({
+          sources,
+          supportCodeLibrary,
+          type: 'json',
+        })
+
+        const steps = JSON.parse(output)[0].elements[0].steps
+        expect(steps[0].embeddings).to.deep.eq([
+          {
+            data: 'Zm9v',
+            mime_type: 'text/plain',
           },
         ])
       })

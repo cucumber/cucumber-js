@@ -1,13 +1,13 @@
 import { Given } from '../../../src'
 
-Given('an implemented step', function () {
+Given('an implemented non-pending step', function () {
   // no-op
 })
 
-Given('a step that isnt implemented yet', function () {
+Given('an implemented step that is skipped', function () {
+  // no-op
+})
+
+Given('an unimplemented pending step', function () {
   return 'pending'
-})
-
-Given('a step that we expect to be skipped', function () {
-  // no-op
 })

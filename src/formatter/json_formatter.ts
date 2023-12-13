@@ -1,14 +1,14 @@
-import Formatter, { IFormatterOptions } from './'
-import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
 import * as messages from '@cucumber/messages'
+import { doesHaveValue, doesNotHaveValue } from '../value_checker'
+import { parseStepArgument } from '../step_arguments'
+import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
 import {
   getGherkinExampleRuleMap,
   getGherkinScenarioLocationMap,
 } from './helpers/gherkin_document_parser'
 import { ITestCaseAttempt } from './helpers/event_data_collector'
-import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { parseStepArgument } from '../step_arguments'
 import { durationToNanoseconds } from './helpers/duration_helpers'
+import Formatter, { IFormatterOptions } from './'
 
 const { getGherkinStepMap, getGherkinScenarioMap } = GherkinDocumentParser
 
@@ -293,7 +293,11 @@ export default class JsonFormatter extends Formatter {
     }
     if (testStepAttachments?.length > 0) {
       data.embeddings = testStepAttachments.map((attachment) => ({
-        data: attachment.body,
+        data:
+          attachment.contentEncoding ===
+          messages.AttachmentContentEncoding.IDENTITY
+            ? Buffer.from(attachment.body).toString('base64')
+            : attachment.body,
         mime_type: attachment.mediaType,
       }))
     }

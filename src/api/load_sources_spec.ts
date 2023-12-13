@@ -1,6 +1,6 @@
+import path from 'node:path'
+import { PassThrough } from 'node:stream'
 import { expect } from 'chai'
-import path from 'path'
-import { PassThrough } from 'stream'
 import fs from 'mz/fs'
 import { IdGenerator } from '@cucumber/messages'
 import { IRunEnvironment } from './types'

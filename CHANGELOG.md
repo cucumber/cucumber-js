@@ -9,6 +9,41 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ## [Unreleased]
 
+## [10.0.1] - 2023-10-20
+### Fixed
+- Honour order of paths in configuration ([#2345](https://github.com/cucumber/cucumber-js/pull/2345))
+
+## [10.0.0] - 2023-10-09
+### Added
+- Add support for Node.js 20 ([#2331](https://github.com/cucumber/cucumber-js/pull/2331))
+
+### Changed
+- BREAKING CHANGE: Use appropriate module loading mechanism for configuration files ([#2334](https://github.com/cucumber/cucumber-js/pull/2334))
+- BREAKING CHANGE: Use `await import()` to load all custom formatters and snippet syntaxes ([#2334](https://github.com/cucumber/cucumber-js/pull/2334))
+- BREAKING CHANGE: Use `await import()` for default support code loading ([#2337](https://github.com/cucumber/cucumber-js/pull/2337))
+
+### Fixed
+- Ensure attached string literals are base64-encoded in JSON reports ([#2260](https://github.com/cucumber/cucumber-js/issues/2260))
+
+### Removed
+- BREAKING CHANGE: Drop support for Node.js 14, 16 and 19 ([#2331](https://github.com/cucumber/cucumber-js/pull/2331))
+
+## [9.6.0] - 2023-10-07
+### Fixed
+- Improve handling of formatter paths ([#2315](https://github.com/cucumber/cucumber-js/pull/2315))
+- Warn on ambiguous colons in formatter paths ([#2335](https://github.com/cucumber/cucumber-js/pull/2335))
+
+## [9.5.1] - 2023-09-06
+### Fixed
+- Allow single-item arrays as a format ([#2324](https://github.com/cucumber/cucumber-js/pull/2324))
+
+## [9.5.0] - 2023-09-03
+### Added
+- Support array notation of formats with path in configuration files ([#2318](https://github.com/cucumber/cucumber-js/pull/2318))
+
+### Fixed
+- Wait for stream to finish at end of publish plugin ([#2322](https://github.com/cucumber/cucumber-js/pull/2322))
+
 ## [9.4.0] - 2023-08-12
 ### Fixed
 - Fix type import from cucumber-expressions ([#2310](https://github.com/cucumber/cucumber-js/pull/2310))
@@ -1521,7 +1556,12 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v9.4.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.0.1...HEAD
+[10.0.1]: https://github.com/cucumber/cucumber-js/compare/v10.0.0...v10.0.1
+[10.0.0]: https://github.com/cucumber/cucumber-js/compare/v9.6.0...v10.0.0
+[9.6.0]: https://github.com/cucumber/cucumber-js/compare/v9.5.1...v9.6.0
+[9.5.1]: https://github.com/cucumber/cucumber-js/compare/v9.5.0...v9.5.1
+[9.5.0]: https://github.com/cucumber/cucumber-js/compare/v9.4.0...v9.5.0
 [9.4.0]: https://github.com/cucumber/cucumber-js/compare/v9.3.0...v9.4.0
 [9.3.0]: https://github.com/cucumber/cucumber-js/compare/v9.2.0...v9.3.0
 [9.2.0]: https://github.com/cucumber/cucumber-js/compare/v9.1.2...v9.2.0

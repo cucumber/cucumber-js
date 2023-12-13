@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import errorStackParser, { StackFrame } from 'error-stack-parser'
 import { isFileNameInCucumber } from '../filter_stack_trace'
 import { doesHaveValue, valueOrDefault } from '../value_checker'

@@ -1,11 +1,16 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { convertConfiguration } from './convert_configuration'
 import { DEFAULT_CONFIGURATION } from '../configuration'
+import { FakeLogger } from '../../test/fake_logger'
+import { convertConfiguration } from './convert_configuration'
 
 describe('convertConfiguration', () => {
   it('should convert defaults correctly', async () => {
-    const result = await convertConfiguration(DEFAULT_CONFIGURATION, {})
+    const result = await convertConfiguration(
+      new FakeLogger(),
+      DEFAULT_CONFIGURATION,
+      {}
+    )
 
     expect(result).to.eql({
       formats: {
@@ -39,8 +44,9 @@ describe('convertConfiguration', () => {
     })
   })
 
-  it('should map multiple formatters', async () => {
+  it('should map multiple formatters with string notation', async () => {
     const result = await convertConfiguration(
+      new FakeLogger(),
       {
         ...DEFAULT_CONFIGURATION,
         format: [
@@ -64,8 +70,35 @@ describe('convertConfiguration', () => {
     })
   })
 
+  it('should map multiple formatters with array notation', async () => {
+    const result = await convertConfiguration(
+      new FakeLogger(),
+      {
+        ...DEFAULT_CONFIGURATION,
+        format: [
+          ['summary'],
+          ['message'],
+          ['json', './report.json'],
+          ['html', './report.html'],
+        ],
+      },
+      {}
+    )
+
+    expect(result.formats).to.eql({
+      stdout: 'message',
+      files: {
+        './report.html': 'html',
+        './report.json': 'json',
+      },
+      publish: false,
+      options: {},
+    })
+  })
+
   it('should map formatters correctly when file:// urls are involved', async () => {
     const result = await convertConfiguration(
+      new FakeLogger(),
       {
         ...DEFAULT_CONFIGURATION,
         format: [

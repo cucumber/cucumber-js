@@ -1,38 +1,46 @@
-import { expect } from 'chai'
-import { promisify } from 'util'
-import fs from 'fs'
+import { promisify } from 'node:util'
+import fs from 'node:fs'
+import path from 'node:path'
 import tmp, { DirOptions } from 'tmp'
-import path from 'path'
-import { fromFile } from './from_file'
+import { expect } from 'chai'
 import { FakeLogger } from '../../test/fake_logger'
+import { fromFile } from './from_file'
 
 async function setup(
-  file: string = 'cucumber.js',
-  content: string = `module.exports = {default: {paths: ['some/path/*.feature']}, p1: {paths: ['other/path/*.feature']}, p2: 'other/other/path/*.feature --no-strict'}`
+  file: string = 'cucumber.json',
+  content: string = JSON.stringify({
+    default: { paths: ['some/path/*.feature'] },
+    p1: { paths: ['other/path/*.feature'] },
+    p2: 'other/other/path/*.feature --no-strict',
+  }),
+  packageJson: string = `{}`
 ) {
   const logger = new FakeLogger()
   const cwd = await promisify<DirOptions, string>(tmp.dir)({
     unsafeCleanup: true,
   })
   fs.writeFileSync(path.join(cwd, file), content, { encoding: 'utf-8' })
+  fs.writeFileSync(path.join(cwd, 'package.json'), packageJson, {
+    encoding: 'utf-8',
+  })
   return { logger, cwd }
 }
 
 describe('fromFile', () => {
   it('should return empty config if no default provide and no profiles requested', async () => {
     const { logger, cwd } = await setup(
-      'cucumber.js',
-      `module.exports = {p1: {paths: ['other/path/*.feature']}}`
+      'cucumber.json',
+      JSON.stringify({ p1: { paths: ['other/path/*.feature'] } })
     )
 
-    const result = await fromFile(logger, cwd, 'cucumber.js', [])
+    const result = await fromFile(logger, cwd, 'cucumber.json', [])
     expect(result).to.deep.eq({})
   })
 
   it('should get default config from file if no profiles requested', async () => {
     const { logger, cwd } = await setup()
 
-    const result = await fromFile(logger, cwd, 'cucumber.js', [])
+    const result = await fromFile(logger, cwd, 'cucumber.json', [])
     expect(result).to.deep.eq({ paths: ['some/path/*.feature'] })
   })
 
@@ -40,7 +48,7 @@ describe('fromFile', () => {
     const { logger, cwd } = await setup()
 
     try {
-      await fromFile(logger, cwd, 'cucumber.js', ['nope'])
+      await fromFile(logger, cwd, 'cucumber.json', ['nope'])
       expect.fail('should have thrown')
     } catch (error) {
       expect(error.message).to.eq(`Requested profile "nope" doesn't exist`)
@@ -50,14 +58,14 @@ describe('fromFile', () => {
   it('should get single profile config from file', async () => {
     const { logger, cwd } = await setup()
 
-    const result = await fromFile(logger, cwd, 'cucumber.js', ['p1'])
+    const result = await fromFile(logger, cwd, 'cucumber.json', ['p1'])
     expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
   })
 
   it('should merge multiple profiles config from file', async () => {
     const { logger, cwd } = await setup()
 
-    const result = await fromFile(logger, cwd, 'cucumber.js', ['p1', 'p2'])
+    const result = await fromFile(logger, cwd, 'cucumber.json', ['p1', 'p2'])
     expect(result).to.deep.eq({
       paths: ['other/path/*.feature', 'other/other/path/*.feature'],
       strict: false,
@@ -66,11 +74,11 @@ describe('fromFile', () => {
 
   it('should throw when an object doesnt conform to the schema', async () => {
     const { logger, cwd } = await setup(
-      'cucumber.js',
-      `module.exports = {p1: {paths: 4, things: 8, requireModule: 'aardvark'}}`
+      'cucumber.json',
+      JSON.stringify({ p1: { paths: 4, things: 8, requireModule: 'aardvark' } })
     )
     try {
-      await fromFile(logger, cwd, 'cucumber.js', ['p1'])
+      await fromFile(logger, cwd, 'cucumber.json', ['p1'])
       expect.fail('should have thrown')
     } catch (error) {
       expect(error.message).to.eq(
@@ -79,8 +87,8 @@ describe('fromFile', () => {
     }
   })
 
-  describe('other formats', () => {
-    it('should work with esm', async () => {
+  describe('supported formats', () => {
+    it('should work with .mjs', async () => {
       const { logger, cwd } = await setup(
         'cucumber.mjs',
         `export default {}; export const p1 = {paths: ['other/path/*.feature']}`
@@ -90,7 +98,49 @@ describe('fromFile', () => {
       expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
     })
 
-    it('should work with json', async () => {
+    it('should work with .cjs', async () => {
+      const { logger, cwd } = await setup(
+        'cucumber.cjs',
+        `module.exports = { default: {}, p1: { paths: ['other/path/*.feature'] } }`
+      )
+
+      const result = await fromFile(logger, cwd, 'cucumber.cjs', ['p1'])
+      expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
+    })
+
+    it('should work with .js when commonjs (undeclared)', async () => {
+      const { logger, cwd } = await setup(
+        'cucumber.js',
+        `module.exports = { default: {}, p1: { paths: ['other/path/*.feature'] } }`
+      )
+
+      const result = await fromFile(logger, cwd, 'cucumber.js', ['p1'])
+      expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
+    })
+
+    it('should work with .js when commonjs (explicit)', async () => {
+      const { logger, cwd } = await setup(
+        'cucumber.js',
+        `module.exports = { default: {}, p1: { paths: ['other/path/*.feature'] } }`,
+        JSON.stringify({ type: 'commonjs' })
+      )
+
+      const result = await fromFile(logger, cwd, 'cucumber.js', ['p1'])
+      expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
+    })
+
+    it('should work with .js when module (explicit)', async () => {
+      const { logger, cwd } = await setup(
+        'cucumber.js',
+        `export default {}; export const p1 = {paths: ['other/path/*.feature']}`,
+        JSON.stringify({ type: 'module' })
+      )
+
+      const result = await fromFile(logger, cwd, 'cucumber.js', ['p1'])
+      expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
+    })
+
+    it('should work with .json', async () => {
       const { logger, cwd } = await setup(
         'cucumber.json',
         `{ "default": {}, "p1": { "paths": ["other/path/*.feature"] } }`
@@ -100,7 +150,7 @@ describe('fromFile', () => {
       expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
     })
 
-    it('should work with yaml', async () => {
+    it('should work with .yaml', async () => {
       const { logger, cwd } = await setup(
         'cucumber.yaml',
         `default:
@@ -113,6 +163,33 @@ p1:
 
       const result = await fromFile(logger, cwd, 'cucumber.yaml', ['p1'])
       expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
+    })
+
+    it('should work with .yml', async () => {
+      const { logger, cwd } = await setup(
+        'cucumber.yml',
+        `default:
+
+p1:
+  paths:
+    - "other/path/*.feature"
+`
+      )
+
+      const result = await fromFile(logger, cwd, 'cucumber.yml', ['p1'])
+      expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
+    })
+
+    it('should throw for an unsupported format', async () => {
+      const { logger, cwd } = await setup('cucumber.foo', `{}`)
+      try {
+        await fromFile(logger, cwd, 'cucumber.foo', ['p1'])
+        expect.fail('should have thrown')
+      } catch (error) {
+        expect(error.message).to.eq(
+          'Unsupported configuration file extension ".foo"'
+        )
+      }
     })
   })
 })

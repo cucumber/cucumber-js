@@ -1,4 +1,4 @@
-import assert from 'assert'
+import assert from 'node:assert'
 import { Given, DataTable, Then, When, World } from '../../../src'
 
 Given('some TypeScript code:', function (dataTable: DataTable) {

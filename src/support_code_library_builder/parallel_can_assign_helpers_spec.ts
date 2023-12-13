@@ -1,6 +1,6 @@
-import { atMostOnePicklePerTag } from './parallel_can_assign_helpers'
 import * as messages from '@cucumber/messages'
 import { expect } from 'chai'
+import { atMostOnePicklePerTag } from './parallel_can_assign_helpers'
 
 function pickleWithTags(tagNames: string[]): messages.Pickle {
   return {

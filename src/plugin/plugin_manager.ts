@@ -1,6 +1,6 @@
-import { Plugin, PluginCleanup, PluginEvents } from './types'
 import { IRunConfiguration, IRunEnvironment } from '../api'
 import { ILogger } from '../logger'
+import { Plugin, PluginCleanup, PluginEvents } from './types'
 
 type HandlerRegistry = {
   [K in keyof PluginEvents]: Array<(value: PluginEvents[K]) => void>

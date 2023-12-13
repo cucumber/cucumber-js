@@ -1,16 +1,16 @@
+import fs from 'node:fs'
+import path from 'node:path'
+import { PassThrough, pipeline, Writable } from 'node:stream'
+import util from 'node:util'
 import { describe, it } from 'mocha'
 import { config, expect, use } from 'chai'
 import chaiExclude from 'chai-exclude'
-import glob from 'glob'
-import fs from 'fs'
-import path from 'path'
-import { PassThrough, pipeline, Writable } from 'stream'
-import { ignorableKeys } from '../features/support/formatter_output_helpers'
+import { glob } from 'glob'
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
-import util from 'util'
-import { runCucumber, IRunConfiguration } from '../src/api'
 import { Envelope } from '@cucumber/messages'
+import { ignorableKeys } from '../features/support/formatter_output_helpers'
+import { runCucumber, IRunConfiguration } from '../src/api'
 
 const asyncPipeline = util.promisify(pipeline)
 const PROJECT_PATH = path.join(__dirname, '..')
@@ -21,8 +21,9 @@ config.truncateThreshold = 100
 use(chaiExclude)
 
 describe('Cucumber Compatibility Kit', () => {
-  glob.sync(`${CCK_FEATURES_PATH}/**/*.ndjson`).forEach((fixturePath) => {
-    const match = /^.+\/(.+)(\.feature(?:\.md)?)\.ndjson$/.exec(fixturePath)
+  const ndjsonFiles = glob.sync(`${CCK_FEATURES_PATH}/**/*.ndjson`)
+  ndjsonFiles.forEach((fixturePath) => {
+    const match = /^.+[/\\](.+)(\.feature(?:\.md)?)\.ndjson$/.exec(fixturePath)
     const suiteName = match[1]
     const extension = match[2]
     it(`passes the cck suite for '${suiteName}'`, async () => {

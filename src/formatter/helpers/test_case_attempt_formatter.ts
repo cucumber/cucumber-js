@@ -1,17 +1,17 @@
 import indentString from 'indent-string'
 import * as messages from '@cucumber/messages'
 import figures from 'figures'
+import { IColorFns } from '../get_color_fns'
+import { doesHaveValue, valueOrDefault } from '../../value_checker'
+import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
+import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { formatLocation } from './location_helpers'
 import {
   IParsedTestStep,
   parseTestCaseAttempt,
 } from './test_case_attempt_parser'
 import { formatStepArgument } from './step_argument_formatter'
-import { IColorFns } from '../get_color_fns'
-import { doesHaveValue, valueOrDefault } from '../../value_checker'
 import { ITestCaseAttempt } from './event_data_collector'
-import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
-import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 
 const CHARACTERS: Map<messages.TestStepResultStatus, string> = new Map([
   [messages.TestStepResultStatus.AMBIGUOUS, figures.cross],

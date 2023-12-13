@@ -1,8 +1,8 @@
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { Group } from '@cucumber/cucumber-expressions'
+import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { doesHaveValue } from '../value_checker'
 
 export declare type IAssembledTestCases = Record<string, messages.TestCase>

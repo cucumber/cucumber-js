@@ -1,7 +1,8 @@
+import { EventEmitter } from 'node:events'
 import { Envelope, IdGenerator, ParseError } from '@cucumber/messages'
-import { EventEmitter } from 'events'
 import { EventDataCollector } from '../formatter/helpers'
 import { emitMetaMessage, emitSupportCodeMessages } from '../cli/helpers'
+import { ILogger } from '../logger'
 import { IRunOptions, IRunEnvironment, IRunResult } from './types'
 import { resolvePaths } from './paths'
 import { makeRuntime } from './runtime'
@@ -11,7 +12,6 @@ import { mergeEnvironment } from './environment'
 import { getFilteredPicklesAndErrors } from './gherkin'
 import { initializePlugins } from './plugins'
 import { ConsoleLogger } from './console_logger'
-import { ILogger } from '../logger'
 
 /**
  * Execute a Cucumber test run.

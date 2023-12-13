@@ -1,9 +1,9 @@
-import { Plugin } from '../plugin'
-import HttpStream from './http_stream'
-import { Writable } from 'stream'
+import { Writable } from 'node:stream'
 import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
 import stripAnsi from 'strip-ansi'
+import { Plugin } from '../plugin'
+import HttpStream from './http_stream'
 
 const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://messages.cucumber.io/api/reports'
 
@@ -32,7 +32,11 @@ export const publishPlugin: Plugin = {
     stream.pipe(readerStream)
     stream.on('error', (error: Error) => logger.error(error.message))
     on('message', (value) => stream.write(JSON.stringify(value) + '\n'))
-    return () => stream.end()
+    return () =>
+      new Promise<void>((resolve) => {
+        stream.on('finish', () => resolve())
+        stream.end()
+      })
   },
 }
 

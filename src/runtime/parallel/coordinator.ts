@@ -1,17 +1,17 @@
-import { ChildProcess, fork } from 'child_process'
-import path from 'path'
-import { retriesForPickle, shouldCauseFailure } from '../helpers'
+import { ChildProcess, fork } from 'node:child_process'
+import path from 'node:path'
+import { EventEmitter } from 'node:events'
 import * as messages from '@cucumber/messages'
-import { EventEmitter } from 'events'
+import { IdGenerator } from '@cucumber/messages'
+import { retriesForPickle, shouldCauseFailure } from '../helpers'
 import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntime, IRuntimeOptions } from '..'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
-import { ICoordinatorReport, IWorkerCommand } from './command_types'
 import { doesHaveValue } from '../../value_checker'
 import { IStopwatch, create } from '../stopwatch'
 import { assembleTestCases, IAssembledTestCases } from '../assemble_test_cases'
-import { IdGenerator } from '@cucumber/messages'
 import { ILogger } from '../../logger'
+import { ICoordinatorReport, IWorkerCommand } from './command_types'
 
 const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
 

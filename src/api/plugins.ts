@@ -1,7 +1,7 @@
 import { Plugin, PluginManager } from '../plugin'
 import publishPlugin from '../publish'
-import { IRunConfiguration, IRunEnvironment } from './types'
 import { ILogger } from '../logger'
+import { IRunConfiguration, IRunEnvironment } from './types'
 
 const INTERNAL_PLUGINS: Record<string, Plugin> = {
   publish: publishPlugin,

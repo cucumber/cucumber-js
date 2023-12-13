@@ -1,11 +1,11 @@
-import Formatter, { IFormatterOptions } from './'
-import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser'
+import * as messages from '@cucumber/messages'
 import {
   doesHaveValue,
   doesNotHaveValue,
   valueOrDefault,
 } from '../value_checker'
-import * as messages from '@cucumber/messages'
+import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser'
+import Formatter, { IFormatterOptions } from './'
 
 const DEFAULT_SEPARATOR = '\n'
 

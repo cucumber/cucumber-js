@@ -1,17 +1,17 @@
+import { PassThrough } from 'node:stream'
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
+import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
+import * as messages from '@cucumber/messages'
 import getColorFns from '../get_color_fns'
-import { formatSummary } from './summary_helpers'
 import { getTestCaseAttempts } from '../../../test/formatter_helpers'
 import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
-import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods, { durationBetweenTimestamps } from '../../time'
 import { buildSupportCodeLibrary } from '../../../test/runtime_helpers'
 import { IRuntimeOptions } from '../../runtime'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesNotHaveValue } from '../../value_checker'
-import * as messages from '@cucumber/messages'
-import { PassThrough } from 'stream'
+import { formatSummary } from './summary_helpers'
 
 interface ITestFormatSummaryOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
