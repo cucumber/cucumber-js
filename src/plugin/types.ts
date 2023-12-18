@@ -1,26 +1,43 @@
-import { Envelope } from '@cucumber/messages'
+import { Envelope, Pickle } from '@cucumber/messages'
+import { ArrayValues, Promisable } from 'type-fest'
 import { IRunConfiguration, IRunEnvironment } from '../api'
 import { ILogger } from '../logger'
+import { coordinatorTransformKeys, coordinatorVoidKeys } from './events'
 
-export interface PluginEvents {
+export type CoordinatorVoidEventKey = ArrayValues<typeof coordinatorVoidKeys>
+export type CoordinatorTransformEventKey = ArrayValues<
+  typeof coordinatorTransformKeys
+>
+export type CoordinatorEventKey =
+  | CoordinatorVoidEventKey
+  | CoordinatorTransformEventKey
+
+export type CoordinatorPluginEventValues = {
   message: Envelope
+  'pickles:filter': Readonly<Array<Pickle>>
 }
 
-export interface PluginContext {
-  on: <K extends keyof PluginEvents>(
+export type CoordinatorPluginEventHandler<K extends CoordinatorEventKey> = (
+  value: CoordinatorPluginEventValues[K]
+) => K extends CoordinatorTransformEventKey
+  ? Promisable<CoordinatorPluginEventValues[K]>
+  : void
+
+export interface CoordinatorPluginContext {
+  on: <K extends CoordinatorEventKey>(
     event: K,
-    handler: (value: PluginEvents[K]) => void
+    handler: CoordinatorPluginEventHandler<K>
   ) => void
   logger: ILogger
   configuration: IRunConfiguration
   environment: IRunEnvironment
 }
 
-export type PluginCleanup = () => any | void | Promise<any | void>
-
 export type CoordinatorPluginFunction = (
-  context: PluginContext
-) => Promise<PluginCleanup | void>
+  context: CoordinatorPluginContext
+) => Promisable<PluginCleanup | void>
+
+export type PluginCleanup = () => Promisable<void>
 
 export interface Plugin {
   type: 'plugin'

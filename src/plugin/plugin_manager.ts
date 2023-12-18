@@ -1,20 +1,27 @@
 import { IRunConfiguration, IRunEnvironment } from '../api'
 import { ILogger } from '../logger'
-import { Plugin, PluginCleanup, PluginEvents } from './types'
+import {
+  CoordinatorPluginEventHandler,
+  Plugin,
+  PluginCleanup,
+  CoordinatorPluginEventValues,
+  CoordinatorEventKey,
+  CoordinatorTransformEventKey,
+} from './types'
 
 type HandlerRegistry = {
-  [K in keyof PluginEvents]: Array<(value: PluginEvents[K]) => void>
+  [K in CoordinatorEventKey]: Array<CoordinatorPluginEventHandler<K>>
 }
 
 export class PluginManager {
-  private handlers: HandlerRegistry = { message: [] }
+  private handlers: HandlerRegistry = { message: [], 'pickles:filter': [] }
   private cleanupFns: PluginCleanup[] = []
 
   constructor(private plugins: Plugin[]) {}
 
-  private async register<K extends keyof PluginEvents>(
+  private async register<K extends CoordinatorEventKey>(
     event: K,
-    handler: (value: PluginEvents[K]) => void
+    handler: CoordinatorPluginEventHandler<K>
   ) {
     this.handlers[event].push(handler)
   }
@@ -37,8 +44,22 @@ export class PluginManager {
     }
   }
 
-  emit<K extends keyof PluginEvents>(event: K, value: PluginEvents[K]): void {
+  emit<K extends CoordinatorEventKey>(
+    event: K,
+    value: CoordinatorPluginEventValues[K]
+  ): void {
     this.handlers[event].forEach((handler) => handler(value))
+  }
+
+  async transform<K extends CoordinatorTransformEventKey>(
+    event: K,
+    value: CoordinatorPluginEventValues[K]
+  ): Promise<CoordinatorPluginEventValues[K]> {
+    let transformed = value
+    for (const handler of this.handlers[event]) {
+      transformed = await handler(transformed)
+    }
+    return transformed
   }
 
   async cleanup(): Promise<void> {

@@ -36,6 +36,7 @@ ignoreErrors:
     - eslint-plugin-unicorn # used in eslint config
     - prettier # peer dependency of eslint-plugin-prettier
     - ts-node # .mocharc.yml / cucumber.js
+    - type-fest # utility types
 
 requiredModules:
   files:
