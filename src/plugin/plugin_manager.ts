@@ -1,4 +1,4 @@
-import { IRunConfiguration, IRunEnvironment } from '../api'
+import { IRunEnvironment } from '../api'
 import { ILogger } from '../logger'
 import {
   CoordinatorPluginEventHandler,
@@ -17,8 +17,6 @@ export class PluginManager {
   private handlers: HandlerRegistry = { message: [], 'pickles:filter': [] }
   private cleanupFns: PluginCleanup[] = []
 
-  constructor(private plugins: Plugin[]) {}
-
   private async register<K extends CoordinatorEventKey>(
     event: K,
     handler: CoordinatorPluginEventHandler<K>
@@ -26,21 +24,20 @@ export class PluginManager {
     this.handlers[event].push(handler)
   }
 
-  async init(
+  async init<OptionsType>(
+    plugin: Plugin<OptionsType>,
+    options: OptionsType,
     logger: ILogger,
-    configuration: IRunConfiguration,
     environment: IRunEnvironment
   ) {
-    for (const plugin of this.plugins) {
-      const cleanupFn = await plugin.coordinator({
-        on: this.register.bind(this),
-        logger,
-        configuration,
-        environment,
-      })
-      if (typeof cleanupFn === 'function') {
-        this.cleanupFns.push(cleanupFn)
-      }
+    const cleanupFn = await plugin.coordinator({
+      on: this.register.bind(this),
+      options,
+      logger,
+      environment,
+    })
+    if (typeof cleanupFn === 'function') {
+      this.cleanupFns.push(cleanupFn)
     }
   }
 

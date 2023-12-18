@@ -3,18 +3,18 @@ import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
 import stripAnsi from 'strip-ansi'
 import { Plugin } from '../plugin'
+import { IPublishConfig } from '../formatter'
 import HttpStream from './http_stream'
 
 const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://messages.cucumber.io/api/reports'
 
-export const publishPlugin: Plugin = {
+export const publishPlugin: Plugin<IPublishConfig | false> = {
   type: 'plugin',
-  coordinator: async ({ on, logger, configuration, environment }) => {
-    if (!configuration.formats.publish) {
+  coordinator: async ({ on, logger, options, environment }) => {
+    if (!options) {
       return undefined
     }
-    const { url = DEFAULT_CUCUMBER_PUBLISH_URL, token } =
-      configuration.formats.publish
+    const { url = DEFAULT_CUCUMBER_PUBLISH_URL, token } = options
     const headers: { [key: string]: string } = {}
     if (token !== undefined) {
       headers.Authorization = `Bearer ${token}`

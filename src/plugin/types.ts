@@ -1,6 +1,6 @@
 import { Envelope, Pickle } from '@cucumber/messages'
-import { ArrayValues, Promisable } from 'type-fest'
-import { IRunConfiguration, IRunEnvironment } from '../api'
+import { ArrayValues, Jsonifiable, Promisable, ReadonlyDeep } from 'type-fest'
+import { IRunEnvironment } from '../api'
 import { ILogger } from '../logger'
 import { coordinatorTransformKeys, coordinatorVoidKeys } from './events'
 
@@ -23,23 +23,23 @@ export type CoordinatorPluginEventHandler<K extends CoordinatorEventKey> = (
   ? Promisable<CoordinatorPluginEventValues[K]>
   : void
 
-export interface CoordinatorPluginContext {
-  on: <K extends CoordinatorEventKey>(
-    event: K,
-    handler: CoordinatorPluginEventHandler<K>
+export interface CoordinatorPluginContext<OptionsType> {
+  on: <EventKey extends CoordinatorEventKey>(
+    event: EventKey,
+    handler: CoordinatorPluginEventHandler<EventKey>
   ) => void
+  options: OptionsType
   logger: ILogger
-  configuration: IRunConfiguration
   environment: IRunEnvironment
 }
 
-export type CoordinatorPluginFunction = (
-  context: CoordinatorPluginContext
+export type CoordinatorPluginFunction<OptionsType> = (
+  context: CoordinatorPluginContext<OptionsType>
 ) => Promisable<PluginCleanup | void>
 
 export type PluginCleanup = () => Promisable<void>
 
-export interface Plugin {
+export interface Plugin<OptionsType = ReadonlyDeep<Jsonifiable>> {
   type: 'plugin'
-  coordinator: CoordinatorPluginFunction
+  coordinator: CoordinatorPluginFunction<OptionsType>
 }
