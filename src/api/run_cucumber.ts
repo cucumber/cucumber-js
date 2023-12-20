@@ -3,14 +3,14 @@ import { Envelope, IdGenerator, ParseError } from '@cucumber/messages'
 import { EventDataCollector } from '../formatter/helpers'
 import { emitMetaMessage, emitSupportCodeMessages } from '../cli/helpers'
 import { ILogger } from '../logger'
+import { resolvePaths } from '../paths'
 import { IRunOptions, IRunEnvironment, IRunResult } from './types'
-import { resolvePaths } from './paths'
 import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
 import { getSupportCodeLibrary } from './support'
 import { mergeEnvironment } from './environment'
-import { getFilteredPicklesAndErrors } from './gherkin'
-import { initializePlugins } from './plugins'
+import { getPicklesAndErrors } from './gherkin'
+import { initializeForRunCucumber } from './plugins'
 import { ConsoleLogger } from './console_logger'
 
 /**
@@ -26,7 +26,8 @@ export async function runCucumber(
   environment: IRunEnvironment = {},
   onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
-  const { cwd, stdout, stderr, env, debug } = mergeEnvironment(environment)
+  const mergedEnvironment = mergeEnvironment(environment)
+  const { cwd, stdout, stderr, env, debug } = mergedEnvironment
   const logger: ILogger = new ConsoleLogger(stderr, debug)
 
   const newId = IdGenerator.uuid()
@@ -36,8 +37,23 @@ export async function runCucumber(
       ? configuration.support.originalCoordinates
       : configuration.support
 
-  const { unexpandedFeaturePaths, featurePaths, requirePaths, importPaths } =
-    await resolvePaths(logger, cwd, configuration.sources, supportCoordinates)
+  const pluginManager = await initializeForRunCucumber(
+    logger,
+    {
+      ...configuration,
+      support: supportCoordinates,
+    },
+    mergedEnvironment
+  )
+
+  const resolvedPaths = await resolvePaths(
+    logger,
+    cwd,
+    configuration.sources,
+    supportCoordinates
+  )
+  pluginManager.emit('paths:resolve', resolvedPaths)
+  const { sourcePaths, requirePaths, importPaths } = resolvedPaths
 
   const supportCodeLibrary =
     'World' in configuration.support
@@ -50,20 +66,13 @@ export async function runCucumber(
           requireModules: supportCoordinates.requireModules,
         })
 
-  const plugins = await initializePlugins(
-    logger,
-    {
-      ...configuration,
-      support: supportCoordinates,
-    },
-    environment
-  )
-
   const eventBroadcaster = new EventEmitter()
   if (onMessage) {
     eventBroadcaster.on('envelope', onMessage)
   }
-  eventBroadcaster.on('envelope', (value) => plugins.emit('message', value))
+  eventBroadcaster.on('envelope', (value) =>
+    pluginManager.emit('message', value)
+  )
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
 
   let formatterStreamError = false
@@ -83,17 +92,23 @@ export async function runCucumber(
 
   let pickleIds: string[] = []
   let parseErrors: ParseError[] = []
-  if (featurePaths.length > 0) {
-    const gherkinResult = await getFilteredPicklesAndErrors({
+  if (sourcePaths.length > 0) {
+    const gherkinResult = await getPicklesAndErrors({
       newId,
       cwd,
-      logger,
-      unexpandedFeaturePaths,
-      featurePaths,
+      sourcePaths,
       coordinates: configuration.sources,
       onEnvelope: (envelope) => eventBroadcaster.emit('envelope', envelope),
     })
-    pickleIds = gherkinResult.filteredPickles.map(({ pickle }) => pickle.id)
+    const filteredPickles = await pluginManager.transform(
+      'pickles:filter',
+      gherkinResult.filterablePickles
+    )
+    const orderedPickles = await pluginManager.transform(
+      'pickles:order',
+      filteredPickles
+    )
+    pickleIds = orderedPickles.map(({ pickle }) => pickle.id)
     parseErrors = gherkinResult.parseErrors
   }
   if (parseErrors.length) {
@@ -103,7 +118,7 @@ export async function runCucumber(
       )
     })
     await cleanupFormatters()
-    await plugins.cleanup()
+    await pluginManager.cleanup()
     return {
       success: false,
       support: supportCodeLibrary,
@@ -131,7 +146,7 @@ export async function runCucumber(
   })
   const success = await runtime.start()
   await cleanupFormatters()
-  await plugins.cleanup()
+  await pluginManager.cleanup()
 
   return {
     success: success && !formatterStreamError,

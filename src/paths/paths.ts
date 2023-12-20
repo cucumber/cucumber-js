@@ -2,7 +2,8 @@ import path from 'node:path'
 import { glob } from 'glob'
 import fs from 'mz/fs'
 import { ILogger } from '../logger'
-import { ISourcesCoordinates, ISupportCodeCoordinates } from './types'
+import { ISourcesCoordinates, ISupportCodeCoordinates } from '../api'
+import { IResolvedPaths } from './types'
 
 export async function resolvePaths(
   logger: ILogger,
@@ -13,24 +14,19 @@ export async function resolvePaths(
     requirePaths: [],
     importPaths: [],
   }
-): Promise<{
-  unexpandedFeaturePaths: string[]
-  featurePaths: string[]
-  requirePaths: string[]
-  importPaths: string[]
-}> {
-  const unexpandedFeaturePaths = await getUnexpandedFeaturePaths(
+): Promise<IResolvedPaths> {
+  const unexpandedSourcePaths = await getUnexpandedSourcePaths(
     cwd,
     sources.paths
   )
-  const featurePaths: string[] = await expandFeaturePaths(
+  const sourcePaths: string[] = await expandSourcePaths(
     cwd,
-    unexpandedFeaturePaths
+    unexpandedSourcePaths
   )
-  logger.debug('Found feature files based on configuration:', featurePaths)
+  logger.debug('Found source files based on configuration:', sourcePaths)
   const { requirePaths, importPaths } = await deriveSupportPaths(
     cwd,
-    featurePaths,
+    sourcePaths,
     support.requirePaths,
     support.importPaths
   )
@@ -43,8 +39,8 @@ export async function resolvePaths(
     importPaths
   )
   return {
-    unexpandedFeaturePaths,
-    featurePaths,
+    unexpandedSourcePaths: unexpandedSourcePaths,
+    sourcePaths: sourcePaths,
     requirePaths,
     importPaths,
   }
@@ -79,7 +75,7 @@ async function expandPaths(
   return [...new Set(normalized)]
 }
 
-async function getUnexpandedFeaturePaths(
+async function getUnexpandedSourcePaths(
   cwd: string,
   args: string[]
 ): Promise<string[]> {
@@ -124,7 +120,7 @@ function getFeatureDirectoryPaths(
   return [...new Set(featureDirs)]
 }
 
-async function expandFeaturePaths(
+async function expandSourcePaths(
   cwd: string,
   featurePaths: string[]
 ): Promise<string[]> {

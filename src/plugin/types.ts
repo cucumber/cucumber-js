@@ -1,8 +1,12 @@
-import { Envelope, Pickle } from '@cucumber/messages'
+import { Envelope } from '@cucumber/messages'
 import { ArrayValues, Jsonifiable, Promisable, ReadonlyDeep } from 'type-fest'
 import { IRunEnvironment } from '../api'
 import { ILogger } from '../logger'
+import { IFilterablePickle } from '../filter'
+import { IResolvedPaths } from '../paths'
 import { coordinatorTransformKeys, coordinatorVoidKeys } from './events'
+
+export type Operation = 'loadSources' | 'loadSupport' | 'runCucumber'
 
 export type CoordinatorVoidEventKey = ArrayValues<typeof coordinatorVoidKeys>
 export type CoordinatorTransformEventKey = ArrayValues<
@@ -13,8 +17,12 @@ export type CoordinatorEventKey =
   | CoordinatorTransformEventKey
 
 export type CoordinatorPluginEventValues = {
-  message: Envelope
-  'pickles:filter': Readonly<Array<Pickle>>
+  // void
+  message: Readonly<Envelope>
+  'paths:resolve': Readonly<IResolvedPaths>
+  // transform
+  'pickles:filter': Readonly<Array<IFilterablePickle>>
+  'pickles:order': Readonly<Array<IFilterablePickle>>
 }
 
 export type CoordinatorPluginEventHandler<K extends CoordinatorEventKey> = (
@@ -24,13 +32,14 @@ export type CoordinatorPluginEventHandler<K extends CoordinatorEventKey> = (
   : void
 
 export interface CoordinatorPluginContext<OptionsType> {
+  operation: Operation
   on: <EventKey extends CoordinatorEventKey>(
     event: EventKey,
     handler: CoordinatorPluginEventHandler<EventKey>
   ) => void
   options: OptionsType
   logger: ILogger
-  environment: IRunEnvironment
+  environment: Required<IRunEnvironment>
 }
 
 export type CoordinatorPluginFunction<OptionsType> = (

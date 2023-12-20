@@ -2,50 +2,31 @@ import {
   GherkinStreams,
   IGherkinStreamOptions,
 } from '@cucumber/gherkin-streams'
-import {
-  Envelope,
-  GherkinDocument,
-  IdGenerator,
-  Location,
-  ParseError,
-  Pickle,
-} from '@cucumber/messages'
+import { Envelope, IdGenerator, ParseError } from '@cucumber/messages'
 import { Query as GherkinQuery } from '@cucumber/gherkin-utils'
-import PickleFilter from '../pickle_filter'
-import { orderPickles } from '../cli/helpers'
-import { ILogger } from '../logger'
+import { IFilterablePickle } from '../filter'
 import { ISourcesCoordinates } from './types'
 
-interface PickleWithDocument {
-  gherkinDocument: GherkinDocument
-  location: Location
-  pickle: Pickle
-}
-
-export async function getFilteredPicklesAndErrors({
+export async function getPicklesAndErrors({
   newId,
   cwd,
-  logger,
-  unexpandedFeaturePaths,
-  featurePaths,
+  sourcePaths,
   coordinates,
   onEnvelope,
 }: {
   newId: IdGenerator.NewId
   cwd: string
-  logger: ILogger
-  unexpandedFeaturePaths: string[]
-  featurePaths: string[]
+  sourcePaths: string[]
   coordinates: ISourcesCoordinates
   onEnvelope?: (envelope: Envelope) => void
 }): Promise<{
-  filteredPickles: PickleWithDocument[]
+  filterablePickles: readonly IFilterablePickle[]
   parseErrors: ParseError[]
 }> {
   const gherkinQuery = new GherkinQuery()
   const parseErrors: ParseError[] = []
   await gherkinFromPaths(
-    featurePaths,
+    sourcePaths,
     {
       newId,
       relativeTo: cwd,
@@ -59,36 +40,21 @@ export async function getFilteredPicklesAndErrors({
       onEnvelope?.(envelope)
     }
   )
-  const pickleFilter = new PickleFilter({
-    cwd,
-    featurePaths: unexpandedFeaturePaths,
-    names: coordinates.names,
-    tagExpression: coordinates.tagExpression,
+  const filterablePickles = gherkinQuery.getPickles().map((pickle) => {
+    const gherkinDocument = gherkinQuery
+      .getGherkinDocuments()
+      .find((doc) => doc.uri === pickle.uri)
+    const location = gherkinQuery.getLocation(
+      pickle.astNodeIds[pickle.astNodeIds.length - 1]
+    )
+    return {
+      gherkinDocument,
+      location,
+      pickle,
+    }
   })
-  const filteredPickles: PickleWithDocument[] = gherkinQuery
-    .getPickles()
-    .filter((pickle) => {
-      const gherkinDocument = gherkinQuery
-        .getGherkinDocuments()
-        .find((doc) => doc.uri === pickle.uri)
-      return pickleFilter.matches({ gherkinDocument, pickle })
-    })
-    .map((pickle) => {
-      const gherkinDocument = gherkinQuery
-        .getGherkinDocuments()
-        .find((doc) => doc.uri === pickle.uri)
-      const location = gherkinQuery.getLocation(
-        pickle.astNodeIds[pickle.astNodeIds.length - 1]
-      )
-      return {
-        gherkinDocument,
-        location,
-        pickle,
-      }
-    })
-  orderPickles(filteredPickles, coordinates.order, logger)
   return {
-    filteredPickles,
+    filterablePickles,
     parseErrors,
   }
 }

@@ -7,6 +7,7 @@ import {
   CoordinatorPluginEventValues,
   CoordinatorEventKey,
   CoordinatorTransformEventKey,
+  Operation,
 } from './types'
 
 type HandlerRegistry = {
@@ -14,7 +15,12 @@ type HandlerRegistry = {
 }
 
 export class PluginManager {
-  private handlers: HandlerRegistry = { message: [], 'pickles:filter': [] }
+  private handlers: HandlerRegistry = {
+    message: [],
+    'paths:resolve': [],
+    'pickles:filter': [],
+    'pickles:order': [],
+  }
   private cleanupFns: PluginCleanup[] = []
 
   private async register<K extends CoordinatorEventKey>(
@@ -25,12 +31,14 @@ export class PluginManager {
   }
 
   async init<OptionsType>(
+    operation: Operation,
     plugin: Plugin<OptionsType>,
     options: OptionsType,
     logger: ILogger,
-    environment: IRunEnvironment
+    environment: Required<IRunEnvironment>
   ) {
     const cleanupFn = await plugin.coordinator({
+      operation,
       on: this.register.bind(this),
       options,
       logger,
