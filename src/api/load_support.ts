@@ -6,7 +6,7 @@ import { ILoadSupportOptions, IRunEnvironment } from './types'
 import { getSupportCodeLibrary } from './support'
 import { mergeEnvironment } from './environment'
 import { ConsoleLogger } from './console_logger'
-import { initializeForLoadSources, initializeForLoadSupport } from './plugins'
+import { initializeForLoadSupport } from './plugins'
 
 /**
  * Load support code for use in test runs.
