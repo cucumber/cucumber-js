@@ -3,10 +3,10 @@ import { PassThrough, pipeline, Writable } from 'node:stream'
 import fs from 'node:fs'
 import path from 'node:path'
 import util from 'node:util'
+import { Console } from 'node:console'
 import { expect } from 'chai'
 import toString from 'stream-to-string'
 import stripAnsi from 'strip-ansi'
-import VError from 'verror'
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
 import FakeReportServer from '../../test/fake_report_server'
@@ -106,13 +106,15 @@ export class World {
       } catch (err) {
         error = err
       }
+      if (error) {
+        new Console(stderr).error(error)
+      }
       stdout.end()
       stderr.end()
-      const stderrSuffix = error != null ? VError.fullStack(error) : ''
       result = {
         error,
         stdout: await toString(stdout),
-        stderr: (await toString(stderr)) + stderrSuffix,
+        stderr: await toString(stderr),
       }
     }
     const envelopes: messages.Envelope[] = []
