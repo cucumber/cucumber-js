@@ -36,6 +36,7 @@ Feature: test fixture
     | foo   |
     | bar   |`
   )
+  await fs.writeFile(path.join(cwd, '@rerun.txt'), 'features/test.feature:8')
   const stdout = new PassThrough()
   return { cwd, stdout }
 }
@@ -141,6 +142,21 @@ describe('loadSources', () => {
         paths: [],
         names: [],
         tagExpression: '@tag2',
+      },
+      environment
+    )
+    expect(plan.map((pickle) => pickle.name)).to.deep.eq(['two'])
+  })
+
+  it('should produce a plan based on a rerun file', async () => {
+    const environment = await setupEnvironment()
+    const { plan } = await loadSources(
+      {
+        defaultDialect: 'en',
+        order: 'defined',
+        paths: ['@rerun.txt'],
+        names: [],
+        tagExpression: '',
       },
       environment
     )
