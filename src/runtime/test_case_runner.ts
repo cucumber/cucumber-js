@@ -12,7 +12,6 @@ import TestStepHookDefinition from '../models/test_step_hook_definition'
 import { IDefinition } from '../models/definition'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import StepDefinition from '../models/step_definition'
-import { TestRunContext } from '../support_code_library_builder/world'
 import { IStopwatch } from './stopwatch'
 import StepRunner from './step_runner'
 import AttachmentManager from './attachment_manager'
@@ -30,7 +29,6 @@ export interface INewTestCaseRunnerOptions {
   filterStackTraces: boolean
   supportCodeLibrary: ISupportCodeLibrary
   worldParameters: JsonObject
-  testRunContext: TestRunContext
 }
 
 export default class TestCaseRunner {
@@ -50,7 +48,6 @@ export default class TestCaseRunner {
   private testStepResults: messages.TestStepResult[]
   private world: any
   private readonly worldParameters: JsonObject
-  private readonly testRunContext: TestRunContext
 
   constructor({
     eventBroadcaster,
@@ -64,7 +61,6 @@ export default class TestCaseRunner {
     filterStackTraces,
     supportCodeLibrary,
     worldParameters,
-    testRunContext,
   }: INewTestCaseRunnerOptions) {
     this.attachmentManager = new AttachmentManager(
       ({ data, media, fileName }) => {
@@ -97,7 +93,6 @@ export default class TestCaseRunner {
     this.filterStackTraces = filterStackTraces
     this.supportCodeLibrary = supportCodeLibrary
     this.worldParameters = worldParameters
-    this.testRunContext = testRunContext
     this.resetTestProgressData()
   }
 
@@ -106,7 +101,6 @@ export default class TestCaseRunner {
       attach: this.attachmentManager.create.bind(this.attachmentManager),
       log: this.attachmentManager.log.bind(this.attachmentManager),
       parameters: structuredClone(this.worldParameters),
-      testRunContext: this.testRunContext,
     })
     this.testStepResults = []
   }

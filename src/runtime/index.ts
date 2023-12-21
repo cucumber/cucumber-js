@@ -4,7 +4,6 @@ import { IdGenerator } from '@cucumber/messages'
 import { JsonObject } from 'type-fest'
 import { EventDataCollector } from '../formatter/helpers'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import { TestRunContext } from '../support_code_library_builder/world'
 import { assembleTestCases } from './assemble_test_cases'
 import { retriesForPickle, shouldCauseFailure } from './helpers'
 import { makeRunTestRunHooks, RunsTestRunHooks } from './run_test_run_hooks'
@@ -42,7 +41,6 @@ export default class Runtime implements IRuntime {
   private readonly options: IRuntimeOptions
   private readonly pickleIds: string[]
   private readonly supportCodeLibrary: ISupportCodeLibrary
-  private readonly testRunContext: TestRunContext
   private success: boolean
   private runTestRunHooks: RunsTestRunHooks
 
@@ -62,11 +60,10 @@ export default class Runtime implements IRuntime {
     this.pickleIds = pickleIds
     this.supportCodeLibrary = supportCodeLibrary
     this.success = true
-    this.testRunContext = {}
     this.runTestRunHooks = makeRunTestRunHooks(
       this.options.dryRun,
       this.supportCodeLibrary.defaultTimeout,
-      this.testRunContext,
+      this.options.worldParameters,
       (name, location) => `${name} hook errored, process exiting: ${location}`
     )
   }
@@ -90,7 +87,6 @@ export default class Runtime implements IRuntime {
       filterStackTraces: this.options.filterStacktraces,
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.options.worldParameters,
-      testRunContext: this.testRunContext,
     })
     const status = await testCaseRunner.run()
     if (shouldCauseFailure(status, this.options)) {

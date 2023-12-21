@@ -2,7 +2,7 @@ import UserCodeRunner from '../user_code_runner'
 import { formatLocation } from '../formatter/helpers'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
-import { TestRunContext } from '../support_code_library_builder/world'
+import { JsonObject } from 'type-fest'
 
 export type RunsTestRunHooks = (
   definitions: TestRunHookDefinition[],
@@ -12,7 +12,7 @@ export type RunsTestRunHooks = (
 export const makeRunTestRunHooks = (
   dryRun: boolean,
   defaultTimeout: number,
-  testRunContext: TestRunContext,
+  worldParameters: JsonObject,
   errorMessage: (name: string, location: string) => string
 ): RunsTestRunHooks =>
   dryRun
@@ -22,7 +22,7 @@ export const makeRunTestRunHooks = (
           const { error } = await UserCodeRunner.run({
             argsArray: [],
             fn: hookDefinition.code,
-            thisArg: { testRunContext },
+            thisArg: { parameters: worldParameters },
             timeoutInMilliseconds: valueOrDefault(
               hookDefinition.options.timeout,
               defaultTimeout
