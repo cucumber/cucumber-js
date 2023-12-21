@@ -129,6 +129,16 @@ AfterAll(function () {
 - Use the parameters as configuration to drive automation
 - Update the parameters with extra context which will then be available to other hooks and steps
 
+Here's a fictional example of obtaining an auth token that can then be used by all tests:
+
+```javascript
+const {AfterAll, BeforeAll} = require('@cucumber/cucumber');
+
+BeforeAll(async function () {
+  this.parameters.accessToken = await getAccessToken(this.parameters.oauth) 
+});
+```
+
 ## BeforeStep / AfterStep
 
 If you have some code execution that needs to be done before or after all steps, use `BeforeStep` / `AfterStep`. Like the `Before` / `After` hooks, these also have a world instance as 'this', and can be conditionally selected for execution based on the tags of the scenario.
