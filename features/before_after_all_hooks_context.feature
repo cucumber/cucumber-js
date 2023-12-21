@@ -1,9 +1,19 @@
 Feature: Before / After All Hooks Context
 
   It should be possible to store context in a BeforeAll hook
-  and have the context be available to the scenarios in the World 
+  and have the context be available to the scenarios in the World
 
   Background:
+    Given a file named "cucumber.json" with:
+    """
+    {
+      "default": {
+        "worldParameters": {
+          "widgets": true
+        }
+      }
+    }
+    """
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -21,42 +31,31 @@ Feature: Before / After All Hooks Context
       const {expect} = require('chai')
 
       BeforeAll(function() {
-        this.testRunContext.myVar = {foo: 1}
-      }) 
+        expect(this.parameters).to.deep.eq({
+          widgets: true
+        })
+        this.parameters.foo = 1
+      })
 
       Given('first step', function() {
-        expect(this.testRunContext.myVar).to.not.be.undefined;
-        expect(this.testRunContext.myVar.foo).to.eql(1) 
+        expect(this.parameters).to.deep.eq({
+          widgets: true,
+          foo: 1
+        })
       })
 
       Given('second step', function() {
-        expect(this.testRunContext.myVar.foo).to.eql(1) 
+        expect(this.parameters).to.deep.eq({
+          widgets: true,
+          foo: 1
+        })
       })
 
       AfterAll(function() {
-        expect(this.testRunContext.myVar.foo).to.eql(1)
-      })
-      """
-    When I run cucumber-js
-    Then it passes
-
-Rule: testRunContext can't leak between scenarios
-  Scenario: One scenario tries to mutate the testRunContext
-    Given a file named "features/steps.js" with:
-      """
-      const {AfterAll, BeforeAll, Given} = require('@cucumber/cucumber')
-      const {expect} = require('chai')
-
-      BeforeAll(function() {
-        this.testRunContext.myVar = {foo: 1}
-      }) 
-
-      Given('first step', function() {
-        this.testRunContext.myVar.foo = 2
-      })
-
-      Given('second step', function() {
-        expect(this.testRunContext.myVar.foo).to.eql(1) 
+        expect(this.parameters).to.deep.eq({
+          widgets: true,
+          foo: 1
+        })
       })
       """
     When I run cucumber-js
