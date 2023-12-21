@@ -1,8 +1,8 @@
+import { JsonObject } from 'type-fest'
 import UserCodeRunner from '../user_code_runner'
 import { formatLocation } from '../formatter/helpers'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
-import { JsonObject } from 'type-fest'
 
 export type RunsTestRunHooks = (
   definitions: TestRunHookDefinition[],

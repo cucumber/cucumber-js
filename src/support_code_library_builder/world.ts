@@ -20,11 +20,7 @@ export default class World<ParametersType = any>
   public readonly log: ICreateLog
   public readonly parameters: ParametersType
 
-  constructor({
-    attach,
-    log,
-    parameters,
-  }: IWorldOptions<ParametersType>) {
+  constructor({ attach, log, parameters }: IWorldOptions<ParametersType>) {
     this.attach = attach
     this.log = log
     this.parameters = parameters
