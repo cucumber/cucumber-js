@@ -1,6 +1,6 @@
-Feature: Before / After All Hooks Context
+Feature: Before/After All Hooks Context
 
-  It should be possible to store context in a BeforeAll hook
+  It should be possible to preserve context from a BeforeAll hook
   and have the context be available to the scenarios in the World
 
   Background:
@@ -14,7 +14,7 @@ Feature: Before / After All Hooks Context
       }
     }
     """
-    Given a file named "features/a.feature" with:
+    And a file named "features/a.feature" with:
       """
       Feature: some feature
         Scenario: first scenario
