@@ -24,7 +24,7 @@ Feature: Before / After All Hooks Context
           Given second step
       """
 
-  Scenario: before all / after all hooks share a testRunContext with scenario steps
+  Scenario: BeforeAll hooks can update world parameters before tests start
     Given a file named "features/support/hooks.js" with:
       """
       const {AfterAll, BeforeAll, Given} = require('@cucumber/cucumber')
@@ -57,6 +57,33 @@ Feature: Before / After All Hooks Context
           foo: 1
         })
       })
+      """
+    When I run cucumber-js
+    Then it passes
+
+  Scenario: Many BeforeAll hooks can accumulate updates to the world parameters
+    Given a file named "features/support/hooks.js" with:
+      """
+      const {AfterAll, BeforeAll, Given} = require('@cucumber/cucumber')
+      const {expect} = require('chai')
+
+      BeforeAll(function() {
+        this.parameters.foo = 1
+      })
+
+      BeforeAll(function() {
+        this.parameters.bar = 2
+      })
+
+      Given('first step', function() {
+        expect(this.parameters).to.deep.eq({
+          widgets: true,
+          foo: 1,
+          bar: 2
+        })
+      })
+
+      Given('second step', function() {})
       """
     When I run cucumber-js
     Then it passes
