@@ -1,5 +1,5 @@
 import { Envelope } from '@cucumber/messages'
-import { ArrayValues, Jsonifiable, Promisable, ReadonlyDeep } from 'type-fest'
+import { ArrayValues, Promisable } from 'type-fest'
 import { IRunEnvironment } from '../api'
 import { ILogger } from '../logger'
 import { IFilterablePickle } from '../filter'
@@ -8,13 +8,15 @@ import { coordinatorTransformKeys, coordinatorVoidKeys } from './events'
 
 export type Operation = 'loadSources' | 'loadSupport' | 'runCucumber'
 
-export type CoordinatorVoidEventKey = ArrayValues<typeof coordinatorVoidKeys>
-export type CoordinatorTransformEventKey = ArrayValues<
+export type CoordinatorPluginVoidEventKey = ArrayValues<
+  typeof coordinatorVoidKeys
+>
+export type CoordinatorPluginTransformEventKey = ArrayValues<
   typeof coordinatorTransformKeys
 >
-export type CoordinatorEventKey =
-  | CoordinatorVoidEventKey
-  | CoordinatorTransformEventKey
+export type CoordinatorPluginEventKey =
+  | CoordinatorPluginVoidEventKey
+  | CoordinatorPluginTransformEventKey
 
 export type CoordinatorPluginEventValues = {
   // void
@@ -25,15 +27,16 @@ export type CoordinatorPluginEventValues = {
   'pickles:order': Readonly<Array<IFilterablePickle>>
 }
 
-export type CoordinatorPluginEventHandler<K extends CoordinatorEventKey> = (
-  value: CoordinatorPluginEventValues[K]
-) => K extends CoordinatorTransformEventKey
-  ? Promisable<CoordinatorPluginEventValues[K]>
-  : void
+export type CoordinatorPluginEventHandler<K extends CoordinatorPluginEventKey> =
+  (
+    value: CoordinatorPluginEventValues[K]
+  ) => K extends CoordinatorPluginTransformEventKey
+    ? Promisable<CoordinatorPluginEventValues[K]>
+    : void
 
 export interface CoordinatorPluginContext<OptionsType> {
   operation: Operation
-  on: <EventKey extends CoordinatorEventKey>(
+  on: <EventKey extends CoordinatorPluginEventKey>(
     event: EventKey,
     handler: CoordinatorPluginEventHandler<EventKey>
   ) => void
@@ -48,7 +51,14 @@ export type CoordinatorPluginFunction<OptionsType> = (
 
 export type PluginCleanup = () => Promisable<void>
 
-export interface Plugin<OptionsType = ReadonlyDeep<Jsonifiable>> {
+/**
+ * A plugin to implement Cucumber built-in functionality.
+ *
+ * Uses the same events and mechanisms as user-authored plugins, but is free to require configuration and context from
+ * inside of Cucumber as its `options`, whereas user-authored plugins will be limited to `pluginOptions` from the
+ * project configuration.
+ */
+export interface InternalPlugin<OptionsType = any> {
   type: 'plugin'
   coordinator: CoordinatorPluginFunction<OptionsType>
 }

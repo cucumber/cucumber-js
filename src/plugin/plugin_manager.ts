@@ -2,16 +2,16 @@ import { IRunEnvironment } from '../api'
 import { ILogger } from '../logger'
 import {
   CoordinatorPluginEventHandler,
-  Plugin,
+  InternalPlugin,
   PluginCleanup,
   CoordinatorPluginEventValues,
-  CoordinatorEventKey,
-  CoordinatorTransformEventKey,
+  CoordinatorPluginEventKey,
+  CoordinatorPluginTransformEventKey,
   Operation,
 } from './types'
 
 type HandlerRegistry = {
-  [K in CoordinatorEventKey]: Array<CoordinatorPluginEventHandler<K>>
+  [K in CoordinatorPluginEventKey]: Array<CoordinatorPluginEventHandler<K>>
 }
 
 export class PluginManager {
@@ -23,7 +23,7 @@ export class PluginManager {
   }
   private cleanupFns: PluginCleanup[] = []
 
-  private async register<K extends CoordinatorEventKey>(
+  private async register<K extends CoordinatorPluginEventKey>(
     event: K,
     handler: CoordinatorPluginEventHandler<K>
   ) {
@@ -32,7 +32,7 @@ export class PluginManager {
 
   async init<OptionsType>(
     operation: Operation,
-    plugin: Plugin<OptionsType>,
+    plugin: InternalPlugin<OptionsType>,
     options: OptionsType,
     logger: ILogger,
     environment: Required<IRunEnvironment>
@@ -49,14 +49,14 @@ export class PluginManager {
     }
   }
 
-  emit<K extends CoordinatorEventKey>(
+  emit<K extends CoordinatorPluginEventKey>(
     event: K,
     value: CoordinatorPluginEventValues[K]
   ): void {
     this.handlers[event].forEach((handler) => handler(value))
   }
 
-  async transform<K extends CoordinatorTransformEventKey>(
+  async transform<K extends CoordinatorPluginTransformEventKey>(
     event: K,
     value: CoordinatorPluginEventValues[K]
   ): Promise<CoordinatorPluginEventValues[K]> {

@@ -2,13 +2,13 @@ import { Writable } from 'node:stream'
 import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
 import stripAnsi from 'strip-ansi'
-import { Plugin } from '../plugin'
+import { InternalPlugin } from '../plugin'
 import { IPublishConfig } from '../formatter'
 import HttpStream from './http_stream'
 
 const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://messages.cucumber.io/api/reports'
 
-export const publishPlugin: Plugin<IPublishConfig | false> = {
+export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
   type: 'plugin',
   coordinator: async ({ on, logger, options, environment }) => {
     if (!options) {

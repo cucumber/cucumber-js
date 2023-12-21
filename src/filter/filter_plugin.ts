@@ -1,9 +1,9 @@
-import { Plugin } from '../plugin'
+import { InternalPlugin } from '../plugin'
 import { ISourcesCoordinates } from '../api'
 import PickleFilter from '../pickle_filter'
 import { orderPickles } from '../cli/helpers'
 
-export const filterPlugin: Plugin<ISourcesCoordinates> = {
+export const filterPlugin: InternalPlugin<ISourcesCoordinates> = {
   type: 'plugin',
   coordinator: async ({ on, options, logger, environment }) => {
     let unexpandedSourcePaths: string[] = []
