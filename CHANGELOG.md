@@ -10,6 +10,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ## [Unreleased]
 ### Added
 - Ability to access World parameters from `BeforeAll`/`AfterAll` hooks (see [documentation](./docs/support_files/hooks.md#world-parameters-in-beforeallafterall)) ([#1770](https://github.com/cucumber/cucumber-js/pull/1770))
+- Support for Node.js 21 ([#2365](https://github.com/cucumber/cucumber-js/pull/2365))
 
 ### Fixed
 - Prevent mutations on world parameters leaking between test cases ([#2362](https://github.com/cucumber/cucumber-js/pull/2362))

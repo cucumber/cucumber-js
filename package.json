@@ -205,7 +205,7 @@
     "node": "18 || >=20"
   },
   "enginesTested": {
-    "node": "18 || 20"
+    "node": "18 || 20 || 21"
   },
   "dependencies": {
     "@cucumber/ci-environment": "9.2.0",
@@ -240,7 +240,7 @@
     "read-pkg-up": "^7.0.1",
     "resolve-pkg": "^2.0.0",
     "semver": "7.5.3",
-    "string-argv": "^0.3.1",
+    "string-argv": "0.3.1",
     "strip-ansi": "6.0.1",
     "supports-color": "^8.1.1",
     "tmp": "^0.2.1",
