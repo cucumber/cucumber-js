@@ -4,7 +4,7 @@
 
 ## ILoadSourcesResult.plan property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 plan: IPlannedPickle[];

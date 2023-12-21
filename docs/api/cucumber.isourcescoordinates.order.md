@@ -4,7 +4,7 @@
 
 ## ISourcesCoordinates.order property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 order: PickleOrder;

@@ -23,6 +23,7 @@ These docs cover the API used for running Cucumber programmatically. The entry p
 
 |  Interface | Description |
 |  --- | --- |
+|  [IConfiguration](./cucumber.iconfiguration.md) |  |
 |  [ILoadConfigurationOptions](./cucumber.iloadconfigurationoptions.md) |  |
 |  [ILoadSourcesResult](./cucumber.iloadsourcesresult.md) |  |
 |  [ILoadSupportOptions](./cucumber.iloadsupportoptions.md) |  |
@@ -37,6 +38,7 @@ These docs cover the API used for running Cucumber programmatically. The entry p
 |  [ISourcesCoordinates](./cucumber.isourcescoordinates.md) |  |
 |  [ISourcesError](./cucumber.isourceserror.md) |  |
 |  [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md) |  |
+|  [ISupportCodeLibrary](./cucumber.isupportcodelibrary.md) |  |
 
 ## Type Aliases
 

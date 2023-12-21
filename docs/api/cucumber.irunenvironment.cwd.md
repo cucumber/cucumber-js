@@ -6,7 +6,7 @@
 
 Working directory for the project (defaults to `process.cwd()` if omitted).
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 cwd?: string;

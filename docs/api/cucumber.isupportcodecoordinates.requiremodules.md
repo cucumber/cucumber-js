@@ -4,7 +4,7 @@
 
 ## ISupportCodeCoordinates.requireModules property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 requireModules: string[];

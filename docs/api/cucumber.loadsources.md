@@ -6,7 +6,7 @@
 
 Load and parse features, produce a filtered and ordered test plan and/or parse errors.
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 export declare function loadSources(coordinates: ISourcesCoordinates, environment?: IRunEnvironment): Promise<ILoadSourcesResult>;
@@ -17,9 +17,9 @@ export declare function loadSources(coordinates: ISourcesCoordinates, environmen
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  coordinates | [ISourcesCoordinates](./cucumber.isourcescoordinates.md) | Coordinates required to find features |
-|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) | Project environment. |
+|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) | _(Optional)_ Project environment. |
 
-<b>Returns:</b>
+**Returns:**
 
 Promise&lt;[ILoadSourcesResult](./cucumber.iloadsourcesresult.md)<!-- -->&gt;
 

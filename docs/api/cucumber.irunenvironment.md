@@ -6,7 +6,7 @@
 
 Contextual data about the project environment.
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 export interface IRunEnvironment 
@@ -14,10 +14,11 @@ export interface IRunEnvironment
 
 ## Properties
 
-|  Property | Type | Description |
-|  --- | --- | --- |
-|  [cwd?](./cucumber.irunenvironment.cwd.md) | string | <i>(Optional)</i> Working directory for the project (defaults to <code>process.cwd()</code> if omitted). |
-|  [env?](./cucumber.irunenvironment.env.md) | NodeJS.ProcessEnv | <i>(Optional)</i> Environment variables (defaults to <code>process.env</code> if omitted). |
-|  [stderr?](./cucumber.irunenvironment.stderr.md) | IFormatterStream | <i>(Optional)</i> Writable stream where the test run's warning/error output is written (defaults to <code>process.stderr</code> if omitted). |
-|  [stdout?](./cucumber.irunenvironment.stdout.md) | IFormatterStream | <i>(Optional)</i> Writable stream where the test run's main output is written (defaults to <code>process.stdout</code> if omitted). |
+|  Property | Modifiers | Type | Description |
+|  --- | --- | --- | --- |
+|  [cwd?](./cucumber.irunenvironment.cwd.md) |  | string | _(Optional)_ Working directory for the project (defaults to <code>process.cwd()</code> if omitted). |
+|  [debug?](./cucumber.irunenvironment.debug.md) |  | boolean | _(Optional)_ Whether debug logging is enabled. |
+|  [env?](./cucumber.irunenvironment.env.md) |  | NodeJS.ProcessEnv | _(Optional)_ Environment variables (defaults to <code>process.env</code> if omitted). |
+|  [stderr?](./cucumber.irunenvironment.stderr.md) |  | Writable | _(Optional)_ Writable stream where the test run's warning/error output is written (defaults to <code>process.stderr</code> if omitted). |
+|  [stdout?](./cucumber.irunenvironment.stdout.md) |  | Writable | _(Optional)_ Writable stream where the test run's main output is written (defaults to <code>process.stdout</code> if omitted). |
 

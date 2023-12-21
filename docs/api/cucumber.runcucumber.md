@@ -6,7 +6,7 @@
 
 Execute a Cucumber test run.
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 export declare function runCucumber(configuration: IRunOptions, environment?: IRunEnvironment, onMessage?: (message: Envelope) => void): Promise<IRunResult>;
@@ -17,10 +17,10 @@ export declare function runCucumber(configuration: IRunOptions, environment?: IR
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  configuration | [IRunOptions](./cucumber.irunoptions.md) | Configuration loaded from <code>loadConfiguration</code>. |
-|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) | Project environment. |
-|  onMessage | (message: Envelope) =&gt; void | Callback fired each time Cucumber emits a message. |
+|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) | _(Optional)_ Project environment. |
+|  onMessage | (message: Envelope) =&gt; void | _(Optional)_ Callback fired each time Cucumber emits a message. |
 
-<b>Returns:</b>
+**Returns:**
 
 Promise&lt;[IRunResult](./cucumber.irunresult.md)<!-- -->&gt;
 

@@ -6,7 +6,7 @@
 
 Result of a Cucumber test run.
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 export interface IRunResult 
@@ -14,8 +14,8 @@ export interface IRunResult
 
 ## Properties
 
-|  Property | Type | Description |
-|  --- | --- | --- |
-|  [success](./cucumber.irunresult.success.md) | boolean | Whether the test run was overall successful i.e. no failed scenarios. The exact meaning can vary based on the <code>strict</code> configuration option. |
-|  [support](./cucumber.irunresult.support.md) | ISupportCodeLibrary | The support code library that was used in the test run; can be reused in subsequent <code>runCucumber</code> calls. |
+|  Property | Modifiers | Type | Description |
+|  --- | --- | --- | --- |
+|  [success](./cucumber.irunresult.success.md) |  | boolean | Whether the test run was overall successful i.e. no failed scenarios. The exact meaning can vary based on the <code>strict</code> configuration option. |
+|  [support](./cucumber.irunresult.support.md) |  | [ISupportCodeLibrary](./cucumber.isupportcodelibrary.md) | The support code library that was used in the test run; can be reused in subsequent <code>runCucumber</code> calls. |
 

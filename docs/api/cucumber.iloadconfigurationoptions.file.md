@@ -6,7 +6,7 @@
 
 Path to load configuration file from (defaults to `cucumber.(js|cjs|mjs|json)` if omitted).
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 file?: string;

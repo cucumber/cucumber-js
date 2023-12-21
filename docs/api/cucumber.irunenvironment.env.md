@@ -6,7 +6,7 @@
 
 Environment variables (defaults to `process.env` if omitted).
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 env?: NodeJS.ProcessEnv;

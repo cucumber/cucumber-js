@@ -4,7 +4,7 @@
 
 ## ISourcesCoordinates.tagExpression property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 tagExpression: string;

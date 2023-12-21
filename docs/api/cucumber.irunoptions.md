@@ -5,7 +5,7 @@
 ## IRunOptions interface
 
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 export interface IRunOptions 
@@ -13,10 +13,10 @@ export interface IRunOptions
 
 ## Properties
 
-|  Property | Type | Description |
-|  --- | --- | --- |
-|  [formats](./cucumber.irunoptions.formats.md) | [IRunOptionsFormats](./cucumber.irunoptionsformats.md) |  |
-|  [runtime](./cucumber.irunoptions.runtime.md) | [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md) |  |
-|  [sources](./cucumber.irunoptions.sources.md) | [ISourcesCoordinates](./cucumber.isourcescoordinates.md) |  |
-|  [support](./cucumber.irunoptions.support.md) | [ISupportCodeCoordinatesOrLibrary](./cucumber.isupportcodecoordinatesorlibrary.md) |  |
+|  Property | Modifiers | Type | Description |
+|  --- | --- | --- | --- |
+|  [formats](./cucumber.irunoptions.formats.md) |  | [IRunOptionsFormats](./cucumber.irunoptionsformats.md) |  |
+|  [runtime](./cucumber.irunoptions.runtime.md) |  | [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md) |  |
+|  [sources](./cucumber.irunoptions.sources.md) |  | [ISourcesCoordinates](./cucumber.isourcescoordinates.md) |  |
+|  [support](./cucumber.irunoptions.support.md) |  | [ISupportCodeCoordinatesOrLibrary](./cucumber.isupportcodecoordinatesorlibrary.md) |  |
 

@@ -6,7 +6,7 @@
 
 Load user-authored configuration to be used in a test run.
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 export declare function loadConfiguration(options?: ILoadConfigurationOptions, environment?: IRunEnvironment): Promise<IResolvedConfiguration>;
@@ -16,10 +16,10 @@ export declare function loadConfiguration(options?: ILoadConfigurationOptions, e
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  options | [ILoadConfigurationOptions](./cucumber.iloadconfigurationoptions.md) | Coordinates required to find configuration. |
-|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) | Project environment. |
+|  options | [ILoadConfigurationOptions](./cucumber.iloadconfigurationoptions.md) | _(Optional)_ Coordinates required to find configuration. |
+|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) | _(Optional)_ Project environment. |
 
-<b>Returns:</b>
+**Returns:**
 
 Promise&lt;[IResolvedConfiguration](./cucumber.iresolvedconfiguration.md)<!-- -->&gt;
 

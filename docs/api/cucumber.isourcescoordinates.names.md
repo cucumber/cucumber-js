@@ -4,7 +4,7 @@
 
 ## ISourcesCoordinates.names property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 names: string[];

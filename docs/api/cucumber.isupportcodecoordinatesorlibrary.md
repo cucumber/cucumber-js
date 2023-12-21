@@ -5,10 +5,10 @@
 ## ISupportCodeCoordinatesOrLibrary type
 
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
-export declare type ISupportCodeCoordinatesOrLibrary = ISupportCodeCoordinates | ISupportCodeLibrary;
+export type ISupportCodeCoordinatesOrLibrary = ISupportCodeCoordinates | ISupportCodeLibrary;
 ```
-<b>References:</b> [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md)
+**References:** [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md)<!-- -->, [ISupportCodeLibrary](./cucumber.isupportcodelibrary.md)
 

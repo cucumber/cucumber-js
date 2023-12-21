@@ -4,7 +4,7 @@
 
 ## ILoadSourcesResult.errors property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 errors: ISourcesError[];

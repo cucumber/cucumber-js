@@ -6,7 +6,7 @@
 
 Zero or more profile names from which to source configuration (if omitted or empty, the `default` profile will be used).
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 profiles?: string[];

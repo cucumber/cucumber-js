@@ -4,7 +4,7 @@
 
 ## ISourcesCoordinates.paths property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 paths: string[];

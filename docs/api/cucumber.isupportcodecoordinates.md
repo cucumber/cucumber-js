@@ -5,7 +5,7 @@
 ## ISupportCodeCoordinates interface
 
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 export interface ISupportCodeCoordinates 
@@ -13,9 +13,9 @@ export interface ISupportCodeCoordinates
 
 ## Properties
 
-|  Property | Type | Description |
-|  --- | --- | --- |
-|  [importPaths](./cucumber.isupportcodecoordinates.importpaths.md) | string\[\] |  |
-|  [requireModules](./cucumber.isupportcodecoordinates.requiremodules.md) | string\[\] |  |
-|  [requirePaths](./cucumber.isupportcodecoordinates.requirepaths.md) | string\[\] |  |
+|  Property | Modifiers | Type | Description |
+|  --- | --- | --- | --- |
+|  [importPaths](./cucumber.isupportcodecoordinates.importpaths.md) |  | string\[\] |  |
+|  [requireModules](./cucumber.isupportcodecoordinates.requiremodules.md) |  | string\[\] |  |
+|  [requirePaths](./cucumber.isupportcodecoordinates.requirepaths.md) |  | string\[\] |  |
 

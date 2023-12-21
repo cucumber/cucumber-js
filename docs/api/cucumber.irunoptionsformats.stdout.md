@@ -4,7 +4,7 @@
 
 ## IRunOptionsFormats.stdout property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 stdout: string;

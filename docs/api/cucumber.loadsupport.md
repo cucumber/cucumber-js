@@ -6,7 +6,7 @@
 
 Load support code for use in test runs.
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 export declare function loadSupport(options: ILoadSupportOptions, environment?: IRunEnvironment): Promise<ISupportCodeLibrary>;
@@ -17,9 +17,9 @@ export declare function loadSupport(options: ILoadSupportOptions, environment?: 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
 |  options | [ILoadSupportOptions](./cucumber.iloadsupportoptions.md) | Subset of <code>IRunnableConfiguration</code> required to find the support code. |
-|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) | Project environment. |
+|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) | _(Optional)_ Project environment. |
 
-<b>Returns:</b>
+**Returns:**
 
-Promise&lt;ISupportCodeLibrary&gt;
+Promise&lt;[ISupportCodeLibrary](./cucumber.isupportcodelibrary.md)<!-- -->&gt;
 

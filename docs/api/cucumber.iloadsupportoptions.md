@@ -5,7 +5,7 @@
 ## ILoadSupportOptions interface
 
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 export interface ILoadSupportOptions 
@@ -13,8 +13,8 @@ export interface ILoadSupportOptions
 
 ## Properties
 
-|  Property | Type | Description |
-|  --- | --- | --- |
-|  [sources](./cucumber.iloadsupportoptions.sources.md) | [ISourcesCoordinates](./cucumber.isourcescoordinates.md) |  |
-|  [support](./cucumber.iloadsupportoptions.support.md) | [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md) |  |
+|  Property | Modifiers | Type | Description |
+|  --- | --- | --- | --- |
+|  [sources](./cucumber.iloadsupportoptions.sources.md) |  | [ISourcesCoordinates](./cucumber.isourcescoordinates.md) |  |
+|  [support](./cucumber.iloadsupportoptions.support.md) |  | [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md) |  |
 

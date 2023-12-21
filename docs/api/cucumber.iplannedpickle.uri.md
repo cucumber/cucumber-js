@@ -4,7 +4,7 @@
 
 ## IPlannedPickle.uri property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 uri: string;

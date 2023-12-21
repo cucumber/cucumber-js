@@ -4,7 +4,7 @@
 
 ## ISupportCodeCoordinates.requirePaths property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 requirePaths: string[];

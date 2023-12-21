@@ -5,7 +5,7 @@
 ## ISourcesError interface
 
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 export interface ISourcesError 
@@ -13,9 +13,9 @@ export interface ISourcesError
 
 ## Properties
 
-|  Property | Type | Description |
-|  --- | --- | --- |
-|  [location](./cucumber.isourceserror.location.md) | { line: number; column?: number; } |  |
-|  [message](./cucumber.isourceserror.message.md) | string |  |
-|  [uri](./cucumber.isourceserror.uri.md) | string |  |
+|  Property | Modifiers | Type | Description |
+|  --- | --- | --- | --- |
+|  [location](./cucumber.isourceserror.location.md) |  | { line: number; column?: number; } |  |
+|  [message](./cucumber.isourceserror.message.md) |  | string |  |
+|  [uri](./cucumber.isourceserror.uri.md) |  | string |  |
 

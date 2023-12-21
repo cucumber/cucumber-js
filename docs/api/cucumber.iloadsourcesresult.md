@@ -5,7 +5,7 @@
 ## ILoadSourcesResult interface
 
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 export interface ILoadSourcesResult 
@@ -13,8 +13,8 @@ export interface ILoadSourcesResult
 
 ## Properties
 
-|  Property | Type | Description |
-|  --- | --- | --- |
-|  [errors](./cucumber.iloadsourcesresult.errors.md) | [ISourcesError](./cucumber.isourceserror.md)<!-- -->\[\] |  |
-|  [plan](./cucumber.iloadsourcesresult.plan.md) | [IPlannedPickle](./cucumber.iplannedpickle.md)<!-- -->\[\] |  |
+|  Property | Modifiers | Type | Description |
+|  --- | --- | --- | --- |
+|  [errors](./cucumber.iloadsourcesresult.errors.md) |  | [ISourcesError](./cucumber.isourceserror.md)<!-- -->\[\] |  |
+|  [plan](./cucumber.iloadsourcesresult.plan.md) |  | [IPlannedPickle](./cucumber.iplannedpickle.md)<!-- -->\[\] |  |
 

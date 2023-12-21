@@ -6,7 +6,7 @@
 
 The format that can be passed into `runCucumber`<!-- -->.
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 runConfiguration: IRunConfiguration;

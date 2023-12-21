@@ -4,7 +4,7 @@
 
 ## IRunOptionsRuntime.parallel property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 parallel: number;

@@ -4,7 +4,7 @@
 
 ## ILoadSupportOptions.support property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 support: ISupportCodeCoordinates;

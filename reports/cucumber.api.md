@@ -8,19 +8,68 @@
 
 import { Envelope } from '@cucumber/messages';
 import { Expression } from '@cucumber/cucumber-expressions';
-import http from 'http';
+import { JsonObject } from 'type-fest';
 import * as messages from '@cucumber/messages';
+import { ParameterType } from '@cucumber/cucumber-expressions';
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions';
-import { PassThrough } from 'stream';
-import { Transform } from 'stream';
-import { WriteStream } from 'fs';
-import { WriteStream as WriteStream_2 } from 'tty';
+import { Writable } from 'node:stream';
+
+// @public (undocumented)
+export interface IConfiguration {
+    // (undocumented)
+    backtrace: boolean;
+    // (undocumented)
+    dryRun: boolean;
+    // (undocumented)
+    failFast: boolean;
+    // (undocumented)
+    forceExit: boolean;
+    // Warning: (ae-forgotten-export) The symbol "FormatsConfiguration" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    format: FormatsConfiguration;
+    // Warning: (ae-forgotten-export) The symbol "FormatOptions" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    formatOptions: FormatOptions;
+    // (undocumented)
+    import: string[];
+    // (undocumented)
+    language: string;
+    // (undocumented)
+    name: string[];
+    // Warning: (ae-forgotten-export) The symbol "PickleOrder" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    order: PickleOrder;
+    // (undocumented)
+    parallel: number;
+    // (undocumented)
+    paths: string[];
+    // (undocumented)
+    publish: boolean;
+    // @deprecated (undocumented)
+    publishQuiet: boolean;
+    // (undocumented)
+    require: string[];
+    // (undocumented)
+    requireModule: string[];
+    // (undocumented)
+    retry: number;
+    // (undocumented)
+    retryTagFilter: string;
+    // (undocumented)
+    strict: boolean;
+    // (undocumented)
+    tags: string;
+    // (undocumented)
+    worldParameters: JsonObject;
+}
 
 // @public (undocumented)
 export interface ILoadConfigurationOptions {
     file?: string;
     profiles?: string[];
-    // Warning: (ae-forgotten-export) The symbol "IConfiguration" needs to be exported by the entry point index.d.ts
     provided?: Partial<IConfiguration>;
 }
 
@@ -74,10 +123,10 @@ export interface IRunConfiguration {
 // @public
 export interface IRunEnvironment {
     cwd?: string;
+    debug?: boolean;
     env?: NodeJS.ProcessEnv;
-    stderr?: IFormatterStream;
-    // Warning: (ae-forgotten-export) The symbol "IFormatterStream" needs to be exported by the entry point index.d.ts
-    stdout?: IFormatterStream;
+    stderr?: Writable;
+    stdout?: Writable;
 }
 
 // @public (undocumented)
@@ -96,15 +145,12 @@ export interface IRunOptions {
 export interface IRunOptionsFormats {
     // (undocumented)
     files: Record<string, string>;
-    // Warning: (ae-forgotten-export) The symbol "FormatOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     options: FormatOptions;
+    // Warning: (ae-forgotten-export) The symbol "IPublishConfig" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
-    publish: {
-        url?: string;
-        token?: string;
-    } | false;
+    publish: IPublishConfig | false;
     // (undocumented)
     stdout: string;
 }
@@ -120,7 +166,6 @@ export interface IRunOptionsRuntime extends IRuntimeOptions {
 // @public
 export interface IRunResult {
     success: boolean;
-    // Warning: (ae-forgotten-export) The symbol "ISupportCodeLibrary" needs to be exported by the entry point index.d.ts
     support: ISupportCodeLibrary;
 }
 
@@ -130,8 +175,6 @@ export interface ISourcesCoordinates {
     defaultDialect: string;
     // (undocumented)
     names: string[];
-    // Warning: (ae-forgotten-export) The symbol "PickleOrder" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     order: PickleOrder;
     // (undocumented)
@@ -165,6 +208,50 @@ export interface ISupportCodeCoordinates {
 
 // @public (undocumented)
 export type ISupportCodeCoordinatesOrLibrary = ISupportCodeCoordinates | ISupportCodeLibrary;
+
+// @public (undocumented)
+export interface ISupportCodeLibrary {
+    // Warning: (ae-forgotten-export) The symbol "TestCaseHookDefinition" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    readonly afterTestCaseHookDefinitions: TestCaseHookDefinition[];
+    // Warning: (ae-forgotten-export) The symbol "TestRunHookDefinition" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    readonly afterTestRunHookDefinitions: TestRunHookDefinition[];
+    // Warning: (ae-forgotten-export) The symbol "TestStepHookDefinition" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    readonly afterTestStepHookDefinitions: TestStepHookDefinition[];
+    // (undocumented)
+    readonly beforeTestCaseHookDefinitions: TestCaseHookDefinition[];
+    // (undocumented)
+    readonly beforeTestRunHookDefinitions: TestRunHookDefinition[];
+    // (undocumented)
+    readonly beforeTestStepHookDefinitions: TestStepHookDefinition[];
+    // (undocumented)
+    readonly defaultTimeout: number;
+    // Warning: (ae-forgotten-export) The symbol "ISupportCodeCoordinates_2" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    readonly originalCoordinates: ISupportCodeCoordinates_2;
+    // Warning: (ae-forgotten-export) The symbol "ParallelAssignmentValidator" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    readonly parallelCanAssign: ParallelAssignmentValidator;
+    // Warning: (ae-forgotten-export) The symbol "SourcedParameterTypeRegistry" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    readonly parameterTypeRegistry: SourcedParameterTypeRegistry;
+    // Warning: (ae-forgotten-export) The symbol "StepDefinition" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    readonly stepDefinitions: StepDefinition[];
+    // (undocumented)
+    readonly undefinedParameterTypes: messages.UndefinedParameterType[];
+    // (undocumented)
+    readonly World: any;
+}
 
 // @public
 export function loadConfiguration(options?: ILoadConfigurationOptions, environment?: IRunEnvironment): Promise<IResolvedConfiguration>;

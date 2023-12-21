@@ -4,7 +4,7 @@
 
 ## IRunOptionsFormats.options property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 options: FormatOptions;

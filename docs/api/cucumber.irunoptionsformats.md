@@ -5,7 +5,7 @@
 ## IRunOptionsFormats interface
 
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 export interface IRunOptionsFormats 
@@ -13,10 +13,10 @@ export interface IRunOptionsFormats
 
 ## Properties
 
-|  Property | Type | Description |
-|  --- | --- | --- |
-|  [files](./cucumber.irunoptionsformats.files.md) | Record&lt;string, string&gt; |  |
-|  [options](./cucumber.irunoptionsformats.options.md) | FormatOptions |  |
-|  [publish](./cucumber.irunoptionsformats.publish.md) | { url?: string; token?: string; } \| false |  |
-|  [stdout](./cucumber.irunoptionsformats.stdout.md) | string |  |
+|  Property | Modifiers | Type | Description |
+|  --- | --- | --- | --- |
+|  [files](./cucumber.irunoptionsformats.files.md) |  | Record&lt;string, string&gt; |  |
+|  [options](./cucumber.irunoptionsformats.options.md) |  | FormatOptions |  |
+|  [publish](./cucumber.irunoptionsformats.publish.md) |  | IPublishConfig \| false |  |
+|  [stdout](./cucumber.irunoptionsformats.stdout.md) |  | string |  |
 

@@ -4,7 +4,7 @@
 
 ## IRunConfiguration.runtime property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 runtime: IRunOptionsRuntime;

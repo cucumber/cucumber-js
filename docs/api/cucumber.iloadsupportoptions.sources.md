@@ -4,7 +4,7 @@
 
 ## ILoadSupportOptions.sources property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 sources: ISourcesCoordinates;

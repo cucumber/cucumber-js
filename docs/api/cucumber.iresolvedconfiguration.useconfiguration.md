@@ -6,7 +6,7 @@
 
 The final flat configuration object resolved from the configuration file/profiles plus any extra provided.
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 useConfiguration: IConfiguration;

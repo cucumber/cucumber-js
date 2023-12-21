@@ -4,7 +4,7 @@
 
 ## ISupportCodeCoordinates.importPaths property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 importPaths: string[];

@@ -5,16 +5,16 @@
 ## IRunOptionsRuntime interface
 
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 export interface IRunOptionsRuntime extends IRuntimeOptions 
 ```
-<b>Extends:</b> IRuntimeOptions
+**Extends:** IRuntimeOptions
 
 ## Properties
 
-|  Property | Type | Description |
-|  --- | --- | --- |
-|  [parallel](./cucumber.irunoptionsruntime.parallel.md) | number |  |
+|  Property | Modifiers | Type | Description |
+|  --- | --- | --- | --- |
+|  [parallel](./cucumber.irunoptionsruntime.parallel.md) |  | number |  |
 

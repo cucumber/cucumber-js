@@ -4,11 +4,8 @@
 
 ## IRunOptionsFormats.publish property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
-publish: {
-        url?: string;
-        token?: string;
-    } | false;
+publish: IPublishConfig | false;
 ```

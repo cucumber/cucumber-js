@@ -5,7 +5,7 @@
 ## IPlannedPickle interface
 
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 export interface IPlannedPickle 
@@ -13,9 +13,9 @@ export interface IPlannedPickle
 
 ## Properties
 
-|  Property | Type | Description |
-|  --- | --- | --- |
-|  [location](./cucumber.iplannedpickle.location.md) | { line: number; column?: number; } |  |
-|  [name](./cucumber.iplannedpickle.name.md) | string |  |
-|  [uri](./cucumber.iplannedpickle.uri.md) | string |  |
+|  Property | Modifiers | Type | Description |
+|  --- | --- | --- | --- |
+|  [location](./cucumber.iplannedpickle.location.md) |  | { line: number; column?: number; } |  |
+|  [name](./cucumber.iplannedpickle.name.md) |  | string |  |
+|  [uri](./cucumber.iplannedpickle.uri.md) |  | string |  |
 

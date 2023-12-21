@@ -4,7 +4,7 @@
 
 ## ISourcesCoordinates.defaultDialect property
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 defaultDialect: string;

@@ -5,7 +5,7 @@
 ## ISourcesCoordinates interface
 
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 export interface ISourcesCoordinates 
@@ -13,11 +13,11 @@ export interface ISourcesCoordinates
 
 ## Properties
 
-|  Property | Type | Description |
-|  --- | --- | --- |
-|  [defaultDialect](./cucumber.isourcescoordinates.defaultdialect.md) | string |  |
-|  [names](./cucumber.isourcescoordinates.names.md) | string\[\] |  |
-|  [order](./cucumber.isourcescoordinates.order.md) | PickleOrder |  |
-|  [paths](./cucumber.isourcescoordinates.paths.md) | string\[\] |  |
-|  [tagExpression](./cucumber.isourcescoordinates.tagexpression.md) | string |  |
+|  Property | Modifiers | Type | Description |
+|  --- | --- | --- | --- |
+|  [defaultDialect](./cucumber.isourcescoordinates.defaultdialect.md) |  | string |  |
+|  [names](./cucumber.isourcescoordinates.names.md) |  | string\[\] |  |
+|  [order](./cucumber.isourcescoordinates.order.md) |  | PickleOrder |  |
+|  [paths](./cucumber.isourcescoordinates.paths.md) |  | string\[\] |  |
+|  [tagExpression](./cucumber.isourcescoordinates.tagexpression.md) |  | string |  |
 

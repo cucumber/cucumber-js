@@ -6,7 +6,7 @@
 
 Ad-hoc configuration options to be applied over the top of whatever is loaded from the configuration file/profiles.
 
-<b>Signature:</b>
+**Signature:**
 
 ```typescript
 provided?: Partial<IConfiguration>;
