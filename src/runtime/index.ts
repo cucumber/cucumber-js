@@ -1,6 +1,7 @@
 import { EventEmitter } from 'node:events'
 import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
+import { JsonObject } from 'type-fest'
 import { EventDataCollector } from '../formatter/helpers'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { assembleTestCases } from './assemble_test_cases'
@@ -29,7 +30,7 @@ export interface IRuntimeOptions {
   retry: number
   retryTagFilter: string
   strict: boolean
-  worldParameters: any
+  worldParameters: JsonObject
 }
 
 export default class Runtime implements IRuntime {
