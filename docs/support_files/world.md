@@ -64,6 +64,8 @@ The `worldParameters` configuration option allows you to provide this informatio
 
 This option is repeatable, so you can use it multiple times and the objects will be merged with the later ones taking precedence.
 
+Parameters can be modified in `BeforeAll` [hooks](./hooks.md) if required.
+
 ## Custom worlds
 
 You might also want to have methods on your world that hooks and steps can access to keep their own code simple. To do this, you can write your own world implementation with its own properties and methods that help with your instrumentation, and then call `setWorldConstructor` to tell Cucumber about it:

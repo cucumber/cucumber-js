@@ -86,6 +86,7 @@ export default class Worker {
     this.runTestRunHooks = makeRunTestRunHooks(
       options.dryRun,
       this.supportCodeLibrary.defaultTimeout,
+      this.worldParameters,
       (name, location) =>
         `${name} hook errored on worker ${this.id}, process exiting: ${location}`
     )

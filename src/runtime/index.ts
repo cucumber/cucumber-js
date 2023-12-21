@@ -63,6 +63,7 @@ export default class Runtime implements IRuntime {
     this.runTestRunHooks = makeRunTestRunHooks(
       this.options.dryRun,
       this.supportCodeLibrary.defaultTimeout,
+      this.options.worldParameters,
       (name, location) => `${name} hook errored, process exiting: ${location}`
     )
   }

@@ -1,4 +1,5 @@
 import * as messages from '@cucumber/messages'
+import { JsonObject } from 'type-fest'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
@@ -27,6 +28,10 @@ export interface ITestStepHookParameter {
   testCaseStartedId: string
   testStepId: string
 }
+
+export type TestRunHookFunction = (this: {
+  parameters: JsonObject
+}) => any | Promise<any>
 
 export type TestCaseHookFunction<WorldType> = (
   this: WorldType,
@@ -108,8 +113,8 @@ export interface IDefineSupportCodeMethods {
       options: IDefineTestStepHookOptions,
       code: TestStepHookFunction<WorldType>
     ) => void)
-  AfterAll: ((code: Function) => void) &
-    ((options: IDefineTestRunHookOptions, code: Function) => void)
+  AfterAll: ((code: TestRunHookFunction) => void) &
+    ((options: IDefineTestRunHookOptions, code: TestRunHookFunction) => void)
   Before: (<WorldType = IWorld>(
     code: TestCaseHookFunction<WorldType>
   ) => void) &
@@ -132,8 +137,8 @@ export interface IDefineSupportCodeMethods {
       options: IDefineTestStepHookOptions,
       code: TestStepHookFunction<WorldType>
     ) => void)
-  BeforeAll: ((code: Function) => void) &
-    ((options: IDefineTestRunHookOptions, code: Function) => void)
+  BeforeAll: ((code: TestRunHookFunction) => void) &
+    ((options: IDefineTestRunHookOptions, code: TestRunHookFunction) => void)
   Given: IDefineStep
   Then: IDefineStep
   When: IDefineStep

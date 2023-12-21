@@ -25,6 +25,14 @@ After(async function () {})
 BeforeStep(async function () {})
 AfterStep(async function () {})
 
+// should allow accessing world parameters in global hooks
+BeforeAll(function () {
+  this.parameters.foo = 1
+})
+AfterAll(function () {
+  this.parameters.foo = 1
+})
+
 // should allow typed arguments in hooks
 Before(function (param: ITestCaseHookParameter) {})
 After(function (param: ITestCaseHookParameter) {})

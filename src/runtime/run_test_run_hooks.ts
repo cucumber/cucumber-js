@@ -1,3 +1,4 @@
+import { JsonObject } from 'type-fest'
 import UserCodeRunner from '../user_code_runner'
 import { formatLocation } from '../formatter/helpers'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
@@ -11,6 +12,7 @@ export type RunsTestRunHooks = (
 export const makeRunTestRunHooks = (
   dryRun: boolean,
   defaultTimeout: number,
+  worldParameters: JsonObject,
   errorMessage: (name: string, location: string) => string
 ): RunsTestRunHooks =>
   dryRun
@@ -20,7 +22,7 @@ export const makeRunTestRunHooks = (
           const { error } = await UserCodeRunner.run({
             argsArray: [],
             fn: hookDefinition.code,
-            thisArg: null,
+            thisArg: { parameters: worldParameters },
             timeoutInMilliseconds: valueOrDefault(
               hookDefinition.options.timeout,
               defaultTimeout
