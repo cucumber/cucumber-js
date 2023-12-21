@@ -208,14 +208,14 @@
     "node": "18 || 20 || 21"
   },
   "dependencies": {
-    "@cucumber/ci-environment": "9.2.0",
-    "@cucumber/cucumber-expressions": "17.0.0",
+    "@cucumber/ci-environment": "10.0.0",
+    "@cucumber/cucumber-expressions": "17.0.1",
     "@cucumber/gherkin": "27.0.0",
     "@cucumber/gherkin-streams": "5.0.1",
     "@cucumber/gherkin-utils": "8.0.5",
-    "@cucumber/html-formatter": "20.4.0",
+    "@cucumber/html-formatter": "21.2.0",
     "@cucumber/message-streams": "4.0.1",
-    "@cucumber/messages": "23.0.0",
+    "@cucumber/messages": "24.0.1",
     "@cucumber/tag-expressions": "6.0.0",
     "assertion-error-formatter": "^3.0.0",
     "capital-case": "^1.0.4",
