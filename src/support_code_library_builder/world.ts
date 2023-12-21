@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash.clonedeep'
 import { ICreateAttachment, ICreateLog } from '../runtime/attachment_manager'
 
 export type TestRunContext = any
@@ -35,6 +34,6 @@ export default class World<ParametersType = any>
     this.attach = attach
     this.log = log
     this.parameters = parameters
-    this.testRunContext = cloneDeep(testRunContext)
+    this.testRunContext = structuredClone(testRunContext)
   }
 }
