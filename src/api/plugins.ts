@@ -3,7 +3,6 @@ import publishPlugin from '../publish'
 import { ILogger } from '../logger'
 import filterPlugin from '../filter'
 import {
-  ILoadSupportOptions,
   IRunConfiguration,
   IRunEnvironment,
   ISourcesCoordinates,
