@@ -10,6 +10,7 @@ export interface IWorld<ParametersType = any> {
   readonly attach: ICreateAttachment
   readonly log: ICreateLog
   readonly parameters: ParametersType
+
   [key: string]: any
 }
 

@@ -58,7 +58,6 @@ async function testRunner(
     skip: valueOrDefault(options.skip, false),
     supportCodeLibrary: options.supportCodeLibrary,
     worldParameters: {},
-    testRunContext: {},
   })
   const result = await runner.run()
   return { envelopes, result }
