@@ -98,8 +98,6 @@ Before(function() {
 
 If you have some setup / teardown that needs to be done before or after all scenarios, use `BeforeAll` / `AfterAll`. Like hooks and steps, these can be synchronous, accept a callback, or return a promise.
 
-Unlike `Before` / `After` these methods will not have a world instance as `this`. This is because each scenario gets its own world instance and these hooks run before / after **all** scenarios.
-
 ```javascript
 const {AfterAll, BeforeAll} = require('@cucumber/cucumber');
 
@@ -121,6 +119,15 @@ AfterAll(function () {
   return Promise.resolve()
 });
 ```
+
+### World parameters in BeforeAll/AfterAll
+
+ℹ️ Added in v10.1.0
+
+`BeforeAll`/`AfterAll` hooks aren't given a World instance bound to `this` like other hooks and steps. But they can access [World parameters](./world.md#world-parameters) via `this.parameters` in order to:
+
+- Use the parameters as configuration to drive automation
+- Update the parameters with extra context which will then be available to other hooks and steps
 
 ## BeforeStep / AfterStep
 
