@@ -69,6 +69,7 @@ export async function loadSources(
       message,
     }
   })
+  await pluginManager.cleanup()
   return {
     plan,
     errors,

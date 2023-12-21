@@ -32,11 +32,13 @@ export async function loadSupport(
   )
   pluginManager.emit('paths:resolve', resolvedPaths)
   const { requirePaths, importPaths } = resolvedPaths
-  return await getSupportCodeLibrary({
+  const supportCodeLibrary = await getSupportCodeLibrary({
     cwd,
     newId,
     requireModules: options.support.requireModules,
     requirePaths,
     importPaths,
   })
+  await pluginManager.cleanup()
+  return supportCodeLibrary
 }
