@@ -133,6 +133,24 @@ describe('PluginManager', () => {
   })
 
   describe('transforms', () => {
+    const filterablePickles = [
+      {
+        pickle: {
+          id: 'pickle-1',
+        },
+      },
+      {
+        pickle: {
+          id: 'pickle-2',
+        },
+      },
+      {
+        pickle: {
+          id: 'pickle-3',
+        },
+      },
+    ] as IFilterablePickle[]
+
     it('should apply transforms in the order registered', async () => {
       const pluginManager = new PluginManager()
       await pluginManager.init(
@@ -166,29 +184,36 @@ describe('PluginManager', () => {
         environment
       )
 
-      const filterablePickles = [
-        {
-          pickle: {
-            id: 'pickle-1',
-          },
-        },
-        {
-          pickle: {
-            id: 'pickle-2',
-          },
-        },
-        {
-          pickle: {
-            id: 'pickle-3',
-          },
-        },
-      ] as IFilterablePickle[]
-
       const result = await pluginManager.transform(
         'pickles:filter',
         filterablePickles
       )
       expect(result).to.have.length(2)
+    })
+
+    it('should treat undefined as a noop', async () => {
+      const pluginManager = new PluginManager()
+      await pluginManager.init(
+        'runCucumber',
+        {
+          type: 'plugin',
+          coordinator: ({ on }) => {
+            on('pickles:filter', () => {
+              // bail, nothing to be done
+              return undefined
+            })
+          },
+        },
+        {},
+        logger,
+        environment
+      )
+
+      const result = await pluginManager.transform(
+        'pickles:filter',
+        filterablePickles
+      )
+      expect(result).to.eq(filterablePickles)
     })
   })
 })

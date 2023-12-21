@@ -62,7 +62,10 @@ export class PluginManager {
   ): Promise<CoordinatorPluginEventValues[K]> {
     let transformed = value
     for (const handler of this.handlers[event]) {
-      transformed = await handler(transformed)
+      const returned = await handler(transformed)
+      if (typeof returned !== 'undefined') {
+        transformed = returned
+      }
     }
     return transformed
   }
