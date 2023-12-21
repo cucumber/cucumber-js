@@ -87,3 +87,26 @@ Feature: Before / After All Hooks Context
       """
     When I run cucumber-js
     Then it passes
+
+  Scenario: Works the same way on the parallel runtime
+    Given a file named "features/support/hooks.js" with:
+      """
+      const {AfterAll, BeforeAll, Given} = require('@cucumber/cucumber')
+      const {expect} = require('chai')
+
+      BeforeAll(function() {
+        this.parameters.foo = 1
+      })
+
+      Given('first step', function() {
+        expect(this.parameters).to.deep.eq({
+          widgets: true,
+          foo: 1
+        })
+      })
+
+      Given('second step', function() {})
+      """
+    When I run cucumber-js with `--parallel 2`
+    Then it passes
+

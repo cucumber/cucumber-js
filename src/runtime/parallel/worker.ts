@@ -34,7 +34,6 @@ export default class Worker {
   private supportCodeLibrary: ISupportCodeLibrary
   private worldParameters: JsonObject
   private runTestRunHooks: RunsTestRunHooks
-  private testRunContext = {}
 
   constructor({
     cwd,
@@ -87,7 +86,7 @@ export default class Worker {
     this.runTestRunHooks = makeRunTestRunHooks(
       options.dryRun,
       this.supportCodeLibrary.defaultTimeout,
-      this.testRunContext,
+      this.worldParameters,
       (name, location) =>
         `${name} hook errored on worker ${this.id}, process exiting: ${location}`
     )
