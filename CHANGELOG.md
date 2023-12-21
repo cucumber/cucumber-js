@@ -12,7 +12,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 - Prevent mutations on world parameters leaking between test cases ([#2362](https://github.com/cucumber/cucumber-js/pull/2362))
 
 ### Changed
-- Replace usage of VError with Error.cause ([#2363](https://github.com/cucumber/cucumber-js/pull/2363))
+- Replace usage of `VError` with `Error.cause` ([#2363](https://github.com/cucumber/cucumber-js/pull/2363))
 
 ## [10.0.1] - 2023-10-20
 ### Fixed
