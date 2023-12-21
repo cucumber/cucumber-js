@@ -1,21 +1,64 @@
 import { Envelope } from '@cucumber/messages'
-import { IRunEnvironment, IRunOptions } from '../api'
+import { ArrayValues, Promisable } from 'type-fest'
+import { IRunEnvironment } from '../api'
 import { ILogger } from '../logger'
+import { IFilterablePickle } from '../filter'
+import { IResolvedPaths } from '../paths'
+import { coordinatorTransformKeys, coordinatorVoidKeys } from './events'
 
-export interface PluginEvents {
-  message: Envelope
+export type Operation = 'loadSources' | 'loadSupport' | 'runCucumber'
+
+export type CoordinatorPluginVoidEventKey = ArrayValues<
+  typeof coordinatorVoidKeys
+>
+export type CoordinatorPluginTransformEventKey = ArrayValues<
+  typeof coordinatorTransformKeys
+>
+export type CoordinatorPluginEventKey =
+  | CoordinatorPluginVoidEventKey
+  | CoordinatorPluginTransformEventKey
+
+export type CoordinatorPluginEventValues = {
+  // void
+  message: Readonly<Envelope>
+  'paths:resolve': Readonly<IResolvedPaths>
+  // transform
+  'pickles:filter': Readonly<Array<IFilterablePickle>>
+  'pickles:order': Readonly<Array<IFilterablePickle>>
 }
 
-export interface PluginContext {
-  on: <K extends keyof PluginEvents>(
-    event: K,
-    handler: (value: PluginEvents[K]) => void
+export type CoordinatorPluginEventHandler<K extends CoordinatorPluginEventKey> =
+  (
+    value: CoordinatorPluginEventValues[K]
+  ) => K extends CoordinatorPluginTransformEventKey
+    ? Promisable<CoordinatorPluginEventValues[K]>
+    : void
+
+export interface CoordinatorPluginContext<OptionsType> {
+  operation: Operation
+  on: <EventKey extends CoordinatorPluginEventKey>(
+    event: EventKey,
+    handler: CoordinatorPluginEventHandler<EventKey>
   ) => void
+  options: OptionsType
   logger: ILogger
-  configuration: IRunOptions
-  environment: IRunEnvironment
+  environment: Required<IRunEnvironment>
 }
 
-export type PluginCleanup = () => any | void | Promise<any | void>
+export type CoordinatorPluginFunction<OptionsType> = (
+  context: CoordinatorPluginContext<OptionsType>
+) => Promisable<PluginCleanup | void>
 
-export type Plugin = (context: PluginContext) => Promise<PluginCleanup | void>
+export type PluginCleanup = () => Promisable<void>
+
+/**
+ * A plugin to implement Cucumber built-in functionality.
+ *
+ * Uses the same events and mechanisms as user-authored plugins, but is free to require configuration and context from
+ * inside of Cucumber as its `options`, whereas user-authored plugins will be limited to `pluginOptions` from the
+ * project configuration.
+ */
+export interface InternalPlugin<OptionsType = any> {
+  type: 'plugin'
+  coordinator: CoordinatorPluginFunction<OptionsType>
+}

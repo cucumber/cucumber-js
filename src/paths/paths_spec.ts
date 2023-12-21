@@ -30,90 +30,7 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(esmSupportCodePath, '')
 
       // Act
-      const {
-        featurePaths,
-        unexpandedFeaturePaths,
-        requirePaths,
-        importPaths,
-      } = await resolvePaths(
-        new FakeLogger(),
-        cwd,
-        {
-          paths: [relativeFeaturePath],
-        },
-        {
-          requireModules: [],
-          requirePaths: [],
-          importPaths: [],
-        }
-      )
-
-      // Assert
-      expect(featurePaths).to.eql([featurePath])
-      expect(unexpandedFeaturePaths).to.eql([relativeFeaturePath])
-      expect(requirePaths).to.eql([])
-      expect(importPaths).to.eql([jsSupportCodePath, esmSupportCodePath])
-    })
-
-    it('deduplicates features based on overlapping expressions', async function () {
-      // Arrange
-      const cwd = await buildTestWorkingDirectory()
-      const relativeFeaturePath = path.join('features', 'a.feature')
-      const featurePath = path.join(cwd, relativeFeaturePath)
-      await fsExtra.outputFile(featurePath, '')
-      // Act
-      const { featurePaths } = await resolvePaths(
-        new FakeLogger(),
-        cwd,
-        {
-          paths: ['features/*.feature', 'features/a.feature'],
-        },
-        {
-          requireModules: [],
-          requirePaths: [],
-          importPaths: [],
-        }
-      )
-
-      // Assert
-      expect(featurePaths).to.eql([featurePath])
-    })
-
-    it('deduplicates features based on multiple targets of same path', async function () {
-      // Arrange
-      const cwd = await buildTestWorkingDirectory()
-      const relativeFeaturePath = path.join('features', 'a.feature')
-      const featurePath = path.join(cwd, relativeFeaturePath)
-      await fsExtra.outputFile(featurePath, '')
-      // Act
-      const { featurePaths } = await resolvePaths(
-        new FakeLogger(),
-        cwd,
-        {
-          paths: [`${relativeFeaturePath}:3`, `${relativeFeaturePath}:4`],
-        },
-        {
-          requireModules: [],
-          requirePaths: [],
-          importPaths: [],
-        }
-      )
-
-      // Assert
-      expect(featurePaths).to.eql([featurePath])
-    })
-
-    it('returns the appropriate .md and support code paths', async function () {
-      // Arrange
-      const cwd = await buildTestWorkingDirectory()
-      const relativeFeaturePath = path.join('features', 'a.feature.md')
-      const featurePath = path.join(cwd, relativeFeaturePath)
-      await fsExtra.outputFile(featurePath, '')
-      const supportCodePath = path.join(cwd, 'features', 'a.js')
-      await fsExtra.outputFile(supportCodePath, '')
-
-      // Act
-      const { featurePaths, unexpandedFeaturePaths, importPaths } =
+      const { sourcePaths, unexpandedSourcePaths, requirePaths, importPaths } =
         await resolvePaths(
           new FakeLogger(),
           cwd,
@@ -128,8 +45,87 @@ describe('resolvePaths', () => {
         )
 
       // Assert
-      expect(featurePaths).to.eql([featurePath])
-      expect(unexpandedFeaturePaths).to.eql([relativeFeaturePath])
+      expect(sourcePaths).to.eql([featurePath])
+      expect(unexpandedSourcePaths).to.eql([relativeFeaturePath])
+      expect(requirePaths).to.eql([])
+      expect(importPaths).to.eql([jsSupportCodePath, esmSupportCodePath])
+    })
+
+    it('deduplicates features based on overlapping expressions', async function () {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const relativeFeaturePath = path.join('features', 'a.feature')
+      const featurePath = path.join(cwd, relativeFeaturePath)
+      await fsExtra.outputFile(featurePath, '')
+      // Act
+      const { sourcePaths } = await resolvePaths(
+        new FakeLogger(),
+        cwd,
+        {
+          paths: ['features/*.feature', 'features/a.feature'],
+        },
+        {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+        }
+      )
+
+      // Assert
+      expect(sourcePaths).to.eql([featurePath])
+    })
+
+    it('deduplicates features based on multiple targets of same path', async function () {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const relativeFeaturePath = path.join('features', 'a.feature')
+      const featurePath = path.join(cwd, relativeFeaturePath)
+      await fsExtra.outputFile(featurePath, '')
+      // Act
+      const { sourcePaths } = await resolvePaths(
+        new FakeLogger(),
+        cwd,
+        {
+          paths: [`${relativeFeaturePath}:3`, `${relativeFeaturePath}:4`],
+        },
+        {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+        }
+      )
+
+      // Assert
+      expect(sourcePaths).to.eql([featurePath])
+    })
+
+    it('returns the appropriate .md and support code paths', async function () {
+      // Arrange
+      const cwd = await buildTestWorkingDirectory()
+      const relativeFeaturePath = path.join('features', 'a.feature.md')
+      const featurePath = path.join(cwd, relativeFeaturePath)
+      await fsExtra.outputFile(featurePath, '')
+      const supportCodePath = path.join(cwd, 'features', 'a.js')
+      await fsExtra.outputFile(supportCodePath, '')
+
+      // Act
+      const { sourcePaths, unexpandedSourcePaths, importPaths } =
+        await resolvePaths(
+          new FakeLogger(),
+          cwd,
+          {
+            paths: [relativeFeaturePath],
+          },
+          {
+            requireModules: [],
+            requirePaths: [],
+            importPaths: [],
+          }
+        )
+
+      // Assert
+      expect(sourcePaths).to.eql([featurePath])
+      expect(unexpandedSourcePaths).to.eql([relativeFeaturePath])
       expect(importPaths).to.eql([supportCodePath])
     })
   })
@@ -145,7 +141,7 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(supportCodePath, '')
 
       // Act
-      const { featurePaths, unexpandedFeaturePaths, importPaths } =
+      const { sourcePaths, unexpandedSourcePaths, importPaths } =
         await resolvePaths(
           new FakeLogger(),
           cwd,
@@ -160,8 +156,8 @@ describe('resolvePaths', () => {
         )
 
       // Assert
-      expect(featurePaths).to.eql([featurePath])
-      expect(unexpandedFeaturePaths).to.eql([relativeFeaturePath])
+      expect(sourcePaths).to.eql([featurePath])
+      expect(unexpandedSourcePaths).to.eql([relativeFeaturePath])
       expect(importPaths).to.eql([supportCodePath])
     })
 
@@ -179,7 +175,7 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(supportCodePath, '')
 
       // Act
-      const { featurePaths, unexpandedFeaturePaths, importPaths } =
+      const { sourcePaths, unexpandedSourcePaths, importPaths } =
         await resolvePaths(
           new FakeLogger(),
           cwd,
@@ -194,8 +190,8 @@ describe('resolvePaths', () => {
         )
 
       // Assert
-      expect(featurePaths).to.eql([featurePath])
-      expect(unexpandedFeaturePaths).to.eql([relativeFeaturePath])
+      expect(sourcePaths).to.eql([featurePath])
+      expect(unexpandedSourcePaths).to.eql([relativeFeaturePath])
       expect(importPaths).to.eql([supportCodePath])
     })
   })
@@ -209,7 +205,7 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(featurePathA, '')
       await fsExtra.outputFile(featurePathB, '')
       // Act
-      const { featurePaths } = await resolvePaths(
+      const { sourcePaths } = await resolvePaths(
         new FakeLogger(),
         cwd,
         {
@@ -223,7 +219,7 @@ describe('resolvePaths', () => {
       )
 
       // Assert
-      expect(featurePaths).to.eql([featurePathB, featurePathA])
+      expect(sourcePaths).to.eql([featurePathB, featurePathA])
     })
 
     it('should honour the provided order of multiple directories', async () => {
@@ -234,7 +230,7 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(featurePathA, '')
       await fsExtra.outputFile(featurePathB, '')
       // Act
-      const { featurePaths } = await resolvePaths(
+      const { sourcePaths } = await resolvePaths(
         new FakeLogger(),
         cwd,
         {
@@ -248,7 +244,7 @@ describe('resolvePaths', () => {
       )
 
       // Assert
-      expect(featurePaths).to.eql([featurePathB, featurePathA])
+      expect(sourcePaths).to.eql([featurePathB, featurePathA])
     })
   })
 
@@ -261,7 +257,7 @@ describe('resolvePaths', () => {
       const rerunPath = path.join(cwd, '@empty_rerun.txt')
       await fsExtra.outputFile(rerunPath, '')
       // Act
-      const { featurePaths, unexpandedFeaturePaths, requirePaths } =
+      const { sourcePaths, unexpandedSourcePaths, requirePaths } =
         await resolvePaths(
           new FakeLogger(),
           cwd,
@@ -276,8 +272,8 @@ describe('resolvePaths', () => {
         )
 
       // Assert
-      expect(featurePaths).to.eql([])
-      expect(unexpandedFeaturePaths).to.eql([])
+      expect(sourcePaths).to.eql([])
+      expect(unexpandedSourcePaths).to.eql([])
       expect(requirePaths).to.eql([])
     })
   })
@@ -291,7 +287,7 @@ describe('resolvePaths', () => {
       const rerunPath = path.join(cwd, '@empty_rerun.txt')
       await fsExtra.outputFile(rerunPath, '\n')
       // Act
-      const { featurePaths, unexpandedFeaturePaths, requirePaths } =
+      const { sourcePaths, unexpandedSourcePaths, requirePaths } =
         await resolvePaths(
           new FakeLogger(),
           cwd,
@@ -306,8 +302,8 @@ describe('resolvePaths', () => {
         )
 
       // Assert
-      expect(featurePaths).to.eql([])
-      expect(unexpandedFeaturePaths).to.eql([])
+      expect(sourcePaths).to.eql([])
+      expect(unexpandedSourcePaths).to.eql([])
       expect(requirePaths).to.eql([])
     })
   })
@@ -322,7 +318,7 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(rerunPath, '\n\n')
 
       // Act
-      const { featurePaths, unexpandedFeaturePaths, requirePaths } =
+      const { sourcePaths, unexpandedSourcePaths, requirePaths } =
         await resolvePaths(
           new FakeLogger(),
           cwd,
@@ -335,8 +331,8 @@ describe('resolvePaths', () => {
         )
 
       // Assert
-      expect(featurePaths).to.eql([])
-      expect(unexpandedFeaturePaths).to.eql([])
+      expect(sourcePaths).to.eql([])
+      expect(unexpandedSourcePaths).to.eql([])
       expect(requirePaths).to.eql([])
     })
   })
@@ -370,7 +366,7 @@ describe('resolvePaths', () => {
 
       // Assert
       expect(logger.debug).to.have.been.calledWith(
-        'Found feature files based on configuration:',
+        'Found source files based on configuration:',
         [featurePath]
       )
       expect(logger.debug).to.have.been.calledWith(

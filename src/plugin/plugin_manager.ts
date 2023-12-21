@@ -1,44 +1,73 @@
-import { IRunEnvironment, IRunOptions } from '../api'
+import { IRunEnvironment } from '../api'
 import { ILogger } from '../logger'
-import { Plugin, PluginCleanup, PluginEvents } from './types'
+import {
+  CoordinatorPluginEventHandler,
+  InternalPlugin,
+  PluginCleanup,
+  CoordinatorPluginEventValues,
+  CoordinatorPluginEventKey,
+  CoordinatorPluginTransformEventKey,
+  Operation,
+} from './types'
 
 type HandlerRegistry = {
-  [K in keyof PluginEvents]: Array<(value: PluginEvents[K]) => void>
+  [K in CoordinatorPluginEventKey]: Array<CoordinatorPluginEventHandler<K>>
 }
 
 export class PluginManager {
-  private handlers: HandlerRegistry = { message: [] }
+  private handlers: HandlerRegistry = {
+    message: [],
+    'paths:resolve': [],
+    'pickles:filter': [],
+    'pickles:order': [],
+  }
   private cleanupFns: PluginCleanup[] = []
 
-  constructor(private pluginFns: Plugin[]) {}
-
-  private async register<K extends keyof PluginEvents>(
+  private async register<K extends CoordinatorPluginEventKey>(
     event: K,
-    handler: (value: PluginEvents[K]) => void
+    handler: CoordinatorPluginEventHandler<K>
   ) {
     this.handlers[event].push(handler)
   }
 
-  async init(
+  async init<OptionsType>(
+    operation: Operation,
+    plugin: InternalPlugin<OptionsType>,
+    options: OptionsType,
     logger: ILogger,
-    configuration: IRunOptions,
-    environment: IRunEnvironment
+    environment: Required<IRunEnvironment>
   ) {
-    for (const pluginFn of this.pluginFns) {
-      const cleanupFn = await pluginFn({
-        on: this.register.bind(this),
-        logger,
-        configuration,
-        environment,
-      })
-      if (cleanupFn) {
-        this.cleanupFns.push(cleanupFn)
-      }
+    const cleanupFn = await plugin.coordinator({
+      operation,
+      on: this.register.bind(this),
+      options,
+      logger,
+      environment,
+    })
+    if (typeof cleanupFn === 'function') {
+      this.cleanupFns.push(cleanupFn)
     }
   }
 
-  emit<K extends keyof PluginEvents>(event: K, value: PluginEvents[K]): void {
+  emit<K extends CoordinatorPluginEventKey>(
+    event: K,
+    value: CoordinatorPluginEventValues[K]
+  ): void {
     this.handlers[event].forEach((handler) => handler(value))
+  }
+
+  async transform<K extends CoordinatorPluginTransformEventKey>(
+    event: K,
+    value: CoordinatorPluginEventValues[K]
+  ): Promise<CoordinatorPluginEventValues[K]> {
+    let transformed = value
+    for (const handler of this.handlers[event]) {
+      const returned = await handler(transformed)
+      if (typeof returned !== 'undefined') {
+        transformed = returned
+      }
+    }
+    return transformed
   }
 
   async cleanup(): Promise<void> {

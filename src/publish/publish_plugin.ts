@@ -2,44 +2,42 @@ import { Writable } from 'node:stream'
 import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
 import stripAnsi from 'strip-ansi'
-import { Plugin } from '../plugin'
+import { InternalPlugin } from '../plugin'
+import { IPublishConfig } from '../formatter'
 import HttpStream from './http_stream'
 
 const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://messages.cucumber.io/api/reports'
 
-export const publishPlugin: Plugin = async ({
-  on,
-  logger,
-  configuration,
-  environment,
-}) => {
-  if (!configuration.formats.publish) {
-    return undefined
-  }
-  const { url = DEFAULT_CUCUMBER_PUBLISH_URL, token } =
-    configuration.formats.publish
-  const headers: { [key: string]: string } = {}
-  if (token !== undefined) {
-    headers.Authorization = `Bearer ${token}`
-  }
-  const stream = new HttpStream(url, 'GET', headers)
-  const readerStream = new Writable({
-    objectMode: true,
-    write: function (responseBody: string, encoding, writeCallback) {
-      environment.stderr.write(
-        sanitisePublishOutput(responseBody, environment.stderr) + '\n'
-      )
-      writeCallback()
-    },
-  })
-  stream.pipe(readerStream)
-  stream.on('error', (error: Error) => logger.error(error.message))
-  on('message', (value) => stream.write(JSON.stringify(value) + '\n'))
-  return () =>
-    new Promise<void>((resolve) => {
-      stream.on('finish', () => resolve())
-      stream.end()
+export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
+  type: 'plugin',
+  coordinator: async ({ on, logger, options, environment }) => {
+    if (!options) {
+      return undefined
+    }
+    const { url = DEFAULT_CUCUMBER_PUBLISH_URL, token } = options
+    const headers: { [key: string]: string } = {}
+    if (token !== undefined) {
+      headers.Authorization = `Bearer ${token}`
+    }
+    const stream = new HttpStream(url, 'GET', headers)
+    const readerStream = new Writable({
+      objectMode: true,
+      write: function (responseBody: string, encoding, writeCallback) {
+        environment.stderr.write(
+          sanitisePublishOutput(responseBody, environment.stderr) + '\n'
+        )
+        writeCallback()
+      },
     })
+    stream.pipe(readerStream)
+    stream.on('error', (error: Error) => logger.error(error.message))
+    on('message', (value) => stream.write(JSON.stringify(value) + '\n'))
+    return () =>
+      new Promise<void>((resolve) => {
+        stream.on('finish', () => resolve())
+        stream.end()
+      })
+  },
 }
 
 /*
