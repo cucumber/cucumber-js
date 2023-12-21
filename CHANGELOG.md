@@ -8,16 +8,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [10.1.0] - 2023-12-21
 ### Added
 - Ability to access World parameters from `BeforeAll`/`AfterAll` hooks (see [documentation](./docs/support_files/hooks.md#world-parameters-in-beforeallafterall)) ([#1770](https://github.com/cucumber/cucumber-js/pull/1770))
 - Support for Node.js 21 ([#2365](https://github.com/cucumber/cucumber-js/pull/2365))
 
-### Fixed
-- Prevent mutations on world parameters leaking between test cases ([#2362](https://github.com/cucumber/cucumber-js/pull/2362))
-
 ### Changed
 - Replace usage of `VError` with `Error.cause` ([#2363](https://github.com/cucumber/cucumber-js/pull/2363))
 - Updated HTML formatter with better search UX and smaller bundle size ([react-components#337](https://github.com/cucumber/react-components/pull/337))
+
+### Fixed
+- Prevent mutations on world parameters leaking between test cases ([#2362](https://github.com/cucumber/cucumber-js/pull/2362))
 
 ## [10.0.1] - 2023-10-20
 ### Fixed
@@ -1566,7 +1568,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.0.1...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.1.0...HEAD
+[10.1.0]: https://github.com/cucumber/cucumber-js/compare/v10.0.1...v10.1.0
 [10.0.1]: https://github.com/cucumber/cucumber-js/compare/v10.0.0...v10.0.1
 [10.0.0]: https://github.com/cucumber/cucumber-js/compare/v9.6.0...v10.0.0
 [9.6.0]: https://github.com/cucumber/cucumber-js/compare/v9.5.1...v9.6.0
