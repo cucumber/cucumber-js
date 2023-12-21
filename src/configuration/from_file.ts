@@ -1,24 +1,29 @@
+import fs from 'node:fs'
+import path from 'node:path'
+import { promisify } from 'node:util'
+import { pathToFileURL } from 'node:url'
 import stringArgv from 'string-argv'
-import path from 'path'
-import { pathToFileURL } from 'url'
+import YAML from 'yaml'
+import readPkgUp from 'read-pkg-up'
+import { ILogger } from '../logger'
 import { IConfiguration } from './types'
 import { mergeConfigurations } from './merge_configurations'
 import ArgvParser from './argv_parser'
 import { checkSchema } from './check_schema'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { importer } = require('../importer')
-
 export async function fromFile(
+  logger: ILogger,
   cwd: string,
   file: string,
   profiles: string[] = []
 ): Promise<Partial<IConfiguration>> {
-  const definitions = await loadFile(cwd, file)
+  const definitions = await loadFile(logger, cwd, file)
   if (!definitions.default) {
+    logger.debug('No default profile defined in configuration file')
     definitions.default = {}
   }
   if (profiles.length < 1) {
+    logger.debug('No profiles specified; using default profile')
     profiles = ['default']
   }
   const definedKeys = Object.keys(definitions)
@@ -30,26 +35,69 @@ export async function fromFile(
   return mergeConfigurations(
     {},
     ...profiles.map((profileKey) =>
-      extractConfiguration(profileKey, definitions[profileKey])
+      extractConfiguration(logger, profileKey, definitions[profileKey])
     )
   )
 }
 
 async function loadFile(
+  logger: ILogger,
   cwd: string,
   file: string
 ): Promise<Record<string, any>> {
   const filePath: string = path.join(cwd, file)
+  const extension = path.extname(filePath)
   let definitions
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    definitions = require(filePath)
-  } catch (error) {
-    if (error.code === 'ERR_REQUIRE_ESM') {
-      definitions = await importer(pathToFileURL(filePath))
-    } else {
-      throw error
-    }
+  switch (extension) {
+    case '.json':
+      definitions = JSON.parse(
+        await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
+      )
+      break
+    case '.yaml':
+    case '.yml':
+      definitions = YAML.parse(
+        await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
+      )
+      break
+    case '.cjs':
+      logger.debug(
+        `Loading configuration file "${file}" as CommonJS based on extension`
+      )
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      definitions = require(filePath)
+      break
+    case '.mjs':
+      logger.debug(
+        `Loading configuration file "${file}" as ESM based on extension`
+      )
+      definitions = await import(pathToFileURL(filePath).toString())
+      break
+    case '.js':
+      {
+        const parentPackage = await readPackageJson(filePath)
+        if (!parentPackage) {
+          logger.debug(
+            `Loading configuration file "${file}" as CommonJS based on absence of a parent package`
+          )
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          definitions = require(filePath)
+        } else if (parentPackage.type === 'module') {
+          logger.debug(
+            `Loading configuration file "${file}" as ESM based on "${parentPackage.name}" package type`
+          )
+          definitions = await import(pathToFileURL(filePath).toString())
+        } else {
+          logger.debug(
+            `Loading configuration file "${file}" as CommonJS based on "${parentPackage.name}" package type`
+          )
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          definitions = require(filePath)
+        }
+      }
+      break
+    default:
+      throw new Error(`Unsupported configuration file extension "${extension}"`)
   }
   if (typeof definitions !== 'object') {
     throw new Error(`Configuration file ${filePath} does not export an object`)
@@ -57,11 +105,18 @@ async function loadFile(
   return definitions
 }
 
+async function readPackageJson(filePath: string) {
+  const parentPackage = await readPkgUp({ cwd: path.dirname(filePath) })
+  return parentPackage?.packageJson
+}
+
 function extractConfiguration(
+  logger: ILogger,
   name: string,
   definition: any
 ): Partial<IConfiguration> {
   if (typeof definition === 'string') {
+    logger.debug(`Profile "${name}" value is a string; parsing as argv`)
     const { configuration } = ArgvParser.parse([
       'node',
       'cucumber-js',

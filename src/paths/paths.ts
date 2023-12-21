@@ -1,10 +1,12 @@
-import { promisify } from 'util'
-import glob from 'glob'
-import path from 'path'
+import path from 'node:path'
+import { glob } from 'glob'
 import fs from 'mz/fs'
-import { ISourcesCoordinates, ISupportCodeCoordinates } from './types'
+import { ILogger } from '../logger'
+import { ISourcesCoordinates, ISupportCodeCoordinates } from '../api'
+import { IResolvedPaths } from './types'
 
 export async function resolvePaths(
+  logger: ILogger,
   cwd: string,
   sources: Pick<ISourcesCoordinates, 'paths'>,
   support: ISupportCodeCoordinates = {
@@ -12,29 +14,33 @@ export async function resolvePaths(
     requirePaths: [],
     importPaths: [],
   }
-): Promise<{
-  unexpandedFeaturePaths: string[]
-  featurePaths: string[]
-  requirePaths: string[]
-  importPaths: string[]
-}> {
-  const unexpandedFeaturePaths = await getUnexpandedFeaturePaths(
+): Promise<IResolvedPaths> {
+  const unexpandedSourcePaths = await getUnexpandedSourcePaths(
     cwd,
     sources.paths
   )
-  const featurePaths: string[] = await expandFeaturePaths(
+  const sourcePaths: string[] = await expandSourcePaths(
     cwd,
-    unexpandedFeaturePaths
+    unexpandedSourcePaths
   )
+  logger.debug('Found source files based on configuration:', sourcePaths)
   const { requirePaths, importPaths } = await deriveSupportPaths(
     cwd,
-    featurePaths,
+    sourcePaths,
     support.requirePaths,
     support.importPaths
   )
+  logger.debug(
+    'Found support files to load via `require` based on configuration:',
+    requirePaths
+  )
+  logger.debug(
+    'Found support files to load via `import` based on configuration:',
+    importPaths
+  )
   return {
-    unexpandedFeaturePaths,
-    featurePaths,
+    unexpandedSourcePaths: unexpandedSourcePaths,
+    sourcePaths: sourcePaths,
     requirePaths,
     importPaths,
   }
@@ -47,25 +53,29 @@ async function expandPaths(
 ): Promise<string[]> {
   const expandedPaths = await Promise.all(
     unexpandedPaths.map(async (unexpandedPath) => {
-      const matches = await promisify(glob)(unexpandedPath, {
+      const matches = await glob(unexpandedPath, {
         absolute: true,
+        windowsPathsNoEscape: true,
         cwd,
       })
       const expanded = await Promise.all(
         matches.map(async (match) => {
           if (path.extname(match) === '') {
-            return await promisify(glob)(`${match}/**/*${defaultExtension}`)
+            return glob(`${match}/**/*${defaultExtension}`, {
+              windowsPathsNoEscape: true,
+            })
           }
           return [match]
         })
       )
-      return expanded.flat()
+      return expanded.flat().sort()
     })
   )
-  return expandedPaths.flat().map((x) => path.normalize(x))
+  const normalized = expandedPaths.flat().map((x) => path.normalize(x))
+  return [...new Set(normalized)]
 }
 
-async function getUnexpandedFeaturePaths(
+async function getUnexpandedSourcePaths(
   cwd: string,
   args: string[]
 ): Promise<string[]> {
@@ -110,12 +120,11 @@ function getFeatureDirectoryPaths(
   return [...new Set(featureDirs)]
 }
 
-async function expandFeaturePaths(
+async function expandSourcePaths(
   cwd: string,
   featurePaths: string[]
 ): Promise<string[]> {
   featurePaths = featurePaths.map((p) => p.replace(/(:\d+)*$/g, '')) // Strip line numbers
-  featurePaths = [...new Set(featurePaths)] // Deduplicate the feature files
   return await expandPaths(cwd, featurePaths, '.feature')
 }
 
@@ -133,9 +142,8 @@ async function deriveSupportPaths(
     unexpandedImportPaths.length === 0
   ) {
     const defaultPaths = getFeatureDirectoryPaths(cwd, featurePaths)
-    const requirePaths = await expandPaths(cwd, defaultPaths, '.js')
-    const importPaths = await expandPaths(cwd, defaultPaths, '.mjs')
-    return { requirePaths, importPaths }
+    const importPaths = await expandPaths(cwd, defaultPaths, '.@(js|cjs|mjs)')
+    return { requirePaths: [], importPaths }
   }
   const requirePaths =
     unexpandedRequirePaths.length > 0

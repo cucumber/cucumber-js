@@ -4,14 +4,14 @@ Before('@skip', function () {
   return 'skipped'
 })
 
-Given('an implemented step', function () {
+Given('a step that does not skip', function () {
   // no-op
 })
 
-Given('a step that we expect to be skipped', function () {
+Given('a step that is skipped', function () {
   // no-op
 })
 
-Given('a step that skips', function () {
+Given('I skip a step', function () {
   return 'skipped'
 })

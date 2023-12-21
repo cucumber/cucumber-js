@@ -1,11 +1,13 @@
+import path from 'node:path'
 import fs from 'mz/fs'
-import path from 'path'
 
 const DEFAULT_FILENAMES = [
   'cucumber.js',
   'cucumber.cjs',
   'cucumber.mjs',
   'cucumber.json',
+  'cucumber.yaml',
+  'cucumber.yml',
 ]
 
 export function locateFile(cwd: string): string | undefined {

@@ -1,20 +1,20 @@
+import { EventEmitter } from 'node:events'
+import { Readable } from 'node:stream'
+import os from 'node:os'
 import shuffle from 'knuth-shuffle-seeded'
-import { EventEmitter } from 'events'
-import PickleFilter from '../pickle_filter'
-import { EventDataCollector } from '../formatter/helpers'
-import { doesHaveValue } from '../value_checker'
-import { OptionSplitter } from '../configuration'
-import { Readable } from 'stream'
-import os from 'os'
 import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
 import detectCiEnvironment from '@cucumber/ci-environment'
+import { doesHaveValue } from '../value_checker'
+import { EventDataCollector } from '../formatter/helpers'
+import PickleFilter from '../pickle_filter'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { PickleOrder } from '../models/pickle_order'
-import { builtinParameterTypes } from '../support_code_library_builder'
 import { version } from '../version'
+import { ILogger } from '../logger'
+import { ILineAndUri } from '../types'
 
 interface IParseGherkinMessageStreamRequest {
   cwd?: string
@@ -27,8 +27,6 @@ interface IParseGherkinMessageStreamRequest {
 
 /**
  * Process a stream of envelopes from Gherkin and resolve to an array of filtered, ordered pickle Ids
- *
- * @deprecated use `loadSources` instead
  *
  * @param eventBroadcaster
  * @param eventDataCollector
@@ -70,9 +68,9 @@ export async function parseGherkinMessageStream({
 export function orderPickles<T = string>(
   pickleIds: T[],
   order: PickleOrder,
-  logger: Console
+  logger: ILogger
 ): void {
-  const [type, seed] = OptionSplitter.split(order)
+  const [type, seed] = splitOrder(order)
   switch (type) {
     case 'defined':
       break
@@ -90,6 +88,13 @@ export function orderPickles<T = string>(
         'Unrecgonized order type. Should be `defined` or `random`'
       )
   }
+}
+
+function splitOrder(order: string) {
+  if (!order.includes(':')) {
+    return [order, '']
+  }
+  return order.split(':')
 }
 
 export async function emitMetaMessage(
@@ -120,6 +125,13 @@ export async function emitMetaMessage(
   })
 }
 
+const makeSourceReference = (source: ILineAndUri) => ({
+  uri: source.uri,
+  location: {
+    line: source.line,
+  },
+})
+
 function emitParameterTypes(
   supportCodeLibrary: ISupportCodeLibrary,
   eventBroadcaster: EventEmitter,
@@ -127,9 +139,11 @@ function emitParameterTypes(
 ): void {
   for (const parameterType of supportCodeLibrary.parameterTypeRegistry
     .parameterTypes) {
-    if (builtinParameterTypes.includes(parameterType.name)) {
+    if (parameterType.builtin) {
       continue
     }
+    const source =
+      supportCodeLibrary.parameterTypeRegistry.lookupSource(parameterType)
     const envelope: messages.Envelope = {
       parameterType: {
         id: newId(),
@@ -137,6 +151,7 @@ function emitParameterTypes(
         preferForRegularExpressionMatch: parameterType.preferForRegexpMatch,
         regularExpressions: parameterType.regexpStrings,
         useForSnippets: parameterType.useForSnippets,
+        sourceReference: makeSourceReference(source),
       },
     }
     eventBroadcaster.emit('envelope', envelope)
@@ -170,12 +185,7 @@ function emitStepDefinitions(
               ? messages.StepDefinitionPatternType.CUCUMBER_EXPRESSION
               : messages.StepDefinitionPatternType.REGULAR_EXPRESSION,
         },
-        sourceReference: {
-          uri: stepDefinition.uri,
-          location: {
-            line: stepDefinition.line,
-          },
-        },
+        sourceReference: makeSourceReference(stepDefinition),
       },
     }
     eventBroadcaster.emit('envelope', envelope)
@@ -197,12 +207,7 @@ function emitTestCaseHooks(
           id: testCaseHookDefinition.id,
           name: testCaseHookDefinition.name,
           tagExpression: testCaseHookDefinition.tagExpression,
-          sourceReference: {
-            uri: testCaseHookDefinition.uri,
-            location: {
-              line: testCaseHookDefinition.line,
-            },
-          },
+          sourceReference: makeSourceReference(testCaseHookDefinition),
         },
       }
       eventBroadcaster.emit('envelope', envelope)
@@ -222,12 +227,7 @@ function emitTestRunHooks(
       const envelope: messages.Envelope = {
         hook: {
           id: testRunHookDefinition.id,
-          sourceReference: {
-            uri: testRunHookDefinition.uri,
-            location: {
-              line: testRunHookDefinition.line,
-            },
-          },
+          sourceReference: makeSourceReference(testRunHookDefinition),
         },
       }
       eventBroadcaster.emit('envelope', envelope)

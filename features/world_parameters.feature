@@ -17,7 +17,7 @@ Feature: World Parameters
     Then it fails
     And the error output contains the text:
       """
-      --world-parameters passed invalid JSON: Unexpected token }
+      --world-parameters passed invalid JSON: Unexpected token
       """
     And the error output contains the text:
       """
@@ -71,6 +71,38 @@ Feature: World Parameters
       })
       """
     When I run cucumber-js with `--world-parameters '{"a":1,"b":2}' --world-parameters '{"a":3}'`
+    Then scenario "a scenario" step "Given the world parameters are correct" has status "passed"
+
+  Scenario: world parameters are immutable in practise
+
+    World parameters should be read only, and state should be added to the world instance directly.
+    It's difficult to enforce this immutability in practise, especially with users able to define custom world
+    behaviour. But we can at least ensure we only provide a cloned version to each world instance, so no
+    mutations can leak between test cases.
+
+    Given a file named "features/passing_steps.feature" with:
+      """
+      Feature: a feature
+        Scenario: troublemaker
+          When a world parameter is mutated
+
+        Scenario: a scenario
+          Given the world parameters are correct
+      """
+    Given a file named "features/step_definitions/my_steps.js" with:
+      """
+      const assert = require('assert')
+      const {Given, When} = require('@cucumber/cucumber')
+
+      Given('the world parameters are correct', function() {
+        assert.equal(this.parameters.foo, 'bar')
+      })
+
+      When('a world parameter is mutated', function() {
+        this.parameters.foo = 'baz'
+      })
+      """
+    When I run cucumber-js with `--world-parameters '{"foo":"bar"}'`
     Then scenario "a scenario" step "Given the world parameters are correct" has status "passed"
 
   Scenario: custom world constructor is passed the parameters

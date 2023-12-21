@@ -1,18 +1,18 @@
-import { afterEach, beforeEach, describe, it } from 'mocha'
-import { expect } from 'chai'
+import { EventEmitter } from 'node:events'
 import sinon from 'sinon'
-import TestCaseRunner from './test_case_runner'
-import { EventEmitter } from 'events'
+import { expect } from 'chai'
+import { afterEach, beforeEach, describe, it } from 'mocha'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
-import { parse } from '../../test/gherkin_helpers'
-import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
+import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
+import { parse } from '../../test/gherkin_helpers'
 import timeMethods from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
-import { PredictableTestRunStopwatch } from './stopwatch'
+import TestCaseRunner from './test_case_runner'
+import { create } from './stopwatch'
 import { assembleTestCases } from './assemble_test_cases'
 import IEnvelope = messages.Envelope
 
@@ -48,12 +48,13 @@ async function testRunner(
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
   const runner = new TestCaseRunner({
     eventBroadcaster,
-    stopwatch: new PredictableTestRunStopwatch(),
+    stopwatch: create(),
     gherkinDocument: options.gherkinDocument,
     newId,
     pickle: options.pickle,
     testCase,
     retries: valueOrDefault(options.retries, 0),
+    filterStackTraces: false,
     skip: valueOrDefault(options.skip, false),
     supportCodeLibrary: options.supportCodeLibrary,
     worldParameters: {},
@@ -100,7 +101,6 @@ describe('TestCaseRunner', () => {
         const passedTestResult: messages.TestStepResult = {
           duration: messages.TimeConversion.millisecondsToDuration(1),
           status: messages.TestStepResultStatus.PASSED,
-          message: undefined,
         }
 
         // Act
@@ -111,7 +111,7 @@ describe('TestCaseRunner', () => {
         })
 
         // Assert
-        const expectedtEnvelopes: messages.Envelope[] = [
+        const expectedEnvelopes: messages.Envelope[] = [
           {
             testCaseStarted: {
               attempt: 0,
@@ -124,7 +124,7 @@ describe('TestCaseRunner', () => {
             testStepStarted: {
               testCaseStartedId: '2',
               testStepId: '1',
-              timestamp: predictableTimestamp(1),
+              timestamp: predictableTimestamp(0),
             },
           },
           {
@@ -132,18 +132,18 @@ describe('TestCaseRunner', () => {
               testCaseStartedId: '2',
               testStepResult: passedTestResult,
               testStepId: '1',
-              timestamp: predictableTimestamp(2),
+              timestamp: predictableTimestamp(1),
             },
           },
           {
             testCaseFinished: {
               testCaseStartedId: '2',
-              timestamp: predictableTimestamp(3),
+              timestamp: predictableTimestamp(1),
               willBeRetried: false,
             },
           },
         ]
-        expect(envelopes).to.eql(expectedtEnvelopes)
+        expect(envelopes).to.eql(expectedEnvelopes)
         expect(result).to.eql(messages.TestStepResultStatus.PASSED)
       })
     })
@@ -167,6 +167,10 @@ describe('TestCaseRunner', () => {
           duration: messages.TimeConversion.millisecondsToDuration(0),
           status: messages.TestStepResultStatus.FAILED,
           message: 'fail',
+          exception: {
+            type: 'Error',
+            message: 'fail',
+          },
         }
 
         // Act
@@ -263,11 +267,12 @@ describe('TestCaseRunner', () => {
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
           let willPass = false
           Given('a step', function () {
+            clock.tick(1)
             if (willPass) {
               return
             }
             willPass = true
-            throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+            throw 'Oh no!' // eslint-disable-line @typescript-eslint/no-throw-literal
           })
         })
         const {
@@ -300,25 +305,29 @@ describe('TestCaseRunner', () => {
             testStepStarted: {
               testCaseStartedId: '2',
               testStepId: '1',
-              timestamp: predictableTimestamp(1),
+              timestamp: predictableTimestamp(0),
             },
           },
           {
             testStepFinished: {
               testCaseStartedId: '2',
               testStepResult: {
-                duration: messages.TimeConversion.millisecondsToDuration(0),
-                message: 'error',
+                duration: messages.TimeConversion.millisecondsToDuration(1),
+                message: 'Oh no!',
+                exception: {
+                  type: 'Error',
+                  message: 'Oh no!',
+                },
                 status: messages.TestStepResultStatus.FAILED,
               },
               testStepId: '1',
-              timestamp: predictableTimestamp(2),
+              timestamp: predictableTimestamp(1),
             },
           },
           {
             testCaseFinished: {
               testCaseStartedId: '2',
-              timestamp: predictableTimestamp(3),
+              timestamp: predictableTimestamp(1),
               willBeRetried: true,
             },
           },
@@ -327,32 +336,31 @@ describe('TestCaseRunner', () => {
               attempt: 1,
               id: '3',
               testCaseId: '0',
-              timestamp: predictableTimestamp(4),
+              timestamp: predictableTimestamp(1),
             },
           },
           {
             testStepStarted: {
               testCaseStartedId: '3',
               testStepId: '1',
-              timestamp: predictableTimestamp(5),
+              timestamp: predictableTimestamp(1),
             },
           },
           {
             testStepFinished: {
               testCaseStartedId: '3',
               testStepResult: {
-                duration: messages.TimeConversion.millisecondsToDuration(0),
-                message: undefined,
+                duration: messages.TimeConversion.millisecondsToDuration(1),
                 status: messages.TestStepResultStatus.PASSED,
               },
               testStepId: '1',
-              timestamp: predictableTimestamp(6),
+              timestamp: predictableTimestamp(2),
             },
           },
           {
             testCaseFinished: {
               testCaseStartedId: '3',
-              timestamp: predictableTimestamp(7),
+              timestamp: predictableTimestamp(2),
               willBeRetried: false,
             },
           },

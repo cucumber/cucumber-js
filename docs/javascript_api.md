@@ -29,7 +29,7 @@ export async function runTests(directory, configFile, failFast) {
   // load configuration from a particular file, and override a specific option
   const { runConfiguration } = await loadConfiguration({ file: configFile, provided: { failFast } }, environment)
   // load the support code upfront
-  const support = await loadSupport(runnable, environment)
+  const support = await loadSupport(runConfiguration, environment)
   // run cucumber, using the support code we loaded already
   const { success } = await runCucumber({ ...runConfiguration, support }, environment)
   return success

@@ -9,14 +9,12 @@
 
 [![#StandWithUkraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://vshymanskyy.github.io/StandWithUkraine)
 [![npm](https://img.shields.io/npm/v/@cucumber/cucumber.svg)](https://www.npmjs.com/package/@cucumber/cucumber)
-[![build](https://github.com/cucumber/cucumber-js/workflows/Build/badge.svg)](https://github.com/cucumber/cucumber-js/actions)
-[![coverage](https://coveralls.io/repos/github/cucumber/cucumber-js/badge.svg?branch=master)](https://coveralls.io/github/cucumber/cucumber-js?branch=master)
+[![build](https://github.com/cucumber/cucumber-js/actions/workflows/build.yaml/badge.svg)](https://github.com/cucumber/cucumber-js/actions)
+[![coverage](https://coveralls.io/repos/github/cucumber/cucumber-js/badge.svg?branch=main)](https://coveralls.io/github/cucumber/cucumber-js?branch=master)
 [![backers](https://opencollective.com/cucumber/backers/badge.svg)](https://opencollective.com/cucumber)
 [![sponsors](https://opencollective.com/cucumber/sponsors/badge.svg)](https://opencollective.com/cucumber)
-[![pull requests](https://oselvar.com/api/badge?label=pull%20requests&csvUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fcucumber%2Foselvar-github-metrics%2Fmain%2Fdata%2Fcucumber%2Fcucumber-js%2FpullRequests.csv)](https://oselvar.com/github/cucumber/oselvar-github-metrics/main/cucumber/cucumber-js)
-[![issues](https://oselvar.com/api/badge?label=issues&csvUrl=https%3A%2F%2Fraw.githubusercontent.com%2Fcucumber%2Foselvar-github-metrics%2Fmain%2Fdata%2Fcucumber%2Fcucumber-js%2Fissues.csv)](https://oselvar.com/github/cucumber/oselvar-github-metrics/main/cucumber/cucumber-js)
 
-[Cucumber](https://cucumber.io) is a tool for running automated tests written in plain language. Because they're
+[Cucumber](https://github.com/cucumber) is a tool for running automated tests written in plain language. Because they're
 written in plain language, they can be read by anyone on your team. Because they can be
 read by anyone, you can use them to help improve communication, collaboration and trust on
 your team.
@@ -37,15 +35,22 @@ $ npm install @cucumber/cucumber
 
 Let's take this example of something to test:
 
+
+First, write your main code in `src/index.js`:
+
 ```js
 class Greeter {
   sayHello() {
     return 'hello'
   }
 }
+
+module.exports = {
+  Greeter
+}
 ```
 
-First, write your feature in `features/greeting.feature`:
+Then, write your feature in `features/greeting.feature`:
 
 ```gherkin
 Feature: Greeting
@@ -81,7 +86,7 @@ And see the output:
 
 ![Terminal output showing a successful test run with 1 scenario and 2 steps, all passing](./docs/images/readme-output.png)
 
-If you learn best by example, we have [a repo with several example projects](https://github.com/cucumber-examples/cucumber-js-examples), that might help you get going.
+If you learn best by example, we have [a repo with several example projects](https://github.com/cucumber/cucumber-js-examples), that might help you get going.
 
 ## Documentation
 
@@ -99,6 +104,7 @@ The following documentation is for `main`, which might contain some unreleased f
   * [Timeouts](./docs/support_files/timeouts.md)
   * [World](./docs/support_files/world.md)
 * Guides
+  * [Debugging](./docs/debugging.md)
   * [Dry run](./docs/dry_run.md)
   * [ES Modules](./docs/esm.md)
   * [Failing fast](./docs/fail_fast.md)
@@ -108,6 +114,7 @@ The following documentation is for `main`, which might contain some unreleased f
   * [Profiles for composable configuration](./docs/profiles.md)
   * [Rerunning just failures](./docs/rerun.md)
   * [Retrying flaky scenarios](./docs/retry.md)
+  * [JavaScript API for running programmatically](./docs/javascript_api.md)
   * [Snippets for undefined steps](./docs/snippets.md)
   * [Transpiling (from TypeScript etc)](./docs/transpiling.md)
 * [FAQ](./docs/faq.md)

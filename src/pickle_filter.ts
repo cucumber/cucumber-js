@@ -1,8 +1,8 @@
-import path from 'path'
+import path from 'node:path'
 import parse from '@cucumber/tag-expressions'
+import * as messages from '@cucumber/messages'
 import { getGherkinScenarioLocationMap } from './formatter/helpers/gherkin_document_parser'
 import { doesHaveValue, doesNotHaveValue } from './value_checker'
-import * as messages from '@cucumber/messages'
 import IGherkinDocument = messages.GherkinDocument
 import IPickle = messages.Pickle
 

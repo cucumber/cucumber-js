@@ -86,27 +86,9 @@ Feature: Publish reports
       """
 
   @spawn
-  Scenario: when results are not published, a banner explains how to publish
-    When I run cucumber-js
-    Then the error output contains the text:
-      """
-      ┌──────────────────────────────────────────────────────────────────────────────┐
-      │ Share your Cucumber Report with your team at https://reports.cucumber.io     │
-      │                                                                              │
-      │ Command line option:    --publish                                            │
-      │ Environment variable:   CUCUMBER_PUBLISH_ENABLED=true                        │
-      │                                                                              │
-      │ More information at https://cucumber.io/docs/cucumber/environment-variables/ │
-      │                                                                              │
-      │ To disable this message, add this to your ./cucumber.js:                     │
-      │ module.exports = { default: '--publish-quiet' }                              │
-      └──────────────────────────────────────────────────────────────────────────────┘
-      """
-
-  @spawn
   Scenario: when results are not published due to an error raised by the server, the banner is displayed
     When I run cucumber-js with env `CUCUMBER_PUBLISH_TOKEN=keyboardcat`
-    Then it fails
+    Then it passes
     And the error output contains the text:
       """
       ┌─────────────────────┐
@@ -115,30 +97,3 @@ Feature: Publish reports
 
       Unexpected http status 401 from GET http://localhost:9987
       """
-
-  @spawn
-  Scenario: the publication banner is not shown when publication is done
-    When I run cucumber-js with arguments `<args>` and env `<env>`
-    Then the error output does not contain the text:
-      """
-      Share your Cucumber Report with your team at https://reports.cucumber.io
-      """
-
-  Examples:
-    | args      | env                                                         |
-    | --publish |                                                             |
-    |           | CUCUMBER_PUBLISH_ENABLED=true                               |
-    |           | CUCUMBER_PUBLISH_TOKEN=f318d9ec-5a3d-4727-adec-bd7b69e2edd3 |
-
-  @spawn
-  Scenario: the publication banner is not shown when publication is disabled
-    When I run cucumber-js with arguments `<args>` and env `<env>`
-    Then the error output does not contain the text:
-      """
-      Share your Cucumber Report with your team at https://reports.cucumber.io
-      """
-
-  Examples:
-    | args            | env                         |
-    | --publish-quiet |                             |
-    |                 | CUCUMBER_PUBLISH_QUIET=true |

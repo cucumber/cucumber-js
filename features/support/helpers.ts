@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import figures from 'figures'
 import { normalizeSummaryDuration } from '../../test/formatter_helpers'
 

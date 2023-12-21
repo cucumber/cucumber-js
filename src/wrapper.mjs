@@ -1,9 +1,5 @@
 import cucumber from './index.js'
 
-export const Cli = cucumber.Cli
-export const parseGherkinMessageStream = cucumber.parseGherkinMessageStream
-export const PickleFilter = cucumber.PickleFilter
-export const Runtime = cucumber.Runtime
 export const supportCodeLibraryBuilder = cucumber.supportCodeLibraryBuilder
 export const Status = cucumber.Status
 export const DataTable = cucumber.DataTable
@@ -27,14 +23,12 @@ export const AfterStep = cucumber.AfterStep
 export const Before = cucumber.Before
 export const BeforeAll = cucumber.BeforeAll
 export const BeforeStep = cucumber.BeforeStep
-export const defineParameterType = cucumber.defineParameterType
-/**
- * @deprecated use `Given`, `When` or `Then` instead; see <https://github.com/cucumber/cucumber-js/issues/2043>
- */
 export const defineStep = cucumber.defineStep
+export const defineParameterType = cucumber.defineParameterType
 export const Given = cucumber.Given
 export const setDefaultTimeout = cucumber.setDefaultTimeout
-export const setDefinitionFunctionWrapper = cucumber.setDefinitionFunctionWrapper
+export const setDefinitionFunctionWrapper =
+  cucumber.setDefinitionFunctionWrapper
 export const setWorldConstructor = cucumber.setWorldConstructor
 export const Then = cucumber.Then
 export const When = cucumber.When
@@ -43,3 +37,8 @@ export const parallelCanAssignHelpers = cucumber.parallelCanAssignHelpers
 
 export const wrapPromiseWithTimeout = cucumber.wrapPromiseWithTimeout
 
+// Deprecated
+export const Cli = cucumber.Cli
+export const parseGherkinMessageStream = cucumber.parseGherkinMessageStream
+export const PickleFilter = cucumber.PickleFilter
+export const Runtime = cucumber.Runtime

@@ -1,18 +1,21 @@
-import { performance } from 'perf_hooks'
+import { performance } from 'node:perf_hooks'
 import * as messages from '@cucumber/messages'
 
-let previousTimestamp: number
+interface ProtectedTimingBuiltins {
+  clearImmediate: typeof clearImmediate
+  clearInterval: typeof clearInterval
+  clearTimeout: typeof clearTimeout
+  Date: typeof Date
+  setImmediate: typeof setImmediate
+  setInterval: typeof setInterval
+  setTimeout: typeof setTimeout
+  performance: typeof performance
+}
 
-const methods: any = {
-  beginTiming() {
-    previousTimestamp = getTimestamp()
-  },
+const methods: Partial<ProtectedTimingBuiltins> = {
   clearInterval: clearInterval.bind(global),
   clearTimeout: clearTimeout.bind(global),
   Date,
-  endTiming() {
-    return getTimestamp() - previousTimestamp
-  },
   setInterval: setInterval.bind(global),
   setTimeout: setTimeout.bind(global),
   performance,
@@ -21,10 +24,6 @@ const methods: any = {
 if (typeof setImmediate !== 'undefined') {
   methods.setImmediate = setImmediate.bind(global)
   methods.clearImmediate = clearImmediate.bind(global)
-}
-
-function getTimestamp(): number {
-  return methods.performance.now()
 }
 
 export function durationBetweenTimestamps(
@@ -44,7 +43,7 @@ export async function wrapPromiseWithTimeout<T>(
   timeoutInMilliseconds: number,
   timeoutMessage: string = ''
 ): Promise<T> {
-  let timeoutId: NodeJS.Timeout
+  let timeoutId: ReturnType<typeof setTimeout>
   if (timeoutMessage === '') {
     timeoutMessage = `Action did not complete within ${timeoutInMilliseconds} milliseconds`
   }

@@ -1,35 +1,31 @@
-import Formatter, { IFormatterOptions } from '.'
+import { finished } from 'node:stream'
+import { promisify } from 'node:util'
 import * as messages from '@cucumber/messages'
 import resolvePkg from 'resolve-pkg'
 import CucumberHtmlStream from '@cucumber/html-formatter'
-import { doesHaveValue } from '../value_checker'
-import { finished } from 'stream'
-import { promisify } from 'util'
+import Formatter, { IFormatterOptions } from '.'
 
 export default class HtmlFormatter extends Formatter {
-  private readonly _finished: Promise<void>
+  private readonly _htmlStream: CucumberHtmlStream
   public static readonly documentation: string = 'Outputs HTML report'
 
   constructor(options: IFormatterOptions) {
     super(options)
-    const cucumberHtmlStream = new CucumberHtmlStream(
+    this._htmlStream = new CucumberHtmlStream(
       resolvePkg('@cucumber/html-formatter', { cwd: __dirname }) +
         '/dist/main.css',
       resolvePkg('@cucumber/html-formatter', { cwd: __dirname }) +
         '/dist/main.js'
     )
     options.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
-      cucumberHtmlStream.write(envelope)
-      if (doesHaveValue(envelope.testRunFinished)) {
-        cucumberHtmlStream.end()
-      }
+      this._htmlStream.write(envelope)
     })
-    cucumberHtmlStream.on('data', (chunk) => this.log(chunk))
-    this._finished = promisify(finished)(cucumberHtmlStream)
+    this._htmlStream.on('data', (chunk) => this.log(chunk))
   }
 
   async finished(): Promise<void> {
-    await this._finished
+    this._htmlStream.end()
+    await promisify(finished)(this._htmlStream)
     await super.finished()
   }
 }

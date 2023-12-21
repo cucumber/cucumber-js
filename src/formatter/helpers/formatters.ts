@@ -9,6 +9,7 @@ import SummaryFormatter from '../summary_formatter'
 import UsageFormatter from '../usage_formatter'
 import UsageJsonFormatter from '../usage_json_formatter'
 import HtmlFormatter from '../html_formatter'
+import JunitFormatter from '../junit_formatter'
 
 const Formatters = {
   getFormatters(): Record<string, typeof Formatter> {
@@ -23,6 +24,7 @@ const Formatters = {
       summary: SummaryFormatter,
       usage: UsageFormatter,
       'usage-json': UsageJsonFormatter,
+      junit: JunitFormatter,
     }
   },
   buildFormattersDocumentationString(): string {

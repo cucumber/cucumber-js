@@ -5,11 +5,151 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CONTRIBUTING.md) on how to contribute to Cucumber.
+Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Prevent mutations on world parameters leaking between test cases ([#2362](https://github.com/cucumber/cucumber-js/pull/2362))
+
+## [10.0.1] - 2023-10-20
+### Fixed
+- Honour order of paths in configuration ([#2345](https://github.com/cucumber/cucumber-js/pull/2345))
+
+## [10.0.0] - 2023-10-09
 ### Added
-- `IPublishConfig` interface for use in return type of `makePublishConfig` instead of explicit `any` ([#1648](https://github.com/cucumber/cucumber-js/pull/2106))
+- Add support for Node.js 20 ([#2331](https://github.com/cucumber/cucumber-js/pull/2331))
+
+### Changed
+- BREAKING CHANGE: Use appropriate module loading mechanism for configuration files ([#2334](https://github.com/cucumber/cucumber-js/pull/2334))
+- BREAKING CHANGE: Use `await import()` to load all custom formatters and snippet syntaxes ([#2334](https://github.com/cucumber/cucumber-js/pull/2334))
+- BREAKING CHANGE: Use `await import()` for default support code loading ([#2337](https://github.com/cucumber/cucumber-js/pull/2337))
+
+### Fixed
+- Ensure attached string literals are base64-encoded in JSON reports ([#2260](https://github.com/cucumber/cucumber-js/issues/2260))
+
+### Removed
+- BREAKING CHANGE: Drop support for Node.js 14, 16 and 19 ([#2331](https://github.com/cucumber/cucumber-js/pull/2331))
+
+## [9.6.0] - 2023-10-07
+### Fixed
+- Improve handling of formatter paths ([#2315](https://github.com/cucumber/cucumber-js/pull/2315))
+- Warn on ambiguous colons in formatter paths ([#2335](https://github.com/cucumber/cucumber-js/pull/2335))
+
+## [9.5.1] - 2023-09-06
+### Fixed
+- Allow single-item arrays as a format ([#2324](https://github.com/cucumber/cucumber-js/pull/2324))
+
+## [9.5.0] - 2023-09-03
+### Added
+- Support array notation of formats with path in configuration files ([#2318](https://github.com/cucumber/cucumber-js/pull/2318))
+
+### Fixed
+- Wait for stream to finish at end of publish plugin ([#2322](https://github.com/cucumber/cucumber-js/pull/2322))
+
+## [9.4.0] - 2023-08-12
+### Fixed
+- Fix type import from cucumber-expressions ([#2310](https://github.com/cucumber/cucumber-js/pull/2310))
+
+### Removed
+- Remove Cucumber Reports suggestion ([#2311](https://github.com/cucumber/cucumber-js/pull/2311))
+
+## [9.3.0] - 2023-07-14
+### Added
+- Support attachments with filenames ([#2297](https://github.com/cucumber/cucumber-js/pull/2297))
+- Support downloading attachments from HTML report ([#2300](https://github.com/cucumber/cucumber-js/pull/2300))
+
+## [9.2.0] - 2023-06-22
+### Added
+- New option for JUnit test suite name to be passed in `formatOptions` ([#2265](https://github.com/cucumber/cucumber-js/issues/2265))
+- Include source reference in emitted messages for parameter types ([#2287](https://github.com/cucumber/cucumber-js/pull/2287))
+
+### Fixed
+- Correctly interpret retried scenarios in rerun formatter ([#2292](https://github.com/cucumber/cucumber-js/pull/2292))
+
+## [9.1.2] - 2023-05-07
+### Changed
+- Only show global install warning in debug mode ([#2285](https://github.com/cucumber/cucumber-js/pull/2285))
+
+### Fixed
+- Export `ISupportCodeLibrary` type on `/api` entry point ([#2284](https://github.com/cucumber/cucumber-js/pull/2284))
+
+## [9.1.1] - 2023-05-02
+### Fixed
+- Upgrade `yaml` to address security vulnerability ([#2281](https://github.com/cucumber/cucumber-js/pull/2281))
+
+## [9.1.0] - 2023-03-28
+### Added
+- Formatters create sub-directory automatically instead of failing ([#2266](https://github.com/cucumber/cucumber-js/pull/2266))
+- Include a less cryptic error message when trying to `require` an ES module ([#2264](https://github.com/cucumber/cucumber-js/pull/2264))
+
+### Changed
+- Change hashes type from `any` to `Record<string, string>` in `DataTable` ([#2270](https://github.com/cucumber/cucumber-js/pull/2270))
+
+## [9.0.1] - 2023-03-15
+### Fixed
+- Ensure feature paths are properly deduplicated ([#2258](https://github.com/cucumber/cucumber-js/pull/2258))
+
+## [9.0.0] - 2023-02-27
+### Removed
+- BREAKING CHANGE: Remove support for Node.js versions 12 and 17 ([#2237](https://github.com/cucumber/cucumber-js/pull/2237))
+- BREAKING CHANGE: Remove "generator" snippet interface ([#2241](https://github.com/cucumber/cucumber-js/pull/2241))
+
+## [8.11.1] - 2023-02-12
+### Fixed
+- Exit correctly when there's a Gherkin parse failure [#2233](https://github.com/cucumber/cucumber-js/pull/2233)
+- Refer to correct example line in JSON formatter ([#2236](https://github.com/cucumber/cucumber-js/pull/2236))
+- Expose correct overload types for `this.attach` function ([#2238](https://github.com/cucumber/cucumber-js/pull/2238))
+
+## [8.11.0] - 2023-02-10
+### Added
+- Affirm support for Node.js 19 [#2230](https://github.com/cucumber/cucumber-js/pull/2230)
+- Include some exception details in the result of a test step for downstream tools [#2229](https://github.com/cucumber/cucumber-js/pull/2229)
+
+### Fixed
+- Handle invalid characters when generating XML for JUnit formatter [#2228](https://github.com/cucumber/cucumber-js/pull/2228)
+
+## [8.10.0] - 2022-12-27
+### Added
+- Add support for YAML as a configuration file format ([#2199](https://github.com/cucumber/cucumber-js/pull/2199))
+
+### Changed
+- Replace `duration` with `luxon` for formatting durations ([#2204](https://github.com/cucumber/cucumber-js/pull/2204))
+
+## [8.9.1] - 2022-12-16
+### Fixed
+- Include original coordinates in `loadSupport` result ([#2197](https://github.com/cucumber/cucumber-js/pull/2197))
+
+## [8.9.0] - 2022-11-24
+### Added
+- Add new JUnit formatter (see [documentation](./docs/formatters.md#junit)) ([#2121](https://github.com/cucumber/cucumber-js/pull/2121))
+
+## [8.8.0] - 2022-11-14
+### Changed
+- Add `workerId` property to `testCaseStarted` message ([#2085](https://github.com/cucumber/cucumber-js/pull/2085))
+- Handle stack traces without V8-specific modification ([#2119](https://github.com/cucumber/cucumber-js/pull/2119))
+
+## [8.7.0] - 2022-10-17
+### Deprecated
+- `Cli`, `PickleFilter` and `Runtime` deprecated in favour of new API functions (see [documentation](./docs/deprecations.md)) ([#2136](https://github.com/cucumber/cucumber-js/pull/2136))
+
+## [8.6.0] - 2022-09-20
+### Added
+- Debug logging capability to help diagnose configuration issues (see [documentation](./docs/debugging.md)) ([#2120](https://github.com/cucumber/cucumber-js/pull/2120))
+
+### Fixed
+- Rework time interfaces to avoid using sinon types ([#2142](https://github.com/cucumber/cucumber-js/pull/2142))
+
+## [8.5.3] - 2022-09-10
+### Fixed
+- Default `stderr` if not provided to `Cli` constructor ([#2138](https://github.com/cucumber/cucumber-js/pull/2138))
+
+## [8.5.2] - 2022-08-24
+### Added
+- `IMethods` interface for use in `getTimestamp`, `durationBetweenTimestamps`, and `wrapPromiseWithTimeout` functions and `methods` in `time` module instead of explicit `any` ([#2111](https://github.com/cucumber/cucumber-js/pull/2111))
+- `IPublishConfig` interface for use in return type of `makePublishConfig` instead of explicit `any` ([#2106](https://github.com/cucumber/cucumber-js/pull/2106))
+
+### Fixed
+- Add override to ensure `ansi-regex` version is `^5.0.1` ([#2114](https://github.com/cucumber/cucumber-js/pull/2114))
 
 ## [8.5.1] - 2022-07-28
 ### Fixed
@@ -157,7 +297,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 
 ## [7.3.0] - 2021-06-17
 ### Added
-- Experimental support for [Markdown](https://github.com/cucumber/common/blob/main/gherkin/MARKDOWN_WITH_GHERKIN.md)
+- Experimental support for [Markdown](https://github.com/cucumber/gherkin/blob/main/MARKDOWN_WITH_GHERKIN.md)
 ([#1645](https://github.com/cucumber/cucumber-js/pull/1645))
 
 ### Changed
@@ -220,7 +360,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 - The npm module has changed name from `cucumber` to `@cucumber/cucumber` -  `require`/`import` statements must be changed from `cucumber` to `@cucumber/cucumber`
 - TypeScript users must rename `TableDefinition` to `DataTable`
 - Drop support for Node.js 8, add support for Node.js 14
-- Events are now based on [cucumber-messages](https://github.com/cucumber/cucumber/tree/master/messages)
+- Events are now based on [cucumber-messages](https://github.com/cucumber/messages)
 - `event-protocol` formatter has been removed and replaced with `message`
 - Formatters
 - Remove long-deprecated `typeName` from options object for `defineParameterType` in favour of `name`
@@ -230,7 +370,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 - Custom formatters are now loaded via the regular require paths relative to the current directory, unless it begins with a dot (e.g. `--format=./relpath/to/formatter`). Previously this was always loaded as a file relative to the current directory.
 
 ### Deprecated
-- `json` formatter is deprecated and will be removed in next major release. Custom formatters should migrate to use the `message` formatter, or the [standalone JSON formatter](https://github.com/cucumber/cucumber/tree/master/json-formatter) as a stopgap.
+- `json` formatter is deprecated and will be removed in next major release. Custom formatters should migrate to use the `message` formatter, or the [standalone JSON formatter](https://github.com/cucumber/json-formatter) as a stopgap.
 
 ### Fixed
 - don't execute BeforeAll and AfterAll hooks when in dry-run
@@ -319,7 +459,7 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 - print text step attachments ([#1041](https://github.com/cucumber/cucumber-js/pull/1041), DevSide)
 
 ### Fixed
-- cucumber-expressions: Upgrade from 5.0.7 to [5.0.13](https://github.com/cucumber/cucumber/blob/master/cucumber-expressions/CHANGELOG.md#5013---2018-01-21)
+- cucumber-expressions: Upgrade from 5.0.7 to [5.0.13](https://github.com/cucumber/cucumber-expressions/blob/main/CHANGELOG.md#5013---2018-01-21)
 - fix error serialization in parallel mode
 
 ## [4.0.0] - 2018-01-24
@@ -352,8 +492,8 @@ Please see [CONTRIBUTING.md](https://github.com/cucumber/cucumber/blob/master/CO
 - json formatter: format step result exception ([#973](https://github.com/cucumber/cucumber-js/pull/973) Valerio Innocenti Sedili)
 
 ### Fixed
-- cucumber-expressions: Upgrade from 5.0.3 to [5.0.6](https://github.com/cucumber/cucumber/blob/master/cucumber-expressions/CHANGELOG.md#506---2017-11-28)
-- tag-expressions: Upgrade from 1.0.1 to [1.1.1](https://github.com/cucumber/cucumber/blob/master/tag-expressions/CHANGELOG.md#111---2017-12-01)
+- cucumber-expressions: Upgrade from 5.0.3 to [5.0.6](https://github.com/cucumber/cucumber-expressions/blob/main/CHANGELOG.md#506---2017-11-28)
+- tag-expressions: Upgrade from 1.0.1 to [1.1.1](https://github.com/cucumber/tag-expressions/blob/main/CHANGELOG.md#111---2017-12-01)
 
 ## [3.1.0] - 2017-10-25
 ### Added
@@ -545,7 +685,7 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 - `--require <DIR|FILE>`: the required files are no longer reordered to require anything in a `support` directory first
 - `--snippet-interface <INTERFACE>` has moved to `--format-options '{"snippetInterface": "<INTERFACE>"}'`
 - `--snippet-syntax <SYNTAX>` has moved to `--format-options '{"snippetSyntax": "<SYNTAX>"}'`
-- `--tags <EXPRESSION>` now uses [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/). It is no longer repeatable and new values will override previous
+- `--tags <EXPRESSION>` now uses [cucumber-tag-expressions](https://github.com/cucumber/tag-expressions). It is no longer repeatable and new values will override previous
 - `--tags @dev` stays the same
 - `--tags ~@dev` becomes `--tags 'not @dev'`
 - `--tags @foo,@bar` becomes  `--tags '@foo or @bar'`
@@ -560,9 +700,9 @@ be used to get the name / tags of the running scenario. ([#947](https://github.c
 - When attaching buffers or strings, the callback argument is ignored.
 - Hooks
 - Hooks now receive a [ScenarioResult](/src/models/scenario_result.js) instead of the Scenario
-- The `tags` option for hook should now be a string instead of an array and uses [cucumber-tag-expressions](https://docs.cucumber.io/tag-expressions/)
+- The `tags` option for hook should now be a string instead of an array and uses [cucumber-tag-expressions](https://github.com/cucumber/tag-expressions)
 - Step Definitions
-- String patterns were removed in favor [cucumber-expressions](https://docs.cucumber.io/cucumber-expressions/)
+- String patterns were removed in favor [cucumber-expressions](https://github.com/cucumber/cucumber-expressions)
 - capture groups matching `(-?\d+)` will be automatically converted to an integer using `parseInt`
 - capture groups matching `(-?\d*\.?\d+)` will be automatically converted to a float using `parseFloat`
 - Regular Expressions
@@ -1418,7 +1558,30 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v8.5.1...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.0.1...HEAD
+[10.0.1]: https://github.com/cucumber/cucumber-js/compare/v10.0.0...v10.0.1
+[10.0.0]: https://github.com/cucumber/cucumber-js/compare/v9.6.0...v10.0.0
+[9.6.0]: https://github.com/cucumber/cucumber-js/compare/v9.5.1...v9.6.0
+[9.5.1]: https://github.com/cucumber/cucumber-js/compare/v9.5.0...v9.5.1
+[9.5.0]: https://github.com/cucumber/cucumber-js/compare/v9.4.0...v9.5.0
+[9.4.0]: https://github.com/cucumber/cucumber-js/compare/v9.3.0...v9.4.0
+[9.3.0]: https://github.com/cucumber/cucumber-js/compare/v9.2.0...v9.3.0
+[9.2.0]: https://github.com/cucumber/cucumber-js/compare/v9.1.2...v9.2.0
+[9.1.2]: https://github.com/cucumber/cucumber-js/compare/v9.1.1...v9.1.2
+[9.1.1]: https://github.com/cucumber/cucumber-js/compare/v9.1.0...v9.1.1
+[9.1.0]: https://github.com/cucumber/cucumber-js/compare/v9.0.1...v9.1.0
+[9.0.1]: https://github.com/cucumber/cucumber-js/compare/v9.0.0...v9.0.1
+[9.0.0]: https://github.com/cucumber/cucumber-js/compare/v8.11.1...v9.0.0
+[8.11.1]: https://github.com/cucumber/cucumber-js/compare/v8.11.0...v8.11.1
+[8.11.0]: https://github.com/cucumber/cucumber-js/compare/v8.10.0...v8.11.0
+[8.10.0]: https://github.com/cucumber/cucumber-js/compare/v8.9.1...v8.10.0
+[8.9.1]: https://github.com/cucumber/cucumber-js/compare/v8.9.0...v8.9.1
+[8.9.0]: https://github.com/cucumber/cucumber-js/compare/v8.8.0...v8.9.0
+[8.8.0]: https://github.com/cucumber/cucumber-js/compare/v8.7.0...v8.8.0
+[8.7.0]: https://github.com/cucumber/cucumber-js/compare/v8.6.0...v8.7.0
+[8.6.0]: https://github.com/cucumber/cucumber-js/compare/v8.5.3...v8.6.0
+[8.5.3]: https://github.com/cucumber/cucumber-js/compare/v8.5.2...v8.5.3
+[8.5.2]: https://github.com/cucumber/cucumber-js/compare/v8.5.1...v8.5.2
 [8.5.1]: https://github.com/cucumber/cucumber-js/compare/v8.5.0...v8.5.1
 [8.5.0]: https://github.com/cucumber/cucumber-js/compare/v8.4.0...v8.5.0
 [8.4.0]: https://github.com/cucumber/cucumber-js/compare/v8.3.1...v8.4.0

@@ -1,8 +1,8 @@
-import { Given } from '../../'
+import path from 'node:path'
+import fs from 'node:fs'
 import tmp from 'tmp'
-import path from 'path'
-import fs from 'fs'
 import fsExtra from 'fs-extra'
+import { Given } from '../../'
 import { World } from '../support/world'
 
 /*

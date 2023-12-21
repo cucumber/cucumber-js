@@ -1,14 +1,14 @@
-import Formatter, { IFormatterOptions } from './'
-import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
 import * as messages from '@cucumber/messages'
+import { doesHaveValue, doesNotHaveValue } from '../value_checker'
+import { parseStepArgument } from '../step_arguments'
+import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
 import {
   getGherkinExampleRuleMap,
   getGherkinScenarioLocationMap,
 } from './helpers/gherkin_document_parser'
 import { ITestCaseAttempt } from './helpers/event_data_collector'
-import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { parseStepArgument } from '../step_arguments'
 import { durationToNanoseconds } from './helpers/duration_helpers'
+import Formatter, { IFormatterOptions } from './'
 
 const { getGherkinStepMap, getGherkinScenarioMap } = GherkinDocumentParser
 
@@ -83,7 +83,7 @@ interface UriToTestCaseAttemptsMap {
 
 export default class JsonFormatter extends Formatter {
   public static readonly documentation: string =
-    'Prints the feature as JSON. The JSON format is in maintenance mode. Please consider using the message formatter with the standalone json-formatter (https://github.com/cucumber/cucumber/tree/master/json-formatter).'
+    'Prints the feature as JSON. The JSON format is in maintenance mode. Please consider using the message formatter with the standalone json-formatter (https://github.com/cucumber/json-formatter).'
 
   constructor(options: IFormatterOptions) {
     super(options)
@@ -218,7 +218,9 @@ export default class JsonFormatter extends Formatter {
       description,
       id: this.formatScenarioId({ feature, pickle, gherkinExampleRuleMap }),
       keyword: gherkinScenarioMap[pickle.astNodeIds[0]].keyword,
-      line: gherkinScenarioLocationMap[pickle.astNodeIds[0]].line,
+      line: gherkinScenarioLocationMap[
+        pickle.astNodeIds[pickle.astNodeIds.length - 1]
+      ].line,
       name: pickle.name,
       steps,
       tags: this.getScenarioTags({ feature, pickle, gherkinScenarioMap }),
@@ -291,7 +293,11 @@ export default class JsonFormatter extends Formatter {
     }
     if (testStepAttachments?.length > 0) {
       data.embeddings = testStepAttachments.map((attachment) => ({
-        data: attachment.body,
+        data:
+          attachment.contentEncoding ===
+          messages.AttachmentContentEncoding.IDENTITY
+            ? Buffer.from(attachment.body).toString('base64')
+            : attachment.body,
         mime_type: attachment.mediaType,
       }))
     }

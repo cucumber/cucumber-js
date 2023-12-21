@@ -7,7 +7,15 @@ const schema = yup.object().shape({
   dryRun: yup.boolean(),
   exit: yup.boolean(),
   failFast: yup.boolean(),
-  format: yup.array().of(yup.string()),
+  format: yup
+    .array()
+    .of(
+      yup.lazy((val) =>
+        Array.isArray(val)
+          ? yup.array().of(yup.string()).min(2).max(2)
+          : yup.string()
+      )
+    ),
   formatOptions: yup.object(),
   import: yup.array().of(yup.string()),
   language: yup.string().oneOf(Object.keys(dialects)),

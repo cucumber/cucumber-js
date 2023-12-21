@@ -166,7 +166,7 @@ import CustomWorld from "../classes/CustomWorld.js"
 setWorldConstructor(CustomWorld);
 
 Before(async function(scenario) {
-  this.init(scenario);
+  await this.init(scenario);
 });
 ```
 

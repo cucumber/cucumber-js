@@ -2,6 +2,38 @@
 
 This document describes breaking changes and how to upgrade. For a complete list of changes including minor and patch releases, please refer to the [changelog](./CHANGELOG.md).
 
+## 10.0.0
+
+### Configuration files
+
+Configuration files must now be one of our supported extensions (`.json`, `.yaml`, `.yml`, `.cjs`, `.js`, `.mjs`). JavaScript files are now loaded with the appropriate mechanism based on the file extension and package type. If you previously relied on our internal usage of `require()` to dynamically transpile, you'll instead need to transpile beforehand and point Cucumber at the transpiled output.
+
+### Module loading
+
+Custom formatters and snippet syntaxes are now always loaded with `await import()`. If you previously relied on our internal usage of `require()` to dynamically transpile, you'll instead need to transpile beforehand and point Cucumber at the transpiled output.
+
+If no support code is specified with either the `import` or `require` options, we'll now load files from the default paths with `await import()`. If you need the use of `require()` for your setup to work, you'll need to use that option explicitly.
+
+### Attachments in JSON formatter
+
+Previously, string attachments were included as plain text in the JSON formatter output, where other attachments were Base64 encoded. This meant for consumers, it was ambiguous whether any attachment was Base64 encoded or not. Now, all attachments are Base64 encoded regardless of how they were initially attached.
+
+## 9.0.0
+
+### Generator snippet interface
+
+Generator step definitions were removed in `8.0.0`; we've now removed the associated snippet interface too. So if you have some configuration like:
+
+```json
+{
+  "formatOptions": {
+    "snippetInterface": "generator"
+  }
+}
+```
+
+Then you'll need to change that value to one of `synchronous`, `async-await`, `promise` or `callback`.
+
 ## 8.0.0
 
 ### Generator step definitions
@@ -124,7 +156,7 @@ Now in `@cucumber/cucumber`:
 
 ### Formatters
 
-The underlying event/data model for cucumber-js is now [cucumber-messages](https://github.com/cucumber/cucumber/tree/master/messages), a shared standard across all official Cucumber implementations. This replaces the old "event protocol".
+The underlying event/data model for cucumber-js is now [cucumber-messages](https://github.com/cucumber/messages), a shared standard across all official Cucumber implementations. This replaces the old "event protocol".
 
 If you maintain any custom formatters, you'll need to refactor them to work with the new model. The basics of a `Formatter` class are the same, and the `EventDataCollector` is still there to help you with tracking down data, but the names of events and shape of their data is different. It's worth checking out the implementations of the built-in formatters if you need a pointer.
 

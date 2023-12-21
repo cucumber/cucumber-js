@@ -1,5 +1,7 @@
-import { Then } from '../../'
 import { expect } from 'chai'
+import * as messages from '@cucumber/messages'
+import semver from 'semver'
+import { Then } from '../../'
 import DataTable from '../../src/models/data_table'
 import {
   getPickleNamesInOrderOfExecution,
@@ -9,9 +11,7 @@ import {
   getTestStepAttachmentsForStep,
   getTestStepResults,
 } from '../support/message_helpers'
-import * as messages from '@cucumber/messages'
 import { World } from '../support/world'
-import semver from 'semver'
 
 const ENCODING_MAP: { [key: string]: messages.AttachmentContentEncoding } = {
   IDENTITY: messages.AttachmentContentEncoding.IDENTITY,

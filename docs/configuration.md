@@ -8,29 +8,40 @@ _**You are reading the documentation in the `main` development branch, which mig
 
 You can keep your configuration in a file. Cucumber will look for one of these files in the root of your project, and use the first one it finds:
 
+- `cucumber.json`
+- `cucumber.yaml`
+- `cucumber.yml`
 - `cucumber.js`
 - `cucumber.cjs`
 - `cucumber.mjs`
-- `cucumber.json`
 
 You can also put your file somewhere else and tell Cucumber via the `--config` CLI option:
 
 ```shell
-$ cucumber-js --config config/cucumber.js
+$ cucumber-js --config config/cucumber.json
 ```
 
-Here's a concise example of a configuration file in CommonJS format:
+Here's a concise example of a configuration file in JSON format:
 
-```js
-module.exports = {
-  default: {
-    parallel: 2,
-    format: ['html:cucumber-report.html']
+```json
+{
+  "default": {
+    "parallel": 2,
+    "format": ["html:cucumber-report.html"]
   }
 }
 ```
 
-And the same in ESM format:
+And the same in YAML format:
+
+```yaml
+default:
+  parallel: 2
+  format:
+    - "html:cucumber-report.html"
+```
+
+And the same in JavaScript (ESM) format:
 
 ```js
 export default {
@@ -39,13 +50,13 @@ export default {
 }
 ```
 
-And the same in JSON format:
+And the same in JavaScript (CommonJS) format:
 
-```json
-{
-  "default": {
-    "parallel": 2,
-      "format": ["html:cucumber-report.html"]
+```js
+module.exports = {
+  default: {
+    parallel: 2,
+    format: ['html:cucumber-report.html']
   }
 }
 ```
@@ -76,13 +87,12 @@ These options can be used in a configuration file (see [above](#files)) or on th
 | `failFast`        | `boolean`  | No         | `--fail-fast`             | Stop running tests when a test fails - see [Fail Fast](./fail_fast.md)                                            | false   |
 | `format`          | `string[]` | Yes        | `--format`, `-f`          | Name/path and (optionally) output file path of each formatter to use - see [Formatters](./formatters.md)          | []      |
 | `formatOptions`   | `object`   | Yes        | `--format-options`        | Options to be provided to formatters - see [Formatters](./formatters.md)                                          | {}      |
-| `import`          | `string[]` | Yes        | `--import`, `-i`          | Paths to where your support code is, for ESM - see [ESM](./esm.md)                                                | []      |
+| `import`          | `string[]` | Yes        | `--import`, `-i`          | Paths to where your support code is                                                                               | []      |
 | `language`        | `string`   | No         | `--language`              | Default language for your feature files                                                                           | en      |
 | `name`            | `string`   | No         | `--name`                  | Regular expressions of which scenario names should match one of to be run - see [Filtering](./filtering.md#names) | []      |
 | `order`           | `string`   | No         | `--order`                 | Run in the order defined, or in a random order                                                                    | defined |
 | `parallel`        | `number`   | No         | `--parallel`              | Run tests in parallel with the given number of worker processes - see [Parallel](./parallel.md)                   | 0       |
 | `publish`         | `boolean`  | No         | `--publish`               | Publish a report of your test run to <https://reports.cucumber.io/>                                               | false   |
-| `publishQuiet`    | `boolean`  | No         | `--publish-quiet`          | Don't show info about publishing reports                                                                          | false   |
 | `require`         | `string[]` | Yes        | `--require`, `-r`         | Paths to where your support code is, for CommonJS - see [below](#finding-your-code)                               | []      |
 | `requireModule`   | `string[]` | Yes        | `--require-module`        | Names of transpilation modules to load, loaded via `require()` - see [Transpiling](./transpiling.md)              | []      |
 | `retry`           | `number`   | No         | `--retry`                 | Retry failing tests up to the given number of times - see [Retry](./retry.md)                                     | 0       |
@@ -113,15 +123,15 @@ For more granular options to control _which scenarios_ from your features should
 By default, Cucumber finds support code files with this logic:
 
 * If the features live in a `features` directory (at any level)
-  * `features/**/*.(js)`
+  * `features/**/*.@(js|cjs|mjs)`
 * Otherwise
-  * `<DIR>/**/*.(js)` for each directory containing the selected features
+  * `<DIR>/**/*.@(js|cjs|mjs)` for each directory containing the selected features
 
-If your files are somewhere else, you can override this by proving your own [glob](https://github.com/isaacs/node-glob), directory or file path to the `require` configuration option:
+If your files are somewhere else, you can override this by proving your own [glob](https://github.com/isaacs/node-glob), directory or file path to the `import` configuration option:
 
-- In a configuration file `{ require: ['somewhere-else/support/*.js'] }`
-- On the CLI `$ cucumber-js --require somewhere-else/support/*.js` 
+- In a configuration file `{ import: ['somewhere-else/support/*.js'] }`
+- On the CLI `$ cucumber-js --import somewhere-else/support/*.js` 
 
-Once you specify any `require` options, the defaults described above are no longer applied. The option is repeatable, so you can provide several values and they'll be combined, meaning you can load files from multiple locations.
+Once you specify any `import` options, the defaults described above are no longer applied. The option is repeatable, so you can provide several values and they'll be combined, meaning you can load files from multiple locations.
 
-The default behaviour and the `require` option both use the [legacy CommonJS modules API](https://nodejs.org/api/modules.html) to load your files. If your files are native ES modules, you'll need to use the `import` option instead in the same way, and they'll be loaded with the [new ES modules API](https://nodejs.org/api/esm.html). See [ES Modules](./esm.md) for more on using Cucumber in an ESM project.
+The default behaviour and the `import` option both use the [new ES modules API](https://nodejs.org/api/esm.html) to load your files. This should work fine for the majority of cases, but sometimes (e.g. when transpiling with the `require-module` option), you'll need to use the `require` option instead in the same way, and they'll be loaded with the [legacy CommonJS modules API](https://nodejs.org/api/modules.html).

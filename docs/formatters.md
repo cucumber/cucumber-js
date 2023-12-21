@@ -6,22 +6,19 @@ cucumber-js provides many built-in Formatters, plus building blocks with which y
 
 You can specify one or more formats via the `format` configuration option:
 
-- In a configuration file `{ format: ['<TYPE[:PATH]>'] }`
-- On the CLI `$ cucumber-js --format <TYPE[:PATH]>`
+- In a configuration file `{ format: ['progress-bar', ['html', 'cucumber-report.html']] }`
+- On the CLI `$ cucumber-js --format progress-bar --format "html":"cucumber-report.html"`
 
-For each value you provide, `TYPE` should be one of:
+For each format you specify, you have to provide one or two values. The first (required) is to identify the formatter. It can take a few forms:
 
-* The name of one of the built-in formatters (below) e.g. `progress`
+* The name of one of the built-in formatters (below) e.g. `progress-bar`
 * A module/package name e.g. `@cucumber/pretty-formatter`
 * A relative path to a local formatter implementation e.g. `./my-customer-formatter.js`
 * An absolute path to a local formatter implementation in the form of a `file://` URL
 
-If `PATH` is supplied, the formatter prints to the given file, otherwise it prints to `stdout`.
+Without a second value, the formatter will print to `stdout`. The second value, if present, is a path to where the formatter output should be written. If the path includes directories that do not yet exist, they will be created.
 
-For example, this configuration would give you a progress bar as you run, plus JSON and HTML report files:
-
-- In a configuration file `{ format: ['progress-bar', 'json:cucumber-report.json', 'html:cucumber-report.html'] }`
-- On the CLI `$ cucumber-js --format progress-bar --format json:cucumber-report.json --format html:cucumber-report.html`
+On the CLI, when specifying both a name and path, you'll need to use `:` as a delimiter and wrap each side of it with double quotes. In a configuration file you can do this too, but you can also provide an array with the two values as separate strings, which is recommended. 
 
 Some notes on specifying Formatters:
 
@@ -30,7 +27,7 @@ Some notes on specifying Formatters:
 
 ## Options
 
-Many formatters, including the built-in ones, support some configurability via options. You can provide this data as an object literal via the `formatOptions` configuration option, like this:
+Many formatters, including the built-in ones, support some configuration via options. You can provide this data as an object literal via the `formatOptions` configuration option, like this:
 
 - In a configuration file `{ formatOptions: { someOption: true } }`
 - On the CLI `$ cucumber-js --format-options '{"someOption":true}'`
@@ -95,13 +92,21 @@ You can:
 
 ### `message`
 
-Outputs all the [Cucumber Messages](https://github.com/cucumber/common/tree/main/messages) for the test run as newline-delimited JSON, which can then be consumed by other tools.
+Outputs all the [Cucumber Messages](https://github.com/cucumber/messages) for the test run as newline-delimited JSON, which can then be consumed by other tools.
 
 ### `json`
 
 Outputs details of the test run in the legacy JSON format.
 
 *Note: this formatter is in maintenance mode and won't have new features added to it. Where you need a structured data representation of your test run, it's best to use the `message` formatter. Tools that rely on this formatter will continue to work, but are encouraged to migrate to consume the `message` output instead.*
+
+### `junit`
+
+The JUnit formatter produces an XML-based report in the standard(ish) [JUnit format](https://github.com/junit-team/junit5/blob/43638eb6a870e0d6c49224053dfeb39dcf0ef33f/platform-tests/src/test/resources/jenkins-junit.xsd). This is most commonly useful for having your CI platform pick up your tests results and factor them into its reporting. Consult your CI platform's docs for where exactly you should output this report to and what the filename should be.
+
+Options specific to this formatter:
+
+- `suiteName` - value to go in the `name` attribute of the `testsuite` element in the output (defaults to `cucumber-js`)
 
 ### `snippets`
 

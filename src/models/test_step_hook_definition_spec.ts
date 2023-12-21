@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import TestStepHookDefinition from './test_step_hook_definition'
 import { getPickleWithTags } from '../../test/gherkin_helpers'
+import TestStepHookDefinition from './test_step_hook_definition'
 
 describe('TestStepHookDefinition', () => {
   describe('appliesToTestCase', () => {

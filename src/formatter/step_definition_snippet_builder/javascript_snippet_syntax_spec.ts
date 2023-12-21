@@ -1,14 +1,14 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import JavascriptSnippetSyntax from './javascript_snippet_syntax'
-import { SnippetInterface } from './snippet_syntax'
-import { ISnippetSyntaxBuildOptions } from '../../../lib/formatter/step_definition_snippet_builder/snippet_syntax'
 import {
   CucumberExpressionGenerator,
   GeneratedExpression,
   ParameterTypeRegistry,
 } from '@cucumber/cucumber-expressions'
 import { reindent } from 'reindent-template-literals'
+import { ISnippetSyntaxBuildOptions } from '../../../lib/formatter/step_definition_snippet_builder/snippet_syntax'
+import JavascriptSnippetSyntax from './javascript_snippet_syntax'
+import { SnippetInterface } from './snippet_syntax'
 
 function generateExpressions(text: string): readonly GeneratedExpression[] {
   const parameterTypeRegistry = new ParameterTypeRegistry()
@@ -40,31 +40,6 @@ describe('JavascriptSnippetSyntax', () => {
             functionName('{string} def {string}', function (string, string2, callback) {
               // comment
               callback(null, 'pending');
-            });`)
-        )
-      })
-    })
-
-    describe('generator interface', () => {
-      it('returns the proper snippet', function () {
-        // Arrange
-        const syntax = new JavascriptSnippetSyntax(SnippetInterface.Generator)
-        const buildOptions: ISnippetSyntaxBuildOptions = {
-          comment: 'comment',
-          functionName: 'functionName',
-          generatedExpressions: generateExpressions('"abc" def "ghi"'),
-          stepParameterNames: [],
-        }
-
-        // Act
-        const result = syntax.build(buildOptions)
-
-        // Assert
-        expect(result).to.eql(
-          reindent(`
-            functionName('{string} def {string}', function *(string, string2) {
-              // comment
-              return 'pending';
             });`)
         )
       })

@@ -1,12 +1,12 @@
-import { KeywordType } from '../helpers'
-import { parseStepArgument } from '../../step_arguments'
-import { ISnippetSnytax } from './snippet_syntax'
 import {
   CucumberExpressionGenerator,
   ParameterTypeRegistry,
 } from '@cucumber/cucumber-expressions'
 import * as messages from '@cucumber/messages'
+import { KeywordType } from '../helpers'
+import { parseStepArgument } from '../../step_arguments'
 import { doesHaveValue } from '../../value_checker'
+import { ISnippetSnytax } from './snippet_syntax'
 
 export interface INewStepDefinitionSnippetBuilderOptions {
   snippetSyntax: ISnippetSnytax

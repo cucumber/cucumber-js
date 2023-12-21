@@ -14,7 +14,8 @@ executedModules:
       - version
 
 ignoreErrors:
-  missing: []
+  missing:
+    - 'node:*'
   shouldBeDependency: []
   shouldBeDevDependency:
     - '@cucumber/message-streams' # peer dependency of @cucumber/gherkin-streams
@@ -32,8 +33,10 @@ ignoreErrors:
     - eslint-plugin-prettier # .eslintrc.yml - extends - prettier
     - eslint-plugin-promise # peer dependency of eslint-config-standard-with-typescript
     - eslint-plugin-standard # peer dependency of eslint-config-standard-with-typescript
+    - eslint-plugin-unicorn # used in eslint config
     - prettier # peer dependency of eslint-plugin-prettier
     - ts-node # .mocharc.yml / cucumber.js
+    - type-fest # utility types
 
 requiredModules:
   files:
@@ -48,7 +51,6 @@ requiredModules:
       - 'dist/**/*'
       - 'lib/**/*'
       - 'node_modules/**/*'
-      - 'src/importer.js'
       - 'tmp/**/*'
     root: '**/*.{js,ts}'
   stripLoaders: false

@@ -1,4 +1,5 @@
 colors: true
+fail-zero: true
 file:
   - test/test_helper.ts
 full-trace: true
@@ -7,3 +8,4 @@ forbid-pending: true
 recursive: true
 reporter: dot
 require: 'ts-node/register'
+timeout: 3000

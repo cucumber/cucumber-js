@@ -1,22 +1,20 @@
-import { buildParameterType } from './build_parameter_type'
-import { getDefinitionLineAndUri } from './get_definition_line_and_uri'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
+import arity from 'util-arity'
+import {
+  CucumberExpression,
+  RegularExpression,
+} from '@cucumber/cucumber-expressions'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { formatLocation } from '../formatter/helpers'
-import validateArguments from './validate_arguments'
-import { deprecate } from 'util'
-import arity from 'util-arity'
-
-import {
-  CucumberExpression,
-  ParameterTypeRegistry,
-  RegularExpression,
-} from '@cucumber/cucumber-expressions'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
+import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
+import { GherkinStepKeyword } from '../models/gherkin_step_keyword'
+import validateArguments from './validate_arguments'
+
 import {
   DefineStepPattern,
   IDefineStepOptions,
@@ -33,8 +31,9 @@ import {
   IDefineStep,
 } from './types'
 import World from './world'
-import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
-import { GherkinStepKeyword } from '../models/gherkin_step_keyword'
+import { getDefinitionLineAndUri } from './get_definition_line_and_uri'
+import { buildParameterType } from './build_parameter_type'
+import { SourcedParameterTypeRegistry } from './sourced_parameter_type_registry'
 
 interface IStepDefinitionConfig {
   code: any
@@ -66,20 +65,6 @@ interface ITestRunHookDefinitionConfig {
   uri: string
 }
 
-export const builtinParameterTypes = [
-  'bigdecimal',
-  'biginteger',
-  'byte',
-  'double',
-  'float',
-  'int',
-  'long',
-  'short',
-  'string',
-  'word',
-  '',
-]
-
 export class SupportCodeLibraryBuilder {
   public readonly methods: IDefineSupportCodeMethods
 
@@ -94,7 +79,7 @@ export class SupportCodeLibraryBuilder {
   private defaultTimeout: number
   private definitionFunctionWrapper: any
   private newId: IdGenerator.NewId
-  private parameterTypeRegistry: ParameterTypeRegistry
+  private parameterTypeRegistry: SourcedParameterTypeRegistry
   private stepDefinitionConfigs: IStepDefinitionConfig[]
   private World: any
   private parallelCanAssign: ParallelAssignmentValidator
@@ -120,10 +105,7 @@ export class SupportCodeLibraryBuilder {
         () => this.beforeTestStepHookDefinitionConfigs
       ),
       defineParameterType: this.defineParameterType.bind(this),
-      defineStep: deprecate(
-        this.defineStep('Unknown', () => this.stepDefinitionConfigs),
-        '`defineStep` is deprecated, use `Given`, `When` or `Then` instead; see https://github.com/cucumber/cucumber-js/issues/2043'
-      ),
+      defineStep: this.defineStep('Unknown', () => this.stepDefinitionConfigs),
       Given: this.defineStep('Given', () => this.stepDefinitionConfigs),
       setDefaultTimeout: (milliseconds) => {
         this.defaultTimeout = milliseconds
@@ -170,7 +152,8 @@ export class SupportCodeLibraryBuilder {
 
   defineParameterType(options: IParameterTypeDefinition<any>): void {
     const parameterType = buildParameterType(options)
-    this.parameterTypeRegistry.defineParameterType(parameterType)
+    const source = getDefinitionLineAndUri(this.cwd)
+    this.parameterTypeRegistry.defineSourcedParameterType(parameterType, source)
   }
 
   defineStep(
@@ -485,7 +468,7 @@ export class SupportCodeLibraryBuilder {
     this.beforeTestStepHookDefinitionConfigs = []
     this.definitionFunctionWrapper = null
     this.defaultTimeout = 5000
-    this.parameterTypeRegistry = new ParameterTypeRegistry()
+    this.parameterTypeRegistry = new SourcedParameterTypeRegistry()
     this.stepDefinitionConfigs = []
     this.parallelCanAssign = () => true
     this.World = World

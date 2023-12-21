@@ -37,7 +37,7 @@ Type `npm run` or see the `package.json` scripts section for how to run each cat
   * [chai](https://www.chaijs.com/)
   * [sinon](https://sinonjs.org/)
 * compatibility kit - `npm run cck-test`
-  * checking that cucumber-js emits the [correct messages](https://github.com/cucumber/cucumber/tree/master/compatibility-kit)
+  * checking that cucumber-js emits the [correct messages](https://github.com/cucumber/compatibility-kit)
 * feature tests - `npm run feature-test`
   * cucumber-js tests itself
 

@@ -1,9 +1,9 @@
+import { Writable } from 'node:stream'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import { FormatOptions, IFormatterStream } from '../formatter'
+import { FormatOptions, IPublishConfig } from '../formatter'
 import { PickleOrder } from '../models/pickle_order'
 import { IRuntimeOptions } from '../runtime'
 import { IConfiguration } from '../configuration'
-import { IPublishConfig } from '../formatter/publish'
 
 /**
  * @public
@@ -134,6 +134,11 @@ export type ISupportCodeCoordinatesOrLibrary =
 /**
  * @public
  */
+export type { ISupportCodeLibrary }
+
+/**
+ * @public
+ */
 export interface IRunOptions {
   sources: ISourcesCoordinates
   support: ISupportCodeCoordinatesOrLibrary
@@ -154,15 +159,19 @@ export interface IRunEnvironment {
   /**
    * Writable stream where the test run's main output is written (defaults to `process.stdout` if omitted).
    */
-  stdout?: IFormatterStream
+  stdout?: Writable
   /**
    * Writable stream where the test run's warning/error output is written (defaults to `process.stderr` if omitted).
    */
-  stderr?: IFormatterStream
+  stderr?: Writable
   /**
    * Environment variables (defaults to `process.env` if omitted).
    */
   env?: NodeJS.ProcessEnv
+  /**
+   * Whether debug logging is enabled.
+   */
+  debug?: boolean
 }
 
 /**

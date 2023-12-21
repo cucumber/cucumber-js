@@ -1,10 +1,8 @@
+import { pathToFileURL } from 'node:url'
 import { IdGenerator } from '@cucumber/messages'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
-import { pathToFileURL } from 'url'
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { importer } = require('../importer')
+import tryRequire from '../try_require'
 
 export async function getSupportCodeLibrary({
   cwd,
@@ -19,11 +17,18 @@ export async function getSupportCodeLibrary({
   requirePaths: string[]
   importPaths: string[]
 }): Promise<ISupportCodeLibrary> {
-  supportCodeLibraryBuilder.reset(cwd, newId)
-  requireModules.map((module) => require(module))
-  requirePaths.map((path) => require(path))
+  supportCodeLibraryBuilder.reset(cwd, newId, {
+    requireModules,
+    requirePaths,
+    importPaths,
+  })
+
+  requireModules.map((module) => tryRequire(module))
+  requirePaths.map((path) => tryRequire(path))
+
   for (const path of importPaths) {
-    await importer(pathToFileURL(path))
+    await import(pathToFileURL(path).toString())
   }
+
   return supportCodeLibraryBuilder.finalize()
 }

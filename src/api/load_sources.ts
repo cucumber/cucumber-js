@@ -1,3 +1,6 @@
+import { IdGenerator } from '@cucumber/messages'
+import { ILogger } from '../logger'
+import { resolvePaths } from '../paths'
 import {
   ILoadSourcesResult,
   IPlannedPickle,
@@ -5,11 +8,10 @@ import {
   ISourcesCoordinates,
   ISourcesError,
 } from './types'
-import { resolvePaths } from './paths'
-import { IdGenerator } from '@cucumber/messages'
-import { Console } from 'console'
 import { mergeEnvironment } from './environment'
-import { getFilteredPicklesAndErrors } from './gherkin'
+import { getPicklesAndErrors } from './gherkin'
+import { ConsoleLogger } from './console_logger'
+import { initializeForLoadSources } from './plugins'
 
 /**
  * Load and parse features, produce a filtered and ordered test plan and/or parse errors.
@@ -22,34 +24,44 @@ export async function loadSources(
   coordinates: ISourcesCoordinates,
   environment: IRunEnvironment = {}
 ): Promise<ILoadSourcesResult> {
-  const { cwd, stderr } = mergeEnvironment(environment)
-  const logger = new Console(stderr)
+  const mergedEnvironment = mergeEnvironment(environment)
+  const { cwd, stderr, debug } = mergedEnvironment
+  const logger: ILogger = new ConsoleLogger(stderr, debug)
   const newId = IdGenerator.uuid()
-  const { unexpandedFeaturePaths, featurePaths } = await resolvePaths(
-    cwd,
-    coordinates
+  const pluginManager = await initializeForLoadSources(
+    logger,
+    coordinates,
+    mergedEnvironment
   )
-  if (featurePaths.length === 0) {
+  const resolvedPaths = await resolvePaths(logger, cwd, coordinates)
+  pluginManager.emit('paths:resolve', resolvedPaths)
+  const { sourcePaths } = resolvedPaths
+  if (sourcePaths.length === 0) {
     return {
       plan: [],
       errors: [],
     }
   }
-  const { filteredPickles, parseErrors } = await getFilteredPicklesAndErrors({
+  const { filterablePickles, parseErrors } = await getPicklesAndErrors({
     newId,
     cwd,
-    logger,
-    unexpandedFeaturePaths,
-    featurePaths,
+    sourcePaths,
     coordinates,
+    onEnvelope: (envelope) => pluginManager.emit('message', envelope),
   })
-  const plan: IPlannedPickle[] = filteredPickles.map(
-    ({ location, pickle }) => ({
-      name: pickle.name,
-      uri: pickle.uri,
-      location,
-    })
+  const filteredPickles = await pluginManager.transform(
+    'pickles:filter',
+    filterablePickles
   )
+  const orderedPickles = await pluginManager.transform(
+    'pickles:order',
+    filteredPickles
+  )
+  const plan: IPlannedPickle[] = orderedPickles.map(({ location, pickle }) => ({
+    name: pickle.name,
+    uri: pickle.uri,
+    location,
+  }))
   const errors: ISourcesError[] = parseErrors.map(({ source, message }) => {
     return {
       uri: source.uri,
@@ -57,6 +69,7 @@ export async function loadSources(
       message,
     }
   })
+  await pluginManager.cleanup()
   return {
     plan,
     errors,

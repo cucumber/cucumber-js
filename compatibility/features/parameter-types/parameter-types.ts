@@ -1,8 +1,11 @@
+import assert from 'node:assert'
 import { Given, defineParameterType } from '../../../src'
-import { expect } from 'chai'
 
 class Flight {
-  constructor(public readonly from: string, public readonly to: string) {}
+  constructor(
+    public readonly from: string,
+    public readonly to: string
+  ) {}
 }
 
 defineParameterType({
@@ -13,11 +16,7 @@ defineParameterType({
   },
 })
 
-Given(
-  '{flight} has been delayed {int} minutes',
-  function (flight: Flight, delay: number) {
-    expect(flight.from).to.eq('LHR')
-    expect(flight.to).to.eq('CDG')
-    expect(delay).to.eq(45)
-  }
-)
+Given('{flight} has been delayed', function (flight: Flight) {
+  assert.strictEqual(flight.from, 'LHR')
+  assert.strictEqual(flight.to, 'CDG')
+})

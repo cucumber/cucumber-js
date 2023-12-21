@@ -1,5 +1,5 @@
 declare module 'supports-color' {
-  import { Writable } from 'stream'
+  import { Writable } from 'node:stream'
 
   export interface Options {
     readonly sniffFlags?: boolean

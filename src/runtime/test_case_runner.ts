@@ -1,9 +1,7 @@
-import { getAmbiguousStepException } from './helpers'
-import AttachmentManager from './attachment_manager'
-import StepRunner from './step_runner'
+import { EventEmitter } from 'node:events'
 import * as messages from '@cucumber/messages'
 import { getWorstTestStepResult, IdGenerator } from '@cucumber/messages'
-import { EventEmitter } from 'events'
+import { JsonObject } from 'type-fest'
 import {
   ISupportCodeLibrary,
   ITestCaseHookParameter,
@@ -13,21 +11,25 @@ import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
 import { IDefinition } from '../models/definition'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { ITestRunStopwatch } from './stopwatch'
 import StepDefinition from '../models/step_definition'
 import { TestRunContext } from '../support_code_library_builder/world'
+import { IStopwatch } from './stopwatch'
+import StepRunner from './step_runner'
+import AttachmentManager from './attachment_manager'
+import { getAmbiguousStepException } from './helpers'
 
 export interface INewTestCaseRunnerOptions {
   eventBroadcaster: EventEmitter
-  stopwatch: ITestRunStopwatch
+  stopwatch: IStopwatch
   gherkinDocument: messages.GherkinDocument
   newId: IdGenerator.NewId
   pickle: messages.Pickle
   testCase: messages.TestCase
   retries: number
   skip: boolean
+  filterStackTraces: boolean
   supportCodeLibrary: ISupportCodeLibrary
-  worldParameters: any
+  worldParameters: JsonObject
   testRunContext: TestRunContext
 }
 
@@ -36,17 +38,18 @@ export default class TestCaseRunner {
   private currentTestCaseStartedId: string
   private currentTestStepId: string
   private readonly eventBroadcaster: EventEmitter
-  private readonly stopwatch: ITestRunStopwatch
+  private readonly stopwatch: IStopwatch
   private readonly gherkinDocument: messages.GherkinDocument
   private readonly newId: IdGenerator.NewId
   private readonly pickle: messages.Pickle
   private readonly testCase: messages.TestCase
   private readonly maxAttempts: number
   private readonly skip: boolean
+  private readonly filterStackTraces: boolean
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private testStepResults: messages.TestStepResult[]
   private world: any
-  private readonly worldParameters: any
+  private readonly worldParameters: JsonObject
   private readonly testRunContext: TestRunContext
 
   constructor({
@@ -58,27 +61,31 @@ export default class TestCaseRunner {
     testCase,
     retries = 0,
     skip,
+    filterStackTraces,
     supportCodeLibrary,
     worldParameters,
     testRunContext,
   }: INewTestCaseRunnerOptions) {
-    this.attachmentManager = new AttachmentManager(({ data, media }) => {
-      if (doesNotHaveValue(this.currentTestStepId)) {
-        throw new Error(
-          'Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.'
-        )
+    this.attachmentManager = new AttachmentManager(
+      ({ data, media, fileName }) => {
+        if (doesNotHaveValue(this.currentTestStepId)) {
+          throw new Error(
+            'Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.'
+          )
+        }
+        const attachment: messages.Envelope = {
+          attachment: {
+            body: data,
+            contentEncoding: media.encoding,
+            mediaType: media.contentType,
+            fileName,
+            testCaseStartedId: this.currentTestCaseStartedId,
+            testStepId: this.currentTestStepId,
+          },
+        }
+        this.eventBroadcaster.emit('envelope', attachment)
       }
-      const attachment: messages.Envelope = {
-        attachment: {
-          body: data,
-          contentEncoding: media.encoding,
-          mediaType: media.contentType,
-          testCaseStartedId: this.currentTestCaseStartedId,
-          testStepId: this.currentTestStepId,
-        },
-      }
-      this.eventBroadcaster.emit('envelope', attachment)
-    })
+    )
     this.eventBroadcaster = eventBroadcaster
     this.stopwatch = stopwatch
     this.gherkinDocument = gherkinDocument
@@ -87,6 +94,7 @@ export default class TestCaseRunner {
     this.pickle = pickle
     this.testCase = testCase
     this.skip = skip
+    this.filterStackTraces = filterStackTraces
     this.supportCodeLibrary = supportCodeLibrary
     this.worldParameters = worldParameters
     this.testRunContext = testRunContext
@@ -97,7 +105,7 @@ export default class TestCaseRunner {
     this.world = new this.supportCodeLibrary.World({
       attach: this.attachmentManager.create.bind(this.attachmentManager),
       log: this.attachmentManager.log.bind(this.attachmentManager),
-      parameters: this.worldParameters,
+        parameters: structuredClone(this.worldParameters),
       testRunContext: this.testRunContext,
     })
     this.testStepResults = []
@@ -135,6 +143,7 @@ export default class TestCaseRunner {
   ): Promise<messages.TestStepResult> {
     return await StepRunner.run({
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
+      filterStackTraces: this.filterStackTraces,
       hookParameter,
       step,
       stepDefinition,
@@ -182,65 +191,79 @@ export default class TestCaseRunner {
   async run(): Promise<messages.TestStepResultStatus> {
     for (let attempt = 0; attempt < this.maxAttempts; attempt++) {
       const moreAttemptsRemaining = attempt + 1 < this.maxAttempts
-      this.currentTestCaseStartedId = this.newId()
-      const testCaseStarted: messages.Envelope = {
-        testCaseStarted: {
-          attempt,
-          testCaseId: this.testCase.id,
-          id: this.currentTestCaseStartedId,
-          timestamp: this.stopwatch.timestamp(),
-        },
-      }
-      this.eventBroadcaster.emit('envelope', testCaseStarted)
-      // used to determine whether a hook is a Before or After
-      let didWeRunStepsYet = false
-      for (const testStep of this.testCase.testSteps) {
-        await this.aroundTestStep(testStep.id, async () => {
-          if (doesHaveValue(testStep.hookId)) {
-            const hookParameter: ITestCaseHookParameter = {
-              gherkinDocument: this.gherkinDocument,
-              pickle: this.pickle,
-              testCaseStartedId: this.currentTestCaseStartedId,
-            }
-            if (didWeRunStepsYet) {
-              hookParameter.result = this.getWorstStepResult()
-              hookParameter.willBeRetried =
-                this.getWorstStepResult().status ===
-                  messages.TestStepResultStatus.FAILED && moreAttemptsRemaining
-            }
-            return await this.runHook(
-              findHookDefinition(testStep.hookId, this.supportCodeLibrary),
-              hookParameter,
-              !didWeRunStepsYet
-            )
-          } else {
-            const pickleStep = this.pickle.steps.find(
-              (pickleStep) => pickleStep.id === testStep.pickleStepId
-            )
-            const testStepResult = await this.runStep(pickleStep, testStep)
-            didWeRunStepsYet = true
-            return testStepResult
-          }
-        })
-      }
 
-      const willBeRetried =
-        this.getWorstStepResult().status ===
-          messages.TestStepResultStatus.FAILED && moreAttemptsRemaining
-      const testCaseFinished: messages.Envelope = {
-        testCaseFinished: {
-          testCaseStartedId: this.currentTestCaseStartedId,
-          timestamp: this.stopwatch.timestamp(),
-          willBeRetried,
-        },
-      }
-      this.eventBroadcaster.emit('envelope', testCaseFinished)
+      const willBeRetried = await this.runAttempt(
+        attempt,
+        moreAttemptsRemaining
+      )
+
       if (!willBeRetried) {
         break
       }
       this.resetTestProgressData()
     }
     return this.getWorstStepResult().status
+  }
+
+  async runAttempt(
+    attempt: number,
+    moreAttemptsRemaining: boolean
+  ): Promise<boolean> {
+    this.currentTestCaseStartedId = this.newId()
+    const testCaseStarted: messages.Envelope = {
+      testCaseStarted: {
+        attempt,
+        testCaseId: this.testCase.id,
+        id: this.currentTestCaseStartedId,
+        timestamp: this.stopwatch.timestamp(),
+      },
+    }
+    this.eventBroadcaster.emit('envelope', testCaseStarted)
+    // used to determine whether a hook is a Before or After
+    let didWeRunStepsYet = false
+    for (const testStep of this.testCase.testSteps) {
+      await this.aroundTestStep(testStep.id, async () => {
+        if (doesHaveValue(testStep.hookId)) {
+          const hookParameter: ITestCaseHookParameter = {
+            gherkinDocument: this.gherkinDocument,
+            pickle: this.pickle,
+            testCaseStartedId: this.currentTestCaseStartedId,
+          }
+          if (didWeRunStepsYet) {
+            hookParameter.result = this.getWorstStepResult()
+            hookParameter.willBeRetried =
+              this.getWorstStepResult().status ===
+                messages.TestStepResultStatus.FAILED && moreAttemptsRemaining
+          }
+          return await this.runHook(
+            findHookDefinition(testStep.hookId, this.supportCodeLibrary),
+            hookParameter,
+            !didWeRunStepsYet
+          )
+        } else {
+          const pickleStep = this.pickle.steps.find(
+            (pickleStep) => pickleStep.id === testStep.pickleStepId
+          )
+          const testStepResult = await this.runStep(pickleStep, testStep)
+          didWeRunStepsYet = true
+          return testStepResult
+        }
+      })
+    }
+
+    const willBeRetried =
+      this.getWorstStepResult().status ===
+        messages.TestStepResultStatus.FAILED && moreAttemptsRemaining
+    const testCaseFinished: messages.Envelope = {
+      testCaseFinished: {
+        testCaseStartedId: this.currentTestCaseStartedId,
+        timestamp: this.stopwatch.timestamp(),
+        willBeRetried,
+      },
+    }
+    this.eventBroadcaster.emit('envelope', testCaseFinished)
+
+    return willBeRetried
   }
 
   async runHook(

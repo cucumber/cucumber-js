@@ -1,6 +1,6 @@
+import * as messages from '@cucumber/messages'
 import { getPickleStepMap } from '../pickle_parser'
 import { getGherkinStepMap } from '../gherkin_document_parser'
-import * as messages from '@cucumber/messages'
 import StepDefinition from '../../../models/step_definition'
 import { doesHaveValue } from '../../../value_checker'
 import EventDataCollector from '../event_data_collector'
