@@ -105,7 +105,7 @@ export default class TestCaseRunner {
     this.world = new this.supportCodeLibrary.World({
       attach: this.attachmentManager.create.bind(this.attachmentManager),
       log: this.attachmentManager.log.bind(this.attachmentManager),
-        parameters: structuredClone(this.worldParameters),
+      parameters: structuredClone(this.worldParameters),
       testRunContext: this.testRunContext,
     })
     this.testStepResults = []

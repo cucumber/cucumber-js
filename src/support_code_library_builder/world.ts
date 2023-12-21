@@ -1,5 +1,5 @@
-import { ICreateAttachment, ICreateLog } from '../runtime/attachment_manager'
 import cloneDeep from 'lodash.clonedeep'
+import { ICreateAttachment, ICreateLog } from '../runtime/attachment_manager'
 
 export type TestRunContext = any
 
