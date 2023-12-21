@@ -1,4 +1,3 @@
-import VError from 'verror'
 import UserCodeRunner from '../user_code_runner'
 import { formatLocation } from '../formatter/helpers'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
@@ -29,7 +28,7 @@ export const makeRunTestRunHooks = (
           })
           if (doesHaveValue(error)) {
             const location = formatLocation(hookDefinition)
-            throw new VError(error, errorMessage(name, location))
+            throw new Error(errorMessage(name, location), { cause: error })
           }
         }
       }
