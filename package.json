@@ -246,7 +246,6 @@
     "tmp": "^0.2.1",
     "type-fest": "^4.8.3",
     "util-arity": "^1.1.0",
-    "verror": "^1.10.0",
     "xmlbuilder": "^15.1.1",
     "yaml": "^2.2.2",
     "yup": "1.2.0"
@@ -279,7 +278,6 @@
     "@types/sinonjs__fake-timers": "8.1.2",
     "@types/stream-buffers": "3.0.4",
     "@types/tmp": "0.2.3",
-    "@types/verror": "1.10.6",
     "@typescript-eslint/eslint-plugin": "6.7.4",
     "@typescript-eslint/parser": "6.7.4",
     "chai": "4.3.7",
