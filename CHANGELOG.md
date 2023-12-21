@@ -17,6 +17,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ### Changed
 - Replace usage of `VError` with `Error.cause` ([#2363](https://github.com/cucumber/cucumber-js/pull/2363))
+- Updated HTML formatter with better search UX and smaller bundle size ([#2366](https://github.com/cucumber/cucumber-js/pull/2366))
 
 ## [10.0.1] - 2023-10-20
 ### Fixed
