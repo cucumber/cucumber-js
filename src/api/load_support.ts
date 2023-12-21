@@ -6,6 +6,7 @@ import { ILoadSupportOptions, IRunEnvironment } from './types'
 import { getSupportCodeLibrary } from './support'
 import { mergeEnvironment } from './environment'
 import { ConsoleLogger } from './console_logger'
+import { initializeForLoadSources, initializeForLoadSupport } from './plugins'
 
 /**
  * Load support code for use in test runs.
@@ -18,15 +19,19 @@ export async function loadSupport(
   options: ILoadSupportOptions,
   environment: IRunEnvironment = {}
 ): Promise<ISupportCodeLibrary> {
-  const { cwd, stderr, debug } = mergeEnvironment(environment)
+  const mergedEnvironment = mergeEnvironment(environment)
+  const { cwd, stderr, debug } = mergedEnvironment
   const logger: ILogger = new ConsoleLogger(stderr, debug)
   const newId = IdGenerator.uuid()
-  const { requirePaths, importPaths } = await resolvePaths(
+  const pluginManager = await initializeForLoadSupport()
+  const resolvedPaths = await resolvePaths(
     logger,
     cwd,
     options.sources,
     options.support
   )
+  pluginManager.emit('paths:resolve', resolvedPaths)
+  const { requirePaths, importPaths } = resolvedPaths
   return await getSupportCodeLibrary({
     cwd,
     newId,

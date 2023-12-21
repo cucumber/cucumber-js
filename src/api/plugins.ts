@@ -3,6 +3,7 @@ import publishPlugin from '../publish'
 import { ILogger } from '../logger'
 import filterPlugin from '../filter'
 import {
+  ILoadSupportOptions,
   IRunConfiguration,
   IRunEnvironment,
   ISourcesCoordinates,
@@ -23,6 +24,11 @@ export async function initializeForLoadSources(
     environment
   )
   return pluginManager
+}
+
+export async function initializeForLoadSupport(): Promise<PluginManager> {
+  // eventually we'll load plugin packages here
+  return new PluginManager()
 }
 
 export async function initializeForRunCucumber(
