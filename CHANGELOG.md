@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Prevent mutations on world parameters leaking between test cases ([#2362](https://github.com/cucumber/cucumber-js/pull/2362))
 
 ## [10.0.1] - 2023-10-20
 ### Fixed

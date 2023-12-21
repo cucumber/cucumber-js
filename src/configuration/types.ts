@@ -1,3 +1,4 @@
+import { JsonObject } from 'type-fest'
 import { FormatOptions } from '../formatter'
 import { PickleOrder } from '../models/pickle_order'
 
@@ -27,5 +28,5 @@ export interface IConfiguration {
   retryTagFilter: string
   strict: boolean
   tags: string
-  worldParameters: any
+  worldParameters: JsonObject
 }

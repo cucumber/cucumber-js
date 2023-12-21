@@ -2,6 +2,7 @@ import { EventEmitter } from 'node:events'
 import { pathToFileURL } from 'node:url'
 import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
+import { JsonObject } from 'type-fest'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
@@ -31,7 +32,7 @@ export default class Worker {
   private readonly newId: IdGenerator.NewId
   private readonly sendMessage: IMessageSender
   private supportCodeLibrary: ISupportCodeLibrary
-  private worldParameters: any
+  private worldParameters: JsonObject
   private runTestRunHooks: RunsTestRunHooks
 
   constructor({

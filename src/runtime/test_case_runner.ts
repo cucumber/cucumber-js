@@ -1,6 +1,7 @@
 import { EventEmitter } from 'node:events'
 import * as messages from '@cucumber/messages'
 import { getWorstTestStepResult, IdGenerator } from '@cucumber/messages'
+import { JsonObject } from 'type-fest'
 import {
   ISupportCodeLibrary,
   ITestCaseHookParameter,
@@ -27,7 +28,7 @@ export interface INewTestCaseRunnerOptions {
   skip: boolean
   filterStackTraces: boolean
   supportCodeLibrary: ISupportCodeLibrary
-  worldParameters: any
+  worldParameters: JsonObject
 }
 
 export default class TestCaseRunner {
@@ -46,7 +47,7 @@ export default class TestCaseRunner {
   private readonly supportCodeLibrary: ISupportCodeLibrary
   private testStepResults: messages.TestStepResult[]
   private world: any
-  private readonly worldParameters: any
+  private readonly worldParameters: JsonObject
 
   constructor({
     eventBroadcaster,
@@ -99,7 +100,7 @@ export default class TestCaseRunner {
     this.world = new this.supportCodeLibrary.World({
       attach: this.attachmentManager.create.bind(this.attachmentManager),
       log: this.attachmentManager.log.bind(this.attachmentManager),
-      parameters: this.worldParameters,
+      parameters: structuredClone(this.worldParameters),
     })
     this.testStepResults = []
   }
