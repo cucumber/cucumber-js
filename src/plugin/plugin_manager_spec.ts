@@ -70,66 +70,44 @@ describe('PluginManager', () => {
   })
 
   describe('void events', () => {
-    const variants = [
-      {
-        key: 'message',
-        value: {
-          testRunStarted: {
-            timestamp: {
-              seconds: 1,
-              nanos: 1,
-            },
+    it(`emits void event to all handlers`, async () => {
+      const pluginManager = new PluginManager()
+      const handler1 = sinon.fake()
+      const handler2 = sinon.fake()
+      await pluginManager.init(
+        'runCucumber',
+        {
+          type: 'plugin',
+          coordinator: ({ on }) => on('message', handler1),
+        },
+        {},
+        logger,
+        environment
+      )
+      await pluginManager.init(
+        'runCucumber',
+        {
+          type: 'plugin',
+          coordinator: ({ on }) => on('message', handler2),
+        },
+        {},
+        logger,
+        environment
+      )
+
+      const value = {
+        testRunStarted: {
+          timestamp: {
+            seconds: 1,
+            nanos: 1,
           },
         },
-      },
-      {
-        key: 'paths:resolve',
-        value: {
-          unexpandedSourcePaths: [],
-          sourcePaths: [],
-          requirePaths: [],
-          importPaths: [],
-        },
-      },
-    ] as const
+      }
+      pluginManager.emit('message', value)
 
-    for (const { key, value } of variants) {
-      it(`emits ${key} event to all handlers`, async () => {
-        const pluginManager = new PluginManager()
-        const handler1 = sinon.fake()
-        const handler2 = sinon.fake()
-        await pluginManager.init(
-          'runCucumber',
-          {
-            type: 'plugin',
-            coordinator: ({ on }) => {
-              on(key, handler1)
-            },
-          },
-          {},
-          logger,
-          environment
-        )
-        await pluginManager.init(
-          'runCucumber',
-          {
-            type: 'plugin',
-            coordinator: ({ on }) => {
-              on(key, handler2)
-            },
-          },
-          {},
-          logger,
-          environment
-        )
-
-        // @ts-expect-error type gymnastics aren't worth it here
-        pluginManager.emit(key, value)
-
-        expect(handler1).to.have.been.calledOnceWith(value)
-        expect(handler2).to.have.been.calledOnceWith(value)
-      })
-    }
+      expect(handler1).to.have.been.calledOnceWith(value)
+      expect(handler2).to.have.been.calledOnceWith(value)
+    })
   })
 
   describe('transforms', () => {
@@ -158,10 +136,10 @@ describe('PluginManager', () => {
         {
           type: 'plugin',
           coordinator: ({ on }) => {
-            on('pickles:filter', async (pickles) => {
-              // removes last item
-              return pickles.slice(0, pickles.length - 1)
-            })
+            // removes last item
+            on('pickles:filter', async (pickles) =>
+              pickles.slice(0, pickles.length - 1)
+            )
           },
         },
         {},
@@ -173,10 +151,10 @@ describe('PluginManager', () => {
         {
           type: 'plugin',
           coordinator: ({ on }) => {
-            on('pickles:filter', (pickles) => {
-              // removes third item if present
-              return pickles.filter(({ pickle }) => pickle.id !== 'pickle-3')
-            })
+            // removes pickle 3 if present
+            on('pickles:filter', (pickles) =>
+              pickles.filter(({ pickle }) => pickle.id !== 'pickle-3')
+            )
           },
         },
         {},
@@ -197,12 +175,8 @@ describe('PluginManager', () => {
         'runCucumber',
         {
           type: 'plugin',
-          coordinator: ({ on }) => {
-            on('pickles:filter', () => {
-              // bail, nothing to be done
-              return undefined
-            })
-          },
+          // bail, nothing to be done
+          coordinator: ({ on }) => on('pickles:filter', () => undefined),
         },
         {},
         logger,
