@@ -3,7 +3,7 @@ import { EventEmitter } from 'node:events'
 import { Writable as WritableStream } from 'node:stream'
 import { pathToFileURL } from 'node:url'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 import EventDataCollector from './helpers/event_data_collector'
 import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
@@ -20,7 +20,7 @@ interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
   snippetInterface?: SnippetInterface
   snippetSyntax?: string
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
 }
 
 export interface IBuildOptions {
@@ -32,7 +32,7 @@ export interface IBuildOptions {
   parsedArgvOptions: FormatOptions
   stream: WritableStream
   cleanup: IFormatterCleanupFn
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
 }
 
 const FormatterBuilder = {

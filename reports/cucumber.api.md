@@ -7,11 +7,7 @@
 /// <reference types="node" />
 
 import { Envelope } from '@cucumber/messages';
-import { Expression } from '@cucumber/cucumber-expressions';
 import { JsonObject } from 'type-fest';
-import * as messages from '@cucumber/messages';
-import { ParameterType } from '@cucumber/cucumber-expressions';
-import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions';
 import { Writable } from 'node:stream';
 
 // @public (undocumented)
@@ -219,31 +215,7 @@ export type ISupportCodeCoordinatesOrLibrary = ISupportCodeCoordinates | ISuppor
 // @public (undocumented)
 export interface ISupportCodeLibrary {
     // (undocumented)
-    readonly afterTestCaseHookDefinitions: TestCaseHookDefinition[];
-    // (undocumented)
-    readonly afterTestRunHookDefinitions: TestRunHookDefinition[];
-    // (undocumented)
-    readonly afterTestStepHookDefinitions: TestStepHookDefinition[];
-    // (undocumented)
-    readonly beforeTestCaseHookDefinitions: TestCaseHookDefinition[];
-    // (undocumented)
-    readonly beforeTestRunHookDefinitions: TestRunHookDefinition[];
-    // (undocumented)
-    readonly beforeTestStepHookDefinitions: TestStepHookDefinition[];
-    // (undocumented)
-    readonly defaultTimeout: number;
-    // (undocumented)
-    readonly originalCoordinates: ISupportCodeCoordinates_2;
-    // (undocumented)
-    readonly parallelCanAssign: ParallelAssignmentValidator;
-    // (undocumented)
-    readonly parameterTypeRegistry: SourcedParameterTypeRegistry;
-    // (undocumented)
-    readonly stepDefinitions: StepDefinition[];
-    // (undocumented)
-    readonly undefinedParameterTypes: messages.UndefinedParameterType[];
-    // (undocumented)
-    readonly World: any;
+    readonly originalCoordinates: ISupportCodeCoordinates;
 }
 
 // @public

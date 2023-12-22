@@ -1,10 +1,10 @@
 // Tests depend on the lines the steps are defined on
 
 import { buildSupportCodeLibrary } from '../runtime_helpers'
-import { ISupportCodeLibrary } from '../../src/support_code_library_builder/types'
+import { SupportCodeLibrary } from '../../src/support_code_library_builder/types'
 import World from '../../src/support_code_library_builder/world'
 
-export function getBaseSupportCodeLibrary(): ISupportCodeLibrary {
+export function getBaseSupportCodeLibrary(): SupportCodeLibrary {
   return buildSupportCodeLibrary(__dirname, ({ Given }) => {
     Given('a failing step', function () {
       throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal

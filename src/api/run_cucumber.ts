@@ -4,6 +4,7 @@ import { EventDataCollector } from '../formatter/helpers'
 import { emitMetaMessage, emitSupportCodeMessages } from '../cli/helpers'
 import { ILogger } from '../logger'
 import { resolvePaths } from '../paths'
+import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { IRunOptions, IRunEnvironment, IRunResult } from './types'
 import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
@@ -33,7 +34,7 @@ export async function runCucumber(
   const newId = IdGenerator.uuid()
 
   const supportCoordinates =
-    'World' in configuration.support
+    'originalCoordinates' in configuration.support
       ? configuration.support.originalCoordinates
       : configuration.support
 
@@ -56,8 +57,8 @@ export async function runCucumber(
   const { sourcePaths, requirePaths, importPaths } = resolvedPaths
 
   const supportCodeLibrary =
-    'World' in configuration.support
-      ? configuration.support
+    'originalCoordinates' in configuration.support
+      ? (configuration.support as SupportCodeLibrary)
       : await getSupportCodeLibrary({
           cwd,
           newId,

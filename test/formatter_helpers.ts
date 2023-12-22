@@ -6,7 +6,7 @@ import * as messages from '@cucumber/messages'
 import Runtime, { IRuntimeOptions } from '../src/runtime'
 import { EventDataCollector } from '../src/formatter/helpers'
 import FormatterBuilder from '../src/formatter/builder'
-import { ISupportCodeLibrary } from '../src/support_code_library_builder/types'
+import { SupportCodeLibrary } from '../src/support_code_library_builder/types'
 import { ITestCaseAttempt } from '../src/formatter/helpers/event_data_collector'
 import { doesNotHaveValue } from '../src/value_checker'
 import { emitSupportCodeMessages } from '../src/cli/helpers'
@@ -23,7 +23,7 @@ export interface ITestSource {
 
 export interface ITestRunOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
-  supportCodeLibrary?: ISupportCodeLibrary
+  supportCodeLibrary?: SupportCodeLibrary
   sources?: ITestSource[]
   pickleFilter?: (pickle: messages.Pickle) => boolean
 }

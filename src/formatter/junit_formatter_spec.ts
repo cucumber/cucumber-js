@@ -4,14 +4,14 @@ import chaiXml from 'chai-xml'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
 import { testFormatter } from '../../test/formatter_helpers'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 
 use(chaiXml)
 
 function getJUnitFormatterSupportCodeLibrary(
   clock: InstalledClock
-): ISupportCodeLibrary {
+): SupportCodeLibrary {
   return buildSupportCodeLibrary(__dirname, ({ Before, After, Given }) => {
     Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
     After(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function

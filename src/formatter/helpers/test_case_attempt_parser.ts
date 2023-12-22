@@ -1,7 +1,7 @@
 import * as messages from '@cucumber/messages'
 import { TestStepResult } from '@cucumber/messages'
 import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
-import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue, valueOrDefault } from '../../value_checker'
 import TestCaseHookDefinition from '../../models/test_case_hook_definition'
 import { ILineAndUri } from '../../types'
@@ -45,7 +45,7 @@ interface IParseStepRequest {
   pickleStep: messages.PickleStep
   pickleUri: string
   snippetBuilder: StepDefinitionSnippetBuilder
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
   testStep: messages.TestStep
   testStepResult: messages.TestStepResult
   testStepAttachments: messages.Attachment[]
@@ -121,7 +121,7 @@ function parseStep({
 export interface IParseTestCaseAttemptRequest {
   testCaseAttempt: ITestCaseAttempt
   snippetBuilder: StepDefinitionSnippetBuilder
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
 }
 
 // Converts a testCaseAttempt into a json object with all data needed for

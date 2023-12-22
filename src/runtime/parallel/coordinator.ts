@@ -6,7 +6,7 @@ import { IdGenerator } from '@cucumber/messages'
 import { retriesForPickle, shouldCauseFailure } from '../helpers'
 import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntime, IRuntimeOptions } from '..'
-import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
 import { IStopwatch, create } from '../stopwatch'
 import { assembleTestCases, IAssembledTestCases } from '../assemble_test_cases'
@@ -23,7 +23,7 @@ export interface INewCoordinatorOptions {
   options: IRuntimeOptions
   newId: IdGenerator.NewId
   pickleIds: string[]
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
   requireModules: string[]
   requirePaths: string[]
   importPaths: string[]
@@ -60,7 +60,7 @@ export default class Coordinator implements IRuntime {
   private assembledTestCases: IAssembledTestCases
   private inProgressPickles: Record<string, messages.Pickle>
   private workers: Record<string, IWorker>
-  private readonly supportCodeLibrary: ISupportCodeLibrary
+  private readonly supportCodeLibrary: SupportCodeLibrary
   private readonly requireModules: string[]
   private readonly requirePaths: string[]
   private readonly importPaths: string[]

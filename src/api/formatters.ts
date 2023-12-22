@@ -6,7 +6,7 @@ import fs from 'mz/fs'
 import { mkdirp } from 'mkdirp'
 import Formatter, { IFormatterStream } from '../formatter'
 import { EventDataCollector } from '../formatter/helpers'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import FormatterBuilder from '../formatter/builder'
 import { ILogger } from '../logger'
 import { IRunOptionsFormats } from './types'
@@ -31,7 +31,7 @@ export async function initializeFormatters({
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   configuration: IRunOptionsFormats
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
 }): Promise<() => Promise<void>> {
   async function initializeFormatter(
     stream: IFormatterStream,

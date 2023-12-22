@@ -13,7 +13,7 @@ import {
 import { EventDataCollector } from '../formatter/helpers'
 import PickleFilter from '../pickle_filter'
 import StepDefinition from '../models/step_definition'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { SourcedParameterTypeRegistry } from '../support_code_library_builder/sourced_parameter_type_registry'
@@ -57,7 +57,7 @@ async function testParseGherkinMessageStream(
 }
 
 function testEmitSupportCodeMessages(
-  supportCode: Partial<ISupportCodeLibrary>
+  supportCode: Partial<SupportCodeLibrary>
 ): messages.Envelope[] {
   const envelopes: messages.Envelope[] = []
   const eventBroadcaster = new EventEmitter()

@@ -1,6 +1,6 @@
 import { pathToFileURL } from 'node:url'
 import { IdGenerator } from '@cucumber/messages'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
 import tryRequire from '../try_require'
 
@@ -16,7 +16,7 @@ export async function getSupportCodeLibrary({
   requireModules: string[]
   requirePaths: string[]
   importPaths: string[]
-}): Promise<ISupportCodeLibrary> {
+}): Promise<SupportCodeLibrary> {
   supportCodeLibraryBuilder.reset(cwd, newId, {
     requireModules,
     requirePaths,

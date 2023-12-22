@@ -9,7 +9,7 @@ import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import { parse } from '../../test/gherkin_helpers'
 import timeMethods from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
 import TestCaseRunner from './test_case_runner'
 import { create } from './stopwatch'
@@ -21,7 +21,7 @@ interface ITestRunnerRequest {
   pickle: messages.Pickle
   retries?: number
   skip?: boolean
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
 }
 
 interface ITestRunnerResponse {

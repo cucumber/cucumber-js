@@ -3,7 +3,7 @@ import * as messages from '@cucumber/messages'
 import { getWorstTestStepResult, IdGenerator } from '@cucumber/messages'
 import { JsonObject } from 'type-fest'
 import {
-  ISupportCodeLibrary,
+  SupportCodeLibrary,
   ITestCaseHookParameter,
   ITestStepHookParameter,
 } from '../support_code_library_builder/types'
@@ -27,7 +27,7 @@ export interface INewTestCaseRunnerOptions {
   retries: number
   skip: boolean
   filterStackTraces: boolean
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
   worldParameters: JsonObject
 }
 
@@ -44,7 +44,7 @@ export default class TestCaseRunner {
   private readonly maxAttempts: number
   private readonly skip: boolean
   private readonly filterStackTraces: boolean
-  private readonly supportCodeLibrary: ISupportCodeLibrary
+  private readonly supportCodeLibrary: SupportCodeLibrary
   private testStepResults: messages.TestStepResult[]
   private world: any
   private readonly worldParameters: JsonObject
@@ -357,7 +357,7 @@ export default class TestCaseRunner {
 
 function findHookDefinition(
   id: string,
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
 ): TestCaseHookDefinition {
   return [
     ...supportCodeLibrary.beforeTestCaseHookDefinitions,
@@ -367,7 +367,7 @@ function findHookDefinition(
 
 function findStepDefinition(
   id: string,
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
 ): StepDefinition {
   return supportCodeLibrary.stepDefinitions.find(
     (definition) => definition.id === id

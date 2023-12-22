@@ -1,6 +1,5 @@
 import { Writable } from 'node:stream'
 import { JsonObject } from 'type-fest'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { IPublishConfig } from '../formatter'
 import { IConfiguration } from '../configuration'
 
@@ -135,14 +134,16 @@ export interface IRunConfiguration {
 /**
  * @public
  */
-export type ISupportCodeCoordinatesOrLibrary =
-  | ISupportCodeCoordinates
-  | ISupportCodeLibrary
+export interface ISupportCodeLibrary {
+  readonly originalCoordinates: ISupportCodeCoordinates
+}
 
 /**
  * @public
  */
-export type { ISupportCodeLibrary }
+export type ISupportCodeCoordinatesOrLibrary =
+  | ISupportCodeCoordinates
+  | ISupportCodeLibrary
 
 /**
  * @public

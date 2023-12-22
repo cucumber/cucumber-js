@@ -4,6 +4,7 @@
 
 ## ISupportCodeLibrary interface
 
+
 **Signature:**
 
 ```typescript
@@ -14,17 +15,5 @@ export interface ISupportCodeLibrary
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
-|  [afterTestCaseHookDefinitions](./cucumber.isupportcodelibrary.aftertestcasehookdefinitions.md) | <code>readonly</code> | TestCaseHookDefinition\[\] |  |
-|  [afterTestRunHookDefinitions](./cucumber.isupportcodelibrary.aftertestrunhookdefinitions.md) | <code>readonly</code> | TestRunHookDefinition\[\] |  |
-|  [afterTestStepHookDefinitions](./cucumber.isupportcodelibrary.afterteststephookdefinitions.md) | <code>readonly</code> | TestStepHookDefinition\[\] |  |
-|  [beforeTestCaseHookDefinitions](./cucumber.isupportcodelibrary.beforetestcasehookdefinitions.md) | <code>readonly</code> | TestCaseHookDefinition\[\] |  |
-|  [beforeTestRunHookDefinitions](./cucumber.isupportcodelibrary.beforetestrunhookdefinitions.md) | <code>readonly</code> | TestRunHookDefinition\[\] |  |
-|  [beforeTestStepHookDefinitions](./cucumber.isupportcodelibrary.beforeteststephookdefinitions.md) | <code>readonly</code> | TestStepHookDefinition\[\] |  |
-|  [defaultTimeout](./cucumber.isupportcodelibrary.defaulttimeout.md) | <code>readonly</code> | number |  |
-|  [originalCoordinates](./cucumber.isupportcodelibrary.originalcoordinates.md) | <code>readonly</code> | ISupportCodeCoordinates |  |
-|  [parallelCanAssign](./cucumber.isupportcodelibrary.parallelcanassign.md) | <code>readonly</code> | ParallelAssignmentValidator |  |
-|  [parameterTypeRegistry](./cucumber.isupportcodelibrary.parametertyperegistry.md) | <code>readonly</code> | SourcedParameterTypeRegistry |  |
-|  [stepDefinitions](./cucumber.isupportcodelibrary.stepdefinitions.md) | <code>readonly</code> | StepDefinition\[\] |  |
-|  [undefinedParameterTypes](./cucumber.isupportcodelibrary.undefinedparametertypes.md) | <code>readonly</code> | messages.UndefinedParameterType\[\] |  |
-|  [World](./cucumber.isupportcodelibrary.world.md) | <code>readonly</code> | any |  |
+|  [originalCoordinates](./cucumber.isupportcodelibrary.originalcoordinates.md) | <code>readonly</code> | [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md) |  |
 

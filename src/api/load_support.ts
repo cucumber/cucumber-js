@@ -1,8 +1,11 @@
 import { IdGenerator } from '@cucumber/messages'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { ILogger } from '../logger'
 import { resolvePaths } from '../paths'
-import { ILoadSupportOptions, IRunEnvironment } from './types'
+import {
+  ILoadSupportOptions,
+  IRunEnvironment,
+  ISupportCodeLibrary,
+} from './types'
 import { getSupportCodeLibrary } from './support'
 import { mergeEnvironment } from './environment'
 import { ConsoleLogger } from './console_logger'

@@ -4,7 +4,7 @@ import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
 import { JsonObject } from 'type-fest'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
-import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
 import { makeRunTestRunHooks, RunsTestRunHooks } from '../run_test_run_hooks'
 import { create } from '../stopwatch'
@@ -31,7 +31,7 @@ export default class Worker {
   private filterStacktraces: boolean
   private readonly newId: IdGenerator.NewId
   private readonly sendMessage: IMessageSender
-  private supportCodeLibrary: ISupportCodeLibrary
+  private supportCodeLibrary: SupportCodeLibrary
   private worldParameters: JsonObject
   private runTestRunHooks: RunsTestRunHooks
 

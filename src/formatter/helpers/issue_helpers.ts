@@ -2,7 +2,7 @@ import indentString from 'indent-string'
 import * as messages from '@cucumber/messages'
 import { IColorFns } from '../get_color_fns'
 import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
-import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { formatTestCaseAttempt } from './test_case_attempt_formatter'
 import { ITestCaseAttempt } from './event_data_collector'
 
@@ -35,7 +35,7 @@ export interface IFormatIssueRequest {
   number: number
   snippetBuilder: StepDefinitionSnippetBuilder
   testCaseAttempt: ITestCaseAttempt
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
   printAttachments?: boolean
 }
 

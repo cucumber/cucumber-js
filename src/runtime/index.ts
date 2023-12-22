@@ -3,7 +3,7 @@ import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
 import { JsonObject } from 'type-fest'
 import { EventDataCollector } from '../formatter/helpers'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { assembleTestCases } from './assemble_test_cases'
 import { retriesForPickle, shouldCauseFailure } from './helpers'
 import { makeRunTestRunHooks, RunsTestRunHooks } from './run_test_run_hooks'
@@ -20,7 +20,7 @@ export interface INewRuntimeOptions {
   newId: IdGenerator.NewId
   options: IRuntimeOptions
   pickleIds: string[]
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
 }
 
 export interface IRuntimeOptions {
@@ -40,7 +40,7 @@ export default class Runtime implements IRuntime {
   private readonly newId: IdGenerator.NewId
   private readonly options: IRuntimeOptions
   private readonly pickleIds: string[]
-  private readonly supportCodeLibrary: ISupportCodeLibrary
+  private readonly supportCodeLibrary: SupportCodeLibrary
   private success: boolean
   private runTestRunHooks: RunsTestRunHooks
 

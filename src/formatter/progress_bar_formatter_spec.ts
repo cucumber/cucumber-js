@@ -16,7 +16,7 @@ import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import timeMethods from '../time'
 import { IRuntimeOptions } from '../runtime'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import ProgressBarFormatter from './progress_bar_formatter'
 import FormatterBuilder from './builder'
@@ -26,7 +26,7 @@ interface ITestProgressBarFormatterOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
   shouldStopFn: (envelope: messages.Envelope) => boolean
   sources?: ITestSource[]
-  supportCodeLibrary?: ISupportCodeLibrary
+  supportCodeLibrary?: SupportCodeLibrary
   pickleFilter?: (pickle: messages.Pickle) => boolean
 }
 

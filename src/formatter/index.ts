@@ -1,6 +1,6 @@
 import { Writable } from 'node:stream'
 import { EventEmitter } from 'node:events'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
 import { IColorFns } from './get_color_fns'
 import { EventDataCollector } from './helpers'
@@ -39,7 +39,7 @@ export interface IFormatterOptions {
   snippetBuilder: StepDefinitionSnippetBuilder
   stream: Writable
   cleanup: IFormatterCleanupFn
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
 }
 
 export default class Formatter {
@@ -49,7 +49,7 @@ export default class Formatter {
   protected log: IFormatterLogFn
   protected snippetBuilder: StepDefinitionSnippetBuilder
   protected stream: Writable
-  protected supportCodeLibrary: ISupportCodeLibrary
+  protected supportCodeLibrary: SupportCodeLibrary
   protected printAttachments: boolean
   private readonly cleanup: IFormatterCleanupFn
   static readonly documentation: string
