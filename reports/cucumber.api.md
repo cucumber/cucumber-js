@@ -141,8 +141,6 @@ export interface IRunOptionsFormats {
     files: Record<string, string>;
     // (undocumented)
     options: JsonObject;
-    // Warning: (ae-forgotten-export) The symbol "IPublishConfig" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     publish: IPublishConfig | false;
     // (undocumented)
@@ -181,8 +179,6 @@ export interface ISourcesCoordinates {
     defaultDialect: string;
     // (undocumented)
     names: string[];
-    // Warning: (ae-forgotten-export) The symbol "PickleOrder" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     order: PickleOrder;
     // (undocumented)
@@ -219,16 +215,10 @@ export type ISupportCodeCoordinatesOrLibrary = ISupportCodeCoordinates | ISuppor
 
 // @public (undocumented)
 export interface ISupportCodeLibrary {
-    // Warning: (ae-forgotten-export) The symbol "TestCaseHookDefinition" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     readonly afterTestCaseHookDefinitions: TestCaseHookDefinition[];
-    // Warning: (ae-forgotten-export) The symbol "TestRunHookDefinition" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     readonly afterTestRunHookDefinitions: TestRunHookDefinition[];
-    // Warning: (ae-forgotten-export) The symbol "TestStepHookDefinition" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     readonly afterTestStepHookDefinitions: TestStepHookDefinition[];
     // (undocumented)
@@ -239,20 +229,12 @@ export interface ISupportCodeLibrary {
     readonly beforeTestStepHookDefinitions: TestStepHookDefinition[];
     // (undocumented)
     readonly defaultTimeout: number;
-    // Warning: (ae-forgotten-export) The symbol "ISupportCodeCoordinates_2" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     readonly originalCoordinates: ISupportCodeCoordinates_2;
-    // Warning: (ae-forgotten-export) The symbol "ParallelAssignmentValidator" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     readonly parallelCanAssign: ParallelAssignmentValidator;
-    // Warning: (ae-forgotten-export) The symbol "SourcedParameterTypeRegistry" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     readonly parameterTypeRegistry: SourcedParameterTypeRegistry;
-    // Warning: (ae-forgotten-export) The symbol "StepDefinition" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     readonly stepDefinitions: StepDefinition[];
     // (undocumented)
