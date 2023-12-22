@@ -15,7 +15,7 @@ export interface IConfiguration {
   parallel: number
   publish: boolean
   /**
-   * @deprecated no longer needed; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
+   * @deprecated no longer needed; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md
    */
   publishQuiet: boolean
   require: string[]

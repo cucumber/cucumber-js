@@ -6,7 +6,7 @@
 
 > Warning: This API is now obsolete.
 > 
-> no longer needed; see &lt;<!-- -->https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md<!-- -->&gt;
+> no longer needed; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md
 > 
 
 **Signature:**
