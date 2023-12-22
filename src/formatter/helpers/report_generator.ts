@@ -79,8 +79,8 @@ type JsonTestProgress = {
   result: JsonTestResult
 }
 
-type JsonReport = {
-  testCases : JsonTestProgress[]
+export type JsonReport = {
+  testCases: JsonTestProgress[]
   result: JsonReportResult
 }
 
@@ -98,6 +98,8 @@ export default class ReportGenerator {
   private stepProgressMap = new Map<string, JsonStep>()
   private testProgressMap = new Map<string, JsonTestProgress>()
 
+  reportFolder:null|string = null
+
   handleMessage(envelope: messages.Envelope) {
     const type = Object.keys(envelope)[0] as keyof messages.Envelope
     switch (type) {
@@ -105,8 +107,7 @@ export default class ReportGenerator {
       // case "source": { break}
       case 'parseError': {
         const parseError = envelope[type]
-        // console.log(parseError)
-        // TODO: handle parseError
+        this.handleParseError(parseError)
         break
       }
       case 'gherkinDocument': {
@@ -169,6 +170,16 @@ export default class ReportGenerator {
   getReport() {
     return this.report
   }
+  private handleParseError(parseError: messages.ParseError) {
+    const { message, source } = parseError
+    const timestamp = new Date().getTime()
+    this.report.result = {
+      status: 'FAILED',
+      startTime: timestamp,
+      endTime: timestamp,
+      message: message,
+    }
+  }
   private onGherkinDocument(doc: messages.GherkinDocument) {
     this.gherkinDocumentMap.set(doc.uri, doc)
   }
@@ -206,7 +217,7 @@ export default class ReportGenerator {
 
     const scenarioName = pickle.name
 
-    const steps:JsonStep[] = pickle.steps.map((step) => {
+    const steps: JsonStep[] = pickle.steps.map((step) => {
       this.stepProgressMap.set(step.id, {
         type: step.type,
         text: step.text,
@@ -215,7 +226,7 @@ export default class ReportGenerator {
           status: 'UNKNOWN',
         },
       })
-      return this.stepProgressMap.get(step.id) 
+      return this.stepProgressMap.get(step.id)
     })
     this.testProgressMap.set(id, {
       id,
@@ -255,11 +266,19 @@ export default class ReportGenerator {
       source,
       url,
     } = attachment
+    if (mediaType === 'text/plain') {
+      this.reportFolder = body.replaceAll('\\', '/')
+    }
     const testStep = this.testStepMap.get(testStepId)
     if (testStep.pickleStepId === undefined) return
+
     const stepProgess = this.stepProgressMap.get(testStep.pickleStepId)
     if (mediaType === 'application/json') {
-      stepProgess.commands.push(JSON.parse(body) as JsonCommand)
+      const command = JSON.parse(body)
+      command.screenshotPath = command.screenshotPath
+        .replaceAll('\\', '/')
+        .replace(this.reportFolder, '')
+      stepProgess.commands.push(command)
     }
   }
   private onTestStepFinished(testStepFinished: messages.TestStepFinished) {
