@@ -1,8 +1,8 @@
 import { EventEmitter } from 'node:events'
 import { Readable } from 'node:stream'
 import { GherkinStreams } from '@cucumber/gherkin-streams'
-import { IdGenerator, SourceMediaType } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
+import { IdGenerator, SourceMediaType } from '@cucumber/messages'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import {
@@ -16,8 +16,8 @@ import StepDefinition from '../models/step_definition'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
-import { PickleOrder } from '../models/pickle_order'
 import { SourcedParameterTypeRegistry } from '../support_code_library_builder/sourced_parameter_type_registry'
+import { IPickleOrder } from '../api'
 import {
   emitMetaMessage,
   emitSupportCodeMessages,
@@ -30,7 +30,7 @@ const noopFunction = (): void => {
 
 interface ITestParseGherkinMessageStreamRequest {
   gherkinMessageStream: Readable
-  order: PickleOrder
+  order: IPickleOrder
   pickleFilter: PickleFilter
 }
 

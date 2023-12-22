@@ -11,10 +11,10 @@ import PickleFilter from '../pickle_filter'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
-import { PickleOrder } from '../models/pickle_order'
 import { version } from '../version'
 import { ILogger } from '../logger'
 import { ILineAndUri } from '../types'
+import { IPickleOrder } from '../api'
 
 interface IParseGherkinMessageStreamRequest {
   cwd?: string
@@ -67,7 +67,7 @@ export async function parseGherkinMessageStream({
 // Orders the pickleIds in place - morphs input
 export function orderPickles<T = string>(
   pickleIds: T[],
-  order: PickleOrder,
+  order: IPickleOrder,
   logger: ILogger
 ): void {
   const [type, seed] = splitOrder(order)

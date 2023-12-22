@@ -44,5 +44,6 @@ These docs cover the API used for running Cucumber programmatically. The entry p
 
 |  Type Alias | Description |
 |  --- | --- |
+|  [IPickleOrder](./cucumber.ipickleorder.md) |  |
 |  [ISupportCodeCoordinatesOrLibrary](./cucumber.isupportcodecoordinatesorlibrary.md) |  |
 

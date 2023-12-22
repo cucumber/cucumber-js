@@ -1,8 +1,7 @@
 import { Writable } from 'node:stream'
 import { JsonObject } from 'type-fest'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
-import { FormatOptions, IPublishConfig } from '../formatter'
-import { PickleOrder } from '../models/pickle_order'
+import { IPublishConfig } from '../formatter'
 import { IConfiguration } from '../configuration'
 
 /**
@@ -37,6 +36,8 @@ export interface IResolvedConfiguration {
   runConfiguration: IRunConfiguration
 }
 
+export type IPickleOrder = 'defined' | 'random' | string
+
 /**
  * @public
  */
@@ -45,7 +46,7 @@ export interface ISourcesCoordinates {
   paths: string[]
   names: string[]
   tagExpression: string
-  order: PickleOrder
+  order: IPickleOrder
 }
 
 /**

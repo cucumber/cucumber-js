@@ -1,4 +1,5 @@
 import { JsonObject } from 'type-fest'
+import { IPickleOrder } from '../api'
 
 export interface IConfiguration {
   backtrace: boolean
@@ -10,7 +11,7 @@ export interface IConfiguration {
   import: string[]
   language: string
   name: string[]
-  order: 'defined' | 'random' | string
+  order: IPickleOrder
   paths: string[]
   parallel: number
   publish: boolean

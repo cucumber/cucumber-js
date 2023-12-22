@@ -7,5 +7,5 @@
 **Signature:**
 
 ```typescript
-order: 'defined' | 'random' | string;
+order: IPickleOrder;
 ```

@@ -23,7 +23,7 @@ export interface IConfiguration
 |  [import](./cucumber.iconfiguration.import.md) |  | string\[\] |  |
 |  [language](./cucumber.iconfiguration.language.md) |  | string |  |
 |  [name](./cucumber.iconfiguration.name.md) |  | string\[\] |  |
-|  [order](./cucumber.iconfiguration.order.md) |  | 'defined' \| 'random' \| string |  |
+|  [order](./cucumber.iconfiguration.order.md) |  | [IPickleOrder](./cucumber.ipickleorder.md) |  |
 |  [parallel](./cucumber.iconfiguration.parallel.md) |  | number |  |
 |  [paths](./cucumber.iconfiguration.paths.md) |  | string\[\] |  |
 |  [publish](./cucumber.iconfiguration.publish.md) |  | boolean |  |

@@ -35,7 +35,7 @@ export interface IConfiguration {
     // (undocumented)
     name: string[];
     // (undocumented)
-    order: 'defined' | 'random' | string;
+    order: IPickleOrder;
     // (undocumented)
     parallel: number;
     // (undocumented)
@@ -82,6 +82,9 @@ export interface ILoadSupportOptions {
     // (undocumented)
     support: ISupportCodeCoordinates;
 }
+
+// @public (undocumented)
+export type IPickleOrder = 'defined' | 'random' | string;
 
 // @public (undocumented)
 export interface IPlannedPickle {
@@ -180,7 +183,7 @@ export interface ISourcesCoordinates {
     // (undocumented)
     names: string[];
     // (undocumented)
-    order: PickleOrder;
+    order: IPickleOrder;
     // (undocumented)
     paths: string[];
     // (undocumented)
