@@ -8,13 +8,19 @@
 **Signature:**
 
 ```typescript
-export interface IRunOptionsRuntime extends IRuntimeOptions 
+export interface IRunOptionsRuntime 
 ```
-**Extends:** IRuntimeOptions
 
 ## Properties
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
+|  [dryRun](./cucumber.irunoptionsruntime.dryrun.md) |  | boolean |  |
+|  [failFast](./cucumber.irunoptionsruntime.failfast.md) |  | boolean |  |
+|  [filterStacktraces](./cucumber.irunoptionsruntime.filterstacktraces.md) |  | boolean |  |
 |  [parallel](./cucumber.irunoptionsruntime.parallel.md) |  | number |  |
+|  [retry](./cucumber.irunoptionsruntime.retry.md) |  | number |  |
+|  [retryTagFilter](./cucumber.irunoptionsruntime.retrytagfilter.md) |  | string |  |
+|  [strict](./cucumber.irunoptionsruntime.strict.md) |  | boolean |  |
+|  [worldParameters](./cucumber.irunoptionsruntime.worldparameters.md) |  | JsonObject |  |
 

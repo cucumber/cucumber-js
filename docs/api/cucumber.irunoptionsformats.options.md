@@ -7,5 +7,5 @@
 **Signature:**
 
 ```typescript
-options: FormatOptions;
+options: JsonObject;
 ```

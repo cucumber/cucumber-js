@@ -139,10 +139,8 @@ export interface IRunOptions {
 export interface IRunOptionsFormats {
     // (undocumented)
     files: Record<string, string>;
-    // Warning: (ae-forgotten-export) The symbol "FormatOptions" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
-    options: FormatOptions;
+    options: JsonObject;
     // Warning: (ae-forgotten-export) The symbol "IPublishConfig" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
@@ -151,12 +149,24 @@ export interface IRunOptionsFormats {
     stdout: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "IRuntimeOptions" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
-export interface IRunOptionsRuntime extends IRuntimeOptions {
+export interface IRunOptionsRuntime {
+    // (undocumented)
+    dryRun: boolean;
+    // (undocumented)
+    failFast: boolean;
+    // (undocumented)
+    filterStacktraces: boolean;
     // (undocumented)
     parallel: number;
+    // (undocumented)
+    retry: number;
+    // (undocumented)
+    retryTagFilter: string;
+    // (undocumented)
+    strict: boolean;
+    // (undocumented)
+    worldParameters: JsonObject;
 }
 
 // @public

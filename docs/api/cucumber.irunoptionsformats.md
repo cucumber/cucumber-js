@@ -16,7 +16,7 @@ export interface IRunOptionsFormats
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
 |  [files](./cucumber.irunoptionsformats.files.md) |  | Record&lt;string, string&gt; |  |
-|  [options](./cucumber.irunoptionsformats.options.md) |  | FormatOptions |  |
+|  [options](./cucumber.irunoptionsformats.options.md) |  | JsonObject |  |
 |  [publish](./cucumber.irunoptionsformats.publish.md) |  | IPublishConfig \| false |  |
 |  [stdout](./cucumber.irunoptionsformats.stdout.md) |  | string |  |
 

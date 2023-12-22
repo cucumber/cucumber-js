@@ -1,8 +1,8 @@
 import { Writable } from 'node:stream'
+import { JsonObject } from 'type-fest'
 import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { FormatOptions, IPublishConfig } from '../formatter'
 import { PickleOrder } from '../models/pickle_order'
-import { IRuntimeOptions } from '../runtime'
 import { IConfiguration } from '../configuration'
 
 /**
@@ -100,8 +100,15 @@ export interface ILoadSupportOptions {
 /**
  * @public
  */
-export interface IRunOptionsRuntime extends IRuntimeOptions {
+export interface IRunOptionsRuntime {
+  dryRun: boolean
+  failFast: boolean
+  filterStacktraces: boolean
   parallel: number
+  retry: number
+  retryTagFilter: string
+  strict: boolean
+  worldParameters: JsonObject
 }
 
 /**
@@ -111,7 +118,7 @@ export interface IRunOptionsFormats {
   stdout: string
   files: Record<string, string>
   publish: IPublishConfig | false
-  options: FormatOptions
+  options: JsonObject
 }
 
 /**
