@@ -7,5 +7,5 @@
 **Signature:**
 
 ```typescript
-format: FormatsConfiguration;
+format: Array<string | [string, string?]>;
 ```

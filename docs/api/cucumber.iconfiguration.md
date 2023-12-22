@@ -18,12 +18,12 @@ export interface IConfiguration
 |  [dryRun](./cucumber.iconfiguration.dryrun.md) |  | boolean |  |
 |  [failFast](./cucumber.iconfiguration.failfast.md) |  | boolean |  |
 |  [forceExit](./cucumber.iconfiguration.forceexit.md) |  | boolean |  |
-|  [format](./cucumber.iconfiguration.format.md) |  | FormatsConfiguration |  |
-|  [formatOptions](./cucumber.iconfiguration.formatoptions.md) |  | FormatOptions |  |
+|  [format](./cucumber.iconfiguration.format.md) |  | Array&lt;string \| \[string, string?\]&gt; |  |
+|  [formatOptions](./cucumber.iconfiguration.formatoptions.md) |  | JsonObject |  |
 |  [import](./cucumber.iconfiguration.import.md) |  | string\[\] |  |
 |  [language](./cucumber.iconfiguration.language.md) |  | string |  |
 |  [name](./cucumber.iconfiguration.name.md) |  | string\[\] |  |
-|  [order](./cucumber.iconfiguration.order.md) |  | PickleOrder |  |
+|  [order](./cucumber.iconfiguration.order.md) |  | 'defined' \| 'random' \| string |  |
 |  [parallel](./cucumber.iconfiguration.parallel.md) |  | number |  |
 |  [paths](./cucumber.iconfiguration.paths.md) |  | string\[\] |  |
 |  [publish](./cucumber.iconfiguration.publish.md) |  | boolean |  |

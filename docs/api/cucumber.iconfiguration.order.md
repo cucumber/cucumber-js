@@ -7,5 +7,5 @@
 **Signature:**
 
 ```typescript
-order: PickleOrder;
+order: 'defined' | 'random' | string;
 ```

@@ -24,24 +24,18 @@ export interface IConfiguration {
     failFast: boolean;
     // (undocumented)
     forceExit: boolean;
-    // Warning: (ae-forgotten-export) The symbol "FormatsConfiguration" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
-    format: FormatsConfiguration;
-    // Warning: (ae-forgotten-export) The symbol "FormatOptions" needs to be exported by the entry point index.d.ts
-    //
+    format: Array<string | [string, string?]>;
     // (undocumented)
-    formatOptions: FormatOptions;
+    formatOptions: JsonObject;
     // (undocumented)
     import: string[];
     // (undocumented)
     language: string;
     // (undocumented)
     name: string[];
-    // Warning: (ae-forgotten-export) The symbol "PickleOrder" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
-    order: PickleOrder;
+    order: 'defined' | 'random' | string;
     // (undocumented)
     parallel: number;
     // (undocumented)
@@ -145,6 +139,8 @@ export interface IRunOptions {
 export interface IRunOptionsFormats {
     // (undocumented)
     files: Record<string, string>;
+    // Warning: (ae-forgotten-export) The symbol "FormatOptions" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
     options: FormatOptions;
     // Warning: (ae-forgotten-export) The symbol "IPublishConfig" needs to be exported by the entry point index.d.ts
@@ -175,6 +171,8 @@ export interface ISourcesCoordinates {
     defaultDialect: string;
     // (undocumented)
     names: string[];
+    // Warning: (ae-forgotten-export) The symbol "PickleOrder" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
     order: PickleOrder;
     // (undocumented)

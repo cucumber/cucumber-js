@@ -1,20 +1,16 @@
 import { JsonObject } from 'type-fest'
-import { FormatOptions } from '../formatter'
-import { PickleOrder } from '../models/pickle_order'
-
-type FormatsConfiguration = Array<string | [string, string?]>
 
 export interface IConfiguration {
   backtrace: boolean
   dryRun: boolean
   forceExit: boolean
   failFast: boolean
-  format: FormatsConfiguration
-  formatOptions: FormatOptions
+  format: Array<string | [string, string?]>
+  formatOptions: JsonObject
   import: string[]
   language: string
   name: string[]
-  order: PickleOrder
+  order: 'defined' | 'random' | string
   paths: string[]
   parallel: number
   publish: boolean
