@@ -15,6 +15,6 @@ export interface ILoadSupportOptions
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
-|  [sources](./cucumber.iloadsupportoptions.sources.md) |  | [ISourcesCoordinates](./cucumber.isourcescoordinates.md) |  |
-|  [support](./cucumber.iloadsupportoptions.support.md) |  | [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md) |  |
+|  [sources](./cucumber.iloadsupportoptions.sources.md) |  | ISourcesCoordinates |  |
+|  [support](./cucumber.iloadsupportoptions.support.md) |  | ISupportCodeCoordinates |  |
 

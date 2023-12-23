@@ -4,12 +4,13 @@
   "compiler": {},
   "apiReport": {
     "enabled": true,
-    "reportFolder": "<projectFolder>/reports/",
-    "reportTempFolder": "<projectFolder>/tmp/api-extractor/"
+    "reportFolder": "<projectFolder>/exports/api/",
+    "reportTempFolder": "<projectFolder>/exports/api/tmp",
+    "reportFileName": "report.api.md"
   },
   "docModel": {
     "enabled": true,
-    "apiJsonFilePath": "<projectFolder>/tmp/api-extractor/<unscopedPackageName>.api.json"
+    "apiJsonFilePath": "<projectFolder>/exports/api/tmp/model.api.json"
   },
   "dtsRollup": {
     "enabled": false

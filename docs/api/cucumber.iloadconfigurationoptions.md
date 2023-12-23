@@ -17,5 +17,5 @@ export interface ILoadConfigurationOptions
 |  --- | --- | --- | --- |
 |  [file?](./cucumber.iloadconfigurationoptions.file.md) |  | string | _(Optional)_ Path to load configuration file from (defaults to <code>cucumber.(js&#124;cjs&#124;mjs&#124;json)</code> if omitted). |
 |  [profiles?](./cucumber.iloadconfigurationoptions.profiles.md) |  | string\[\] | _(Optional)_ Zero or more profile names from which to source configuration (if omitted or empty, the <code>default</code> profile will be used). |
-|  [provided?](./cucumber.iloadconfigurationoptions.provided.md) |  | Partial&lt;[IConfiguration](./cucumber.iconfiguration.md)<!-- -->&gt; | _(Optional)_ Ad-hoc configuration options to be applied over the top of whatever is loaded from the configuration file/profiles. |
+|  [provided?](./cucumber.iloadconfigurationoptions.provided.md) |  | Partial&lt;IConfiguration&gt; | _(Optional)_ Ad-hoc configuration options to be applied over the top of whatever is loaded from the configuration file/profiles. |
 

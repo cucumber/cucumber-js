@@ -15,6 +15,6 @@ export interface ILoadSourcesResult
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
-|  [errors](./cucumber.iloadsourcesresult.errors.md) |  | [ISourcesError](./cucumber.isourceserror.md)<!-- -->\[\] |  |
-|  [plan](./cucumber.iloadsourcesresult.plan.md) |  | [IPlannedPickle](./cucumber.iplannedpickle.md)<!-- -->\[\] |  |
+|  [errors](./cucumber.iloadsourcesresult.errors.md) |  | ISourcesError\[\] |  |
+|  [plan](./cucumber.iloadsourcesresult.plan.md) |  | IPlannedPickle\[\] |  |
 

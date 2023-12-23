@@ -16,10 +16,10 @@ export declare function loadSources(coordinates: ISourcesCoordinates, environmen
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  coordinates | [ISourcesCoordinates](./cucumber.isourcescoordinates.md) | Coordinates required to find features |
-|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) | _(Optional)_ Project environment. |
+|  coordinates | ISourcesCoordinates | Coordinates required to find features |
+|  environment | IRunEnvironment | _(Optional)_ Project environment. |
 
 **Returns:**
 
-Promise&lt;[ILoadSourcesResult](./cucumber.iloadsourcesresult.md)<!-- -->&gt;
+Promise&lt;ILoadSourcesResult&gt;
 

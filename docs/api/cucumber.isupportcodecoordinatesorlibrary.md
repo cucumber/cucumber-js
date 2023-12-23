@@ -10,5 +10,3 @@
 ```typescript
 export type ISupportCodeCoordinatesOrLibrary = ISupportCodeCoordinates | ISupportCodeLibrary;
 ```
-**References:** [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md)<!-- -->, [ISupportCodeLibrary](./cucumber.isupportcodelibrary.md)
-

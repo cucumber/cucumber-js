@@ -16,10 +16,10 @@ export declare function loadSupport(options: ILoadSupportOptions, environment?: 
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  options | [ILoadSupportOptions](./cucumber.iloadsupportoptions.md) | Subset of <code>IRunnableConfiguration</code> required to find the support code. |
-|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) | _(Optional)_ Project environment. |
+|  options | ILoadSupportOptions | Subset of <code>IRunnableConfiguration</code> required to find the support code. |
+|  environment | IRunEnvironment | _(Optional)_ Project environment. |
 
 **Returns:**
 
-Promise&lt;[ISupportCodeLibrary](./cucumber.isupportcodelibrary.md)<!-- -->&gt;
+Promise&lt;ISupportCodeLibrary&gt;
 

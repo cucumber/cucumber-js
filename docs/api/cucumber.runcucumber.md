@@ -16,11 +16,11 @@ export declare function runCucumber(configuration: IRunOptions, environment?: IR
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  configuration | [IRunOptions](./cucumber.irunoptions.md) | Configuration loaded from <code>loadConfiguration</code>. |
-|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) | _(Optional)_ Project environment. |
+|  configuration | IRunOptions | Configuration loaded from <code>loadConfiguration</code>. |
+|  environment | IRunEnvironment | _(Optional)_ Project environment. |
 |  onMessage | (message: Envelope) =&gt; void | _(Optional)_ Callback fired each time Cucumber emits a message. |
 
 **Returns:**
 
-Promise&lt;[IRunResult](./cucumber.irunresult.md)<!-- -->&gt;
+Promise&lt;IRunResult&gt;
 

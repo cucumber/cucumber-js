@@ -17,7 +17,7 @@ export interface ISourcesCoordinates
 |  --- | --- | --- | --- |
 |  [defaultDialect](./cucumber.isourcescoordinates.defaultdialect.md) |  | string |  |
 |  [names](./cucumber.isourcescoordinates.names.md) |  | string\[\] |  |
-|  [order](./cucumber.isourcescoordinates.order.md) |  | [IPickleOrder](./cucumber.ipickleorder.md) |  |
+|  [order](./cucumber.isourcescoordinates.order.md) |  | IPickleOrder |  |
 |  [paths](./cucumber.isourcescoordinates.paths.md) |  | string\[\] |  |
 |  [tagExpression](./cucumber.isourcescoordinates.tagexpression.md) |  | string |  |
 

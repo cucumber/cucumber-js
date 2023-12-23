@@ -15,8 +15,8 @@ export interface IRunConfiguration
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
-|  [formats](./cucumber.irunconfiguration.formats.md) |  | [IRunOptionsFormats](./cucumber.irunoptionsformats.md) |  |
-|  [runtime](./cucumber.irunconfiguration.runtime.md) |  | [IRunOptionsRuntime](./cucumber.irunoptionsruntime.md) |  |
-|  [sources](./cucumber.irunconfiguration.sources.md) |  | [ISourcesCoordinates](./cucumber.isourcescoordinates.md) |  |
-|  [support](./cucumber.irunconfiguration.support.md) |  | [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md) |  |
+|  [formats](./cucumber.irunconfiguration.formats.md) |  | IRunOptionsFormats |  |
+|  [runtime](./cucumber.irunconfiguration.runtime.md) |  | IRunOptionsRuntime |  |
+|  [sources](./cucumber.irunconfiguration.sources.md) |  | ISourcesCoordinates |  |
+|  [support](./cucumber.irunconfiguration.support.md) |  | ISupportCodeCoordinates |  |
 

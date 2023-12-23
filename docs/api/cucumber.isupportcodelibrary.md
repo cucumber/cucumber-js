@@ -15,5 +15,5 @@ export interface ISupportCodeLibrary
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
-|  [originalCoordinates](./cucumber.isupportcodelibrary.originalcoordinates.md) | <code>readonly</code> | [ISupportCodeCoordinates](./cucumber.isupportcodecoordinates.md) |  |
+|  [originalCoordinates](./cucumber.isupportcodelibrary.originalcoordinates.md) | <code>readonly</code> | ISupportCodeCoordinates |  |
 

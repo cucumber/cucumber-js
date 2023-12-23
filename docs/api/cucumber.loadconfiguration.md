@@ -16,10 +16,10 @@ export declare function loadConfiguration(options?: ILoadConfigurationOptions, e
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  options | [ILoadConfigurationOptions](./cucumber.iloadconfigurationoptions.md) | _(Optional)_ Coordinates required to find configuration. |
-|  environment | [IRunEnvironment](./cucumber.irunenvironment.md) | _(Optional)_ Project environment. |
+|  options | ILoadConfigurationOptions | _(Optional)_ Coordinates required to find configuration. |
+|  environment | IRunEnvironment | _(Optional)_ Project environment. |
 
 **Returns:**
 
-Promise&lt;[IResolvedConfiguration](./cucumber.iresolvedconfiguration.md)<!-- -->&gt;
+Promise&lt;IResolvedConfiguration&gt;
 
