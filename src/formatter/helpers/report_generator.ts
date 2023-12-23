@@ -59,7 +59,7 @@ type JsonCommand = {
   type: string
   value?: string
   text: string
-  screenshotPath?: string
+  screenshotId?: string
   result: JsonCommandResult
 }
 type JsonStep = {
@@ -274,10 +274,7 @@ export default class ReportGenerator {
 
     const stepProgess = this.stepProgressMap.get(testStep.pickleStepId)
     if (mediaType === 'application/json') {
-      const command = JSON.parse(body)
-      command.screenshotPath = command.screenshotPath
-        .replaceAll('\\', '/')
-        .replace(this.reportFolder, '')
+      const command:JsonCommand = JSON.parse(body)
       stepProgess.commands.push(command)
     }
   }
