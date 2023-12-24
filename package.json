@@ -253,7 +253,6 @@
   "devDependencies": {
     "@cucumber/compatibility-kit": "14.1.0",
     "@cucumber/query": "12.0.1",
-    "@microsoft/api-documenter": "7.23.15",
     "@microsoft/api-extractor": "7.39.0",
     "@sinonjs/fake-timers": "10.0.2",
     "@types/chai": "4.3.4",
@@ -305,6 +304,7 @@
     "stream-to-string": "1.2.0",
     "ts-node": "10.9.1",
     "tsd": "0.25.0",
+    "typedoc": "^0.25.4",
     "typescript": "4.9.4"
   },
   "overrides": {
@@ -313,10 +313,9 @@
   "scripts": {
     "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.node.json && shx cp src/wrapper.mjs lib/ && shx cp src/api/wrapper.mjs lib/api/",
     "cck-test": "mocha 'compatibility/**/*_spec.ts'",
-    "clean": "rm -rf lib",
-    "exports-generate-docs": "api-documenter markdown --input-folder ./exports/api/tmp --output-folder ./docs/api",
+    "exports-generate-docs": "typedoc",
     "exports-test": "api-extractor run --config exports/api/config.json --verbose && api-extractor run --config exports/root/config.json --verbose",
-    "exports-update": "npm run clean && npm run build-local && api-extractor run --config exports/api/config.json --verbose --local && api-extractor run --config exports/root/config.json --verbose --local",
+    "exports-update": "api-extractor run --config exports/api/config.json --verbose --local && api-extractor run --config exports/root/config.json --verbose --local",
     "feature-test": "node bin/cucumber.js",
     "lint-code-autofix": "eslint --fix \"{compatibility,example,features,scripts,src,test}/**/*.ts\"",
     "lint-code": "eslint \"{compatibility,example,features,scripts,src,test}/**/*.ts\"",
@@ -325,6 +324,7 @@
     "lint-format": "prettier --check .",
     "lint": "npm run lint-code && npm run lint-format && npm run lint-dependencies",
     "preexports-test": "npm run build-local",
+    "preexports-update": "npm run build-local",
     "prelint-autofix": "npm run build-local",
     "prelint-code": "npm run build-local",
     "precck-test": "npm run build-local",

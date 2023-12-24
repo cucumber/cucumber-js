@@ -9,8 +9,7 @@
     "reportFileName": "report.api.md"
   },
   "docModel": {
-    "enabled": true,
-    "apiJsonFilePath": "<projectFolder>/exports/api/tmp/model.api.json"
+    "enabled": false
   },
   "dtsRollup": {
     "enabled": false

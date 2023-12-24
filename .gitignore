@@ -6,6 +6,7 @@
 coverage/
 lib/
 node_modules
+site/
 tmp/
 reports/*.html
 reports/*.ndjson

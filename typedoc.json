@@ -1,0 +1,6 @@
+{
+  "entryPoints": ["src/index.ts", "src/api/index.ts"],
+  "name": "cucumber-js",
+  "out": "./site",
+  "tsconfig": "tsconfig.node.json"
+}
