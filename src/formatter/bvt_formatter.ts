@@ -22,7 +22,7 @@ export default class BVTFormatter extends Formatter {
       this.reportGenerator.handleMessage(envelope)
       if(envelope.testRunFinished){
         const report = this.reportGenerator.getReport();
-        this.log(JSON.stringify(report, null, 2))
+        // this.log(JSON.stringify(report, null, 2))
         await this.uploadRun(report);
       }
     })
@@ -45,7 +45,7 @@ export default class BVTFormatter extends Formatter {
     const zip = new JSZip();
     zip.file("report.json", JSON.stringify(report, null, 2));
     const folder = zip.folder("screenshots");
-    const files = fs.readdirSync(reportFolder);
+    const files = fs.readdirSync(path.join(reportFolder, 'screenshots'));
     files.forEach((file) => {
       folder.file(file, fs.readFileSync(path.join(reportFolder, file)));
     });
