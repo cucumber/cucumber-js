@@ -6,7 +6,7 @@ on:
       - revive-api-extractor
 
 jobs:
-  build:
+  upload-artifact:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -22,7 +22,7 @@ jobs:
       - uses: actions/upload-pages-artifact@v2
 
   deploy:
-    needs: build
+    needs: upload-artifact
     permissions:
       pages: write
       id-token: write
