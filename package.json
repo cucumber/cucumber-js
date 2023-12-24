@@ -323,6 +323,7 @@
     "lint-format-autofix": "prettier --write .",
     "lint-format": "prettier --check .",
     "lint": "npm run lint-code && npm run lint-format && npm run lint-dependencies",
+    "preexports-generate-docs": "npm run build-local",
     "preexports-test": "npm run build-local",
     "preexports-update": "npm run build-local",
     "prelint-autofix": "npm run build-local",
