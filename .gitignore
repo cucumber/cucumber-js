@@ -2,12 +2,13 @@
 .nyc_output_feature/
 .nyc_output_unit/
 .nyc_output/
+_site/
 @rerun.txt
 coverage/
 lib/
 node_modules
-site/
 tmp/
+
 reports/*.html
 reports/*.ndjson
 reports/*.txt
