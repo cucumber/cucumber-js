@@ -2,5 +2,7 @@
   "entryPoints": ["src/index.ts", "src/api/index.ts"],
   "name": "cucumber-js",
   "out": "./_site",
+  "readme": "none",
+  "titleLink": "https://github.com/cucumber/cucumber-js",
   "tsconfig": "tsconfig.node.json"
 }
