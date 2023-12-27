@@ -20,6 +20,11 @@
         "logLevel": "warning",
         "addToApiReportFile": false
       }
+    },
+    "tsdocMessageReporting": {
+      "tsdoc-undefined-tag": {
+        "logLevel": "none"
+      }
     }
   }
 }
