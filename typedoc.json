@@ -1,7 +1,9 @@
 {
+  "customTitle": "cucumber-js",
   "entryPoints": ["src/index.ts", "src/api/index.ts"],
-  "name": "cucumber-js",
+  "footerLastModified": true,
   "out": "./_site",
+  "plugin": ["typedoc-plugin-extras"],
   "readme": "none",
   "titleLink": "https://github.com/cucumber/cucumber-js",
   "tsconfig": "tsconfig.node.json"
