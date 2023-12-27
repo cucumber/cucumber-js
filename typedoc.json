@@ -1,6 +1,7 @@
 {
   "customTitle": "cucumber-js",
   "entryPoints": ["src/index.ts", "src/api/index.ts"],
+  "favicon": "./docs/images/logo.svg",
   "footerLastModified": true,
   "out": "./_site",
   "plugin": ["typedoc-plugin-extras"],
