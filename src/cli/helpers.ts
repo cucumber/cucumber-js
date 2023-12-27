@@ -14,7 +14,7 @@ import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { version } from '../version'
 import { ILogger } from '../logger'
 import { ILineAndUri } from '../types'
-import { IPickleOrder } from '../api'
+import { IPickleOrder } from '../filter'
 
 interface IParseGherkinMessageStreamRequest {
   cwd?: string

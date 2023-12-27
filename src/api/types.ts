@@ -1,7 +1,8 @@
 import { Writable } from 'node:stream'
 import { JsonObject } from 'type-fest'
-import { IPublishConfig } from '../formatter'
+import { IPublishConfig } from '../publish'
 import { IConfiguration } from '../configuration'
+import { IPickleOrder } from '../filter'
 
 /**
  * @public
@@ -34,8 +35,6 @@ export interface IResolvedConfiguration {
    */
   runConfiguration: IRunConfiguration
 }
-
-export type IPickleOrder = 'defined' | 'random' | string
 
 /**
  * @public

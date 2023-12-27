@@ -1,6 +1,9 @@
 import { JsonObject } from 'type-fest'
-import { IPickleOrder } from '../api'
+import { IPickleOrder } from '../filter'
 
+/**
+ * @public
+ */
 export interface IConfiguration {
   backtrace: boolean
   dryRun: boolean

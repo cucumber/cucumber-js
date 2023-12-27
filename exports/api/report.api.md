@@ -96,6 +96,14 @@ export interface IPlannedPickle {
 }
 
 // @public (undocumented)
+export interface IPublishConfig {
+    // (undocumented)
+    token: string;
+    // (undocumented)
+    url: string;
+}
+
+// @public (undocumented)
 export interface IResolvedConfiguration {
     runConfiguration: IRunConfiguration;
     useConfiguration: IConfiguration;

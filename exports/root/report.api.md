@@ -534,6 +534,4 @@ export class World<ParametersType = any> implements IWorld<ParametersType> {
 // @public (undocumented)
 export function wrapPromiseWithTimeout<T>(promise: Promise<T>, timeoutInMilliseconds: number, timeoutMessage?: string): Promise<T>;
 
-// (No @packageDocumentation comment for this package)
-
 ```

@@ -7,6 +7,8 @@
  */
 
 export { IConfiguration } from '../configuration'
+export { IPickleOrder } from '../filter'
+export { IPublishConfig } from '../publish'
 export * from './load_configuration'
 export * from './load_sources'
 export * from './load_support'
