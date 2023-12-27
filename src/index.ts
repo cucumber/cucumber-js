@@ -1,3 +1,11 @@
+/**
+ * User code functions and helpers
+ *
+ * @packageDocumentation
+ * @module (root)
+ * @remarks These docs cover the API for user code registration and test setup. The entry point is `@cucumber/cucumber`.
+ */
+
 import { deprecate } from 'node:util'
 import * as messages from '@cucumber/messages'
 import { default as _Cli } from './cli'
