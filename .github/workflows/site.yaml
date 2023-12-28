@@ -16,9 +16,9 @@ jobs:
       - run: npm install
       - run: npm run exports-generate-docs
       - run: |
-            chmod -c -R +rX "_site/" | while read line; do
-            echo "::warning title=Invalid file permissions automatically fixed::$line"
-            done
+          chmod -c -R +rX "_site/" | while read line; do
+          echo "::warning title=Invalid file permissions automatically fixed::$line"
+          done
       - uses: actions/upload-pages-artifact@v3
 
   deploy:
