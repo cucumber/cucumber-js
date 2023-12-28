@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  * @module (root)
- * @remarks These docs cover the API for user code registration and test setup. The entry point is `@cucumber/cucumber`.
+ * @remarks These docs cover the functions and helpers for user code registration and test setup. The entry point is `@cucumber/cucumber`.
  */
 
 import { deprecate } from 'node:util'
