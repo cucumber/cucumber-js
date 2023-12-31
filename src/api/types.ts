@@ -9,15 +9,15 @@ import { IPickleOrder } from '../filter'
  */
 export interface ILoadConfigurationOptions {
   /**
-   * Path to load configuration file from (defaults to `cucumber.(js|cjs|mjs|json)` if omitted).
+   * Path to load configuration file from (defaults to `cucumber.(json|yaml|yml|js|cjs|mjs)` if omitted)
    */
   file?: string
   /**
-   * Zero or more profile names from which to source configuration (if omitted or empty, the `default` profile will be used).
+   * Zero or more profile names from which to source configuration (if omitted or empty, the `default` profile will be used)
    */
   profiles?: string[]
   /**
-   * Ad-hoc configuration options to be applied over the top of whatever is loaded from the configuration file/profiles.
+   * Ad-hoc configuration options to be applied over the top of whatever is loaded from the configuration file/profiles
    */
   provided?: Partial<IConfiguration>
 }
@@ -27,11 +27,11 @@ export interface ILoadConfigurationOptions {
  */
 export interface IResolvedConfiguration {
   /**
-   * The final flat configuration object resolved from the configuration file/profiles plus any extra provided.
+   * The final flat configuration object resolved from the configuration file/profiles plus any extra provided
    */
   useConfiguration: IConfiguration
   /**
-   * The format that can be passed into `runCucumber`.
+   * The format that can be passed into {@link runCucumber}
    */
   runConfiguration: IRunConfiguration
 }
@@ -131,7 +131,13 @@ export interface IRunConfiguration {
 }
 
 /**
+ * A collection of user-defined code and setup that can be used for a test run
+ *
  * @public
+ * @remarks
+ * This is mostly a marker interface. The actual instance is a complex object that you shouldn't
+ * interact with directly, but some functions return and/or accept it as a means of optimising
+ * your test workflow.
  */
 export interface ISupportCodeLibrary {
   readonly originalCoordinates: ISupportCodeCoordinates
@@ -155,35 +161,46 @@ export interface IRunOptions {
 }
 
 /**
- * Contextual data about the project environment.
+ * Contextual data about the project environment
  *
  * @public
+ * @remarks
+ * These values are important for things like where to look for files, and where to emit output.\
+ * Where you are required to *provide* an environment, any/all properties can be safely omitted and will fall
+ * back to the default values. Conversely, where you are *supplied* an environment, it will always be a
+ * fully-populated value.
  */
 export interface IRunEnvironment {
   /**
-   * Working directory for the project (defaults to `process.cwd()` if omitted).
+   * Working directory for the project
+   * @default process.cwd()
    */
   cwd?: string
   /**
-   * Writable stream where the test run's main output is written (defaults to `process.stdout` if omitted).
+   * Writable stream where the test run's main output is written
+   * @default process.stderr
    */
   stdout?: Writable
   /**
-   * Writable stream where the test run's warning/error output is written (defaults to `process.stderr` if omitted).
+   * Writable stream where the test run's warning/error output is written
+   * @default process.stderr
    */
   stderr?: Writable
   /**
-   * Environment variables (defaults to `process.env` if omitted).
+   * Environment variables
+   * @default process.env
    */
   env?: NodeJS.ProcessEnv
   /**
-   * Whether debug logging is enabled.
+   * Whether debug logging should be emitted to {@link stderr}
+   * @default false
+   * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/debugging.md}
    */
   debug?: boolean
 }
 
 /**
- * Result of a Cucumber test run.
+ * Result of a Cucumber test run
  *
  * @public
  */
@@ -193,7 +210,7 @@ export interface IRunResult {
    */
   success: boolean
   /**
-   * The support code library that was used in the test run; can be reused in subsequent `runCucumber` calls.
+   * The support code library that was used in the test run; can be reused in subsequent `runCucumber` calls
    */
   support: ISupportCodeLibrary
 }
