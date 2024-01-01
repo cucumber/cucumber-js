@@ -16,11 +16,11 @@ import {
 import { ConsoleLogger } from './console_logger'
 
 /**
- * Load user-authored configuration to be used in a test run.
+ * Load user-authored configuration to be used in a test run
  *
  * @public
- * @param options - Coordinates required to find configuration.
- * @param environment - Project environment.
+ * @param options - Coordinates required to find configuration
+ * @param environment - Project environment
  */
 export async function loadConfiguration(
   options: ILoadConfigurationOptions = {},

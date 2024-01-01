@@ -15,15 +15,15 @@ import { initializeForRunCucumber } from './plugins'
 import { ConsoleLogger } from './console_logger'
 
 /**
- * Execute a Cucumber test run.
+ * Execute a Cucumber test run and return the overall result
  *
  * @public
- * @param configuration - Configuration loaded from `loadConfiguration`.
- * @param environment - Project environment.
- * @param onMessage - Callback fired each time Cucumber emits a message.
+ * @param options - Options for the run, obtainable via {@link loadConfiguration}
+ * @param environment - Project environment
+ * @param onMessage - Callback fired each time Cucumber emits a message
  */
 export async function runCucumber(
-  configuration: IRunOptions,
+  options: IRunOptions,
   environment: IRunEnvironment = {},
   onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
@@ -34,14 +34,14 @@ export async function runCucumber(
   const newId = IdGenerator.uuid()
 
   const supportCoordinates =
-    'originalCoordinates' in configuration.support
-      ? configuration.support.originalCoordinates
-      : configuration.support
+    'originalCoordinates' in options.support
+      ? options.support.originalCoordinates
+      : options.support
 
   const pluginManager = await initializeForRunCucumber(
     logger,
     {
-      ...configuration,
+      ...options,
       support: supportCoordinates,
     },
     mergedEnvironment
@@ -50,15 +50,15 @@ export async function runCucumber(
   const resolvedPaths = await resolvePaths(
     logger,
     cwd,
-    configuration.sources,
+    options.sources,
     supportCoordinates
   )
   pluginManager.emit('paths:resolve', resolvedPaths)
   const { sourcePaths, requirePaths, importPaths } = resolvedPaths
 
   const supportCodeLibrary =
-    'originalCoordinates' in configuration.support
-      ? (configuration.support as SupportCodeLibrary)
+    'originalCoordinates' in options.support
+      ? (options.support as SupportCodeLibrary)
       : await getSupportCodeLibrary({
           cwd,
           newId,
@@ -86,7 +86,7 @@ export async function runCucumber(
     onStreamError: () => (formatterStreamError = true),
     eventBroadcaster,
     eventDataCollector,
-    configuration: configuration.formats,
+    configuration: options.formats,
     supportCodeLibrary,
   })
   await emitMetaMessage(eventBroadcaster, env)
@@ -98,7 +98,7 @@ export async function runCucumber(
       newId,
       cwd,
       sourcePaths,
-      coordinates: configuration.sources,
+      coordinates: options.sources,
       onEnvelope: (envelope) => eventBroadcaster.emit('envelope', envelope),
     })
     const filteredPickles = await pluginManager.transform(
@@ -143,7 +143,7 @@ export async function runCucumber(
     requireModules: supportCoordinates.requireModules,
     requirePaths,
     importPaths,
-    options: configuration.runtime,
+    options: options.runtime,
   })
   const success = await runtime.start()
   await cleanupFormatters()

@@ -50,8 +50,9 @@ export interface IConfiguration {
    * @default []
    * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/formatters.md}
    * @remarks
-   * Each item has one or two values. The first (required) identifies the formatter to be used. The second (optional)
-   * specifies where the output should be written.
+   * Each item has one or two values. The first (required) identifies the
+   * formatter to be used. The second (optional) specifies where the output
+   * should be written.
    */
   format: Array<string | [string, string?]>
   /**

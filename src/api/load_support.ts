@@ -12,11 +12,11 @@ import { ConsoleLogger } from './console_logger'
 import { initializeForLoadSupport } from './plugins'
 
 /**
- * Load support code for use in test runs.
+ * Load support code for use in test runs
  *
  * @public
- * @param options - Subset of `IRunnableConfiguration` required to find the support code.
- * @param environment - Project environment.
+ * @param options - Options required to find the support code
+ * @param environment - Project environment
  */
 export async function loadSupport(
   options: ILoadSupportOptions,

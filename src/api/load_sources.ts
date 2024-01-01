@@ -14,11 +14,12 @@ import { ConsoleLogger } from './console_logger'
 import { initializeForLoadSources } from './plugins'
 
 /**
- * Load and parse features, produce a filtered and ordered test plan and/or parse errors.
+ * Load and parse features, produce a filtered and ordered test plan and/or
+ * parse errors
  *
  * @public
- * @param coordinates - Coordinates required to find features
- * @param environment - Project environment.
+ * @param coordinates - Coordinates required to find and process features
+ * @param environment - Project environment
  */
 export async function loadSources(
   coordinates: ISourcesCoordinates,
