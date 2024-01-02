@@ -10,68 +10,46 @@ import { Envelope } from '@cucumber/messages';
 import { JsonObject } from 'type-fest';
 import { Writable } from 'node:stream';
 
-// @public (undocumented)
+// @public
 export interface IConfiguration {
-    // (undocumented)
     backtrace: boolean;
-    // (undocumented)
     dryRun: boolean;
-    // (undocumented)
     failFast: boolean;
-    // (undocumented)
     forceExit: boolean;
-    // (undocumented)
     format: Array<string | [string, string?]>;
-    // (undocumented)
     formatOptions: JsonObject;
-    // (undocumented)
     import: string[];
-    // (undocumented)
     language: string;
-    // (undocumented)
     name: string[];
-    // (undocumented)
     order: IPickleOrder;
-    // (undocumented)
     parallel: number;
-    // (undocumented)
     paths: string[];
-    // (undocumented)
     publish: boolean;
     // @deprecated (undocumented)
     publishQuiet: boolean;
-    // (undocumented)
     require: string[];
-    // (undocumented)
     requireModule: string[];
-    // (undocumented)
     retry: number;
-    // (undocumented)
     retryTagFilter: string;
-    // (undocumented)
     strict: boolean;
-    // (undocumented)
     tags: string;
-    // (undocumented)
     worldParameters: JsonObject;
 }
 
-// @public (undocumented)
+// @public
 export interface ILoadConfigurationOptions {
     file?: string;
     profiles?: string[];
     provided?: Partial<IConfiguration>;
 }
 
-// @public (undocumented)
+// @public
 export interface ILoadSourcesResult {
-    // (undocumented)
     errors: ISourcesError[];
-    // (undocumented)
     plan: IPlannedPickle[];
 }
 
-// @public (undocumented)
+// @public
 export interface ILoadSupportOptions {
     // (undocumented)
     sources: ISourcesCoordinates;
@@ -79,37 +57,34 @@ export interface ILoadSupportOptions {
     support: ISupportCodeCoordinates;
 }
 
-// @public (undocumented)
+// @public
 export type IPickleOrder = 'defined' | 'random' | string;
 
-// @public (undocumented)
+// @public
 export interface IPlannedPickle {
     // (undocumented)
     location: {
         line: number;
         column?: number;
     };
-    // (undocumented)
     name: string;
     // (undocumented)
     uri: string;
 }
 
-// @public (undocumented)
+// @public
 export interface IPublishConfig {
-    // (undocumented)
     token: string;
-    // (undocumented)
     url: string;
 }
 
-// @public (undocumented)
+// @public
 export interface IResolvedConfiguration {
     runConfiguration: IRunConfiguration;
     useConfiguration: IConfiguration;
 }
 
-// @public (undocumented)
+// @public
 export interface IRunConfiguration {
     // (undocumented)
     formats: IRunOptionsFormats;
@@ -130,7 +105,7 @@ export interface IRunEnvironment {
     stdout?: Writable;
 }
 
-// @public (undocumented)
+// @public
 export interface IRunOptions {
     // (undocumented)
     formats: IRunOptionsFormats;
@@ -142,35 +117,23 @@ export interface IRunOptions {
     support: ISupportCodeCoordinatesOrLibrary;
 }
 
-// @public (undocumented)
+// @public
 export interface IRunOptionsFormats {
-    // (undocumented)
     files: Record<string, string>;
-    // (undocumented)
     options: JsonObject;
-    // (undocumented)
     publish: IPublishConfig | false;
-    // (undocumented)
     stdout: string;
 }
 
-// @public (undocumented)
+// @public
 export interface IRunOptionsRuntime {
-    // (undocumented)
     dryRun: boolean;
-    // (undocumented)
     failFast: boolean;
-    // (undocumented)
     filterStacktraces: boolean;
-    // (undocumented)
     parallel: number;
-    // (undocumented)
     retry: number;
-    // (undocumented)
     retryTagFilter: string;
-    // (undocumented)
     strict: boolean;
-    // (undocumented)
     worldParameters: JsonObject;
 }
 
@@ -180,47 +143,38 @@ export interface IRunResult {
     support: ISupportCodeLibrary;
 }
 
-// @public (undocumented)
+// @public
 export interface ISourcesCoordinates {
-    // (undocumented)
     defaultDialect: string;
-    // (undocumented)
     names: string[];
-    // (undocumented)
     order: IPickleOrder;
-    // (undocumented)
     paths: string[];
-    // (undocumented)
     tagExpression: string;
 }
 
-// @public (undocumented)
+// @public
 export interface ISourcesError {
     // (undocumented)
     location: {
         line: number;
         column?: number;
     };
-    // (undocumented)
     message: string;
     // (undocumented)
     uri: string;
 }
 
-// @public (undocumented)
+// @public
 export interface ISupportCodeCoordinates {
-    // (undocumented)
     importPaths: string[];
-    // (undocumented)
     requireModules: string[];
-    // (undocumented)
     requirePaths: string[];
 }
 
-// @public (undocumented)
+// @public
 export type ISupportCodeCoordinatesOrLibrary = ISupportCodeCoordinates | ISupportCodeLibrary;
 
-// @public (undocumented)
+// @public
 export interface ISupportCodeLibrary {
     // (undocumented)
     readonly originalCoordinates: ISupportCodeCoordinates;
@@ -236,6 +190,6 @@ export function loadSources(coordinates: ISourcesCoordinates, environment?: IRun
 export function loadSupport(options: ILoadSupportOptions, environment?: IRunEnvironment): Promise<ISupportCodeLibrary>;
 
 // @public
-export function runCucumber(configuration: IRunOptions, environment?: IRunEnvironment, onMessage?: (message: Envelope) => void): Promise<IRunResult>;
+export function runCucumber(options: IRunOptions, environment?: IRunEnvironment, onMessage?: (message: Envelope) => void): Promise<IRunResult>;
 
 ```

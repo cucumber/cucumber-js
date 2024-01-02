@@ -43,7 +43,7 @@ export interface IConfiguration {
    *
    * @example
    * [
-   *   "@cucumber/pretty-formatter",
+   *   "\@cucumber/pretty-formatter",
    *   ["html", "./reports/cucumber.html"],
    *   ["./custom-formatter.js", "./reports/custom.txt"]
    * ]
@@ -57,7 +57,7 @@ export interface IConfiguration {
   format: Array<string | [string, string?]>
   /**
    * Options to be provided to formatters
-   * @default {}
+   * @default \{\}
    * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/formatters.md#options}
    * @remarks
    * The value must be a JSON-serializable object.
@@ -138,7 +138,7 @@ export interface IConfiguration {
   tags: string
   /**
    * Parameters to be passed to your World
-   * @default {}
+   * @default \{\}
    * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/support_files/world.md}
    * @remarks
    * The value must be a JSON-serializable object.

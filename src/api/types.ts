@@ -212,10 +212,10 @@ export interface IRunOptionsFormats {
    * Zero or more mappings of file output path (key) to name/path of the
    * formatter to use (value)
    * @example
-   * {
+   * \{
    *   "./reports/cucumber.html": "html",
    *   "./reports/custom.txt": "./custom-formatter.js"
-   * }
+   * \}
    */
   files: Record<string, string>
   /**
@@ -313,7 +313,7 @@ export interface IRunEnvironment {
    */
   env?: NodeJS.ProcessEnv
   /**
-   * Whether debug logging should be emitted to {@link #stderr}
+   * Whether debug logging should be emitted to {@link IRunEnvironment.stderr}
    * @default false
    * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/debugging.md}
    */
