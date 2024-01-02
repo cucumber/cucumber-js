@@ -12,7 +12,7 @@ const schema = yup.object().shape({
     .of(
       yup.lazy((val) =>
         Array.isArray(val)
-          ? yup.array().of(yup.string()).min(2).max(2)
+          ? yup.array().of(yup.string()).min(1).max(2)
           : yup.string()
       )
     ),
