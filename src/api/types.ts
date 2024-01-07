@@ -284,12 +284,6 @@ export interface IRunOptions {
 /**
  * Contextual data about the project environment
  * @public
- * @remarks
- * These values are important for things like where to look for files, and
- * where to emit output. Functions like {@link runCucumber} allow you to
- * *provide* an environment, but this can be partial or omitted entirely and
- * default values are used accordingly. Conversely, where you are *supplied* an
- * environment, it will always be a fully-populated value.
  */
 export interface IRunEnvironment {
   /**
