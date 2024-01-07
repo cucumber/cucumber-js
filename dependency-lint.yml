@@ -5,8 +5,9 @@ executedModules:
   npmScripts:
     dev:
       - build
-      - docs:ci
-      - docs:local
+      - exports-generate-docs
+      - exports-test
+      - exports-update
       - lint
       - publish
       - test
@@ -37,6 +38,7 @@ ignoreErrors:
     - prettier # peer dependency of eslint-plugin-prettier
     - ts-node # .mocharc.yml / cucumber.js
     - type-fest # utility types
+    - typedoc-plugin-extras
 
 requiredModules:
   files:

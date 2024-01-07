@@ -12,7 +12,7 @@ const schema = yup.object().shape({
     .of(
       yup.lazy((val) =>
         Array.isArray(val)
-          ? yup.array().of(yup.string()).min(2).max(2)
+          ? yup.array().of(yup.string()).min(1).max(2)
           : yup.string()
       )
     ),
@@ -20,7 +20,7 @@ const schema = yup.object().shape({
   import: yup.array().of(yup.string()),
   language: yup.string().oneOf(Object.keys(dialects)),
   name: yup.array().of(yup.string()),
-  order: yup.string().oneOf(['defined', 'random']),
+  order: yup.string().matches(/^random:.*|random|defined$/),
   paths: yup.array().of(yup.string()),
   parallel: yup.number().integer().min(0),
   publish: yup.boolean(),

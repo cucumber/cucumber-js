@@ -4,7 +4,7 @@ import figures from 'figures'
 import { IColorFns } from '../get_color_fns'
 import { doesHaveValue, valueOrDefault } from '../../value_checker'
 import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
-import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { formatLocation } from './location_helpers'
 import {
   IParsedTestStep,
@@ -90,7 +90,7 @@ export interface IFormatTestCaseAttemptRequest {
   colorFns: IColorFns
   testCaseAttempt: ITestCaseAttempt
   snippetBuilder: StepDefinitionSnippetBuilder
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
   printAttachments?: boolean
 }
 

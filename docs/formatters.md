@@ -13,10 +13,10 @@ For each format you specify, you have to provide one or two values. The first (r
 
 * The name of one of the built-in formatters (below) e.g. `progress-bar`
 * A module/package name e.g. `@cucumber/pretty-formatter`
-* A relative path to a local formatter implementation e.g. `./my-customer-formatter.js`
+* A relative path to a local formatter implementation e.g. `./my-custom-formatter.js`
 * An absolute path to a local formatter implementation in the form of a `file://` URL
 
-Without a second value, the formatter will print to `stdout`. The second value, if present, is a path to where the formatter output should be written. If the path includes directories that do not yet exist, they will be created.
+Without a second value, the formatter will print to `stdout`. The second value, if present, is a path to where the formatter output should be written. If the path includes directories that don't exist yet, they'll be created automatically.
 
 On the CLI, when specifying both a name and path, you'll need to use `:` as a delimiter and wrap each side of it with double quotes. In a configuration file you can do this too, but you can also provide an array with the two values as separate strings, which is recommended. 
 

@@ -7,13 +7,13 @@ import { expect } from 'chai'
 import timeMethods from '../time'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import { parse } from '../../test/gherkin_helpers'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { assembleTestCases, IAssembledTestCases } from './assemble_test_cases'
 
 interface IRequest {
   gherkinDocument: messages.GherkinDocument
   pickles: messages.Pickle[]
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
 }
 
 interface IResponse {

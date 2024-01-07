@@ -2,6 +2,7 @@
 .nyc_output_feature/
 .nyc_output_unit/
 .nyc_output/
+_site/
 @rerun.txt
 coverage/
 lib/

@@ -9,14 +9,14 @@ import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
 import timeMethods, { durationBetweenTimestamps } from '../../time'
 import { buildSupportCodeLibrary } from '../../../test/runtime_helpers'
 import { IRuntimeOptions } from '../../runtime'
-import { ISupportCodeLibrary } from '../../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesNotHaveValue } from '../../value_checker'
 import { formatSummary } from './summary_helpers'
 
 interface ITestFormatSummaryOptions {
   runtimeOptions?: Partial<IRuntimeOptions>
   sourceData: string
-  supportCodeLibrary?: ISupportCodeLibrary
+  supportCodeLibrary?: SupportCodeLibrary
   testRunStarted?: messages.TestRunStarted
   testRunFinished?: messages.TestRunFinished
 }

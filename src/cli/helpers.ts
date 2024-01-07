@@ -8,13 +8,13 @@ import detectCiEnvironment from '@cucumber/ci-environment'
 import { doesHaveValue } from '../value_checker'
 import { EventDataCollector } from '../formatter/helpers'
 import PickleFilter from '../pickle_filter'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
-import { PickleOrder } from '../models/pickle_order'
 import { version } from '../version'
 import { ILogger } from '../logger'
 import { ILineAndUri } from '../types'
+import { IPickleOrder } from '../filter'
 
 interface IParseGherkinMessageStreamRequest {
   cwd?: string
@@ -57,7 +57,7 @@ export async function parseGherkinMessageStream({
       }
     })
     gherkinMessageStream.on('end', () => {
-      orderPickles(result, order, console)
+      orderPickles(result, order as IPickleOrder, console)
       resolve(result)
     })
     gherkinMessageStream.on('error', reject)
@@ -67,7 +67,7 @@ export async function parseGherkinMessageStream({
 // Orders the pickleIds in place - morphs input
 export function orderPickles<T = string>(
   pickleIds: T[],
-  order: PickleOrder,
+  order: IPickleOrder,
   logger: ILogger
 ): void {
   const [type, seed] = splitOrder(order)
@@ -133,7 +133,7 @@ const makeSourceReference = (source: ILineAndUri) => ({
 })
 
 function emitParameterTypes(
-  supportCodeLibrary: ISupportCodeLibrary,
+  supportCodeLibrary: SupportCodeLibrary,
   eventBroadcaster: EventEmitter,
   newId: IdGenerator.NewId
 ): void {
@@ -159,7 +159,7 @@ function emitParameterTypes(
 }
 
 function emitUndefinedParameterTypes(
-  supportCodeLibrary: ISupportCodeLibrary,
+  supportCodeLibrary: SupportCodeLibrary,
   eventBroadcaster: EventEmitter
 ): void {
   for (const undefinedParameterType of supportCodeLibrary.undefinedParameterTypes) {
@@ -171,7 +171,7 @@ function emitUndefinedParameterTypes(
 }
 
 function emitStepDefinitions(
-  supportCodeLibrary: ISupportCodeLibrary,
+  supportCodeLibrary: SupportCodeLibrary,
   eventBroadcaster: EventEmitter
 ): void {
   supportCodeLibrary.stepDefinitions.forEach((stepDefinition) => {
@@ -193,7 +193,7 @@ function emitStepDefinitions(
 }
 
 function emitTestCaseHooks(
-  supportCodeLibrary: ISupportCodeLibrary,
+  supportCodeLibrary: SupportCodeLibrary,
   eventBroadcaster: EventEmitter
 ): void {
   ;[]
@@ -215,7 +215,7 @@ function emitTestCaseHooks(
 }
 
 function emitTestRunHooks(
-  supportCodeLibrary: ISupportCodeLibrary,
+  supportCodeLibrary: SupportCodeLibrary,
   eventBroadcaster: EventEmitter
 ): void {
   ;[]
@@ -240,7 +240,7 @@ export function emitSupportCodeMessages({
   newId,
 }: {
   eventBroadcaster: EventEmitter
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
   newId: IdGenerator.NewId
 }): void {
   emitParameterTypes(supportCodeLibrary, eventBroadcaster, newId)

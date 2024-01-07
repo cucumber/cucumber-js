@@ -7,32 +7,49 @@
 /// <reference types="node" />
 
 import { Envelope } from '@cucumber/messages';
-import { Expression } from '@cucumber/cucumber-expressions';
-import http from 'http';
-import * as messages from '@cucumber/messages';
-import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions';
-import { PassThrough } from 'stream';
-import { Transform } from 'stream';
-import { WriteStream } from 'fs';
-import { WriteStream as WriteStream_2 } from 'tty';
+import { JsonObject } from 'type-fest';
+import { Writable } from 'node:stream';
 
-// @public (undocumented)
+// @public
+export interface IConfiguration {
+    backtrace: boolean;
+    dryRun: boolean;
+    failFast: boolean;
+    forceExit: boolean;
+    format: Array<string | [string, string?]>;
+    formatOptions: JsonObject;
+    import: string[];
+    language: string;
+    name: string[];
+    order: IPickleOrder;
+    parallel: number;
+    paths: string[];
+    publish: boolean;
+    // @deprecated (undocumented)
+    publishQuiet: boolean;
+    require: string[];
+    requireModule: string[];
+    retry: number;
+    retryTagFilter: string;
+    strict: boolean;
+    tags: string;
+    worldParameters: JsonObject;
+}
+
+// @public
 export interface ILoadConfigurationOptions {
-    file?: string;
+    file?: string | false;
     profiles?: string[];
-    // Warning: (ae-forgotten-export) The symbol "IConfiguration" needs to be exported by the entry point index.d.ts
     provided?: Partial<IConfiguration>;
 }
 
-// @public (undocumented)
+// @public
 export interface ILoadSourcesResult {
-    // (undocumented)
     errors: ISourcesError[];
-    // (undocumented)
     plan: IPlannedPickle[];
 }
 
-// @public (undocumented)
+// @public
 export interface ILoadSupportOptions {
     // (undocumented)
     sources: ISourcesCoordinates;
@@ -40,26 +57,34 @@ export interface ILoadSupportOptions {
     support: ISupportCodeCoordinates;
 }
 
-// @public (undocumented)
+// @public
+export type IPickleOrder = 'defined' | 'random' | `random:${string}`;
+
+// @public
 export interface IPlannedPickle {
     // (undocumented)
     location: {
         line: number;
         column?: number;
     };
-    // (undocumented)
     name: string;
     // (undocumented)
     uri: string;
 }
 
-// @public (undocumented)
+// @public
+export interface IPublishConfig {
+    token: string;
+    url: string;
+}
+
+// @public
 export interface IResolvedConfiguration {
     runConfiguration: IRunConfiguration;
     useConfiguration: IConfiguration;
 }
 
-// @public (undocumented)
+// @public
 export interface IRunConfiguration {
     // (undocumented)
     formats: IRunOptionsFormats;
@@ -74,13 +99,13 @@ export interface IRunConfiguration {
 // @public
 export interface IRunEnvironment {
     cwd?: string;
+    debug?: boolean;
     env?: NodeJS.ProcessEnv;
-    stderr?: IFormatterStream;
-    // Warning: (ae-forgotten-export) The symbol "IFormatterStream" needs to be exported by the entry point index.d.ts
-    stdout?: IFormatterStream;
+    stderr?: Writable;
+    stdout?: Writable;
 }
 
-// @public (undocumented)
+// @public
 export interface IRunOptions {
     // (undocumented)
     formats: IRunOptionsFormats;
@@ -92,79 +117,68 @@ export interface IRunOptions {
     support: ISupportCodeCoordinatesOrLibrary;
 }
 
-// @public (undocumented)
+// @public
 export interface IRunOptionsFormats {
-    // (undocumented)
     files: Record<string, string>;
-    // Warning: (ae-forgotten-export) The symbol "FormatOptions" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    options: FormatOptions;
-    // (undocumented)
-    publish: {
-        url?: string;
-        token?: string;
-    } | false;
-    // (undocumented)
+    options: JsonObject;
+    publish: IPublishConfig | false;
     stdout: string;
 }
 
-// Warning: (ae-forgotten-export) The symbol "IRuntimeOptions" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
-export interface IRunOptionsRuntime extends IRuntimeOptions {
-    // (undocumented)
+// @public
+export interface IRunOptionsRuntime {
+    dryRun: boolean;
+    failFast: boolean;
+    filterStacktraces: boolean;
     parallel: number;
+    retry: number;
+    retryTagFilter: string;
+    strict: boolean;
+    worldParameters: JsonObject;
 }
 
 // @public
 export interface IRunResult {
     success: boolean;
-    // Warning: (ae-forgotten-export) The symbol "ISupportCodeLibrary" needs to be exported by the entry point index.d.ts
     support: ISupportCodeLibrary;
 }
 
-// @public (undocumented)
+// @public
 export interface ISourcesCoordinates {
-    // (undocumented)
     defaultDialect: string;
-    // (undocumented)
     names: string[];
-    // Warning: (ae-forgotten-export) The symbol "PickleOrder" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    order: PickleOrder;
-    // (undocumented)
+    order: IPickleOrder;
     paths: string[];
-    // (undocumented)
     tagExpression: string;
 }
 
-// @public (undocumented)
+// @public
 export interface ISourcesError {
     // (undocumented)
     location: {
         line: number;
         column?: number;
     };
-    // (undocumented)
     message: string;
     // (undocumented)
     uri: string;
 }
 
-// @public (undocumented)
+// @public
 export interface ISupportCodeCoordinates {
-    // (undocumented)
     importPaths: string[];
-    // (undocumented)
     requireModules: string[];
-    // (undocumented)
     requirePaths: string[];
 }
 
-// @public (undocumented)
+// @public
 export type ISupportCodeCoordinatesOrLibrary = ISupportCodeCoordinates | ISupportCodeLibrary;
+
+// @public
+export interface ISupportCodeLibrary {
+    // (undocumented)
+    readonly originalCoordinates: ISupportCodeCoordinates;
+}
 
 // @public
 export function loadConfiguration(options?: ILoadConfigurationOptions, environment?: IRunEnvironment): Promise<IResolvedConfiguration>;
@@ -176,6 +190,6 @@ export function loadSources(coordinates: ISourcesCoordinates, environment?: IRun
 export function loadSupport(options: ILoadSupportOptions, environment?: IRunEnvironment): Promise<ISupportCodeLibrary>;
 
 // @public
-export function runCucumber(configuration: IRunOptions, environment?: IRunEnvironment, onMessage?: (message: Envelope) => void): Promise<IRunResult>;
+export function runCucumber(options: IRunOptions, environment?: IRunEnvironment, onMessage?: (message: Envelope) => void): Promise<IRunResult>;
 
 ```

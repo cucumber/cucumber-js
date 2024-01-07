@@ -150,7 +150,7 @@ export interface ISupportCodeCoordinates {
   importPaths: string[]
 }
 
-export interface ISupportCodeLibrary {
+export interface SupportCodeLibrary {
   readonly originalCoordinates: ISupportCodeCoordinates
   readonly afterTestCaseHookDefinitions: TestCaseHookDefinition[]
   readonly afterTestStepHookDefinitions: TestStepHookDefinition[]

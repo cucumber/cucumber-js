@@ -2,7 +2,7 @@ import { EventEmitter } from 'node:events'
 import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
 import { Group } from '@cucumber/cucumber-expressions'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { doesHaveValue } from '../value_checker'
 
 export declare type IAssembledTestCases = Record<string, messages.TestCase>
@@ -11,7 +11,7 @@ export interface IAssembleTestCasesOptions {
   eventBroadcaster: EventEmitter
   newId: IdGenerator.NewId
   pickles: messages.Pickle[]
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
 }
 
 export async function assembleTestCases({
@@ -59,7 +59,7 @@ function makeAfterHookSteps({
   pickle,
   newId,
 }: {
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
   pickle: messages.Pickle
   newId: IdGenerator.NewId
 }): messages.TestStep[] {
@@ -78,7 +78,7 @@ function makeBeforeHookSteps({
   pickle,
   newId,
 }: {
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
   pickle: messages.Pickle
   newId: IdGenerator.NewId
 }): messages.TestStep[] {
@@ -96,7 +96,7 @@ function makeSteps({
   newId,
 }: {
   pickle: messages.Pickle
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
   newId: () => string
 }): messages.TestStep[] {
   return pickle.steps.map((pickleStep) => {

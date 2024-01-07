@@ -1,3 +1,12 @@
+/**
+ * User code functions and helpers
+ *
+ * @packageDocumentation
+ * @module (root)
+ * @remarks
+ * These docs cover the functions and helpers for user code registration and test setup. The entry point is `@cucumber/cucumber`.
+ */
+
 import { deprecate } from 'node:util'
 import * as messages from '@cucumber/messages'
 import { default as _Cli } from './cli'
@@ -61,28 +70,28 @@ export { wrapPromiseWithTimeout } from './time'
 
 // Deprecated
 /**
- * @deprecated use `runCucumber` instead; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
+ * @deprecated use `runCucumber` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md
  */
 export const Cli = deprecate(
   _Cli,
   '`Cli` is deprecated, use `runCucumber` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
 )
 /**
- * @deprecated use `loadSources` instead; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
+ * @deprecated use `loadSources` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md
  */
 export const parseGherkinMessageStream = deprecate(
   cliHelpers.parseGherkinMessageStream,
   '`parseGherkinMessageStream` is deprecated, use `loadSources` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
 )
 /**
- * @deprecated use `loadSources` instead; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
+ * @deprecated use `loadSources` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md
  */
 export const PickleFilter = deprecate(
   _PickleFilter,
   '`PickleFilter` is deprecated, use `loadSources` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
 )
 /**
- * @deprecated use `runCucumber` instead; see <https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md>
+ * @deprecated use `runCucumber` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md
  */
 export const Runtime = deprecate(
   _Runtime,

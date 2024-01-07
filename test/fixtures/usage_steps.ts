@@ -2,11 +2,11 @@
 
 import { InstalledClock } from '@sinonjs/fake-timers'
 import { buildSupportCodeLibrary } from '../runtime_helpers'
-import { ISupportCodeLibrary } from '../../src/support_code_library_builder/types'
+import { SupportCodeLibrary } from '../../src/support_code_library_builder/types'
 
 export function getUsageSupportCodeLibrary(
   clock: InstalledClock
-): ISupportCodeLibrary {
+): SupportCodeLibrary {
   return buildSupportCodeLibrary(__dirname, ({ Given }) => {
     Given('abc', function () {
       clock.tick(1)

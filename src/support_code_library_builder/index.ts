@@ -23,7 +23,7 @@ import {
   IDefineTestStepHookOptions,
   IDefineTestRunHookOptions,
   IParameterTypeDefinition,
-  ISupportCodeLibrary,
+  SupportCodeLibrary,
   TestCaseHookFunction,
   TestStepHookFunction,
   ParallelAssignmentValidator,
@@ -413,7 +413,7 @@ export class SupportCodeLibraryBuilder {
     return { stepDefinitions, undefinedParameterTypes }
   }
 
-  finalize(canonicalIds?: ICanonicalSupportCodeIds): ISupportCodeLibrary {
+  finalize(canonicalIds?: ICanonicalSupportCodeIds): SupportCodeLibrary {
     const stepDefinitionsResult = this.buildStepDefinitions(
       canonicalIds?.stepDefinitionIds
     )

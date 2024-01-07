@@ -1,5 +1,6 @@
 bin
 docs
+exports
 lib
 node_modules
 reports

@@ -3,7 +3,7 @@ import {
   isTruthyString,
   splitFormatDescriptor,
 } from '../configuration'
-import { IPublishConfig } from '../formatter'
+import { IPublishConfig } from '../publish'
 import { ILogger } from '../logger'
 import { IRunConfiguration } from './types'
 

@@ -2,12 +2,12 @@
 
 import { InstalledClock } from '@sinonjs/fake-timers'
 import { buildSupportCodeLibrary } from '../runtime_helpers'
-import { ISupportCodeLibrary } from '../../src/support_code_library_builder/types'
+import { SupportCodeLibrary } from '../../src/support_code_library_builder/types'
 import { World } from '../../src'
 
 export function getJsonFormatterSupportCodeLibrary(
   clock: InstalledClock
-): ISupportCodeLibrary {
+): SupportCodeLibrary {
   return buildSupportCodeLibrary(__dirname, ({ Given }) => {
     Given('a passing step', function () {
       clock.tick(1)
@@ -51,7 +51,7 @@ export function getJsonFormatterSupportCodeLibrary(
   })
 }
 
-export function getJsonFormatterSupportCodeLibraryWithHooks(): ISupportCodeLibrary {
+export function getJsonFormatterSupportCodeLibraryWithHooks(): SupportCodeLibrary {
   return buildSupportCodeLibrary(__dirname, ({ After, Before, Given }) => {
     Given('a passing step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
     Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function

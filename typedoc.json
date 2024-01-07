@@ -1,0 +1,13 @@
+{
+  "customTitle": "cucumber-js",
+  "entryPoints": ["src/index.ts", "src/api/index.ts"],
+  "favicon": "./docs/images/logo.svg",
+  "footerLastModified": true,
+  "navigationLinks": {
+    "GitHub": "https://github.com/cucumber/cucumber-js"
+  },
+  "out": "./_site",
+  "plugin": ["typedoc-plugin-extras"],
+  "readme": "none",
+  "tsconfig": "tsconfig.node.json"
+}

@@ -2,7 +2,7 @@ import { EventEmitter } from 'node:events'
 import { IdGenerator } from '@cucumber/messages'
 import Runtime, { IRuntime } from '../runtime'
 import { EventDataCollector } from '../formatter/helpers'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import Coordinator from '../runtime/parallel/coordinator'
 import { ILogger } from '../logger'
 import { IRunOptionsRuntime } from './types'
@@ -26,7 +26,7 @@ export function makeRuntime({
   eventDataCollector: EventDataCollector
   newId: IdGenerator.NewId
   pickleIds: string[]
-  supportCodeLibrary: ISupportCodeLibrary
+  supportCodeLibrary: SupportCodeLibrary
   requireModules: string[]
   requirePaths: string[]
   importPaths: string[]
