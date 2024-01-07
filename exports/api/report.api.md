@@ -38,7 +38,7 @@ export interface IConfiguration {
 
 // @public
 export interface ILoadConfigurationOptions {
-    file?: string;
+    file?: string | false;
     profiles?: string[];
     provided?: Partial<IConfiguration>;
 }

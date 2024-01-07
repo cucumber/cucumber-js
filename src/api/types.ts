@@ -10,10 +10,10 @@ import { IPickleOrder } from '../filter'
  */
 export interface ILoadConfigurationOptions {
   /**
-   * Path to load configuration file from
+   * Path to load configuration file from, or `false` to skip
    * @default `cucumber.(json|yaml|yml|js|cjs|mjs)`
    */
-  file?: string
+  file?: string | false
   /**
    * Zero or more profile names from which to source configuration in the file
    * @remarks

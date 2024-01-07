@@ -28,6 +28,8 @@ export async function loadConfiguration(
   const configFile = options.file ?? locateFile(cwd)
   if (configFile) {
     logger.debug(`Configuration will be loaded from "${configFile}"`)
+  } else if (configFile === false) {
+    logger.debug('Skipping configuration file resolution')
   } else {
     logger.debug('No configuration file found')
   }
