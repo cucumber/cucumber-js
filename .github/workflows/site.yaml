@@ -3,7 +3,7 @@ name: Site
 on:
   push:
     branches:
-      - revive-api-extractor
+      - main
 
 jobs:
   upload-artifact:
