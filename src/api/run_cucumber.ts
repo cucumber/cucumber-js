@@ -2,7 +2,6 @@ import { EventEmitter } from 'node:events'
 import { Envelope, IdGenerator, ParseError } from '@cucumber/messages'
 import { EventDataCollector } from '../formatter/helpers'
 import { emitMetaMessage, emitSupportCodeMessages } from '../cli/helpers'
-import { ILogger } from '../logger'
 import { resolvePaths } from '../paths'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { IRunOptions, IRunEnvironment, IRunResult } from './types'
@@ -12,7 +11,6 @@ import { getSupportCodeLibrary } from './support'
 import { mergeEnvironment } from './environment'
 import { getPicklesAndErrors } from './gherkin'
 import { initializeForRunCucumber } from './plugins'
-import { ConsoleLogger } from './console_logger'
 
 /**
  * Execute a Cucumber test run and return the overall result
@@ -28,8 +26,7 @@ export async function runCucumber(
   onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
   const mergedEnvironment = mergeEnvironment(environment)
-  const { cwd, stdout, stderr, env, debug } = mergedEnvironment
-  const logger: ILogger = new ConsoleLogger(stderr, debug)
+  const { cwd, stdout, stderr, env, logger } = mergedEnvironment
 
   const newId = IdGenerator.uuid()
 

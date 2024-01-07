@@ -1,5 +1,4 @@
 import { IdGenerator } from '@cucumber/messages'
-import { ILogger } from '../logger'
 import { resolvePaths } from '../paths'
 import {
   ILoadSupportOptions,
@@ -8,7 +7,6 @@ import {
 } from './types'
 import { getSupportCodeLibrary } from './support'
 import { mergeEnvironment } from './environment'
-import { ConsoleLogger } from './console_logger'
 import { initializeForLoadSupport } from './plugins'
 
 /**
@@ -23,8 +21,7 @@ export async function loadSupport(
   environment: IRunEnvironment = {}
 ): Promise<ISupportCodeLibrary> {
   const mergedEnvironment = mergeEnvironment(environment)
-  const { cwd, stderr, debug } = mergedEnvironment
-  const logger: ILogger = new ConsoleLogger(stderr, debug)
+  const { cwd, logger } = mergedEnvironment
   const newId = IdGenerator.uuid()
   const pluginManager = await initializeForLoadSupport()
   const resolvedPaths = await resolvePaths(
