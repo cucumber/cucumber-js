@@ -1,10 +1,11 @@
 import cucumber from './index.js'
 
+export const version = cucumber.version
+
 export const supportCodeLibraryBuilder = cucumber.supportCodeLibraryBuilder
 export const Status = cucumber.Status
 export const DataTable = cucumber.DataTable
 export const TestCaseHookDefinition = cucumber.TestCaseHookDefinition
-export const version = cucumber.version
 
 export const Formatter = cucumber.Formatter
 export const FormatterBuilder = cucumber.FormatterBuilder

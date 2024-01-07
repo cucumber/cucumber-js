@@ -515,7 +515,7 @@ export class UsageJsonFormatter extends Formatter {
 }
 
 // @public (undocumented)
-export const version = "10.1.0";
+export const version: string;
 
 // @public (undocumented)
 export const When: IDefineStep_2;

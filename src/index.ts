@@ -16,12 +16,15 @@ import { default as _PickleFilter } from './pickle_filter'
 import * as parallelCanAssignHelpers from './support_code_library_builder/parallel_can_assign_helpers'
 import { default as _Runtime } from './runtime'
 import supportCodeLibraryBuilder from './support_code_library_builder'
+import { version as _version } from './version'
+
+// type version as string to avoid tripping api-extractor every release
+export const version = _version as string
 
 // Top level
 export { default as supportCodeLibraryBuilder } from './support_code_library_builder'
 export { default as DataTable } from './models/data_table'
 export { default as TestCaseHookDefinition } from './models/test_case_hook_definition'
-export { version } from './version'
 
 // Formatters
 export { default as Formatter, IFormatterOptions } from './formatter'
