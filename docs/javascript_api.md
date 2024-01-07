@@ -117,7 +117,7 @@ Having this structure for `runCucumber` has some advantages:
 
 - It represents a separation of concerns between modules of the codebase that deal with different aspects of the lifecycle
 - It allows some blocks to be replaced with other values that achieve the same thing (see [Preloading and reusing support code](#preloading-and-reusing-support-code) below)
-- It allows a subset of some block to be used for other supporting functions (see [Calculating a test plan](#calculating-a-test-plan) below)
+- It allows a subset of some blocks to be used for other supporting functions (see [Calculating a test plan](#calculating-a-test-plan) below)
 
 ### Using configuration in practise
 
