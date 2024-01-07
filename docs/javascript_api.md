@@ -159,7 +159,6 @@ Similarly, each result from `runCucumber` includes the support code library that
 import { loadConfiguration, loadSupport, runCucumber } from '@cucumber/cucumber/api'
 
 const { runConfiguration } = await loadConfiguration()
-const support = await loadSupport(runConfiguration)
 const { support, ...result1 } = await runCucumber(runConfiguration)
 const result2 = await runCucumber({ ...runConfiguration, support })
 const result3 = await runCucumber({ ...runConfiguration, support })
