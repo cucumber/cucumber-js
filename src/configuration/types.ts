@@ -83,6 +83,7 @@ export interface IConfiguration {
   /**
    * Run in the order defined, or in a random order
    * @default "defined"
+   * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/filtering.md#order}
    */
   order: IPickleOrder
   /**

@@ -57,7 +57,7 @@ export async function parseGherkinMessageStream({
       }
     })
     gherkinMessageStream.on('end', () => {
-      orderPickles(result, order, console)
+      orderPickles(result, order as IPickleOrder, console)
       resolve(result)
     })
     gherkinMessageStream.on('error', reject)

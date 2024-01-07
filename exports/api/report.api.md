@@ -58,7 +58,7 @@ export interface ILoadSupportOptions {
 }
 
 // @public
-export type IPickleOrder = 'defined' | 'random' | string;
+export type IPickleOrder = 'defined' | 'random' | `random:${string}`;
 
 // @public
 export interface IPlannedPickle {

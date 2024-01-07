@@ -1,4 +1,4 @@
-# Filtering
+# Filtering and Ordering
 
 You can use a few different configurations to have Cucumber filter which scenarios are run. This can be useful when you want to focus on a small subset of scenarios when developing or debugging.
 
@@ -35,3 +35,14 @@ You can specify a [Cucumber tag expression](https://docs.cucumber.io/cucumber/ap
 - On the CLI `$ cucumber-js --tags "@foo or @bar"`
 
 This option is repeatable, so you can provide several expressions and they'll be combined with an `and` operator, meaning a scenario needs to match all of them.
+
+## Order
+
+You can specify the order that scenarios should run in:
+
+- In a configuration file `{ order: 'defined' }`
+- On the CLI `$ cucumber-js --order defined`
+
+The default is `defined` where scenarios are run in the order they are discovered in. This roughly means alphabetical order of file path followed by sequential order within each file, although if you pass multiple globs/paths to the `paths` option this order will be honoured.
+
+You can also specify `random` to shuffle the scenarios randomly, and optionally specify a seed like `random:234119`.
