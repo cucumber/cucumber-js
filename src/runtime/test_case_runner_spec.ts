@@ -169,6 +169,7 @@ describe('TestCaseRunner', () => {
           exception: {
             type: 'Error',
             message: 'fail',
+            stackTrace: undefined,
           },
         }
 
@@ -316,6 +317,7 @@ describe('TestCaseRunner', () => {
                 exception: {
                   type: 'Error',
                   message: 'Oh no!',
+                  stackTrace: undefined,
                 },
                 status: messages.TestStepResultStatus.FAILED,
               },

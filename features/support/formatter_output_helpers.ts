@@ -118,4 +118,5 @@ export const ignorableKeys = [
   'seconds',
   // errors
   'message',
+  'stackTrace',
 ]
