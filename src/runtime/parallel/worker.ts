@@ -53,7 +53,7 @@ export default class Worker {
     this.sendMessage = sendMessage
     this.eventBroadcaster = new EventEmitter()
     this.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
-      this.sendMessage({ jsonEnvelope: JSON.stringify(envelope) })
+      this.sendMessage({ jsonEnvelope: envelope })
     })
   }
 

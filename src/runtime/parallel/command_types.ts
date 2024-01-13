@@ -1,4 +1,5 @@
 import * as messages from '@cucumber/messages'
+import { Envelope } from '@cucumber/messages'
 import { IRuntimeOptions } from '../index'
 import { ISupportCodeCoordinates } from '../../api'
 
@@ -34,6 +35,6 @@ export interface IWorkerCommandRun {
 // Messages from Worker to Coordinator
 
 export interface ICoordinatorReport {
-  jsonEnvelope?: string
+  jsonEnvelope?: Envelope
   ready?: boolean
 }

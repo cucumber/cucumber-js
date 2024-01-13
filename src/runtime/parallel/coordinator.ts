@@ -95,7 +95,7 @@ export default class Coordinator implements IRuntime {
       worker.state = WorkerState.idle
       this.awakenWorkers(worker)
     } else if (doesHaveValue(message.jsonEnvelope)) {
-      const envelope = messages.parseEnvelope(message.jsonEnvelope)
+      const envelope = message.jsonEnvelope
       this.eventBroadcaster.emit('envelope', envelope)
       if (doesHaveValue(envelope.testCaseFinished)) {
         delete this.inProgressPickles[worker.id]
