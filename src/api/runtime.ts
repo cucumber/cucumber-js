@@ -42,9 +42,6 @@ export function makeRuntime({
       options,
       newId,
       supportCodeLibrary,
-      requireModules,
-      requirePaths,
-      importPaths,
       numberOfWorkers: parallel,
     })
   }

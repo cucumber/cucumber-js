@@ -1,5 +1,6 @@
 import * as messages from '@cucumber/messages'
 import { IRuntimeOptions } from '../index'
+import { ISupportCodeCoordinates } from '../../api'
 
 // Messages from Coordinator to Worker
 
@@ -10,10 +11,7 @@ export interface IWorkerCommand {
 }
 
 export interface IWorkerCommandInitialize {
-  filterStacktraces: boolean
-  requireModules: string[]
-  requirePaths: string[]
-  importPaths: string[]
+  supportCodeCoordinates: ISupportCodeCoordinates
   supportCodeIds?: ICanonicalSupportCodeIds
   options: IRuntimeOptions
 }

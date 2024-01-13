@@ -62,27 +62,24 @@ export default class Worker {
   }
 
   async initialize({
-    filterStacktraces,
-    requireModules,
-    requirePaths,
-    importPaths,
+    supportCodeCoordinates,
     supportCodeIds,
     options,
   }: IWorkerCommandInitialize): Promise<void> {
-    supportCodeLibraryBuilder.reset(this.cwd, this.newId, {
-      requireModules,
-      requirePaths,
-      importPaths,
-    })
-    requireModules.map((module) => tryRequire(module))
-    requirePaths.map((module) => tryRequire(module))
-    for (const path of importPaths) {
+    supportCodeLibraryBuilder.reset(
+      this.cwd,
+      this.newId,
+      supportCodeCoordinates
+    )
+    supportCodeCoordinates.requireModules.map((module) => tryRequire(module))
+    supportCodeCoordinates.requirePaths.map((module) => tryRequire(module))
+    for (const path of supportCodeCoordinates.importPaths) {
       await import(pathToFileURL(path).toString())
     }
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize(supportCodeIds)
 
     this.worldParameters = options.worldParameters
-    this.filterStacktraces = filterStacktraces
+    this.filterStacktraces = options.filterStacktraces
     this.runTestRunHooks = makeRunTestRunHooks(
       options.dryRun,
       this.supportCodeLibrary.defaultTimeout,
