@@ -53,10 +53,6 @@ export default class Worker {
     this.sendMessage = sendMessage
     this.eventBroadcaster = new EventEmitter()
     this.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
-      // assign `workerId` property only for the `testCaseStarted` message
-      if (envelope.testCaseStarted) {
-        envelope.testCaseStarted.workerId = this.id
-      }
       this.sendMessage({ jsonEnvelope: JSON.stringify(envelope) })
     })
   }
@@ -122,6 +118,7 @@ export default class Worker {
   }: IWorkerCommandRun): Promise<void> {
     const stopwatch = create(elapsed)
     const testCaseRunner = new TestCaseRunner({
+      workerId: this.id,
       eventBroadcaster: this.eventBroadcaster,
       stopwatch,
       gherkinDocument,

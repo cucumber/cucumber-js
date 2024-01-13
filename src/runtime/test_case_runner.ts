@@ -18,6 +18,7 @@ import AttachmentManager from './attachment_manager'
 import { getAmbiguousStepException } from './helpers'
 
 export interface INewTestCaseRunnerOptions {
+  workerId?: string
   eventBroadcaster: EventEmitter
   stopwatch: IStopwatch
   gherkinDocument: messages.GherkinDocument
@@ -32,6 +33,7 @@ export interface INewTestCaseRunnerOptions {
 }
 
 export default class TestCaseRunner {
+  private readonly workerId: string | undefined
   private readonly attachmentManager: AttachmentManager
   private currentTestCaseStartedId: string
   private currentTestStepId: string
@@ -50,6 +52,7 @@ export default class TestCaseRunner {
   private readonly worldParameters: JsonObject
 
   constructor({
+    workerId,
     eventBroadcaster,
     stopwatch,
     gherkinDocument,
@@ -62,6 +65,7 @@ export default class TestCaseRunner {
     supportCodeLibrary,
     worldParameters,
   }: INewTestCaseRunnerOptions) {
+    this.workerId = workerId
     this.attachmentManager = new AttachmentManager(
       ({ data, media, fileName }) => {
         if (doesNotHaveValue(this.currentTestStepId)) {
@@ -211,6 +215,9 @@ export default class TestCaseRunner {
         id: this.currentTestCaseStartedId,
         timestamp: this.stopwatch.timestamp(),
       },
+    }
+    if (this.workerId) {
+      testCaseStarted.testCaseStarted.workerId = this.workerId
     }
     this.eventBroadcaster.emit('envelope', testCaseStarted)
     // used to determine whether a hook is a Before or After
