@@ -3,8 +3,8 @@ import {
   DEFAULT_CONFIGURATION,
   fromFile,
   mergeConfigurations,
+  validateConfiguration,
 } from '../configuration'
-import { validateConfiguration } from '../configuration/validate_configuration'
 import { convertConfiguration } from './convert_configuration'
 import { mergeEnvironment } from './environment'
 import {
