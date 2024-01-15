@@ -3,13 +3,13 @@
 With [npm](https://www.npmjs.com/):
 
 ```shell
-$ npm install @cucumber/cucumber
+npm install @cucumber/cucumber
 ```
 
 With [Yarn](https://yarnpkg.com/):
 
 ```shell
-$ yarn add @cucumber/cucumber
+yarn add @cucumber/cucumber
 ```
 
 ## Invalid installations
