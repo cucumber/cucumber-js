@@ -28,7 +28,7 @@ Looking to contribute? Read our [code of conduct](https://github.com/cucumber/.g
 Cucumber is [available on npm](https://www.npmjs.com/package/@cucumber/cucumber):
 
 ```shell
-$ npm install @cucumber/cucumber
+npm install @cucumber/cucumber
 ```
 
 ## Get Started
@@ -79,7 +79,7 @@ Then('I should have heard {string}', function (expectedResponse) {
 Finally, run Cucumber:
 
 ```shell
-$ npx cucumber-js
+npx cucumber-js
 ```
 
 And see the output:
