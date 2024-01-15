@@ -2,14 +2,12 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { promisify } from 'node:util'
 import { pathToFileURL } from 'node:url'
-import stringArgv from 'string-argv'
 import YAML from 'yaml'
 import readPkgUp from 'read-pkg-up'
 import { ILogger } from '../logger'
 import { IConfiguration } from './types'
 import { mergeConfigurations } from './merge_configurations'
-import ArgvParser from './argv_parser'
-import { checkSchema } from './check_schema'
+import { parseConfiguration } from './parse_configuration'
 
 export async function fromFile(
   logger: ILogger,
@@ -35,7 +33,11 @@ export async function fromFile(
   return mergeConfigurations(
     {},
     ...profiles.map((profileKey) =>
-      extractConfiguration(logger, profileKey, definitions[profileKey])
+      parseConfiguration(
+        logger,
+        `Profile "${profileKey}"`,
+        definitions[profileKey]
+      )
     )
   )
 }
@@ -108,29 +110,4 @@ async function loadFile(
 async function readPackageJson(filePath: string) {
   const parentPackage = await readPkgUp({ cwd: path.dirname(filePath) })
   return parentPackage?.packageJson
-}
-
-function extractConfiguration(
-  logger: ILogger,
-  name: string,
-  definition: any
-): Partial<IConfiguration> {
-  if (typeof definition === 'string') {
-    logger.debug(`Profile "${name}" value is a string; parsing as argv`)
-    const { configuration } = ArgvParser.parse([
-      'node',
-      'cucumber-js',
-      ...stringArgv(definition),
-    ])
-    return configuration
-  }
-  try {
-    return checkSchema(definition)
-  } catch (error) {
-    throw new Error(
-      `Requested profile "${name}" failed schema validation: ${error.errors.join(
-        ' '
-      )}`
-    )
-  }
 }
