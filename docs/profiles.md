@@ -5,13 +5,13 @@ If you have several permutations of running Cucumber with different options in y
 Profiles are invoked from the command line using the `--profile` CLI option.
 
 ```shell
-$ cucumber-js --profile my_profile
+cucumber-js --profile my_profile
 ```
 
 The short tag is `-p`
 
 ```shell
-$ cucumber-js -p my_profile
+cucumber-js -p my_profile
 ```
 
 ## Simple Example
@@ -64,7 +64,7 @@ module.exports = {
 Now, if we just run `cucumber-js` with no arguments, it will pick up our profiles and use the `default` one.  To run the CI profile we will use this command:
 
 ```shell
-$ cucumber-js -p ci
+cucumber-js -p ci
 ```
 
 ## Using Profiles for Arguments
@@ -72,7 +72,7 @@ $ cucumber-js -p ci
 Cucumber doesn't allow custom command line arguments. For example:
 
 ```shell
-$ cucumber-js --myArgument
+cucumber-js --myArgument
 ```
 
 The above will result in `error: unknown option '--myArgument'`.
@@ -96,7 +96,7 @@ module.exports = {
 With it in place we can invoke a test of the iPhone with this command:
 
 ```shell
-$ cucumber-js -p webkit -p phone
+cucumber-js -p webkit -p phone
 ```
 
 The world parameter arguments from the two profile calls will be merged. If you pass profiles that try to set the same parameter, the last one passed in the chain will win out.

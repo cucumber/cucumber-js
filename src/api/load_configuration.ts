@@ -3,8 +3,9 @@ import {
   DEFAULT_CONFIGURATION,
   fromFile,
   mergeConfigurations,
+  parseConfiguration,
+  validateConfiguration,
 } from '../configuration'
-import { validateConfiguration } from '../configuration/validate_configuration'
 import { convertConfiguration } from './convert_configuration'
 import { mergeEnvironment } from './environment'
 import {
@@ -39,7 +40,7 @@ export async function loadConfiguration(
   const original = mergeConfigurations(
     DEFAULT_CONFIGURATION,
     profileConfiguration,
-    options.provided
+    parseConfiguration(logger, 'Provided', options.provided)
   )
   logger.debug('Resolved configuration:', original)
   validateConfiguration(original, logger)

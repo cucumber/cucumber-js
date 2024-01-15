@@ -14,7 +14,7 @@ Rerun makes this kind of workflow convenient, so you don't have to hand-craft co
 First, enable the `rerun` formatter every time you run cucumber-js:
 
 - In a configuration file `{ format: ['rerun:@rerun.txt'] }`
-- On the CLI `$ cucumber-js --format rerun:@rerun.txt`
+- On the CLI `cucumber-js --format rerun:@rerun.txt`
 
 You can do this via the CLI, or more likely via a [default profile](./profiles.md).
 
@@ -35,7 +35,7 @@ If this notation looks familiar, it's the same as for specifying scenarios by li
 So, let's say we've looked at the failure on `editing.feature` and fixed our code. Now let's run cucumber-js again, but pointing at the rerun file:
 
 ```shell
-$ cucumber-js @rerun.txt
+cucumber-js @rerun.txt
 ```
 
 cucumber-js will unpack this and just run those three failing scenarios accordingly. This time, it goes a bit better - our fix worked, and the rerun file now looks like this:
@@ -51,6 +51,6 @@ In other words, the one we fixed has passed and thus dropped off. We can repeat 
 By default, entries in the rerun file are separated by newlines. This can be overwritten via a [format option](./formatters.md#options):
 
 - In a configuration file `{ formatOptions: { rerun: { separator: '<separator>' } } }`
-- On the CLI `$ cucumber-js --format-options '{"rerun": {"separator": "<separator>"}}'`
+- On the CLI `cucumber-js --format-options '{"rerun": {"separator": "<separator>"}}'`
 
 This is useful when one needs to rerun failed tests locally by copying a line from a CI log while using a space character as a separator. Note that the rerun file parser can only work with the default separator for now.
