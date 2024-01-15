@@ -10,6 +10,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ## [Unreleased]
 ### Added
 - Allow `provided` configuration to be a string ([#2373](https://github.com/cucumber/cucumber-js/pull/2373))
+- Include `stackTrace` in result exception object ([#2371](https://github.com/cucumber/cucumber-js/pull/2371))
 
 ## [10.2.1] - 2024-01-07
 ### Fixed
