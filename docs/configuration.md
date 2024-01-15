@@ -18,7 +18,7 @@ You can keep your configuration in a file. Cucumber will look for one of these f
 You can also put your file somewhere else and tell Cucumber via the `--config` CLI option:
 
 ```shell
-$ cucumber-js --config config/cucumber.json
+cucumber-js --config config/cucumber.json
 ```
 
 Here's a concise example of a configuration file in JSON format:
@@ -112,7 +112,7 @@ features/**/*.{feature,feature.md}
 If your features are somewhere else, you can override this by proving your own [glob](https://github.com/isaacs/node-glob) or directory:
 
 - In a configuration file `{ paths: ['somewhere-else/**/*.feature'] }`
-- On the CLI `$ cucumber-js somewhere-else/**/*.feature`
+- On the CLI `cucumber-js somewhere-else/**/*.feature`
 
 This option is repeatable, so you can provide several values and they'll be combined.
 
@@ -130,7 +130,7 @@ By default, Cucumber finds support code files with this logic:
 If your files are somewhere else, you can override this by proving your own [glob](https://github.com/isaacs/node-glob), directory or file path to the `import` configuration option:
 
 - In a configuration file `{ import: ['somewhere-else/support/*.js'] }`
-- On the CLI `$ cucumber-js --import somewhere-else/support/*.js` 
+- On the CLI `cucumber-js --import somewhere-else/support/*.js` 
 
 Once you specify any `import` options, the defaults described above are no longer applied. The option is repeatable, so you can provide several values and they'll be combined, meaning you can load files from multiple locations.
 
