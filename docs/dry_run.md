@@ -3,7 +3,7 @@
 You can run cucumber-js in "Dry Run" mode:
 
 - In a configuration file `{ dryRun: true }`
-- On the CLI `$ cucumber-js --dry-run`
+- On the CLI `cucumber-js --dry-run`
 
 The effect is that Cucumber will still do all the aggregation work of looking at your feature files, loading your support code etc but without actually executing the tests. Specifically:
 
