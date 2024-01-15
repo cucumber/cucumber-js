@@ -7,7 +7,7 @@ cucumber-js provides many built-in Formatters, plus building blocks with which y
 You can specify one or more formats via the `format` configuration option:
 
 - In a configuration file `{ format: ['progress-bar', ['html', 'cucumber-report.html']] }`
-- On the CLI `$ cucumber-js --format progress-bar --format "html":"cucumber-report.html"`
+- On the CLI `cucumber-js --format progress-bar --format "html":"cucumber-report.html"`
 
 For each format you specify, you have to provide one or two values. The first (required) is to identify the formatter. It can take a few forms:
 
@@ -30,7 +30,7 @@ Some notes on specifying Formatters:
 Many formatters, including the built-in ones, support some configuration via options. You can provide this data as an object literal via the `formatOptions` configuration option, like this:
 
 - In a configuration file `{ formatOptions: { someOption: true } }`
-- On the CLI `$ cucumber-js --format-options '{"someOption":true}'`
+- On the CLI `cucumber-js --format-options '{"someOption":true}'`
 
 This option is repeatable, so you can use it multiple times and the objects will be merged with the later ones taking precedence.
 
