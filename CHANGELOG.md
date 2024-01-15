@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [10.3.0] - 2024-01-15
 ### Added
 - Allow `provided` configuration to be a string ([#2373](https://github.com/cucumber/cucumber-js/pull/2373))
 - Include `stackTrace` in result exception object ([#2371](https://github.com/cucumber/cucumber-js/pull/2371))
@@ -1579,7 +1581,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.2.1...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.3.0...HEAD
+[10.3.0]: https://github.com/cucumber/cucumber-js/compare/v10.2.1...v10.3.0
 [10.2.1]: https://github.com/cucumber/cucumber-js/compare/v10.2.0...v10.2.1
 [10.2.0]: https://github.com/cucumber/cucumber-js/compare/v10.1.0...v10.2.0
 [10.1.0]: https://github.com/cucumber/cucumber-js/compare/v10.0.1...v10.1.0
