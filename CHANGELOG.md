@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Allow `provided` configuration to be a string ([#2373](https://github.com/cucumber/cucumber-js/pull/2373))
 
 ## [10.2.1] - 2024-01-07
 ### Fixed
