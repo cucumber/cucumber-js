@@ -5,7 +5,7 @@ Step definitions and support files can be written in a syntax or language that c
 For example, you might want to use [Babel](https://babeljs.io/):
 
 - In a configuration file `{ requireModule: ['@babel/register'] }`
-- On the CLI `$ cucumber-js --require-module @babel/register`
+- On the CLI `cucumber-js --require-module @babel/register`
 
 This would mean any support code loaded with the `require` option would be transpiled first then loaded into Cucumber.
 
@@ -52,7 +52,7 @@ Note: One possible way to set an environment is to use the [cross-env](https://w
 If you are using babel with [@babel/preset-typescript](https://babeljs.io/docs/en/babel-preset-typescript):
 
 - In a configuration file `{ requireModule: ['@babel/register'], require: ['step-definitions/**/*.ts'] }`
-- On the CLI `$ cucumber-js --require-module @babel/register --require 'step-definitions/**/*.ts'`
+- On the CLI `cucumber-js --require-module @babel/register --require 'step-definitions/**/*.ts'`
 
 ### ESM
 
