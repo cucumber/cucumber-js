@@ -1,7 +1,7 @@
 # Failing Fast
 
 - In a configuration file `{ failFast: true }`
-- On the CLI `$ cucumber-js --fail-fast`
+- On the CLI `cucumber-js --fail-fast`
 
 By default, Cucumber runs the entire suite and reports all the failures. `failFast` allows a developer workflow where you work on one failure at a time. Combining this feature with rerun files allows you to work through all failures in an efficient manner.
 
