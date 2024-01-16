@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- Allow `provided` configuration to be an array ([#2374](https://github.com/cucumber/cucumber-js/pull/2374))
 
 ## [10.3.0] - 2024-01-15
 ### Added
