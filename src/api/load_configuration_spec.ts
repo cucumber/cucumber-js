@@ -12,6 +12,15 @@ describe('loadConfiguration', function () {
   })
   afterEach(async () => teardownEnvironment(environment))
 
+  it('should handle configuration directly provided as an array of strings', async () => {
+    const { useConfiguration } = await loadConfiguration(
+      { provided: ['--world-parameters', '{"foo":"bar"}'] },
+      environment
+    )
+
+    expect(useConfiguration.worldParameters).to.deep.eq({ foo: 'bar' })
+  })
+
   it('should handle configuration directly provided as a string', async () => {
     const { useConfiguration } = await loadConfiguration(
       { provided: `--world-parameters '{"foo":"bar"}'` },
