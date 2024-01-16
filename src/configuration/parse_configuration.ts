@@ -7,10 +7,19 @@ import { checkSchema } from './check_schema'
 export function parseConfiguration(
   logger: ILogger,
   source: string,
-  definition: Partial<IConfiguration> | string | undefined
+  definition: Partial<IConfiguration> | string[] | string | undefined
 ): Partial<IConfiguration> {
   if (!definition) {
     return {}
+  }
+  if (Array.isArray(definition)) {
+    logger.debug(`${source} configuration value is an array; parsing as argv`)
+    const { configuration } = ArgvParser.parse([
+      'node',
+      'cucumber-js',
+      ...definition,
+    ])
+    return configuration
   }
   if (typeof definition === 'string') {
     logger.debug(`${source} configuration value is a string; parsing as argv`)

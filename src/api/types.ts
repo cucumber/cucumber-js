@@ -28,11 +28,13 @@ export interface ILoadConfigurationOptions {
    *   failFast: true,
    *   parallel: 2
    * \}
+   * @example ["--fail-fast", "--parallel", "2"]
    * @example "--fail-fast --parallel 2"
    * @remarks
-   * This can also be provided as a string of argv-style arguments.
+   * This can also be provided as an array or single string of argv-style
+   * arguments.
    */
-  provided?: Partial<IConfiguration> | string
+  provided?: Partial<IConfiguration> | string[] | string
 }
 
 /**
