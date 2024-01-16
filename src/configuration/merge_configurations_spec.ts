@@ -7,6 +7,18 @@ describe('mergeConfigurations', () => {
     expect(result).to.deep.eq({})
   })
 
+  it('should not override a real value with undefined', () => {
+    const result = mergeConfigurations(
+      {
+        parallel: 2,
+      },
+      {
+        parallel: undefined,
+      }
+    )
+    expect(result).to.deep.eq({ parallel: 2 })
+  })
+
   describe('additive arrays', () => {
     it('should merge two arrays correctly', () => {
       const result = mergeConfigurations({ paths: ['a'] }, { paths: ['b'] })
