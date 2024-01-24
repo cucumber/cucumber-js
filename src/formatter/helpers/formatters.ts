@@ -11,7 +11,7 @@ import UsageFormatter from '../usage_formatter'
 import UsageJsonFormatter from '../usage_json_formatter'
 import HtmlFormatter from '../html_formatter'
 import JunitFormatter from '../junit_formatter'
-
+import BVTAnalysisFormatter from '../bvt_analysis_formatter'
 const Formatters = {
   getFormatters(): Record<string, typeof Formatter> {
     return {
@@ -27,6 +27,7 @@ const Formatters = {
       usage: UsageFormatter,
       'usage-json': UsageJsonFormatter,
       junit: JunitFormatter,
+      bvt_analysis: BVTAnalysisFormatter,
     }
   },
   buildFormattersDocumentationString(): string {

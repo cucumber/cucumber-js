@@ -16,16 +16,18 @@ if(!REPORT_SERVICE_URL || !REPORT_SERVICE_TOKEN){
 export default class BVTFormatter extends Formatter {
   private reportGenerator = new ReportGenerator()
   private uploadService =  new RunUploadService(REPORT_SERVICE_URL, REPORT_SERVICE_TOKEN);
-  constructor(options: IFormatterOptions) {
+  constructor(options: IFormatterOptions,upload = true ) {
     super(options)
-    options.eventBroadcaster.on('envelope', async (envelope: messages.Envelope) => {
-      this.reportGenerator.handleMessage(envelope)
-      if(envelope.testRunFinished){
-        const report = this.reportGenerator.getReport();
-        // this.log(JSON.stringify(report, null, 2))
-        await this.uploadRun(report);
-      }
-    })
+    if(upload){
+      options.eventBroadcaster.on('envelope', async (envelope: messages.Envelope) => {
+        this.reportGenerator.handleMessage(envelope)
+        if(envelope.testRunFinished){
+          const report = this.reportGenerator.getReport();
+          // this.log(JSON.stringify(report, null, 2))
+          await this.uploadRun(report);
+        }
+      })
+    }
   }
   async uploadRun(report:JsonReport){
     const runDoc = await this.uploadService.createRunDocument("test");
