@@ -18,10 +18,11 @@ jobs:
       - run: |
           git config --global user.name "blinq.io"
           git config --global user.email "blinqio@blinq.io"
-      - run: npm version patch
       - run: |
+          npm version patch
+          VERSION=$(node -p "require('./package.json').version")
           git add -A
-          git commit -m "Bump NPM version"
+          git commit -m "Bump NPM version to $VERSION"
           git push origin dev
 
   publish-npm:
