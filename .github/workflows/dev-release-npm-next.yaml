@@ -15,10 +15,11 @@ jobs:
           node-version: '18'
           cache: 'npm'
           cache-dependency-path: package-lock.json
-      - run: npm version patch
       - run: |
           git config --global user.name "blinq.io"
           git config --global user.email "blinqio@blinq.io"
+      - run: npm version patch
+      - run: |
           git add -A
           git commit -m "Bump NPM version"
           git push origin dev
