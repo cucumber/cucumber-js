@@ -1,5 +1,5 @@
 import { Envelope } from '@cucumber/messages'
-import { exec, fork, spawn, spawnSync } from 'child_process'
+import { spawnSync } from 'child_process'
 import path from 'path'
 import Formatter, { IFormatterOptions } from '.'
 import { doesHaveValue } from '../value_checker'
@@ -149,16 +149,20 @@ export default class BVTAnalysisFormatter extends Formatter {
     const status = success ? 'FIXED_BY_AI' : 'FAILED'
     return {
       status,
-      startTime:
-        'startTime' in testCase.result
-          ? testCase.result.startTime
-          : 'startTime' in report.result
-          ? report.result.startTime
-          : Date.now(),
+      startTime: this.createStartTime(testCase, report),
       endTime: Date.now(),
     }
   }
-
+  private createStartTime(
+    testCase: JsonTestProgress,
+    report: JsonReport
+  ): number {
+    return 'startTime' in testCase.result
+      ? testCase.result.startTime
+      : 'startTime' in report.result
+      ? report.result.startTime
+      : Date.now()
+  }
   private createStepResult(
     success: boolean,
     step: JsonStep,
