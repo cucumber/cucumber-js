@@ -10,17 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        name: Configure Git
-      - run: |
-          git config --global user.email blinq.io@blinq.io
-          git config --global user.name blinq.io
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'npm'
           cache-dependency-path: package-lock.json
       - run: npm version patch
-      - run: git push --follow-tags origin dev
+      - run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git add -A
+          git commit -m "Bump NPM version"
+          git push origin dev
 
   publish-npm:
     name: Publish NPM module
