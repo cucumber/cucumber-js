@@ -69,7 +69,7 @@ type JsonCommand = {
   screenshotId?: string
   result: JsonCommandResult
 }
-type JsonStep = {
+export type JsonStep = {
   type: JsonStepType
   text: string
   commands: JsonCommand[]

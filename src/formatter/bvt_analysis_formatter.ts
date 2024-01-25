@@ -8,6 +8,8 @@ import ReportGenerator, {
   JsonFixedByAi,
   JsonReport,
   JsonResultFailed,
+  JsonResultPassed,
+  JsonStep,
   JsonTestProgress,
   JsonTestResult,
 } from './helpers/report_generator'
@@ -20,6 +22,7 @@ export default class BVTAnalysisFormatter extends Formatter {
   private reportGenerator = new ReportGenerator()
   private uploader: BVTFormatter
   private exit = false
+  private START: number
   constructor(options: IFormatterOptions) {
     super(options)
 
@@ -28,6 +31,7 @@ export default class BVTAnalysisFormatter extends Formatter {
       this.reportGenerator.handleMessage(envelope)
       if (doesHaveValue(envelope.testRunFinished)) {
         const report = this.reportGenerator.getReport()
+        this.START = Date.now()
         await this.analyzeReport(report)
         this.exit = true
       }
@@ -52,94 +56,127 @@ export default class BVTAnalysisFormatter extends Formatter {
     }
     //checking if the type of report.result is JsonResultFailed or not
     if (!('startTime' in report.result) || !('endTime' in report.result)) {
-      this.log('Unknow error occured,not retraining')
+      this.log('Unknown error occured,not retraining')
       await this.uploader.uploadRun(report)
       return
     }
+    const finalReport = this.processTestCases(report)
+    await this.uploadFinalReport(finalReport)
+  }
+  private processTestCases(report: JsonReport): JsonReport {
     const finalResults: JsonTestResult[] = []
     const finalStepResults: JsonTestResult[][] = []
+    let isFailing = true
     for (const testCase of report.testCases) {
-      if (testCase.result.status === 'PASSED') {
-        finalResults.push({ ...testCase.result })
-        continue
+      const { result, steps } = this.processTestCase(testCase, report)
+      finalResults.push(result)
+      finalStepResults.push(steps)
+      //If any of the test case fails, the whole run is considered failed
+      if (result.status === 'FAILED') {
+        isFailing = false
       }
-      const stepsToRetrain = []
-      for (let i = 0; i < testCase.steps.length; i++) {
-        const step = testCase.steps[i]
-        if (step.result.status === 'PASSED') {
-          continue
-        }
-        stepsToRetrain.push(i)
-      }
-      const success = await this.retrain(stepsToRetrain, testCase)
-      if (success) {
-        const finalResult: JsonFixedByAi = {
-          status: 'FIXED_BY_AI',
-          startTime:
-            'startTime' in testCase.result
-              ? testCase.result.startTime
-              : report.result.startTime,
-          endTime: Date.now(),
-        }
-        finalResults.push(finalResult)
-      } else {
-        const finalResult: JsonResultFailed = {
-          status: 'FAILED',
-          startTime:
-            'startTime' in testCase.result
-              ? testCase.result.startTime
-              : report.result.startTime,
-          endTime: Date.now(),
-        }
-        finalResults.push(finalResult)
-      }
-      const stepResults = []
-      for (let i = 0; i < testCase.steps.length; i++) {
-        const step = testCase.steps[i]
-        if (step.result.status === 'PASSED') {
-          stepResults.push({ ...step.result })
-          continue
-        }
-        if (success) {
-          const stepResult: JsonFixedByAi = {
+    }
+    return {
+      result: isFailing
+        ? {
             status: 'FIXED_BY_AI',
             startTime:
-              'startTime' in step.result
-                ? step.result.startTime
-                : report.result.startTime,
+              'startTime' in report.result
+                ? report.result.startTime
+                : this.START,
             endTime: Date.now(),
           }
-          stepResults.push(stepResult)
-          continue
+        : {
+            status: 'FAILED',
+            startTime:
+              'startTime' in report.result
+                ? report.result.startTime
+                : Date.now(),
+            endTime: Date.now(),
+          },
+      testCases: report.testCases.map((testCase, i) => {
+        return {
+          ...testCase,
+          result: finalResults[i],
+          steps: testCase.steps.map((step, j) => {
+            return {
+              ...step,
+              result: finalStepResults[i][j],
+            }
+          }),
         }
-
-        const stepResult: JsonTestResult = {
-          status: 'FAILED',
-          startTime:
-            'startTime' in step.result
-              ? step.result.startTime
-              : report.result.startTime,
-          endTime: Date.now(),
-        }
-        stepResults.push(stepResult)
+      }),
+    }
+  }
+  private processTestCase(
+    testCase: JsonTestProgress,
+    report: JsonReport
+  ): {
+    result: JsonFixedByAi | JsonResultFailed | JsonResultPassed
+    steps: (JsonFixedByAi | JsonResultFailed | JsonResultPassed)[]
+  } {
+    if (testCase.result.status === 'PASSED') {
+      return {
+        result: testCase.result,
+        steps: testCase.steps.map((step) => {
+          return step.result.status === 'PASSED'
+            ? step.result
+            : this.createStepResult(true, step, report)
+        }),
       }
-      finalStepResults.push(stepResults)
     }
+    const failedTestCases = testCase.steps
+      .map((step, i) => (step.result.status !== 'PASSED' ? i : null))
+      .filter((i) => i !== null)
+    const success = this.retrain(failedTestCases, testCase)
+    const finalResult = this.createFinalResult(success, testCase, report)
 
-    const finalReport: JsonReport = {
-      testCases: report.testCases.map((testCase, i) => ({
-        ...testCase,
-        result: finalResults[i],
-        steps: testCase.steps.map((step, j) => ({
-          ...step,
-          result: finalStepResults[i][j],
-        })),
-      })),
-      result: {
-        ...report.result,
-        endTime: Date.now(),
-      },
+    return {
+      result: finalResult,
+      steps: testCase.steps.map((step) =>
+        step.result.status === 'PASSED'
+          ? { ...step.result }
+          : this.createStepResult(success, step, report)
+      ),
     }
+  }
+
+  private createFinalResult(
+    success: boolean,
+    testCase: JsonTestProgress,
+    report: JsonReport
+  ): JsonFixedByAi | JsonResultFailed {
+    const status = success ? 'FIXED_BY_AI' : 'FAILED'
+    return {
+      status,
+      startTime:
+        'startTime' in testCase.result
+          ? testCase.result.startTime
+          : 'startTime' in report.result
+          ? report.result.startTime
+          : Date.now(),
+      endTime: Date.now(),
+    }
+  }
+
+  private createStepResult(
+    success: boolean,
+    step: JsonStep,
+    report: JsonReport
+  ): JsonFixedByAi | JsonResultFailed {
+    const status = success ? 'FIXED_BY_AI' : 'FAILED'
+    return {
+      status,
+      startTime:
+        'startTime' in step.result
+          ? step.result.startTime
+          : 'startTime' in report.result
+          ? report.result.startTime
+          : Date.now(),
+      endTime: Date.now(),
+    }
+  }
+  private async uploadFinalReport(finalReport: JsonReport) {
     try {
       await this.uploader.uploadRun(finalReport)
     } catch (err) {
@@ -148,9 +185,8 @@ export default class BVTAnalysisFormatter extends Formatter {
 
     console.log(JSON.stringify(finalReport, null, 2))
   }
-
-  private async retrain(stepsToRetrain: number[], testCase: JsonTestProgress) {
-    stepsToRetrain = testCase.steps.map((_, i) => i)
+  private retrain(failedTestCases: number[], testCase: JsonTestProgress) {
+    const stepsToRetrain = testCase.steps.map((_, i) => i)
     return this.call_cucumber_client(stepsToRetrain, testCase)
   }
 
