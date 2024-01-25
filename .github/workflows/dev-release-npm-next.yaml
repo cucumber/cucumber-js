@@ -21,8 +21,6 @@ jobs:
           cache-dependency-path: package-lock.json
       - run: npm version patch
       - run: |
-          git add .
-          git commit -m "update version"
           git push --follow-tags origin dev
 
   publish-npm:
