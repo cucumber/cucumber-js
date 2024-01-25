@@ -3,30 +3,8 @@ name: Release NPM (latest)
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
-  version-update:
-    name: Update version and push to GitHub
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        name: Configure Git
-      - run: |
-          git config --global user.email blinq.io@blinq.io
-          git config --global user.name blinq.io
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
-      - run: npm version patch
-      - run: |
-          git add .
-          git commit -m "update version"
-          git push --follow-tags origin main
-
   publish-npm:
     name: Publish NPM module
     runs-on: ubuntu-latest
