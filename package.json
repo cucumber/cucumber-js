@@ -8,7 +8,9 @@
     "gherkin",
     "tests"
   ],
-  "version": "1.0.7",
+
+  "version": "1.0.12",
+
   "homepage": "https://github.com/blinq-io/cucumber-js",
   "author": "blinq.io",
   "contributors": [
@@ -61,6 +63,7 @@
     "@cucumber/tag-expressions": "5.0.1",
     "@faker-js/faker": "^8.0.2",
     "assertion-error-formatter": "^3.0.0",
+    "axios": "^1.6.2",
     "capital-case": "^1.0.4",
     "chalk": "^4.1.2",
     "cli-table3": "0.6.3",
@@ -73,6 +76,7 @@
     "indent-string": "^4.0.0",
     "is-installed-globally": "^0.4.0",
     "is-stream": "^2.0.0",
+    "jszip": "^3.10.1",
     "knuth-shuffle-seeded": "^1.0.6",
     "lodash.merge": "^4.6.2",
     "lodash.mergewith": "^4.6.2",
@@ -169,7 +173,7 @@
     "prelint-code": "npm run build-local",
     "precck-test": "npm run build-local",
     "prefeature-test": "npm run build-local",
-    "prepublishOnly": "rm -rf lib && npm run build-local",
+    "prepublishOnly": "shx rm -rf lib && npm run build-local",
     "pretest-coverage": "npm run build-local",
     "pretypes-test": "npm run build-local",
     "test-coverage": "nyc --silent mocha 'src/**/*_spec.ts' 'compatibility/**/*_spec.ts' && nyc --silent --no-clean node bin/cucumber.js --tags \"not @source-mapping\" && nyc report --reporter=lcov",
