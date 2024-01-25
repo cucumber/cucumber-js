@@ -52,7 +52,10 @@ export default class BVTFormatter extends Formatter {
     const folder = zip.folder('screenshots')
     const files = fs.readdirSync(path.join(reportFolder, 'screenshots'))
     files.forEach((file) => {
-      folder.file(file, fs.readFileSync(path.join(reportFolder, file)))
+      folder.file(
+        file,
+        fs.readFileSync(path.join(reportFolder, 'screenshots', file))
+      )
     })
     const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' })
     // save zip file
