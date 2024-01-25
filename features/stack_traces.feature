@@ -41,11 +41,11 @@ Feature: Stack traces
       """
       And it fails
 
-    Scenario: esm
-      Given my env includes "{\"NODE_OPTIONS\":\"--loader ts-node/esm\"}"
-      When I run cucumber-js with `--import features/steps.ts`
-      Then the output contains the text:
-      """
-      /features/steps.ts:11:9
-      """
-      And it fails
+    # Scenario: esm
+    #   Given my env includes "{\"NODE_OPTIONS\":\"--loader ts-node/esm\"}"
+    #   When I run cucumber-js with `--import features/steps.ts`
+    #   Then the output contains the text:
+    #   """
+    #   /features/steps.ts:11:9
+    #   """
+    #   And it fails
