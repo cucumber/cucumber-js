@@ -3,8 +3,6 @@ name: Release NPM (latest)
 on:
   push:
     branches: [dev]
-  pull_request:
-    branches: [dev]
 
 jobs:
   version-update:
@@ -22,7 +20,10 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
       - run: npm version patch
-      - run: git push --follow-tags origin dev
+      - run: |
+          git add .
+          git commit -m "update version"
+          git push --follow-tags origin dev
 
   publish-npm:
     name: Publish NPM module
