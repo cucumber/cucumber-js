@@ -8,7 +8,6 @@ jobs:
   publish-npm:
     name: Publish NPM module
     runs-on: ubuntu-latest
-    needs: version-update
     environment: Release
     steps:
       - uses: actions/checkout@v3
