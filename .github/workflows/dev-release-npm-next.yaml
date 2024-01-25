@@ -20,8 +20,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
       - run: npm version patch
-      - run: |
-          git push --follow-tags origin dev
+      - run: git push --follow-tags origin dev
 
   publish-npm:
     name: Publish NPM module
