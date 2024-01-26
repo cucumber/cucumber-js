@@ -4,7 +4,7 @@ import * as messages from '@cucumber/messages'
 type JsonTimestamp = number //messages.Timestamp
 type JsonStepType = 'Unknown' | 'Context' | 'Action' | 'Outcome'
 
-type JsonResultUnknown = {
+export type JsonResultUnknown = {
   status: 'UNKNOWN'
 }
 type JsonResultSkipped = {
@@ -16,7 +16,7 @@ type JsonResultUndefined = {
 type JsonResultAmbiguous = {
   status: 'AMBIGUOUS'
 }
-type JsonResultStarted = {
+export type JsonResultStarted = {
   status: 'STARTED'
   startTime: JsonTimestamp
 }
@@ -25,17 +25,22 @@ type JsonResultPending = {
   startTime: JsonTimestamp
   endTime: JsonTimestamp
 }
-type JsonResultPassed = {
+export type JsonResultPassed = {
   status: 'PASSED'
   startTime: JsonTimestamp
   endTime: JsonTimestamp
 }
-type JsonResultFailed = {
+export type JsonResultFailed = {
   status: 'FAILED'
   startTime: JsonTimestamp
   endTime: JsonTimestamp
   message?: string
   // exception?: JsonException
+}
+export type JsonFixedByAi = {
+  status: 'FIXED_BY_AI'
+  startTime: JsonTimestamp
+  endTime: JsonTimestamp
 }
 
 type JsonCommandResult = JsonResultPassed | JsonResultFailed
@@ -48,11 +53,13 @@ type JsonStepResult =
   | JsonResultPending
   | JsonResultPassed
   | JsonResultFailed
-type JsonTestResult =
+  | JsonFixedByAi
+export type JsonTestResult =
   | JsonResultUnknown
   | JsonResultStarted
   | JsonResultPassed
   | JsonResultFailed
+  | JsonFixedByAi
 type JsonReportResult = JsonTestResult
 
 type JsonCommand = {
@@ -62,14 +69,14 @@ type JsonCommand = {
   screenshotId?: string
   result: JsonCommandResult
 }
-type JsonStep = {
+export type JsonStep = {
   type: JsonStepType
   text: string
   commands: JsonCommand[]
   result: JsonStepResult
 }
 
-type JsonTestProgress = {
+export type JsonTestProgress = {
   id: string
   featureName: string
   uri: string
@@ -98,7 +105,7 @@ export default class ReportGenerator {
   private stepProgressMap = new Map<string, JsonStep>()
   private testProgressMap = new Map<string, JsonTestProgress>()
 
-  reportFolder:null|string = null
+  reportFolder: null | string = null
 
   handleMessage(envelope: messages.Envelope) {
     const type = Object.keys(envelope)[0] as keyof messages.Envelope
@@ -274,7 +281,7 @@ export default class ReportGenerator {
 
     const stepProgess = this.stepProgressMap.get(testStep.pickleStepId)
     if (mediaType === 'application/json') {
-      const command:JsonCommand = JSON.parse(body)
+      const command: JsonCommand = JSON.parse(body)
       stepProgess.commands.push(command)
     }
   }

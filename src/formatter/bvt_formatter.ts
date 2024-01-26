@@ -12,6 +12,7 @@ const REPORT_SERVICE_TOKEN = process.env.REPORT_SERVICE_TOKEN
 
 export default class BVTFormatter extends Formatter {
   private reportGenerator = new ReportGenerator()
+
   private uploadService = new RunUploadService(
     REPORT_SERVICE_URL,
     REPORT_SERVICE_TOKEN
