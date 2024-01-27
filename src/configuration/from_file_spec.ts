@@ -82,7 +82,7 @@ describe('fromFile', () => {
       expect.fail('should have thrown')
     } catch (error) {
       expect(error.message).to.eq(
-        'Requested profile "p1" failed schema validation: paths must be a `array` type, but the final value was: `4`. requireModule must be a `array` type, but the final value was: `"aardvark"`.'
+        'Profile "p1" configuration value failed schema validation: paths must be a `array` type, but the final value was: `4`. requireModule must be a `array` type, but the final value was: `"aardvark"`.'
       )
     }
   })

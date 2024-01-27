@@ -23,8 +23,18 @@ export interface ILoadConfigurationOptions {
   /**
    * Ad-hoc configuration options to be merged over the top of whatever is
    * loaded from the configuration file/profiles
+   * @example
+   * \{
+   *   failFast: true,
+   *   parallel: 2
+   * \}
+   * @example ["--fail-fast", "--parallel", "2"]
+   * @example "--fail-fast --parallel 2"
+   * @remarks
+   * This can also be provided as an array or single string of argv-style
+   * arguments.
    */
-  provided?: Partial<IConfiguration>
+  provided?: Partial<IConfiguration> | string[] | string
 }
 
 /**

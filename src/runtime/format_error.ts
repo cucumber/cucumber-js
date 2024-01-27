@@ -7,20 +7,21 @@ export function formatError(
   error: Error,
   filterStackTraces: boolean
 ): Pick<TestStepResult, 'message' | 'exception'> {
-  let filteredStack: string
-  if (filterStackTraces) {
-    try {
-      filteredStack = filterStackTrace(errorStackParser.parse(error))
-        .map((f) => f.source)
-        .join('\n')
-    } catch {
-      // if we weren't able to parse and filter, we'll settle for the original
-    }
+  let processedStackTrace: string
+  try {
+    const parsedStack = errorStackParser.parse(error)
+    const filteredStack = filterStackTraces
+      ? filterStackTrace(parsedStack)
+      : parsedStack
+    processedStackTrace = filteredStack.map((f) => f.source).join('\n')
+  } catch {
+    // if we weren't able to parse and process, we'll settle for the original
   }
   const message = format(error, {
     colorFns: {
-      errorStack: (stack: string) =>
-        filteredStack ? `\n${filteredStack}` : stack,
+      errorStack: (stack: string) => {
+        return processedStackTrace ? `\n${processedStackTrace}` : stack
+      },
     },
   })
   return {
@@ -28,6 +29,7 @@ export function formatError(
     exception: {
       type: error.name || 'Error',
       message: typeof error === 'string' ? error : error.message,
+      stackTrace: processedStackTrace ?? error.stack,
     },
   }
 }

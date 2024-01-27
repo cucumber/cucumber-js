@@ -61,5 +61,5 @@ export const ci = {
 You can use [ESM loaders](https://nodejs.org/api/esm.html#loaders) to transpile your support code on the fly. The `requireModule` configuration option only works with CommonJS (i.e. `require` hooks) and is not applicable here. Cucumber doesn't have an equivalent option for ESM loaders because they currently can't be registered in-process, so you'll need to declare the loader externally, like this:
 
 ```shell
-$ NODE_OPTIONS="--loader <loader>" npx cucumber-js
+NODE_OPTIONS="--loader <loader>" npx cucumber-js
 ```

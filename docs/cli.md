@@ -3,7 +3,7 @@
 Cucumber includes an executable file to run your scenarios. After installing the `@cucumber/cucumber` package, you can run it directly:
 
 ``` shell
-$ ./node_modules/.bin/cucumber-js
+./node_modules/.bin/cucumber-js
 ```
 
 Or via a [`package.json` script](https://docs.npmjs.com/cli/v8/using-npm/scripts):
@@ -19,7 +19,7 @@ Or via a [`package.json` script](https://docs.npmjs.com/cli/v8/using-npm/scripts
 Or via [npx](https://docs.npmjs.com/cli/v8/commands/npx):
 
 ``` shell
-$ npx cucumber-js
+npx cucumber-js
 ```
 
 ## Options
@@ -39,7 +39,7 @@ Additionally, there are a few options that are specific to the CLI:
 To see the available options for your installed version, run:
 
 ```shell
-$ cucumber-js --help
+cucumber-js --help
 ```
 
 ## Exiting
@@ -47,7 +47,7 @@ $ cucumber-js --help
 By default, cucumber exits when the event loop drains. Use the `forceExit` configuration option in order to force shutdown of the event loop when the test run has finished:
 
 - In a configuration file `{ forceExit: true }`
-- On the CLI `$ cucumber-js --force-exit`
+- On the CLI `cucumber-js --force-exit`
 
 This is discouraged, as fixing the issues that causes the hang is a better long term solution. Some potential resources for that are:
 * [Node.js guide to debugging](https://nodejs.org/en/docs/inspector/)
