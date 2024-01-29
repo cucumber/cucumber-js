@@ -15,9 +15,6 @@ import ReportGenerator, {
 import ReportUploader from './helpers/uploader'
 //User token
 const TOKEN = process.env.TOKEN
-if (!TOKEN) {
-  throw new Error('TOKEN must be set')
-}
 export default class BVTAnalysisFormatter extends Formatter {
   private reportGenerator = new ReportGenerator()
   private uploader = new ReportUploader(this.reportGenerator)
@@ -25,6 +22,9 @@ export default class BVTAnalysisFormatter extends Formatter {
   private START: number
   constructor(options: IFormatterOptions) {
     super(options)
+    if (!TOKEN) {
+      throw new Error('TOKEN must be set')
+    }
     options.eventBroadcaster.on('envelope', async (envelope: Envelope) => {
       this.reportGenerator.handleMessage(envelope)
       if (doesHaveValue(envelope.testRunFinished)) {
