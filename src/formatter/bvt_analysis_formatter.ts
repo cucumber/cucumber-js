@@ -3,7 +3,6 @@ import { spawn } from 'child_process'
 import path from 'path'
 import Formatter, { IFormatterOptions } from '.'
 import { doesHaveValue } from '../value_checker'
-import BVTFormatter from './bvt_formatter'
 import ReportGenerator, {
   JsonFixedByAi,
   JsonReport,
@@ -13,6 +12,7 @@ import ReportGenerator, {
   JsonTestProgress,
   JsonTestResult,
 } from './helpers/report_generator'
+import ReportUploader from './helpers/uploader'
 //User token
 const TOKEN = process.env.TOKEN
 if (!TOKEN) {
@@ -20,13 +20,11 @@ if (!TOKEN) {
 }
 export default class BVTAnalysisFormatter extends Formatter {
   private reportGenerator = new ReportGenerator()
-  private uploader: BVTFormatter
+  private uploader = new ReportUploader(this.reportGenerator)
   private exit = false
   private START: number
   constructor(options: IFormatterOptions) {
     super(options)
-
-    this.uploader = new BVTFormatter(options, false)
     options.eventBroadcaster.on('envelope', async (envelope: Envelope) => {
       this.reportGenerator.handleMessage(envelope)
       if (doesHaveValue(envelope.testRunFinished)) {
