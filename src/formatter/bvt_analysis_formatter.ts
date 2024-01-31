@@ -22,7 +22,7 @@ export default class BVTAnalysisFormatter extends Formatter {
   private START: number
   constructor(options: IFormatterOptions) {
     super(options)
-    if (!TOKEN) {
+    if (!TOKEN && process.env.BVT_FORMATTER === 'ANALYSIS') {
       throw new Error('TOKEN must be set')
     }
     options.eventBroadcaster.on('envelope', async (envelope: Envelope) => {
@@ -30,10 +30,22 @@ export default class BVTAnalysisFormatter extends Formatter {
       if (doesHaveValue(envelope.testRunFinished)) {
         const report = this.reportGenerator.getReport()
         this.START = Date.now()
-        await this.analyzeReport(report)
+        if (process.env.BVT_FORMATTER === 'ANALYSIS') {
+          await this.analyzeReport(report)
+        } else {
+          await this.uploadReport(report)
+        }
         this.exit = true
       }
     })
+  }
+
+  private async uploadReport(report: JsonReport) {
+    const uploadSuccessful = await this.uploadFinalReport(report)
+    if (uploadSuccessful && report.result.status !== 'FAILED') {
+      process.exit(0)
+    }
+    process.exit(1)
   }
 
   async finished(): Promise<any> {
@@ -49,17 +61,27 @@ export default class BVTAnalysisFormatter extends Formatter {
   private async analyzeReport(report: JsonReport) {
     if (report.result.status === 'PASSED') {
       this.log('All tests passed. No need to retrain\n')
-      await this.uploader.uploadRun(report)
-      return
+      const uploadSuccessful = await this.uploadFinalReport(report)
+      if (uploadSuccessful) {
+        process.exit(0)
+      }
+
+      process.exit(1)
     }
     //checking if the type of report.result is JsonResultFailed or not
+    this.log('Some tests failed,starting the retraining...\n')
     if (!('startTime' in report.result) || !('endTime' in report.result)) {
       this.log('Unknown error occured,not retraining\n')
       await this.uploader.uploadRun(report)
       return
     }
     const finalReport = await this.processTestCases(report)
-    await this.uploadFinalReport(finalReport)
+    const uploadSuccessful = await this.uploadFinalReport(finalReport)
+    if (finalReport.result.status !== 'FAILED' && uploadSuccessful) {
+      process.exit(0)
+    } else {
+      process.exit(1)
+    }
   }
   private async processTestCases(report: JsonReport): Promise<JsonReport> {
     const finalResults: JsonTestResult[] = []
@@ -185,13 +207,19 @@ export default class BVTAnalysisFormatter extends Formatter {
     }
   }
   private async uploadFinalReport(finalReport: JsonReport) {
+    let success = true
     try {
       await this.uploader.uploadRun(finalReport)
     } catch (err) {
       this.log('Error uploading report\n')
+      if ('stack' in err) {
+        this.log(err.stack)
+      }
+      success = false
     }
 
     this.log(JSON.stringify(finalReport, null, 2))
+    return success
   }
   private async retrain(failedTestCases: number[], testCase: JsonTestProgress) {
     const stepsToRetrain = testCase.steps.map((_, i) => i)
@@ -222,7 +250,7 @@ export default class BVTAnalysisFormatter extends Formatter {
       ]
 
       if (process.env.BLINQ_ENV) {
-        args.push(`--env="${process.env.BLINQ_ENV}"`)
+        args.push(`--env=${process.env.BLINQ_ENV}`)
       }
 
       const cucumberClient = spawn('node', [cucumber_client_path, ...args], {
