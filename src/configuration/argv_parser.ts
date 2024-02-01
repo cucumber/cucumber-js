@@ -1,6 +1,6 @@
+import { dialects } from '@cucumber/gherkin'
 import { Command } from 'commander'
 import merge from 'lodash.merge'
-import { dialects } from '@cucumber/gherkin'
 import Formatters from '../formatter/helpers/formatters'
 import { version } from '../version'
 import { IConfiguration } from './types'
@@ -163,6 +163,7 @@ const ArgvParser = {
         'provide parameters that will be passed to the world constructor (repeatable)',
         ArgvParser.mergeJson('--world-parameters')
       )
+      .option('--run-name <NAME>', 'provide a name for the run')
 
     program.addHelpText(
       'afterAll',

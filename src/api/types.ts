@@ -1,9 +1,9 @@
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { Writable } from 'stream'
+import { IConfiguration } from '../configuration'
 import { FormatOptions, IPublishConfig } from '../formatter'
 import { PickleOrder } from '../models/pickle_order'
 import { IRuntimeOptions } from '../runtime'
-import { IConfiguration } from '../configuration'
-import { Writable } from 'stream'
+import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 
 /**
  * @public
@@ -122,6 +122,7 @@ export interface IRunConfiguration {
   support: ISupportCodeCoordinates
   runtime: IRunOptionsRuntime
   formats: IRunOptionsFormats
+  runName?: string
 }
 
 /**
@@ -144,6 +145,7 @@ export interface IRunOptions {
   support: ISupportCodeCoordinatesOrLibrary
   runtime: IRunOptionsRuntime
   formats: IRunOptionsFormats
+  runName?: string
 }
 
 /**

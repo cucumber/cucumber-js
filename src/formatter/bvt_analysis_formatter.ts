@@ -1,4 +1,4 @@
-import { Envelope } from '@cucumber/messages'
+import { Envelope, Meta } from '@cucumber/messages'
 import { spawn } from 'child_process'
 import path from 'path'
 import Formatter, { IFormatterOptions } from '.'
@@ -15,29 +15,46 @@ import ReportGenerator, {
 import ReportUploader from './helpers/uploader'
 //User token
 const TOKEN = process.env.TOKEN
+interface MetaMessage extends Meta {
+  runName: string
+}
+
+interface EnvelopeWithMetaMessage extends Envelope {
+  meta: MetaMessage
+}
 export default class BVTAnalysisFormatter extends Formatter {
   private reportGenerator = new ReportGenerator()
   private uploader = new ReportUploader(this.reportGenerator)
   private exit = false
   private START: number
+  private runName: string
   constructor(options: IFormatterOptions) {
     super(options)
     if (!TOKEN && process.env.BVT_FORMATTER === 'ANALYSIS') {
       throw new Error('TOKEN must be set')
     }
-    options.eventBroadcaster.on('envelope', async (envelope: Envelope) => {
-      this.reportGenerator.handleMessage(envelope)
-      if (doesHaveValue(envelope.testRunFinished)) {
-        const report = this.reportGenerator.getReport()
-        this.START = Date.now()
-        if (process.env.BVT_FORMATTER === 'ANALYSIS') {
-          await this.analyzeReport(report)
-        } else {
-          await this.uploadReport(report)
+    options.eventBroadcaster.on(
+      'envelope',
+      async (envelope: EnvelopeWithMetaMessage) => {
+        this.reportGenerator.handleMessage(envelope)
+        if (
+          doesHaveValue(envelope.meta) &&
+          doesHaveValue(envelope.meta.runName)
+        ) {
+          this.runName = envelope.meta.runName
         }
-        this.exit = true
+        if (doesHaveValue(envelope.testRunFinished)) {
+          const report = this.reportGenerator.getReport()
+          this.START = Date.now()
+          if (process.env.BVT_FORMATTER === 'ANALYSIS') {
+            await this.analyzeReport(report)
+          } else {
+            await this.uploadReport(report)
+          }
+          this.exit = true
+        }
       }
-    })
+    )
   }
 
   private async uploadReport(report: JsonReport) {
@@ -72,7 +89,7 @@ export default class BVTAnalysisFormatter extends Formatter {
     this.log('Some tests failed,starting the retraining...\n')
     if (!('startTime' in report.result) || !('endTime' in report.result)) {
       this.log('Unknown error occured,not retraining\n')
-      await this.uploader.uploadRun(report)
+      await this.uploader.uploadRun(report, this.runName)
       return
     }
     const finalReport = await this.processTestCases(report)
@@ -209,7 +226,7 @@ export default class BVTAnalysisFormatter extends Formatter {
   private async uploadFinalReport(finalReport: JsonReport) {
     let success = true
     try {
-      await this.uploader.uploadRun(finalReport)
+      await this.uploader.uploadRun(finalReport, this.runName)
     } catch (err) {
       this.log('Error uploading report\n')
       if ('stack' in err) {

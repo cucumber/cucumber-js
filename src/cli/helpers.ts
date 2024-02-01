@@ -1,21 +1,21 @@
-import shuffle from 'knuth-shuffle-seeded'
-import { EventEmitter } from 'events'
-import PickleFilter from '../pickle_filter'
-import { EventDataCollector } from '../formatter/helpers'
-import { doesHaveValue } from '../value_checker'
-import { OptionSplitter } from '../configuration'
-import { Readable } from 'stream'
-import os from 'os'
+import detectCiEnvironment from '@cucumber/ci-environment'
 import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
-import detectCiEnvironment from '@cucumber/ci-environment'
-import { ISupportCodeLibrary } from '../support_code_library_builder/types'
+import { EventEmitter } from 'events'
+import shuffle from 'knuth-shuffle-seeded'
+import os from 'os'
+import { Readable } from 'stream'
+import { IConfiguration, OptionSplitter } from '../configuration'
+import { EventDataCollector } from '../formatter/helpers'
+import { ILogger } from '../logger'
+import { PickleOrder } from '../models/pickle_order'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
-import { PickleOrder } from '../models/pickle_order'
-import { version } from '../version'
-import { ILogger } from '../logger'
+import PickleFilter from '../pickle_filter'
+import { ISupportCodeLibrary } from '../support_code_library_builder/types'
 import { ILineAndUri } from '../types'
+import { doesHaveValue } from '../value_checker'
+import { version } from '../version'
 
 interface IParseGherkinMessageStreamRequest {
   cwd?: string
@@ -25,7 +25,9 @@ interface IParseGherkinMessageStreamRequest {
   order: string
   pickleFilter: PickleFilter
 }
-
+interface MetaMessage extends messages.Meta {
+  runName?: string
+}
 /**
  * Process a stream of envelopes from Gherkin and resolve to an array of filtered, ordered pickle Ids
  *
@@ -93,9 +95,10 @@ export function orderPickles<T = string>(
 
 export async function emitMetaMessage(
   eventBroadcaster: EventEmitter,
-  env: NodeJS.ProcessEnv
+  env: NodeJS.ProcessEnv,
+  runName?: string
 ): Promise<void> {
-  const meta: messages.Meta = {
+  const meta: MetaMessage = {
     protocolVersion: messages.version,
     implementation: {
       version,
@@ -113,6 +116,7 @@ export async function emitMetaMessage(
       version: process.versions.node,
     },
     ci: detectCiEnvironment(env),
+    runName,
   }
   eventBroadcaster.emit('envelope', {
     meta,
@@ -242,4 +246,27 @@ export function emitSupportCodeMessages({
   emitStepDefinitions(supportCodeLibrary, eventBroadcaster)
   emitTestCaseHooks(supportCodeLibrary, eventBroadcaster)
   emitTestRunHooks(supportCodeLibrary, eventBroadcaster)
+}
+
+export function getRunName(argvConfiguration: Partial<IConfiguration>): string {
+  if (doesHaveValue(argvConfiguration.runName)) {
+    return argvConfiguration.runName
+  }
+  if (
+    doesHaveValue(argvConfiguration.name && argvConfiguration.name.length > 0)
+  ) {
+    return argvConfiguration.name[0]
+  }
+  if (doesHaveValue(argvConfiguration.tags)) {
+    //replace word "and" with &  and "or" with |
+    let tags = argvConfiguration.tags
+      .split(' ')
+      .map((tag) => (tag === 'and' ? '&' : tag === 'or' ? '|' : tag))
+      .join('')
+    //remove the starting and ending paranthesis if present
+    tags = tags.replace(/^\(/, '').replace(/\)$/, '')
+
+    return tags
+  }
+  return ''
 }

@@ -20,8 +20,8 @@ export default class ReportUploader {
     this.reportGenerator = reportGenerator
   }
 
-  async uploadRun(report: JsonReport) {
-    const runDoc = await this.uploadService.createRunDocument('test')
+  async uploadRun(report: JsonReport, runName: string) {
+    const runDoc = await this.uploadService.createRunDocument(runName)
     const runDocId = runDoc._id
     const formData = new FormData()
     const reportFolder = this.reportGenerator.reportFolder

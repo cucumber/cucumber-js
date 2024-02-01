@@ -7,7 +7,7 @@ class RunUploadService {
       const runDocResult = await axios.post(
         this.runsApiBaseURL + "/cucumber-runs/create",
         {
-          name,
+          name: name?name: "TEST",
         },
         {
           headers: {

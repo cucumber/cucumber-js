@@ -1,17 +1,17 @@
 import { Envelope, IdGenerator, ParseError } from '@cucumber/messages'
 import { EventEmitter } from 'events'
-import { EventDataCollector } from '../formatter/helpers'
 import { emitMetaMessage, emitSupportCodeMessages } from '../cli/helpers'
-import { IRunOptions, IRunEnvironment, IRunResult } from './types'
-import { resolvePaths } from './paths'
-import { makeRuntime } from './runtime'
-import { initializeFormatters } from './formatters'
-import { getSupportCodeLibrary } from './support'
-import { mergeEnvironment } from './environment'
-import { getFilteredPicklesAndErrors } from './gherkin'
-import { initializePlugins } from './plugins'
-import { ConsoleLogger } from './console_logger'
+import { EventDataCollector } from '../formatter/helpers'
 import { ILogger } from '../logger'
+import { ConsoleLogger } from './console_logger'
+import { mergeEnvironment } from './environment'
+import { initializeFormatters } from './formatters'
+import { getFilteredPicklesAndErrors } from './gherkin'
+import { resolvePaths } from './paths'
+import { initializePlugins } from './plugins'
+import { makeRuntime } from './runtime'
+import { getSupportCodeLibrary } from './support'
+import { IRunEnvironment, IRunOptions, IRunResult } from './types'
 
 /**
  * Execute a Cucumber test run.
@@ -72,7 +72,7 @@ export async function runCucumber(
     configuration: configuration.formats,
     supportCodeLibrary,
   })
-  await emitMetaMessage(eventBroadcaster, env)
+  await emitMetaMessage(eventBroadcaster, env, configuration.runName)
 
   let pickleIds: string[] = []
   let parseErrors: ParseError[] = []

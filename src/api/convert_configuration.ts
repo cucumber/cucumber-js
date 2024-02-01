@@ -34,6 +34,7 @@ export async function convertConfiguration(
       worldParameters: flatConfiguration.worldParameters,
     },
     formats: convertFormats(flatConfiguration, env),
+    runName: flatConfiguration.runName,
   }
 }
 
