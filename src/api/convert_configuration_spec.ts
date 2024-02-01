@@ -14,6 +14,7 @@ describe('convertConfiguration', () => {
         publish: false,
         stdout: 'progress',
       },
+      runName: '',
       runtime: {
         dryRun: false,
         failFast: false,
