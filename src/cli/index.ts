@@ -1,9 +1,10 @@
+import debug from 'debug'
+import { loadConfiguration, runCucumber } from '../api'
 import { ArgvParser } from '../configuration'
 import { IFormatterStream } from '../formatter'
-import { loadConfiguration, runCucumber } from '../api'
+import { getRunName } from './helpers'
 import { getKeywords, getLanguages } from './i18n'
 import { validateInstall } from './install_validator'
-import debug from 'debug'
 
 export interface ICliRunResult {
   shouldExitImmediately: boolean
@@ -45,6 +46,7 @@ export default class Cli {
     const { options, configuration: argvConfiguration } = ArgvParser.parse(
       this.argv
     )
+    argvConfiguration.runName = getRunName(argvConfiguration)
     if (options.i18nLanguages) {
       this.stdout.write(getLanguages())
       return {
