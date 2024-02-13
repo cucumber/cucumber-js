@@ -14,7 +14,7 @@ import ReportGenerator, {
   RetrainStats,
 } from './helpers/report_generator'
 import ReportUploader from './helpers/uploader'
-import { temporaryFileTask } from 'tempy'
+// import { temporaryFileTask } from 'tempy'
 import { readFileSync } from 'fs'
 //User token
 const TOKEN = process.env.TOKEN
@@ -296,31 +296,38 @@ export default class BVTAnalysisFormatter extends Formatter {
       if (process.env.BLINQ_ENV) {
         args.push(`--env=${process.env.BLINQ_ENV}`)
       }
-      temporaryFileTask((tempFile) => {
-        args.push(`--temp-file=${tempFile}`)
-        const cucumberClient = spawn('node', [cucumber_client_path, ...args], {
-          env: {
-            ...process.env,
-          },
-        })
+      // const temporaryFileTask = await import('tempy')
+      import('tempy').then(({ temporaryFileTask }) => {
+        temporaryFileTask((tempFile) => {
+          args.push(`--temp-file=${tempFile}`)
+          const cucumberClient = spawn(
+            'node',
+            [cucumber_client_path, ...args],
+            {
+              env: {
+                ...process.env,
+              },
+            }
+          )
 
-        cucumberClient.stdout.on('data', (data) => {
-          console.log(data.toString())
-        })
+          cucumberClient.stdout.on('data', (data) => {
+            console.log(data.toString())
+          })
 
-        cucumberClient.stderr.on('data', (data) => {
-          console.error(data.toString())
-        })
+          cucumberClient.stderr.on('data', (data) => {
+            console.error(data.toString())
+          })
 
-        cucumberClient.on('close', (code) => {
-          if (code === 0) {
-            const reportData = readFileSync(tempFile, 'utf-8')
-            const retrainStats = JSON.parse(reportData) as RetrainStats
-            resolve(retrainStats)
-          } else {
-            this.log('Error retraining\n')
-            resolve(null)
-          }
+          cucumberClient.on('close', (code) => {
+            if (code === 0) {
+              const reportData = readFileSync(tempFile, 'utf-8')
+              const retrainStats = JSON.parse(reportData) as RetrainStats
+              resolve(retrainStats)
+            } else {
+              this.log('Error retraining\n')
+              resolve(null)
+            }
+          })
         })
       })
     })
