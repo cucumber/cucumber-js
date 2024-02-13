@@ -31,7 +31,6 @@ class RunUploadService {
         headers: {
           ...formData.getHeaders(),
           Authorization: 'Bearer ' + this.accessToken,
-          'Response-Type': 'arraybuffer',
           'x-source': 'cucumber_js',
         },
       }
