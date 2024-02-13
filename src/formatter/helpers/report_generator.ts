@@ -75,7 +75,12 @@ export type JsonStep = {
   commands: JsonCommand[]
   result: JsonStepResult
 }
-
+export type RetrainStats = {
+  result: JsonTestResult
+  totalSteps: number
+  upload_id: string
+  local_id: number
+}
 export type JsonTestProgress = {
   id: string
   featureName: string
@@ -84,6 +89,7 @@ export type JsonTestProgress = {
   parameters: Record<string, string>
   steps: JsonStep[]
   result: JsonTestResult
+  retrainStats?: RetrainStats
 }
 
 export type JsonReport = {

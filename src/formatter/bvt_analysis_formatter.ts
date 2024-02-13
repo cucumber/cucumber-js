@@ -11,8 +11,11 @@ import ReportGenerator, {
   JsonStep,
   JsonTestProgress,
   JsonTestResult,
+  RetrainStats,
 } from './helpers/report_generator'
 import ReportUploader from './helpers/uploader'
+import { temporaryFileTask } from 'tempy'
+import { readFileSync } from 'fs'
 //User token
 const TOKEN = process.env.TOKEN
 interface MetaMessage extends Meta {
@@ -86,7 +89,7 @@ export default class BVTAnalysisFormatter extends Formatter {
       process.exit(1)
     }
     //checking if the type of report.result is JsonResultFailed or not
-    this.log('Some tests failed,starting the retraining...\n')
+    this.log('Some tests failed, starting the retraining...\n')
     if (!('startTime' in report.result) || !('endTime' in report.result)) {
       this.log('Unknown error occured,not retraining\n')
       await this.uploader.uploadRun(report, this.runName)
@@ -101,128 +104,148 @@ export default class BVTAnalysisFormatter extends Formatter {
     }
   }
   private async processTestCases(report: JsonReport): Promise<JsonReport> {
-    const finalResults: JsonTestResult[] = []
-    const finalStepResults: JsonTestResult[][] = []
-    let isFailing = true
+    // const finalResults: JsonTestResult[] = []
+    // const finalStepResults: JsonTestResult[][] = []
+    // let isFailing = true
+    const finalTestCases = []
     for (const testCase of report.testCases) {
-      const { result, steps } = await this.processTestCase(testCase, report)
-      finalResults.push(result)
-      finalStepResults.push(steps)
-      //If any of the test case fails, the whole run is considered failed
-      if (result.status === 'FAILED') {
-        isFailing = false
-      }
+      const modifiedTestCase = await this.processTestCase(testCase, report)
+      // finalResults.push(result)
+      // finalStepResults.push(steps)
+      // //If any of the test case fails, the whole run is considered failed
+      // if (result.status === 'FAILED') {
+      //   isFailing = false
+      // }
+      finalTestCases.push(modifiedTestCase)
     }
+    const finalResult = finalTestCases.some(
+      (tc) => tc.result.status !== 'PASSED'
+    )
+      ? report.result
+      : ({
+          ...report.result,
+          status: 'PASSED',
+        } as JsonTestResult)
     return {
-      result: isFailing
-        ? {
-            status: 'FIXED_BY_AI',
-            startTime:
-              'startTime' in report.result
-                ? report.result.startTime
-                : this.START,
-            endTime: Date.now(),
-          }
-        : {
-            status: 'FAILED',
-            startTime:
-              'startTime' in report.result
-                ? report.result.startTime
-                : Date.now(),
-            endTime: Date.now(),
-          },
-      testCases: report.testCases.map((testCase, i) => {
-        return {
-          ...testCase,
-          result: finalResults[i],
-          steps: testCase.steps.map((step, j) => {
-            return {
-              ...step,
-              result: finalStepResults[i][j],
-            }
-          }),
-        }
-      }),
+      result: finalResult,
+      testCases: finalTestCases,
     }
+    // return {
+    //   result: isFailing
+    //     ? {
+    //         status: 'FIXED_BY_AI',
+    //         startTime:
+    //           'startTime' in report.result
+    //             ? report.result.startTime
+    //             : this.START,
+    //         endTime: Date.now(),
+    //       }
+    //     : {
+    //         status: 'FAILED',
+    //         startTime:
+    //           'startTime' in report.result
+    //             ? report.result.startTime
+    //             : Date.now(),
+    //         endTime: Date.now(),
+    //       },
+    //   testCases: report.testCases.map((testCase, i) => {
+    //     return {
+    //       ...testCase,
+    //       result: finalResults[i],
+    //       steps: testCase.steps.map((step, j) => {
+    //         return {
+    //           ...step,
+    //           result: finalStepResults[i][j],
+    //         }
+    //       }),
+    //     }
+    //   }),
+    // }
   }
   private async processTestCase(
     testCase: JsonTestProgress,
     report: JsonReport
-  ): Promise<{
-    result: JsonFixedByAi | JsonResultFailed | JsonResultPassed
-    steps: (JsonFixedByAi | JsonResultFailed | JsonResultPassed)[]
-  }> {
+  ): Promise<JsonTestProgress> {
     if (testCase.result.status === 'PASSED') {
-      return {
-        result: testCase.result,
-        steps: testCase.steps.map((step) => {
-          return step.result.status === 'PASSED'
-            ? step.result
-            : this.createStepResult(true, step, report)
-        }),
-      }
+      return testCase
     }
-    const failedTestCases = testCase.steps
+    const failedTestSteps = testCase.steps
       .map((step, i) => (step.result.status !== 'PASSED' ? i : null))
       .filter((i) => i !== null)
-    const success = await this.retrain(failedTestCases, testCase)
-    const finalResult = this.createFinalResult(success, testCase, report)
-
+    const retrainStats = await this.retrain(failedTestSteps, testCase)
+    // if(newTestCase.result.status === "PASSED") {
+    //   newTestCase.result.status = "FIXED"
+    // }
+    if (!retrainStats) {
+      return testCase
+    }
+    // const newResult: JsonTestResult =
+    //   retrainStats.result.status === 'PASSED'
+    //     ? {
+    //         ...retrainStats.result,
+    //         status: 'FIXED_BY_AI',
+    //       }
+    //     : retrainStats.result
+    // const finalResult = this.createFinalResult(success, testCase, report)
     return {
-      result: finalResult,
-      steps: testCase.steps.map((step) =>
-        step.result.status === 'PASSED'
-          ? { ...step.result }
-          : this.createStepResult(success, step, report)
-      ),
+      ...testCase,
+      retrainStats,
     }
+    // return {
+    //   result: finalResult,
+    //   steps: testCase.steps.map((step) =>
+    //     step.result.status === 'PASSED'
+    //       ? { ...step.result }
+    //       : this.createStepResult(success, step, report)
+    //   ),
+    // }
   }
 
-  private createFinalResult(
-    success: boolean,
-    testCase: JsonTestProgress,
-    report: JsonReport
-  ): JsonFixedByAi | JsonResultFailed {
-    const status = success ? 'FIXED_BY_AI' : 'FAILED'
-    return {
-      status,
-      startTime: this.createStartTime(testCase, report),
-      endTime: Date.now(),
-    }
-  }
-  private createStartTime(
-    testCase: JsonTestProgress,
-    report: JsonReport
-  ): number {
-    let startTime
+  // private createFinalResult(
+  //   success: boolean,
+  //   testCase: JsonTestProgress,
+  //   report: JsonReport
+  // ): JsonFixedByAi | JsonResultFailed {
+  //   const status = success ? 'FIXED_BY_AI' : 'FAILED'
+  //   return {
+  //     status,
+  //     startTime: this.createStartTime(testCase, report),
+  //     endTime: Date.now(),
+  //   }
+  // }
+  // private createStartTime(
+  //   testCase: JsonTestProgress,
+  //   report: JsonReport
+  // ): number {
+  //   let startTime
 
-    if ('startTime' in testCase.result) {
-      startTime = testCase.result.startTime
-    } else if ('startTime' in report.result) {
-      startTime = report.result.startTime
-    } else {
-      startTime = Date.now()
-    }
+  //   if ('startTime' in testCase.result) {
+  //     startTime = testCase.result.startTime
+  //   } else if ('startTime' in report.result) {
+  //     startTime = report.result.startTime
+  //   } else {
+  //     startTime = Date.now()
+  //   }
 
-    return startTime
-  }
-  private createStepResult(
-    success: boolean,
-    step: JsonStep,
-    report: JsonReport
-  ): JsonFixedByAi | JsonResultFailed {
-    const status = success ? 'FIXED_BY_AI' : 'FAILED'
-    return {
-      status,
-      startTime:
-        'startTime' in step.result
-          ? step.result.startTime
-          : 'startTime' in report.result
-          ? report.result.startTime
-          : Date.now(),
-      endTime: Date.now(),
-    }
-  }
+  //   return startTime
+  // }
+  // private createStepResult(
+  //   success: boolean,
+  //   step: JsonStep,
+  //   report: JsonReport
+  // ): JsonFixedByAi | JsonResultFailed {
+  //   const status = success ? 'FIXED_BY_AI' : 'FAILED'
+  //   return {
+  //     status,
+  //     startTime:
+  //       'startTime' in step.result
+  //         ? step.result.startTime
+  //         : 'startTime' in report.result
+  //         ? report.result.startTime
+  //         : Date.now(),
+  //     endTime: Date.now(),
+  //   }
+  // }
   private async uploadFinalReport(finalReport: JsonReport) {
     let success = true
     try {
@@ -238,16 +261,20 @@ export default class BVTAnalysisFormatter extends Formatter {
     this.log(JSON.stringify(finalReport, null, 2))
     return success
   }
-  private async retrain(failedTestCases: number[], testCase: JsonTestProgress) {
+  private async retrain(
+    failedTestCases: number[],
+    testCase: JsonTestProgress
+  ): Promise<RetrainStats | null> {
     const stepsToRetrain = testCase.steps.map((_, i) => i)
-    const success = await this.call_cucumber_client(stepsToRetrain, testCase)
-    return success
+    return await this.call_cucumber_client(stepsToRetrain, testCase)
+    // const success = await this.call_cucumber_client(stepsToRetrain, testCase)
+    // return success
   }
 
   private async call_cucumber_client(
     stepsToRetrain: number[],
     testCase: JsonTestProgress
-  ): Promise<boolean> {
+  ): Promise<RetrainStats | null> {
     return new Promise((resolve, reject) => {
       const cucumber_client_path = path.resolve(
         process.cwd(),
@@ -269,28 +296,32 @@ export default class BVTAnalysisFormatter extends Formatter {
       if (process.env.BLINQ_ENV) {
         args.push(`--env=${process.env.BLINQ_ENV}`)
       }
+      temporaryFileTask((tempFile) => {
+        args.push(`--temp-file=${tempFile}`)
+        const cucumberClient = spawn('node', [cucumber_client_path, ...args], {
+          env: {
+            ...process.env,
+          },
+        })
 
-      const cucumberClient = spawn('node', [cucumber_client_path, ...args], {
-        env: {
-          ...process.env,
-        },
-      })
+        cucumberClient.stdout.on('data', (data) => {
+          console.log(data.toString())
+        })
 
-      cucumberClient.stdout.on('data', (data) => {
-        console.log(data.toString())
-      })
+        cucumberClient.stderr.on('data', (data) => {
+          console.error(data.toString())
+        })
 
-      cucumberClient.stderr.on('data', (data) => {
-        console.error(data.toString())
-      })
-
-      cucumberClient.on('close', (code) => {
-        if (code === 0) {
-          resolve(true)
-        } else {
-          this.log('Error retraining\n')
-          resolve(false)
-        }
+        cucumberClient.on('close', (code) => {
+          if (code === 0) {
+            const reportData = readFileSync(tempFile, 'utf-8')
+            const retrainStats = JSON.parse(reportData) as RetrainStats
+            resolve(retrainStats)
+          } else {
+            this.log('Error retraining\n')
+            resolve(null)
+          }
+        })
       })
     })
   }
