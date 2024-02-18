@@ -258,7 +258,7 @@ export default class BVTAnalysisFormatter extends Formatter {
       success = false
     }
 
-    this.log(JSON.stringify(finalReport, null, 2))
+    //this.log(JSON.stringify(finalReport, null, 2))
     return success
   }
   private async retrain(
