@@ -92,7 +92,7 @@ export default class BVTAnalysisFormatter extends Formatter {
     this.log('Some tests failed, starting the retraining...\n')
     if (!('startTime' in report.result) || !('endTime' in report.result)) {
       this.log('Unknown error occured,not retraining\n')
-      await this.uploader.uploadRun(report, this.runName)
+      await this.uploadFinalReport(report)
       return
     }
     const finalReport = await this.processTestCases(report)
@@ -249,7 +249,11 @@ export default class BVTAnalysisFormatter extends Formatter {
   private async uploadFinalReport(finalReport: JsonReport) {
     let success = true
     try {
-      await this.uploader.uploadRun(finalReport, this.runName)
+      const { projectId, runId } = await this.uploader.uploadRun(
+        finalReport,
+        this.runName
+      )
+      this.logReportLink(runId, projectId)
     } catch (err) {
       this.log('Error uploading report\n')
       if ('stack' in err) {
@@ -331,5 +335,15 @@ export default class BVTAnalysisFormatter extends Formatter {
         })
       })
     })
+  }
+  private logReportLink(runId: string, projectId: string) {
+    let reportLinkBaseUrl = 'https://app.blinq.io'
+    if (process.env.NODE_ENV_BLINQ === 'local') {
+      reportLinkBaseUrl = 'http://localhost:3000'
+    } else if (process.env.NODE_ENV_BLINQ === 'dev') {
+      reportLinkBaseUrl = 'https://dev.app.blinq.io'
+    }
+    const reportLink = `${reportLinkBaseUrl}/${projectId}/run-report/${runId}`
+    this.log(`Report link: ${reportLink}\n`)
   }
 }
