@@ -31,6 +31,7 @@ export default class ReportUploader {
     const zipPath = await this.createZip(reportFolder, report)
     formData.append(runDocId, fs.readFileSync(zipPath), 'report.zip')
     await this.uploadService.upload(formData)
+    return { runId: runDoc._id, projectId: runDoc.project_id }
   }
   async createZip(reportFolder: string | null, report: JsonReport) {
     const zip = new JSZip()
