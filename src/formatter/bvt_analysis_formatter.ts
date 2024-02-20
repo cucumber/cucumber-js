@@ -14,8 +14,8 @@ import ReportGenerator, {
   RetrainStats,
 } from './helpers/report_generator'
 import ReportUploader from './helpers/uploader'
-// import { temporaryFileTask } from 'tempy'
 import { readFileSync } from 'fs'
+import { withFile } from 'tmp-promise'
 //User token
 const TOKEN = process.env.TOKEN
 interface MetaMessage extends Meta {
@@ -104,18 +104,10 @@ export default class BVTAnalysisFormatter extends Formatter {
     }
   }
   private async processTestCases(report: JsonReport): Promise<JsonReport> {
-    // const finalResults: JsonTestResult[] = []
-    // const finalStepResults: JsonTestResult[][] = []
-    // let isFailing = true
     const finalTestCases = []
     for (const testCase of report.testCases) {
       const modifiedTestCase = await this.processTestCase(testCase, report)
-      // finalResults.push(result)
-      // finalStepResults.push(steps)
-      // //If any of the test case fails, the whole run is considered failed
-      // if (result.status === 'FAILED') {
-      //   isFailing = false
-      // }
+
       finalTestCases.push(modifiedTestCase)
     }
     const finalResult = finalTestCases.some(
@@ -130,37 +122,6 @@ export default class BVTAnalysisFormatter extends Formatter {
       result: finalResult,
       testCases: finalTestCases,
     }
-    // return {
-    //   result: isFailing
-    //     ? {
-    //         status: 'FIXED_BY_AI',
-    //         startTime:
-    //           'startTime' in report.result
-    //             ? report.result.startTime
-    //             : this.START,
-    //         endTime: Date.now(),
-    //       }
-    //     : {
-    //         status: 'FAILED',
-    //         startTime:
-    //           'startTime' in report.result
-    //             ? report.result.startTime
-    //             : Date.now(),
-    //         endTime: Date.now(),
-    //       },
-    //   testCases: report.testCases.map((testCase, i) => {
-    //     return {
-    //       ...testCase,
-    //       result: finalResults[i],
-    //       steps: testCase.steps.map((step, j) => {
-    //         return {
-    //           ...step,
-    //           result: finalStepResults[i][j],
-    //         }
-    //       }),
-    //     }
-    //   }),
-    // }
   }
   private async processTestCase(
     testCase: JsonTestProgress,
@@ -173,79 +134,17 @@ export default class BVTAnalysisFormatter extends Formatter {
       .map((step, i) => (step.result.status !== 'PASSED' ? i : null))
       .filter((i) => i !== null)
     const retrainStats = await this.retrain(failedTestSteps, testCase)
-    // if(newTestCase.result.status === "PASSED") {
-    //   newTestCase.result.status = "FIXED"
-    // }
+
     if (!retrainStats) {
       return testCase
     }
-    // const newResult: JsonTestResult =
-    //   retrainStats.result.status === 'PASSED'
-    //     ? {
-    //         ...retrainStats.result,
-    //         status: 'FIXED_BY_AI',
-    //       }
-    //     : retrainStats.result
-    // const finalResult = this.createFinalResult(success, testCase, report)
+
     return {
       ...testCase,
       retrainStats,
     }
-    // return {
-    //   result: finalResult,
-    //   steps: testCase.steps.map((step) =>
-    //     step.result.status === 'PASSED'
-    //       ? { ...step.result }
-    //       : this.createStepResult(success, step, report)
-    //   ),
-    // }
   }
 
-  // private createFinalResult(
-  //   success: boolean,
-  //   testCase: JsonTestProgress,
-  //   report: JsonReport
-  // ): JsonFixedByAi | JsonResultFailed {
-  //   const status = success ? 'FIXED_BY_AI' : 'FAILED'
-  //   return {
-  //     status,
-  //     startTime: this.createStartTime(testCase, report),
-  //     endTime: Date.now(),
-  //   }
-  // }
-  // private createStartTime(
-  //   testCase: JsonTestProgress,
-  //   report: JsonReport
-  // ): number {
-  //   let startTime
-
-  //   if ('startTime' in testCase.result) {
-  //     startTime = testCase.result.startTime
-  //   } else if ('startTime' in report.result) {
-  //     startTime = report.result.startTime
-  //   } else {
-  //     startTime = Date.now()
-  //   }
-
-  //   return startTime
-  // }
-  // private createStepResult(
-  //   success: boolean,
-  //   step: JsonStep,
-  //   report: JsonReport
-  // ): JsonFixedByAi | JsonResultFailed {
-  //   const status = success ? 'FIXED_BY_AI' : 'FAILED'
-  //   return {
-  //     status,
-  //     startTime:
-  //       'startTime' in step.result
-  //         ? step.result.startTime
-  //         : 'startTime' in report.result
-  //         ? report.result.startTime
-  //         : Date.now(),
-  //     endTime: Date.now(),
-  //   }
-  // }
   private async uploadFinalReport(finalReport: JsonReport) {
     let success = true
     try {
@@ -271,8 +170,6 @@ export default class BVTAnalysisFormatter extends Formatter {
   ): Promise<RetrainStats | null> {
     const stepsToRetrain = testCase.steps.map((_, i) => i)
     return await this.call_cucumber_client(stepsToRetrain, testCase)
-    // const success = await this.call_cucumber_client(stepsToRetrain, testCase)
-    // return success
   }
 
   private async call_cucumber_client(
@@ -301,37 +198,32 @@ export default class BVTAnalysisFormatter extends Formatter {
         args.push(`--env=${process.env.BLINQ_ENV}`)
       }
       // const temporaryFileTask = await import('tempy')
-      import('tempy').then(({ temporaryFileTask }) => {
-        temporaryFileTask((tempFile) => {
-          args.push(`--temp-file=${tempFile}`)
-          const cucumberClient = spawn(
-            'node',
-            [cucumber_client_path, ...args],
-            {
-              env: {
-                ...process.env,
-              },
-            }
-          )
+      withFile(async ({ path: tempFile, fd }) => {
+        // when this function returns or throws - release the file
+        args.push(`--temp-file=${tempFile}`)
+        const cucumberClient = spawn('node', [cucumber_client_path, ...args], {
+          env: {
+            ...process.env,
+          },
+        })
 
-          cucumberClient.stdout.on('data', (data) => {
-            console.log(data.toString())
-          })
+        cucumberClient.stdout.on('data', (data) => {
+          console.log(data.toString())
+        })
 
-          cucumberClient.stderr.on('data', (data) => {
-            console.error(data.toString())
-          })
+        cucumberClient.stderr.on('data', (data) => {
+          console.error(data.toString())
+        })
 
-          cucumberClient.on('close', (code) => {
-            if (code === 0) {
-              const reportData = readFileSync(tempFile, 'utf-8')
-              const retrainStats = JSON.parse(reportData) as RetrainStats
-              resolve(retrainStats)
-            } else {
-              this.log('Error retraining\n')
-              resolve(null)
-            }
-          })
+        cucumberClient.on('close', (code) => {
+          if (code === 0) {
+            const reportData = readFileSync(tempFile, 'utf-8')
+            const retrainStats = JSON.parse(reportData) as RetrainStats
+            resolve(retrainStats)
+          } else {
+            this.log('Error retraining\n')
+            resolve(null)
+          }
         })
       })
     })
