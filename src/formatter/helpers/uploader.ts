@@ -5,8 +5,17 @@ import FormData from 'form-data'
 import fs from 'fs'
 import JSZip from 'jszip'
 import path from 'path'
-const REPORT_SERVICE_URL = process.env.REPORT_SERVICE_URL
-const REPORT_SERVICE_TOKEN = process.env.REPORT_SERVICE_TOKEN
+const URL =
+  process.env.NODE_ENV_BLINQ === 'dev'
+    ? 'https://dev.api.blinq.io/api/runs'
+    : process.env.NODE_ENV_BLINQ === 'local'
+    ? 'http://localhost:5001/api/runs'
+    : 'https://api.blinq.io/api/runs'
+
+const REPORT_SERVICE_URL = process.env.REPORT_SERVICE_URL ?? URL
+const REPORT_SERVICE_TOKEN =
+  process.env.TOKEN ?? process.env.REPORT_SERVICE_TOKEN
+
 export default class ReportUploader {
   private uploadService = new RunUploadService(
     REPORT_SERVICE_URL,
