@@ -164,6 +164,7 @@ const ArgvParser = {
         ArgvParser.mergeJson('--world-parameters')
       )
       .option('--run-name <NAME>', 'provide a name for the run')
+      .option('--bvt-rerun', 'rerun failed scenarios from the last run')
 
     program.addHelpText(
       'afterAll',
