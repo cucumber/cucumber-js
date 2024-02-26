@@ -23,4 +23,5 @@ export const DEFAULT_CONFIGURATION: IConfiguration = {
   tags: '',
   worldParameters: {},
   runName: '',
+  bvtRerun: false,
 }

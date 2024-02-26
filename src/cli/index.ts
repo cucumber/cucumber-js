@@ -47,6 +47,9 @@ export default class Cli {
       this.argv
     )
     argvConfiguration.runName = getRunName(argvConfiguration)
+    if (argvConfiguration.bvtRerun) {
+      process.env.BVT_FORMATTER = 'ANALYSIS'
+    }
     if (options.i18nLanguages) {
       this.stdout.write(getLanguages())
       return {
