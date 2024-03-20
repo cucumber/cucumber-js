@@ -15,8 +15,21 @@ export async function fromFile(
   file: string,
   profiles: string[] = []
 ): Promise<Partial<IConfiguration>> {
-  const definitions = await loadFile(logger, cwd, file)
-  if (!definitions.default) {
+  let definitions = await loadFile(logger, cwd, file)
+
+  const defaultDefinition: unknown = definitions.default
+
+  if (defaultDefinition) {
+    if (typeof defaultDefinition === 'function') {
+      const definitionsFromDefault = await defaultDefinition()
+
+      definitions = {
+        ...definitions,
+        default: {},
+        ...definitionsFromDefault,
+      }
+    }
+  } else {
     logger.debug('No default profile defined in configuration file')
     definitions.default = {}
   }
