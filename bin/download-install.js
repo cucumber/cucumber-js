@@ -3,7 +3,6 @@ const fs = require('fs')
 const path = require('path')
 const JSZip = require('jszip')
 const { mkdirSync, writeFileSync } = require('node:fs')
-const { execSync } = require('node:child_process')
 const axios = require('axios').default
 let token = null
 let extractPath = null
