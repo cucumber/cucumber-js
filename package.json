@@ -182,7 +182,8 @@
     "update-dependencies": "npx npm-check-updates --upgrade"
   },
   "bin": {
-    "cucumber-js": "bin/cucumber.js"
+    "cucumber-js": "bin/cucumber.js",
+    "download-install": "bin/download-install.js"
   },
   "license": "MIT",
   "files": [
