@@ -103,10 +103,6 @@ const downloadAndInstall = async (extractPath, token) => {
         'Response-Type': 'arraybuffer',
       },
     })
-    if(res.data.status !== true){
-      console.error('Error: Download failed')
-      process.exit(1)
-    }
 
     const zip = await JSZip.loadAsync(res.data)
     for (const filename of Object.keys(zip.files)) {
