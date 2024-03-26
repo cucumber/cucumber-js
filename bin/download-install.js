@@ -39,7 +39,7 @@ for (let i = 2; i < argv.length; i++) {
         process.exit(1)
       }
       break
-    case '--extractPath':
+    case '--extractDir':
       if (i + 1 < argv.length && !argv[i + 1].startsWith('--')) {
         extractPath = argv[++i]
       } else {
@@ -79,15 +79,14 @@ const ssoUrl = getSSoUrl()
 
 const downloadAndInstall = async (extractPath, token) => {
   if (!dirExists(extractPath)) {
-    console.error('Invalid directory path')
-    process.exit(1) 
+    fs.mkdirSync(extractPath, { recursive: true })
   }
   try {
     const accessKeyUrl = `${ssoUrl}/getProjectByAccessKey`
     const response = await axios.post(accessKeyUrl, {
       access_key: token,
     })
-    if(response.data.status !== true){
+    if(response.status !== 200){
       console.error('Error: Invalid access key')
       process.exit(1)
     }
