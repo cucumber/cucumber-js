@@ -79,14 +79,21 @@ const ssoUrl = getSSoUrl()
 
 const downloadAndInstall = async (extractPath, token) => {
   if (!dirExists(extractPath)) {
-    throw new Error('Invalid directory path')
+    console.error('Invalid directory path')
+    process.exit(1) 
   }
   try {
     const accessKeyUrl = `${ssoUrl}/getProjectByAccessKey`
     const response = await axios.post(accessKeyUrl, {
       access_key: token,
     })
+    if(response.data.status !== true){
+      console.error('Error: Invalid access key')
+      process.exit(1)
+    }
+
     const workspaceUrl = getWorkSpaceUrl() + '/pull-workspace'
+
     const res = await axios.get(workspaceUrl, {
       params: {
         projectId: response.data.project._id,
@@ -97,6 +104,11 @@ const downloadAndInstall = async (extractPath, token) => {
         'Response-Type': 'arraybuffer',
       },
     })
+    if(res.data.status !== true){
+      console.error('Error: Download failed')
+      process.exit(1)
+    }
+
     const zip = await JSZip.loadAsync(res.data)
     for (const filename of Object.keys(zip.files)) {
       const fileData = zip.files[filename]
