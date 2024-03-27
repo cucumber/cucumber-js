@@ -12,6 +12,8 @@ const { uuid } = IdGenerator
 describe('supportCodeLibraryBuilder', () => {
   it('should throw if not been reset yet', () => {
     try {
+      // @ts-expect-error mutating private member
+      supportCodeLibraryBuilder.status = 'PENDING'
       supportCodeLibraryBuilder.methods.Given('some context', () => {})
       fail()
     } catch (e) {
