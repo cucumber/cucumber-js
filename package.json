@@ -9,7 +9,7 @@
     "tests"
   ],
   "version": "10.3.2",
-  "funding": "https://github.com/sponsors/cucumber",
+  "funding": "https://opencollective.com/cucumber",
   "homepage": "https://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com>",
   "contributors": [
