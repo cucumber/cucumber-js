@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- Use explicit status to check if Cucumber is running when registering support code ([#2386](https://github.com/cucumber/cucumber-js/pull/2386))
 
 ## [10.3.1] - 2024-01-16
 ### Changed
