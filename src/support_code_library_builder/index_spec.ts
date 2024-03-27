@@ -1,3 +1,4 @@
+import { fail } from 'node:assert'
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import sinon from 'sinon'
@@ -9,6 +10,16 @@ import supportCodeLibraryBuilder from './'
 const { uuid } = IdGenerator
 
 describe('supportCodeLibraryBuilder', () => {
+  it('should throw if not been reset yet', () => {
+    try {
+      supportCodeLibraryBuilder.methods.Given('some context', () => {})
+      fail()
+    } catch (e) {
+      expect(e.message).to.contain('calling functions (e.g. "Given")')
+      expect(e.message).to.contain('status: PENDING')
+    }
+  })
+
   describe('no support code fns', () => {
     it('returns the default options', function () {
       // Arrange
