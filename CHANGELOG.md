@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [10.4.0] - 2024-04-07
 ### Added
 - Add more debug logging around code loading ([#2389](https://github.com/cucumber/cucumber-js/pull/2389))
 
@@ -1591,7 +1593,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.3.2...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.4.0...HEAD
+[10.4.0]: https://github.com/cucumber/cucumber-js/compare/v10.3.2...v10.4.0
 [10.3.2]: https://github.com/cucumber/cucumber-js/compare/v10.3.1...v10.3.2
 [10.3.1]: https://github.com/cucumber/cucumber-js/compare/v10.3.0...v10.3.1
 [10.3.0]: https://github.com/cucumber/cucumber-js/compare/v10.2.1...v10.3.0
