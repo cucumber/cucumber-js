@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Add more debug logging around code loading ([#2389](https://github.com/cucumber/cucumber-js/pull/2389))
 
 ## [10.3.2] - 2024-03-27
 ### Changed
