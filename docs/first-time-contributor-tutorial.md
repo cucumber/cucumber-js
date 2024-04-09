@@ -394,7 +394,7 @@ This option applies to the progress formatter and the summary formatter.
 ```
 
 Now we should add an entry in the CHANGELOG.md. Open it, locate the `### Added` section
-for the unreleased changes, and add somethig about the changes we just did:
+for the unreleased changes, and add something about the changes we just did:
 
 ```markdown
 

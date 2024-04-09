@@ -53,7 +53,7 @@ export default class ProgressBarFormatter extends Formatter {
     }
   }
 
-  logUndefinedParametertype(
+  logUndefinedParameterType(
     parameterType: messages.UndefinedParameterType
   ): void {
     this.log(
@@ -105,7 +105,7 @@ export default class ProgressBarFormatter extends Formatter {
 
   parseEnvelope(envelope: messages.Envelope): void {
     if (doesHaveValue(envelope.undefinedParameterType)) {
-      this.logUndefinedParametertype(envelope.undefinedParameterType)
+      this.logUndefinedParameterType(envelope.undefinedParameterType)
     } else if (doesHaveValue(envelope.testCase)) {
       this.incrementStepCount(envelope.testCase.pickleId)
     } else if (doesHaveValue(envelope.testStepStarted)) {

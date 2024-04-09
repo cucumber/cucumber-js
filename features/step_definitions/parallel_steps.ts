@@ -8,7 +8,7 @@ function getSetsOfPicklesRunningAtTheSameTime(
 ): string[] {
   const pickleIdToName: Record<string, string> = {}
   const testCaseIdToPickleId: Record<string, string> = {}
-  const testCaseStarteIdToPickleId: Record<string, string> = {}
+  const testCaseStartIdToPickleId: Record<string, string> = {}
   let currentRunningPickleIds: string[] = []
   const result: string[] = []
   envelopes.forEach((envelope) => {
@@ -18,7 +18,7 @@ function getSetsOfPicklesRunningAtTheSameTime(
       testCaseIdToPickleId[envelope.testCase.id] = envelope.testCase.pickleId
     } else if (envelope.testCaseStarted != null) {
       const pickleId = testCaseIdToPickleId[envelope.testCaseStarted.testCaseId]
-      testCaseStarteIdToPickleId[envelope.testCaseStarted.id] = pickleId
+      testCaseStartIdToPickleId[envelope.testCaseStarted.id] = pickleId
       currentRunningPickleIds.push(pickleId)
       if (currentRunningPickleIds.length > 1) {
         const setOfPickleNames = currentRunningPickleIds
@@ -29,7 +29,7 @@ function getSetsOfPicklesRunningAtTheSameTime(
       }
     } else if (envelope.testCaseFinished != null) {
       const pickleId =
-        testCaseStarteIdToPickleId[envelope.testCaseFinished.testCaseStartedId]
+        testCaseStartIdToPickleId[envelope.testCaseFinished.testCaseStartedId]
       currentRunningPickleIds = currentRunningPickleIds.filter(
         (x) => x != pickleId
       )
