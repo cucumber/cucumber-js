@@ -58,8 +58,8 @@ export default class Coordinator implements IRuntime {
   private readonly newId: IdGenerator.NewId
   private readonly pickleIds: string[]
   private assembledTestCases: IAssembledTestCases
-  private inProgressPickles: Record<string, messages.Pickle>
-  private workers: Record<string, IWorker>
+  private readonly inProgressPickles: Record<string, messages.Pickle>
+  private readonly workers: Record<string, IWorker>
   private readonly supportCodeLibrary: SupportCodeLibrary
   private readonly requireModules: string[]
   private readonly requirePaths: string[]
