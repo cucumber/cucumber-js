@@ -106,19 +106,36 @@ describe('fromFile', () => {
             default: { paths: ['default/path/*.feature'] },
             p1: { paths: ['p1/path/*.feature'] }
           };
+        };`
+      )
+
+      const defaultResult = await fromFile(logger, cwd, 'cucumber.mjs', [
+        'default',
+      ])
+      expect(defaultResult).to.deep.eq({ paths: ['default/path/*.feature'] })
+    })
+
+    it('should throw with .mjs with default function and additional static profiles', async () => {
+      const { logger, cwd } = await setup(
+        'cucumber.mjs',
+        `export default async function() { 
+          return {
+            default: { paths: ['default/path/*.feature'] },
+            p1: { paths: ['p1/path/*.feature'] }
+          };
         };
         export const p1 = { paths: ['other/p1/path/*.feature'] };
         export const p2 = { paths: ['p2/path/*.feature'] };`
       )
 
-      const p1Result = await fromFile(logger, cwd, 'cucumber.mjs', ['p1'])
-      const p2Result = await fromFile(logger, cwd, 'cucumber.mjs', ['p2'])
-      const defaultResult = await fromFile(logger, cwd, 'cucumber.mjs', [
-        'default',
-      ])
-      expect(p1Result).to.deep.eq({ paths: ['p1/path/*.feature'] })
-      expect(p2Result).to.deep.eq({ paths: ['p2/path/*.feature'] })
-      expect(defaultResult).to.deep.eq({ paths: ['default/path/*.feature'] })
+      try {
+        await fromFile(logger, cwd, 'cucumber.mjs', ['default'])
+        expect.fail('should have thrown')
+      } catch (error) {
+        expect(error.message).to.eq(
+          'Invalid profiles specified: if a default function definition is provided, no other static profiles should be specified'
+        )
+      }
     })
 
     it('should work with .cjs', async () => {

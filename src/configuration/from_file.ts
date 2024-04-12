@@ -21,22 +21,22 @@ export async function fromFile(
 
   if (defaultDefinition) {
     if (typeof defaultDefinition === 'function') {
-      const definitionsFromDefault = await defaultDefinition()
-
-      definitions = {
-        ...definitions,
-        default: {},
-        ...definitionsFromDefault,
-      }
+      logger.debug('Default function found; loading profiles')
+      definitions = await handleDefaultFunctionDefinition(
+        definitions,
+        defaultDefinition
+      )
     }
   } else {
     logger.debug('No default profile defined in configuration file')
     definitions.default = {}
   }
+
   if (profiles.length < 1) {
     logger.debug('No profiles specified; using default profile')
     profiles = ['default']
   }
+
   const definedKeys = Object.keys(definitions)
   profiles.forEach((profileKey) => {
     if (!definedKeys.includes(profileKey)) {
@@ -53,6 +53,24 @@ export async function fromFile(
       )
     )
   )
+}
+
+async function handleDefaultFunctionDefinition(
+  definitions: Record<string, any>,
+  defaultDefinition: Function
+): Promise<Record<string, any>> {
+  if (Object.keys(definitions).length > 1) {
+    throw new Error(
+      'Invalid profiles specified: if a default function definition is provided, no other static profiles should be specified'
+    )
+  }
+
+  const definitionsFromDefault = await defaultDefinition()
+
+  return {
+    default: {},
+    ...definitionsFromDefault,
+  }
 }
 
 async function loadFile(
