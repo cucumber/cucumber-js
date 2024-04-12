@@ -95,6 +95,25 @@ Feature: default command line arguments
       | -c       |
       | --config |
 
+  Scenario Outline: specifying a esm configuration file with default function profile
+    Given a file named ".cucumber-rc.mjs" with:
+      """
+      export default function buildProfiles() {
+        return {
+          default: '--dry-run'
+        }
+      }
+      """
+    When I run cucumber-js with `-c .cucumber-rc.mjs`
+    Then it outputs the text:
+      """
+      -
+
+      1 scenario (1 skipped)
+      1 step (1 skipped)
+      <duration-stat>
+      """
+
   Scenario: specifying a configuration file that doesn't exist
     When I run cucumber-js with `--config doesntexist.js`
     Then it fails
