@@ -14,7 +14,12 @@ The short tag is `-p`
 cucumber-js -p my_profile
 ```
 
-## Simple Example
+## Default profiles
+If defined, a `default` profile is used in case no profiles are specified at runtime. A default profile is either a profile or a function that returns either a profiles object or a `Promise` of profiles object. If defined this way, no other profile shall be defined.
+
+## Examples
+
+### Simple Example
 
 Let's take the common case of having some things a bit different locally than on a continuous integration server. Here's the configuration we've been running locally:
 
@@ -66,6 +71,62 @@ Now, if we just run `cucumber-js` with no arguments, it will pick up our profile
 ```shell
 cucumber-js -p ci
 ```
+
+### Example using a default function
+
+```javascript
+module.exports = {
+  default: function buildProfiles() {
+    const common = {
+      requireModule: ['ts-node/register'],
+      require: ['support/**/*.ts'],
+      worldParameters: {
+        appUrl: process.env.MY_APP_URL || 'http://localhost:3000/'
+      }
+    }
+
+    return {
+      default: {
+        ...common,
+        format: ['progress-bar', 'html:cucumber-report.html'],
+      },
+      ci: {
+        ...common,
+        format: ['html:cucumber-report.html'],
+        publish: true
+      }
+    }
+  }
+}
+```
+
+or its `esm` version:
+
+```javascript
+export default function buildProfiles() {
+  const common = {
+    requireModule: ['ts-node/register'],
+    require: ['support/**/*.ts'],
+    worldParameters: {
+      appUrl: process.env.MY_APP_URL || 'http://localhost:3000/'
+    }
+  }
+
+  return {
+    default: {
+      ...common,
+      format: ['progress-bar', 'html:cucumber-report.html'],
+    },
+    ci: {
+      ...common,
+      format: ['html:cucumber-report.html'],
+      publish: true
+    }
+  }
+}
+```
+
+This way the `buildProfiles` function will be invoked to discover profiles.
 
 ## Using Profiles for Arguments
 
