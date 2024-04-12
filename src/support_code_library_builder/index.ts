@@ -10,7 +10,7 @@ import TestStepHookDefinition from '../models/test_step_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { formatLocation } from '../formatter/helpers'
-import { doesHaveValue, doesNotHaveValue } from '../value_checker'
+import { doesHaveValue } from '../value_checker'
 import { ICanonicalSupportCodeIds } from '../runtime/parallel/command_types'
 import { GherkinStepKeyword } from '../models/gherkin_step_keyword'
 import validateArguments from './validate_arguments'
@@ -65,9 +65,10 @@ interface ITestRunHookDefinitionConfig {
   uri: string
 }
 
+type LibraryStatus = 'PENDING' | 'OPEN' | 'FINALIZED'
+
 export class SupportCodeLibraryBuilder {
   public readonly methods: IDefineSupportCodeMethods
-
   private originalCoordinates: ISupportCodeCoordinates
   private afterTestCaseHookDefinitionConfigs: ITestCaseHookDefinitionConfig[]
   private afterTestRunHookDefinitionConfigs: ITestRunHookDefinitionConfig[]
@@ -83,6 +84,7 @@ export class SupportCodeLibraryBuilder {
   private stepDefinitionConfigs: IStepDefinitionConfig[]
   private World: any
   private parallelCanAssign: ParallelAssignmentValidator
+  private status: LibraryStatus = 'PENDING'
 
   constructor() {
     const methods: IDefineSupportCodeMethods = {
@@ -123,11 +125,11 @@ export class SupportCodeLibraryBuilder {
       When: this.defineStep('When', () => this.stepDefinitionConfigs),
     }
     const checkInstall = (method: string) => {
-      if (doesNotHaveValue(this.cwd)) {
+      if (this.status === 'PENDING') {
         throw new Error(
           `
-          You're calling functions (e.g. "${method}") on an instance of Cucumber that isn't running.
-          This means you have an invalid installation, mostly likely due to:
+          You're calling functions (e.g. "${method}") on an instance of Cucumber that isn't running (status: ${this.status}).
+          This means you may have an invalid installation, potentially due to:
           - Cucumber being installed globally
           - A project structure where your support code is depending on a different instance of Cucumber
           Either way, you'll need to address this in order for Cucumber to work.
@@ -414,6 +416,7 @@ export class SupportCodeLibraryBuilder {
   }
 
   finalize(canonicalIds?: ICanonicalSupportCodeIds): SupportCodeLibrary {
+    this.status = 'FINALIZED'
     const stepDefinitionsResult = this.buildStepDefinitions(
       canonicalIds?.stepDefinitionIds
     )
@@ -472,6 +475,7 @@ export class SupportCodeLibraryBuilder {
     this.stepDefinitionConfigs = []
     this.parallelCanAssign = () => true
     this.World = World
+    this.status = 'OPEN'
   }
 }
 

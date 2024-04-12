@@ -8,7 +8,8 @@
     "gherkin",
     "tests"
   ],
-  "version": "10.3.1",
+  "version": "10.4.0",
+  "funding": "https://opencollective.com/cucumber",
   "homepage": "https://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com>",
   "contributors": [
@@ -208,14 +209,14 @@
     "node": "18 || 20 || 21"
   },
   "dependencies": {
-    "@cucumber/ci-environment": "10.0.0",
-    "@cucumber/cucumber-expressions": "17.0.1",
-    "@cucumber/gherkin": "27.0.0",
+    "@cucumber/ci-environment": "10.0.1",
+    "@cucumber/cucumber-expressions": "17.1.0",
+    "@cucumber/gherkin": "28.0.0",
     "@cucumber/gherkin-streams": "5.0.1",
-    "@cucumber/gherkin-utils": "8.0.5",
-    "@cucumber/html-formatter": "21.2.0",
+    "@cucumber/gherkin-utils": "9.0.0",
+    "@cucumber/html-formatter": "21.3.1",
     "@cucumber/message-streams": "4.0.1",
-    "@cucumber/messages": "24.0.1",
+    "@cucumber/messages": "24.1.0",
     "@cucumber/tag-expressions": "6.1.0",
     "assertion-error-formatter": "^3.0.0",
     "capital-case": "^1.0.4",
@@ -243,7 +244,7 @@
     "string-argv": "0.3.1",
     "strip-ansi": "6.0.1",
     "supports-color": "^8.1.1",
-    "tmp": "^0.2.1",
+    "tmp": "0.2.3",
     "type-fest": "^4.8.3",
     "util-arity": "^1.1.0",
     "xmlbuilder": "^15.1.1",
@@ -252,7 +253,7 @@
   },
   "devDependencies": {
     "@cucumber/compatibility-kit": "15.0.0",
-    "@cucumber/query": "12.0.1",
+    "@cucumber/query": "12.1.2",
     "@microsoft/api-extractor": "7.39.0",
     "@sinonjs/fake-timers": "10.0.2",
     "@types/chai": "4.3.4",

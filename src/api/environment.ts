@@ -18,8 +18,13 @@ export function mergeEnvironment(
     },
     provided
   )
+  const logger = new ConsoleLogger(
+    fullEnvironment.stderr,
+    fullEnvironment.debug
+  )
+  logger.debug('Resolved environment:', fullEnvironment)
   return {
     ...fullEnvironment,
-    logger: new ConsoleLogger(fullEnvironment.stderr, fullEnvironment.debug),
+    logger: logger,
   }
 }

@@ -57,6 +57,7 @@ export async function runCucumber(
     'originalCoordinates' in options.support
       ? (options.support as SupportCodeLibrary)
       : await getSupportCodeLibrary({
+          logger,
           cwd,
           newId,
           requirePaths,
