@@ -192,7 +192,7 @@ describe('UserCodeRunner', () => {
         it('returns what the promise resolves to', async function () {
           // Arrange
           const fn = async function (): Promise<string> {
-            return await Promise.resolve('result')
+            return 'result'
           }
 
           // Act
@@ -208,7 +208,7 @@ describe('UserCodeRunner', () => {
         it('returns what the promise rejects as an error', async function () {
           // Arrange
           const fn = async function (): Promise<void> {
-            return await Promise.reject('error') // eslint-disable-line prefer-promise-reject-errors
+            throw 'error'
           }
 
           // Act
