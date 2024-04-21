@@ -85,7 +85,7 @@ export function orderPickles<T = string>(
       break
     default:
       throw new Error(
-        'Unrecgonized order type. Should be `defined` or `random`'
+        'Unrecognized order type. Should be `defined` or `random`'
       )
   }
 }

@@ -67,6 +67,34 @@ Now, if we just run `cucumber-js` with no arguments, it will pick up our profile
 cucumber-js -p ci
 ```
 
+## Defining profiles dynamically
+
+If you need to define your profiles dynamically (including asynchronously), you can use the `default` profile key/export to provide an async function that resolves to your profiles. This can be particularly useful in an ESM context where the profiles are static exports. Here's an example:
+
+```javascript
+export default function() {
+  const common = {
+    requireModule: ['ts-node/register'],
+    require: ['support/**/*.ts'],
+    worldParameters: {
+      appUrl: process.env.MY_APP_URL || 'http://localhost:3000/'
+    }
+  }
+
+  return {
+    default: {
+      ...common,
+      format: ['progress-bar', 'html:cucumber-report.html'],
+    },
+    ci: {
+      ...common,
+      format: ['html:cucumber-report.html'],
+      publish: true
+    }
+  }
+}
+```
+
 ## Using Profiles for Arguments
 
 Cucumber doesn't allow custom command line arguments. For example:

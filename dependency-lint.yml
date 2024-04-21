@@ -21,7 +21,7 @@ ignoreErrors:
   shouldBeDevDependency:
     - '@cucumber/message-streams' # peer dependency of @cucumber/gherkin-streams
   unused:
-    - '@cucumber/compatibility-kit' # files dynamically loaded in cck test, not require'd
+    - '@cucumber/compatibility-kit' # files dynamically loaded in cck test, not required
     - '@typescript-eslint/eslint-plugin' # peer dependency of standard-with-typescript
     - '@typescript-eslint/parser' # peer dependency of @typescript-eslint/eslint-plugin
     - '@types/*' # type definitions

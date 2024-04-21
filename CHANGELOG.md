@@ -9,6 +9,22 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ## [Unreleased]
 
+## [10.5.0] - 2024-04-21
+### Added
+- Allow supplying error details for pending steps ([#2393](https://github.com/cucumber/cucumber-js/pull/2393))
+- Allow defining a default function profile to be used as profile builder ([#2384](https://github.com/cucumber/cucumber-js/pull/2384))
+
+### Fixed
+- Various typing improvements and other fixes ([#2390](https://github.com/cucumber/cucumber-js/pull/2390), [#2391](https://github.com/cucumber/cucumber-js/pull/2391), [#2394](https://github.com/cucumber/cucumber-js/pull/2394))
+
+## [10.4.0] - 2024-04-07
+### Added
+- Add more debug logging around code loading ([#2389](https://github.com/cucumber/cucumber-js/pull/2389))
+
+## [10.3.2] - 2024-03-27
+### Changed
+- Use explicit status to check if Cucumber is running when registering support code ([#2386](https://github.com/cucumber/cucumber-js/pull/2386))
+
 ## [10.3.1] - 2024-01-16
 ### Changed
 - Allow `provided` configuration to be an array ([#2374](https://github.com/cucumber/cucumber-js/pull/2374))
@@ -1585,7 +1601,10 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.3.1...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.5.0...HEAD
+[10.5.0]: https://github.com/cucumber/cucumber-js/compare/v10.4.0...v10.5.0
+[10.4.0]: https://github.com/cucumber/cucumber-js/compare/v10.3.2...v10.4.0
+[10.3.2]: https://github.com/cucumber/cucumber-js/compare/v10.3.1...v10.3.2
 [10.3.1]: https://github.com/cucumber/cucumber-js/compare/v10.3.0...v10.3.1
 [10.3.0]: https://github.com/cucumber/cucumber-js/compare/v10.2.1...v10.3.0
 [10.2.1]: https://github.com/cucumber/cucumber-js/compare/v10.2.0...v10.2.1
