@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [10.5.1] - 2024-04-21
 ### Fixed
 - Type signature of `defineParameterType` correctly reflects `transformer` property's optionality.
 
@@ -1603,7 +1605,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.5.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.5.1...HEAD
+[10.5.1]: https://github.com/cucumber/cucumber-js/compare/v10.5.0...v10.5.1
 [10.5.0]: https://github.com/cucumber/cucumber-js/compare/v10.4.0...v10.5.0
 [10.4.0]: https://github.com/cucumber/cucumber-js/compare/v10.3.2...v10.4.0
 [10.3.2]: https://github.com/cucumber/cucumber-js/compare/v10.3.1...v10.3.2
