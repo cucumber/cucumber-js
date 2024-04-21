@@ -9,8 +9,11 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ## [Unreleased]
 ### Added
-- Add error message for pending steps ([#2392](https://github.com/cucumber/cucumber-js/pull/2393))
-- Updated profiles to allow defining a default function profile to be used as profile builder ([#2384](https://github.com/cucumber/cucumber-js/pull/2384))
+- Allow supplying error details for pending steps ([#2393](https://github.com/cucumber/cucumber-js/pull/2393))
+- Allow defining a default function profile to be used as profile builder ([#2384](https://github.com/cucumber/cucumber-js/pull/2384))
+
+### Fixed
+- Various typing improvements and other fixes ([#2390](https://github.com/cucumber/cucumber-js/pull/2390), [#2391](https://github.com/cucumber/cucumber-js/pull/2391), [#2394](https://github.com/cucumber/cucumber-js/pull/2394))
 
 ## [10.4.0] - 2024-04-07
 ### Added
