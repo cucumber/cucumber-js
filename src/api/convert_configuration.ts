@@ -24,6 +24,7 @@ export async function convertConfiguration(
       requireModules: flatConfiguration.requireModule,
       requirePaths: flatConfiguration.require,
       importPaths: flatConfiguration.import,
+      loaders: flatConfiguration.loader,
     },
     runtime: {
       dryRun: flatConfiguration.dryRun,

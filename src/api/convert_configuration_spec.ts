@@ -3,6 +3,7 @@ import { expect } from 'chai'
 import { DEFAULT_CONFIGURATION } from '../configuration'
 import { FakeLogger } from '../../test/fake_logger'
 import { convertConfiguration } from './convert_configuration'
+import { IRunConfiguration } from './types'
 
 describe('convertConfiguration', () => {
   it('should convert defaults correctly', async () => {
@@ -40,8 +41,9 @@ describe('convertConfiguration', () => {
         requireModules: [],
         requirePaths: [],
         importPaths: [],
+        loaders: [],
       },
-    })
+    } satisfies IRunConfiguration)
   })
 
   it('should map multiple formatters with string notation', async () => {
