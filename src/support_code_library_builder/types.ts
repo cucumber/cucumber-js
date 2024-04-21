@@ -148,6 +148,7 @@ export interface ISupportCodeCoordinates {
   requireModules: string[]
   requirePaths: string[]
   importPaths: string[]
+  loaders?: string[]
 }
 
 export interface SupportCodeLibrary {
