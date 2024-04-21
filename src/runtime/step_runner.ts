@@ -68,10 +68,13 @@ export async function run({
   } else if (result === 'pending') {
     status = messages.TestStepResultStatus.PENDING
   } else if (doesHaveValue(error)) {
-    details = formatError(error, filterStackTraces)
     status = messages.TestStepResultStatus.FAILED
   } else {
     status = messages.TestStepResultStatus.PASSED
+  }
+
+  if (doesHaveValue(error)) {
+    details = formatError(error, filterStackTraces)
   }
 
   return {
