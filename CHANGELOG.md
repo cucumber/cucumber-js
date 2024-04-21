@@ -9,7 +9,6 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ## [Unreleased]
 ### Fixed
-
 - Type signature of `defineParameterType` correctly reflects `transformer` property's optionality.
 
 ## [10.5.0] - 2024-04-21
