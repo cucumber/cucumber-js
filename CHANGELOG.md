@@ -8,7 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
 - Add error message for pending steps ([#2392](https://github.com/cucumber/cucumber-js/pull/2393))
+- Updated profiles to allow defining a default function profile to be used as profile builder ([#2384](https://github.com/cucumber/cucumber-js/pull/2384))
 
 ## [10.4.0] - 2024-04-07
 ### Added
