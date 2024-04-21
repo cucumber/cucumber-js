@@ -61,8 +61,9 @@ export async function runCucumber(
           cwd,
           newId,
           requirePaths,
-          importPaths,
           requireModules: supportCoordinates.requireModules,
+          importPaths,
+          loaders: supportCoordinates.loaders,
         })
 
   const eventBroadcaster = new EventEmitter()

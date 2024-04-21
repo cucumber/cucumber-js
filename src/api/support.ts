@@ -12,6 +12,7 @@ export async function getSupportCodeLibrary({
   requireModules,
   requirePaths,
   importPaths,
+  loaders,
 }: {
   logger: ILogger
   cwd: string
@@ -19,11 +20,13 @@ export async function getSupportCodeLibrary({
   requireModules: string[]
   requirePaths: string[]
   importPaths: string[]
+  loaders: string[]
 }): Promise<SupportCodeLibrary> {
   supportCodeLibraryBuilder.reset(cwd, newId, {
     requireModules,
     requirePaths,
     importPaths,
+    loaders,
   })
 
   requireModules.map((path) => {
