@@ -24,9 +24,6 @@ export function makeRuntime({
   newId: IdGenerator.NewId
   pickleIds: string[]
   supportCodeLibrary: SupportCodeLibrary
-  requireModules: string[]
-  requirePaths: string[]
-  importPaths: string[]
   options: IRunOptionsRuntime
 }): IRuntime {
   if (parallel > 0) {
