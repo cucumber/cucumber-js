@@ -1,3 +1,4 @@
+import { register } from 'node:module'
 import { pathToFileURL } from 'node:url'
 import { IdGenerator } from '@cucumber/messages'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
@@ -37,6 +38,11 @@ export async function getSupportCodeLibrary({
     logger.debug(`Attempting to require code from "${path}"`)
     tryRequire(path)
   })
+
+  for (const descriptor of loaders) {
+    logger.debug(`Attempting to register loader "${descriptor}"`)
+    register(descriptor, pathToFileURL('./'))
+  }
 
   for (const path of importPaths) {
     logger.debug(`Attempting to import code from "${path}"`)

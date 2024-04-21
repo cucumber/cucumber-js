@@ -38,6 +38,7 @@ export async function loadSupport(
     newId,
     requireModules: options.support.requireModules,
     requirePaths,
+    loaders: options.support.loaders,
     importPaths,
   })
   await pluginManager.cleanup()
