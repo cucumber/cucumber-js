@@ -20,6 +20,7 @@ export interface IConfiguration {
     formatOptions: JsonObject;
     import: string[];
     language: string;
+    loader: string[];
     name: string[];
     order: IPickleOrder;
     parallel: number;
