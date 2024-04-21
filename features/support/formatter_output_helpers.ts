@@ -60,7 +60,7 @@ export function normalizeMessageOutput(
 export function stripMetaMessages(
   envelopeObjects: messages.Envelope[]
 ): messages.Envelope[] {
-  return envelopeObjects.filter((e: any) => {
+  return envelopeObjects.filter((e) => {
     // filter off meta objects, almost none of it predictable/useful for testing
     return doesNotHaveValue(e.meta)
   })
