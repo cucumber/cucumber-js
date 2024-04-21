@@ -33,7 +33,7 @@ Feature: Data Tables
           Given a table step
             | Vegetable | Rating |
             | Apricot   | 5      |
-            | Brocolli  | 2      |
+            | Broccoli  | 2      |
             | Cucumber  | 10     |
       """
     Given a file named "features/step_definitions/passing_steps.js" with:
@@ -44,7 +44,7 @@ Feature: Data Tables
       Given(/^a table step$/, function(table) {
         const expected = [
           ['Apricot', '5'],
-          ['Brocolli', '2'],
+          ['Broccoli', '2'],
           ['Cucumber', '10']
         ]
         assert.deepEqual(table.rows(), expected)
@@ -86,7 +86,7 @@ Feature: Data Tables
           Given a table step
             | Vegetable | Rating |
             | Apricot   | 5      |
-            | Brocolli  | 2      |
+            | Broccoli  | 2      |
             | Cucumber  | 10     |
       """
     Given a file named "features/step_definitions/passing_steps.js" with:
@@ -97,7 +97,7 @@ Feature: Data Tables
       Given(/^a table step$/, function(table) {
         const expected = [
           {'Vegetable': 'Apricot', 'Rating': '5'},
-          {'Vegetable': 'Brocolli', 'Rating': '2'},
+          {'Vegetable': 'Broccoli', 'Rating': '2'},
           {'Vegetable': 'Cucumber', 'Rating': '10'}
         ]
         assert.deepEqual(table.hashes(), expected)
