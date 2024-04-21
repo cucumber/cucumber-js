@@ -168,6 +168,7 @@ export interface ISourcesError {
 // @public
 export interface ISupportCodeCoordinates {
     importPaths: string[];
+    loaders?: string[];
     requireModules: string[];
     requirePaths: string[];
 }

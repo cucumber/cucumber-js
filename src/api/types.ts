@@ -149,6 +149,10 @@ export interface ISupportCodeCoordinates {
    * Paths and/or glob expressions of user code to load, via `import()`
    */
   importPaths: string[]
+  /**
+   * Descriptors of loaders to load,, via `register()`
+   */
+  loaders?: string[]
 }
 
 /**
