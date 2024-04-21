@@ -42,7 +42,7 @@ export default class Runtime implements IRuntime {
   private readonly pickleIds: string[]
   private readonly supportCodeLibrary: SupportCodeLibrary
   private success: boolean
-  private runTestRunHooks: RunsTestRunHooks
+  private readonly runTestRunHooks: RunsTestRunHooks
 
   constructor({
     eventBroadcaster,

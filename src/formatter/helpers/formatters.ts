@@ -28,13 +28,13 @@ const Formatters = {
     }
   },
   buildFormattersDocumentationString(): string {
-    let concatanatedFormattersDocumentation: string = ''
+    let concatenatedFormattersDocumentation: string = ''
     const formatters = this.getFormatters()
     for (const formatterName in formatters) {
-      concatanatedFormattersDocumentation += `    ${formatterName}: ${formatters[formatterName].documentation}\n`
+      concatenatedFormattersDocumentation += `    ${formatterName}: ${formatters[formatterName].documentation}\n`
     }
 
-    return concatanatedFormattersDocumentation
+    return concatenatedFormattersDocumentation
   },
 }
 

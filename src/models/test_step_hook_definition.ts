@@ -28,11 +28,11 @@ export default class TestStepHookDefinition
   async getInvocationParameters({
     hookParameter,
   }: IGetInvocationDataRequest): Promise<IGetInvocationDataResponse> {
-    return await Promise.resolve({
+    return {
       getInvalidCodeLengthMessage: () =>
         this.buildInvalidCodeLengthMessage('0 or 1', '2'),
       parameters: [hookParameter],
       validCodeLengths: [0, 1, 2],
-    })
+    }
   }
 }

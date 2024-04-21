@@ -133,7 +133,7 @@ export default class TestCaseRunner {
   async invokeStep(
     step: messages.PickleStep,
     stepDefinition: IDefinition,
-    hookParameter?: any
+    hookParameter?: ITestCaseHookParameter
   ): Promise<messages.TestStepResult> {
     return await StepRunner.run({
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
