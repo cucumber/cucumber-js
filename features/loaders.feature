@@ -34,6 +34,5 @@ Feature: ESM loaders support
       """
 
   Scenario:
-    Given my env includes "{\"NODE_OPTIONS\":\"--loader ts-node/esm\"}"
-    When I run cucumber-js with `--import features/steps.ts`
+    When I run cucumber-js with `--loader ts-node/esm --import features/steps.ts`
     Then it passes
