@@ -101,6 +101,11 @@ const ArgvParser = {
         ArgvParser.collect
       )
       .option(
+        '-l, --loader <NODE_MODULE>',
+        'module descriptor(s) for loaders to be registered ahead of loading support code',
+        ArgvParser.collect
+      )
+      .option(
         '--language <ISO 639-1>',
         'provide the default language for feature files'
       )
