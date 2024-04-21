@@ -17,6 +17,7 @@ import { assembleTestCases } from './assemble_test_cases'
 import IEnvelope = messages.Envelope
 
 interface ITestRunnerRequest {
+  workerId?: string
   gherkinDocument: messages.GherkinDocument
   pickle: messages.Pickle
   retries?: number
@@ -47,6 +48,7 @@ async function testRunner(
   // listen for envelopers _after_ we've assembled test cases
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
   const runner = new TestCaseRunner({
+    workerId: options.workerId,
     eventBroadcaster,
     stopwatch: create(),
     gherkinDocument: options.gherkinDocument,
@@ -532,6 +534,41 @@ describe('TestCaseRunner', () => {
           testStepId: envelopes[2].testStepFinished.testStepId,
           result: envelopes[2].testStepFinished.testStepResult,
         })
+      })
+    })
+
+    it('emits workerId on testCaseStarted when provided', async () => {
+      // Arrange
+      const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
+        Given('a step', function () {
+          clock.tick(1)
+        })
+      })
+      const {
+        gherkinDocument,
+        pickles: [pickle],
+      } = await parse({
+        data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
+        uri: 'a.feature',
+      })
+
+      // Act
+      const { envelopes } = await testRunner({
+        workerId: 'foo',
+        gherkinDocument,
+        pickle,
+        supportCodeLibrary,
+      })
+
+      // Assert
+      expect(envelopes).to.deep.include({
+        testCaseStarted: {
+          workerId: 'foo',
+          attempt: 0,
+          id: '2',
+          testCaseId: '0',
+          timestamp: predictableTimestamp(0),
+        },
       })
     })
   })

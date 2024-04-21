@@ -15,9 +15,6 @@ export function makeRuntime({
   pickleIds,
   newId,
   supportCodeLibrary,
-  requireModules,
-  requirePaths,
-  importPaths,
   options: { parallel, ...options },
 }: {
   cwd: string
@@ -42,9 +39,6 @@ export function makeRuntime({
       options,
       newId,
       supportCodeLibrary,
-      requireModules,
-      requirePaths,
-      importPaths,
       numberOfWorkers: parallel,
     })
   }
