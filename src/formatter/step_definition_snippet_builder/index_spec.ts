@@ -27,7 +27,7 @@ describe('StepDefinitionSnippetBuilder', () => {
   describe('build()', () => {
     describe('step is an precondition step', () => {
       it('uses Given as the function name', async function () {
-        // Arrrange
+        // Arrange
         const pickleStep = await getPickleStepWithText('Given abc')
 
         // Act
@@ -43,7 +43,7 @@ describe('StepDefinitionSnippetBuilder', () => {
 
     describe('step is an event step', () => {
       it('uses When as the function name', async function () {
-        // Arrrange
+        // Arrange
         const pickleStep = await getPickleStepWithText('When abc')
 
         // Act
@@ -59,7 +59,7 @@ describe('StepDefinitionSnippetBuilder', () => {
 
     describe('step is an outcome step', () => {
       it('uses Then as the function name', async function () {
-        // Arrrange
+        // Arrange
         const pickleStep = await getPickleStepWithText('Then abc')
 
         // Act
@@ -75,7 +75,7 @@ describe('StepDefinitionSnippetBuilder', () => {
 
     describe('step has simple name', () => {
       it('adds the proper generated expression', async function () {
-        // Arrrange
+        // Arrange
         const pickleStep = await getPickleStepWithText('Given abc')
 
         // Act
@@ -94,7 +94,7 @@ describe('StepDefinitionSnippetBuilder', () => {
 
     describe('step name has a quoted string', () => {
       it('adds the proper generated expression', async function () {
-        // Arrrange
+        // Arrange
         const pickleStep = await getPickleStepWithText('Given abc "def" ghi')
 
         // Act
@@ -112,7 +112,7 @@ describe('StepDefinitionSnippetBuilder', () => {
 
     describe('step name has multiple quoted strings', () => {
       it('adds the proper generated expression', async function () {
-        // Arrrange
+        // Arrange
         const pickleStep = await getPickleStepWithText(
           'Given abc "def" ghi "jkl" mno'
         )
@@ -134,7 +134,7 @@ describe('StepDefinitionSnippetBuilder', () => {
 
     describe('step name has a standalone number', () => {
       it('adds the proper generated expression', async function () {
-        // Arrrange
+        // Arrange
         const pickleStep = await getPickleStepWithText('Given abc 123 def')
 
         // Act
@@ -152,7 +152,7 @@ describe('StepDefinitionSnippetBuilder', () => {
 
     describe('step has no argument', () => {
       it('passes no step parameter names', async function () {
-        // Arrrange
+        // Arrange
         const pickleStep = await getPickleStepWithText('Given abc')
 
         // Act
@@ -168,7 +168,7 @@ describe('StepDefinitionSnippetBuilder', () => {
 
     describe('step has a data table argument', () => {
       it('passes dataTable as a step parameter name', async function () {
-        // Arrrange
+        // Arrange
         const pickleStep = await getPickleStepWithText(`\
           Given abc  
             | a |`)
@@ -186,7 +186,7 @@ describe('StepDefinitionSnippetBuilder', () => {
 
     describe('step has a doc string argument', () => {
       it('passes docString as a step parameter name', async function () {
-        // Arrrange
+        // Arrange
         const pickleStep = await getPickleStepWithText(`
           Given abc
             """

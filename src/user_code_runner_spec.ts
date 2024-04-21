@@ -98,7 +98,7 @@ describe('UserCodeRunner', () => {
         })
       })
 
-      describe('function calls back with non-serializable rror', () => {
+      describe('function calls back with non-serializable error', () => {
         it('returns the error', async function () {
           // Arrange
           const fn = function (callback: CallbackFn): void {
