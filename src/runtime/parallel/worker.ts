@@ -1,5 +1,6 @@
 import { EventEmitter } from 'node:events'
 import { pathToFileURL } from 'node:url'
+import { register } from 'node:module'
 import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
 import { JsonObject } from 'type-fest'
@@ -69,6 +70,9 @@ export default class Worker {
     )
     supportCodeCoordinates.requireModules.map((module) => tryRequire(module))
     supportCodeCoordinates.requirePaths.map((module) => tryRequire(module))
+    for (const descriptor of supportCodeCoordinates.loaders) {
+      register(descriptor, pathToFileURL(this.cwd))
+    }
     for (const path of supportCodeCoordinates.importPaths) {
       await import(pathToFileURL(path).toString())
     }
