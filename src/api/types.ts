@@ -152,7 +152,7 @@ export interface ISupportCodeCoordinates {
   /**
    * Descriptors of loaders to register, via `register()`
    */
-  loaders?: string[]
+  loaders: string[]
 }
 
 /**
@@ -168,7 +168,7 @@ export interface ILoadSupportOptions {
    * feature file locations.
    */
   sources: ISourcesCoordinates
-  support: ISupportCodeCoordinates
+  support: Partial<ISupportCodeCoordinates>
 }
 
 /**
@@ -250,7 +250,7 @@ export interface IRunOptionsFormats {
  */
 export interface IRunConfiguration {
   sources: ISourcesCoordinates
-  support: ISupportCodeCoordinates
+  support: Partial<ISupportCodeCoordinates>
   runtime: IRunOptionsRuntime
   formats: IRunOptionsFormats
 }
@@ -281,7 +281,7 @@ export interface ISupportCodeLibrary {
  * mode, as parallel workers will each load the support code themselves anyway.
  */
 export type ISupportCodeCoordinatesOrLibrary =
-  | ISupportCodeCoordinates
+  | Partial<ISupportCodeCoordinates>
   | ISupportCodeLibrary
 
 /**

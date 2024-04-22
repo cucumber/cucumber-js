@@ -33,7 +33,15 @@ export async function runCucumber(
   const supportCoordinates =
     'originalCoordinates' in options.support
       ? options.support.originalCoordinates
-      : options.support
+      : Object.assign(
+          {
+            requireModules: [],
+            requirePaths: [],
+            loaders: [],
+            importPaths: [],
+          },
+          options.support
+        )
 
   const pluginManager = await initializeForRunCucumber(
     logger,
