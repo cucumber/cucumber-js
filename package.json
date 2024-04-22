@@ -8,9 +8,7 @@
     "gherkin",
     "tests"
   ],
-
-  "version": "1.0.12",
-
+  "version": "1.0.37",
   "homepage": "https://github.com/blinq-io/cucumber-js",
   "author": "blinq.io",
   "contributors": [
