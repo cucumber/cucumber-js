@@ -39,6 +39,8 @@ For ESM, you need to use the `loader` configuration option to register `ts-node`
 - In a configuration file `{ loader: ['ts-node/esm'], import: ['features/step-definitions/**/*.ts'] }`
 - On the CLI `npx cucumber-js --loader ts-node/esm --import 'features/step-definitions/**/*.ts'`
 
+The value of `loader` will usually be a package/module name, but if you have a loader you've authored locally, you can provide a path that's relative to your project's working directory.
+
 ### Environment variable
 
 In versions earlier than v10.6.0 (without the `loader` option), you can still instruct Node.js to register the loader on the process via the `NODE_OPTIONS` environment variable, like this:
@@ -49,7 +51,7 @@ You then just need to specify the `import` option as above for your support code
 
 (This approach is no longer recommended, and you might see a warning from Node.js telling you so.)
 
-### Source maps
+## Source maps
 
 Source maps are used to ensure accurate source references and stack traces in Cucumber's reporting, by giving traceability from a transpiled piece of code back to the original source code.
 
