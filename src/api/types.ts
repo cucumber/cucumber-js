@@ -150,7 +150,7 @@ export interface ISupportCodeCoordinates {
    */
   importPaths: string[]
   /**
-   * Descriptors of loaders to load,, via `register()`
+   * Descriptors of loaders to register, via `register()`
    */
   loaders?: string[]
 }
