@@ -2,7 +2,7 @@ import * as messages from '@cucumber/messages'
 
 // type JsonException = messages.Exception
 type JsonTimestamp = number //messages.Timestamp
-type JsonStepType = 'Unknown' | 'Context' | 'Action' | 'Outcome'
+type JsonStepType = 'Unknown' | 'Context' | 'Action' | 'Outcome' | 'Conjunction'
 
 type JsonResultUnknown = {
   status: 'UNKNOWN'
@@ -62,7 +62,8 @@ type JsonCommand = {
   screenshotId?: string
   result: JsonCommandResult
 }
-type JsonStep = {
+export type JsonStep = {
+  keyword: string
   type: JsonStepType
   text: string
   commands: JsonCommand[]
@@ -92,13 +93,14 @@ export default class ReportGenerator {
     testCases: [] as JsonTestProgress[],
   }
   private gherkinDocumentMap = new Map<string, messages.GherkinDocument>()
+  private stepMap = new Map<string, messages.Step>()
   private pickleMap = new Map<string, messages.Pickle>()
   private testCaseMap = new Map<string, messages.TestCase>()
   private testStepMap = new Map<string, messages.TestStep>()
-  private stepProgressMap = new Map<string, JsonStep>()
-  private testProgressMap = new Map<string, JsonTestProgress>()
+  private stepReportMap = new Map<string, JsonStep>()
+  private testCaseReportMap = new Map<string, JsonTestProgress>()
 
-  reportFolder:null|string = null
+  reportFolder: null | string = null
 
   handleMessage(envelope: messages.Envelope) {
     const type = Object.keys(envelope)[0] as keyof messages.Envelope
@@ -171,7 +173,7 @@ export default class ReportGenerator {
     return this.report
   }
   private handleParseError(parseError: messages.ParseError) {
-    const { message, source } = parseError
+    const { message } = parseError
     const timestamp = new Date().getTime()
     this.report.result = {
       status: 'FAILED',
@@ -182,6 +184,29 @@ export default class ReportGenerator {
   }
   private onGherkinDocument(doc: messages.GherkinDocument) {
     this.gherkinDocumentMap.set(doc.uri, doc)
+    doc.feature.children.forEach((child) => {
+      if (child.scenario) {
+        child.scenario.steps.forEach((step) => {
+          this.stepMap.set(step.id, step)
+        })
+      } else if (child.background) {
+        child.background.steps.forEach((step) => {
+          this.stepMap.set(step.id, step)
+        })
+      } else if (child.rule) {
+        child.rule.children.forEach((child) => {
+          if (child.scenario) {
+            child.scenario.steps.forEach((step) => {
+              this.stepMap.set(step.id, step)
+            })
+          } else if (child.background) {
+            child.background.steps.forEach((step) => {
+              this.stepMap.set(step.id, step)
+            })
+          }
+        })
+      }
+    })
   }
   private onPickle(pickle: messages.Pickle) {
     this.pickleMap.set(pickle.id, pickle)
@@ -201,6 +226,36 @@ export default class ReportGenerator {
       this.testStepMap.set(testStep.id, testStep)
     })
   }
+  private _findScenario(doc: messages.GherkinDocument, scenarioId: string) {
+    for (const child of doc.feature.children) {
+      if (child.scenario && child.scenario.id === scenarioId) {
+        return child.scenario
+      }
+      if (child.rule) {
+        for (const scenario of child.rule.children) {
+          if (scenario.scenario && scenario.scenario.id === scenarioId) {
+            return scenario.scenario
+          }
+        }
+      }
+    }
+    throw new Error(`scenario "${scenarioId}" not found`)
+  }
+  private _getParameters(scenario: messages.Scenario, exampleId: string) {
+    const parameters: Record<string, string> = {}
+    if (scenario.examples.length === 0) return parameters
+    for (const examples of scenario.examples) {
+      for (const tableRow of examples.tableBody) {
+        if (tableRow.id === exampleId) {
+          for (let i = 0; i < examples.tableHeader.cells.length; i++) {
+            parameters[examples.tableHeader.cells[i].value] =
+              tableRow.cells[i].value
+          }
+        }
+      }
+    }
+    return parameters
+  }
   private onTestCaseStarted(testCaseStarted: messages.TestCaseStarted) {
     const { testCaseId, id, timestamp } = testCaseStarted
     const testCase = this.testCaseMap.get(testCaseId)
@@ -215,75 +270,71 @@ export default class ReportGenerator {
       throw new Error(`gherkinDocument with uri ${pickle.uri} not found`)
     const featureName = doc.feature.name
 
-    const scenarioName = pickle.name
+    const scenarioId = pickle.astNodeIds[0]
+    const scenario = this._findScenario(doc, scenarioId)
+    const scenarioName = scenario.name
 
-    const steps: JsonStep[] = pickle.steps.map((step) => {
-      this.stepProgressMap.set(step.id, {
-        type: step.type,
+    const parameters = this._getParameters(scenario, pickle.astNodeIds[1])
+
+    const steps: JsonStep[] = pickle.steps.map((pickleStep) => {
+      const stepId = pickleStep.astNodeIds[0]
+      const step = this.stepMap.get(stepId)
+      this.stepReportMap.set(pickleStep.id, {
+        type: step.keywordType,
+        keyword: step.keyword,
         text: step.text,
         commands: [],
         result: {
           status: 'UNKNOWN',
         },
       })
-      return this.stepProgressMap.get(step.id)
+      return this.stepReportMap.get(pickleStep.id)
     })
-    this.testProgressMap.set(id, {
+    this.testCaseReportMap.set(id, {
       id,
       uri: pickle.uri,
       featureName,
       scenarioName,
-      // TODO: compute parameters
-      parameters: {},
+      parameters,
       steps,
       result: {
         status: 'STARTED',
         startTime: this.getTimeStamp(timestamp),
       },
     })
-    this.report.testCases.push(this.testProgressMap.get(id))
+    this.report.testCases.push(this.testCaseReportMap.get(id))
   }
   private onTestStepStarted(testStepStarted: messages.TestStepStarted) {
-    const { testStepId, timestamp, testCaseStartedId } = testStepStarted
+    const { testStepId, timestamp } = testStepStarted
     const testStep = this.testStepMap.get(testStepId)
     if (testStep === undefined)
       throw new Error(`testStep with id ${testStepId} not found`)
     if (testStep.pickleStepId === undefined) return
-    const stepProgess = this.stepProgressMap.get(testStep.pickleStepId)
+    const stepProgess = this.stepReportMap.get(testStep.pickleStepId)
     stepProgess.result = {
       status: 'STARTED',
       startTime: this.getTimeStamp(timestamp),
     }
   }
   private onAttachment(attachment: messages.Attachment) {
-    const {
-      testCaseStartedId,
-      testStepId,
-      body,
-      mediaType,
-      contentEncoding,
-      fileName,
-      source,
-      url,
-    } = attachment
+    const { testStepId, body, mediaType } = attachment
     if (mediaType === 'text/plain') {
       this.reportFolder = body.replaceAll('\\', '/')
     }
     const testStep = this.testStepMap.get(testStepId)
     if (testStep.pickleStepId === undefined) return
 
-    const stepProgess = this.stepProgressMap.get(testStep.pickleStepId)
+    const stepProgess = this.stepReportMap.get(testStep.pickleStepId)
     if (mediaType === 'application/json') {
-      const command:JsonCommand = JSON.parse(body)
+      const command: JsonCommand = JSON.parse(body)
       stepProgess.commands.push(command)
     }
   }
   private onTestStepFinished(testStepFinished: messages.TestStepFinished) {
-    const { testStepId, testCaseStartedId, testStepResult, timestamp } =
-      testStepFinished
+    const { testStepId, testStepResult, timestamp } = testStepFinished
     const testStep = this.testStepMap.get(testStepId)
     if (testStep.pickleStepId === undefined) return
-    const stepProgess = this.stepProgressMap.get(testStep.pickleStepId)
+    const stepProgess = this.stepReportMap.get(testStep.pickleStepId)
     const prevStepResult = stepProgess.result as {
       status: 'STARTED'
       startTime: JsonTimestamp
@@ -320,7 +371,7 @@ export default class ReportGenerator {
   }
   private onTestCaseFinished(testCaseFinished: messages.TestCaseFinished) {
     const { testCaseStartedId, timestamp } = testCaseFinished
-    const testProgress = this.testProgressMap.get(testCaseStartedId)
+    const testProgress = this.testCaseReportMap.get(testCaseStartedId)
     const prevResult = testProgress.result as {
       status: 'STARTED'
       startTime: JsonTimestamp
@@ -334,7 +385,7 @@ export default class ReportGenerator {
     }
   }
   private onTestRunFinished(testRunFinished: messages.TestRunFinished) {
-    const { timestamp, success, exception, message } = testRunFinished
+    const { timestamp, success, message } = testRunFinished
     const prevResult = this.report.result as {
       status: 'STARTED'
       startTime: JsonTimestamp
