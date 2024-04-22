@@ -1,62 +1,53 @@
 # Transpiling
 
-Step definitions and support files can be written in a syntax or language that compiles to JavaScript, and just-in-time compiled when you run Cucumber. The output of the transpiler must match the module format expected by Node.js, and you must use the correct Cucumber directive to import the code, "import" for ESM and "require" for CommonJS.
+Step definitions and support files can be written in a syntax or language that compiles (or, "transpiles") to JavaScript, and just-in-time compiled when you run Cucumber. This requires a little extra configuration of Cucumber, so we can use the correct mechanism to compile your code on the fly.
 
-For example, you might want to use [Babel](https://babeljs.io/):
+For this doc, we'll take the example of TypeScript since it's so prevalent in the ecosystem. But you'll do similar things if you want to use e.g. Babel or CoffeeScript instead.
 
-- In a configuration file `{ requireModule: ['@babel/register'] }`
-- On the CLI `cucumber-js --require-module @babel/register`
+For compiling TypeScript on the fly, you should install [ts-node](https://github.com/TypeStrong/ts-node) if it's not already a dependency of your project:
 
-This would mean any support code loaded with the `require` option would be transpiled first then loaded into Cucumber.
-
-## TypeScript
-
-Your `tsconfig.json` should have these `compilerOptions`:
-
-```json
-"allowSyntheticDefaultImports": true,
-"resolveJsonModule": true,
-
+```shell
+npm install --save-dev ts-node
 ```
 
-Typescript's output must match Cucumber's expected input, and this is controlled by the "module" option in the `tsconfig.json`.  The default is "CommonJS", but if your project is setup to be an ESM project then Typescript will need to output some generation of ES code to Cucumber. If you aren't sure use "ESNext".
+## Module format
 
-You'll also need to specify where your support code is, since `.ts` files won't be picked up by default.
+The first thing you need to establish is the JavaScript module format you are compiling to. It'll be either of:
 
-Other than that, a pretty standard TypeScript setup should work as expected.
+- **CommonJS** produces `require` and `module.exports` in compiled output for `import`s and `export`s respectively in the source. If you aren't sure, there's a good chance it's this one.
+- [**ESM**](./esm.md) produces `import` and `export` in compiled output which should more closely match your source. This is newer than CommonJS but gaining adoption quickly as the industry transitions.
 
-### With ts-node
+With TypeScript, your `tsconfig.json` should provide some clues. Specifically, if `compilerOptions.module` is not specified or `CommonJS`, then you're probably outputting CommonJS, whereas anything starting with `ES` or `Node` indicates ESM. 
 
-[ts-node](https://github.com/TypeStrong/ts-node) is the one of the most popular ways to load TypeScript files. 
+## CommonJS
 
-- In a configuration file `{ requireModule: ['ts-node/register'], require: ['step-definitions/**/*.ts'] }`
-- On the CLI `$ cucumber-js --require-module ts-node/register --require 'step-definitions/**/*.ts'`
+For CommonJS, you need to use the `requireModule` configuration option to register `ts-node`, and then `require` for your TypeScript support code, like this:
 
-If you are using ts-node in a CommonJS project then this configuration will work, but if you have an ESM project you should follow these steps.
+- In a configuration file `{ requireModule: ['ts-node/register'], require: ['features/step-definitions/**/*.ts'] }`
+- On the CLI `npx cucumber-js --require-module ts-node/register --require 'features/step-definitions/**/*.ts'`
 
-- Set TypeScript to export to an ES format such as "ESNext" using the `ts-config.json` file. 
-- Set a NODE_OPTIONS environment flag to use the ts-node ESM loader: `NODE_OPTIONS=\"--loader ts-node/esm\"`
+## ESM
 
-Note: One possible way to set an environment is to use the [cross-env](https://www.npmjs.com/package/cross-env) package with `npm i -D cross-env`. If you go this route the package.json script line for cucumber will read something like this:
+There are two ways of doing this depending on your version of Cucumber. Given the transitional state of modules in Node.js, consider them both experimental for now.
 
-```json
-{
-  "scripts": {
-    "test": "cross-env NODE_OPTIONS=\"--loader ts-node/esm\" cucumber-js"
-  }
-}
-```
+### Loader option
 
-### With Babel
+ℹ️ Added in v10.6.0
 
-If you are using babel with [@babel/preset-typescript](https://babeljs.io/docs/en/babel-preset-typescript):
+For ESM, you need to use the `loader` configuration option to register `ts-node`, and then `import` for your TypeScript support code, like this:
 
-- In a configuration file `{ requireModule: ['@babel/register'], require: ['step-definitions/**/*.ts'] }`
-- On the CLI `cucumber-js --require-module @babel/register --require 'step-definitions/**/*.ts'`
+- In a configuration file `{ loader: ['ts-node/esm'], import: ['features/step-definitions/**/*.ts'] }`
+- On the CLI `npx cucumber-js --loader ts-node/esm --import 'features/step-definitions/**/*.ts'`
 
-### ESM
+### Environment variable
 
-See [ESM](./esm.md) for general advice on using loaders for transpilation in ESM projects.
+In versions earlier than v10.6.0 (without the `loader` option), you can still instruct Node.js to register the loader on the process via the `NODE_OPTIONS` environment variable, like this:
+
+`NODE_OPTIONS=\"--loader ts-node/esm\"`
+
+You then just need to specify the `import` option as above for your support code.
+
+(This approach is no longer recommended, and you might see a warning from Node.js telling you so.)
 
 ### Source maps
 
@@ -68,8 +59,3 @@ If you're using step definition code that's _already_ transpiled (maybe because 
 
 1. Ensure source maps are emitted by your transpiler. You can verify by checking for a comment starting with `//# sourceMappingURL=` at the end of your transpiled file(s).
 2. Ensure source maps are enabled at runtime. Node.js supports this natively via [the `--enable-source-maps` flag](https://nodejs.org/docs/latest/api/cli.html#--enable-source-maps).
-3. Ensure you are using the require directive to import CommonJS formatted code and import for ESM formatted code.
-
-## Summary
-- Transpiling allows you to convert your step definitions from any language that can compile to JavaScript - most frequently Typescript.
-- There are two formats for modules in JavaScript: CommonJS and ESM. You must make sure the transpiler outputs what Cucumber expects to input.
