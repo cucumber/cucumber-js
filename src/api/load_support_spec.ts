@@ -22,6 +22,7 @@ describe('loadSupport', function () {
       requireModules: ['ts-node/register'],
       requirePaths: [path.join(environment.cwd, 'features', 'steps.ts')],
       importPaths: [],
+      loaders: [],
     })
   })
 })
