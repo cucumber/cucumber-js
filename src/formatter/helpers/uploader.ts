@@ -1,40 +1,36 @@
-import * as messages from '@cucumber/messages'
-import Formatter, { IFormatterOptions } from '.'
-import ReportGenerator, { JsonReport } from './helpers/report_generator'
-import path from 'path'
+import ReportGenerator, { JsonReport } from './report_generator'
+import { RunUploadService } from './upload_serivce'
+
+import FormData from 'form-data'
 import fs from 'fs'
 import JSZip from 'jszip'
-import FormData from 'form-data'
-import { RunUploadService } from './helpers/upload_serivce'
+import path from 'path'
+const URL =
+  process.env.NODE_ENV_BLINQ === 'dev'
+    ? 'https://dev.api.blinq.io/api/runs'
+    : process.env.NODE_ENV_BLINQ === 'local'
+    ? 'http://localhost:5001/api/runs'
+    : 'https://api.blinq.io/api/runs'
 
-const REPORT_SERVICE_URL = process.env.REPORT_SERVICE_URL
-const REPORT_SERVICE_TOKEN = process.env.REPORT_SERVICE_TOKEN
+const REPORT_SERVICE_URL = process.env.REPORT_SERVICE_URL ?? URL
+const REPORT_SERVICE_TOKEN =
+  process.env.TOKEN ?? process.env.REPORT_SERVICE_TOKEN
 
-export default class BVTFormatter extends Formatter {
-  private reportGenerator = new ReportGenerator()
+export default class ReportUploader {
   private uploadService = new RunUploadService(
     REPORT_SERVICE_URL,
     REPORT_SERVICE_TOKEN
   )
-  constructor(options: IFormatterOptions) {
-    super(options)
+  private reportGenerator: ReportGenerator
+  constructor(reportGenerator: ReportGenerator) {
     if (!REPORT_SERVICE_URL || !REPORT_SERVICE_TOKEN) {
       throw new Error('REPORT_SERVICE_URL and REPORT_SERVICE_TOKEN must be set')
     }
-    options.eventBroadcaster.on(
-      'envelope',
-      async (envelope: messages.Envelope) => {
-        this.reportGenerator.handleMessage(envelope)
-        if (envelope.testRunFinished) {
-          const report = this.reportGenerator.getReport()
-          // this.log(JSON.stringify(report, null, 2))
-          await this.uploadRun(report)
-        }
-      }
-    )
+    this.reportGenerator = reportGenerator
   }
-  async uploadRun(report: JsonReport) {
-    const runDoc = await this.uploadService.createRunDocument('test')
+
+  async uploadRun(report: JsonReport, runName: string) {
+    const runDoc = await this.uploadService.createRunDocument(runName)
     const runDocId = runDoc._id
     const formData = new FormData()
     const reportFolder = this.reportGenerator.reportFolder
@@ -44,7 +40,7 @@ export default class BVTFormatter extends Formatter {
     const zipPath = await this.createZip(reportFolder, report)
     formData.append(runDocId, fs.readFileSync(zipPath), 'report.zip')
     await this.uploadService.upload(formData)
-    process.exit(0)
+    return { runId: runDoc._id, projectId: runDoc.project_id }
   }
   async createZip(reportFolder: string | null, report: JsonReport) {
     const zip = new JSZip()

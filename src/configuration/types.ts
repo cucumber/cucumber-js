@@ -26,4 +26,6 @@ export interface IConfiguration {
   strict: boolean
   tags: string
   worldParameters: any
+  runName: string
+  bvtRerun: boolean
 }

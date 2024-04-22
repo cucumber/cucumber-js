@@ -8,9 +8,7 @@
     "gherkin",
     "tests"
   ],
-
-  "version": "1.0.12",
-
+  "version": "1.0.35",
   "homepage": "https://github.com/blinq-io/cucumber-js",
   "author": "blinq.io",
   "contributors": [
@@ -90,6 +88,7 @@
     "strip-ansi": "6.0.1",
     "supports-color": "^8.1.1",
     "tmp": "^0.2.1",
+    "tmp-promise": "^3.0.3",
     "util-arity": "^1.1.0",
     "verror": "^1.10.0",
     "xmlbuilder": "^15.1.1",
@@ -183,7 +182,8 @@
     "update-dependencies": "npx npm-check-updates --upgrade"
   },
   "bin": {
-    "cucumber-js": "bin/cucumber.js"
+    "cucumber-js": "bin/cucumber.js",
+    "download-install": "bin/download-install.js"
   },
   "license": "MIT",
   "files": [
