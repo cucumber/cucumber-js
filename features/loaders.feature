@@ -40,3 +40,20 @@ Feature: ESM loaders support
   Scenario: parallel runtime
     When I run cucumber-js with `--loader ts-node/esm --import features/steps.ts --parallel 1`
     Then it passes
+
+  Scenario: local loader
+    Given a file named "custom-loader.mjs" with:
+      """
+      // no-op loader hook
+      export async function load(url, context, nextLoad) {
+        return nextLoad(url);
+      }
+      """
+    Given a file named "features/steps.mjs" with:
+      """
+      import { Given } from '@cucumber/cucumber'
+
+      Given('a passing step', () => {})
+      """
+    When I run cucumber-js with `--loader ./custom-loader.mjs`
+    Then it passes
