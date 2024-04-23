@@ -78,29 +78,29 @@ These options can be used in a configuration file (see [above](#files)) or on th
 - Where options are repeatable, they are appended/merged if provided more than once.
 - Where options aren't repeatable, the CLI takes precedence over a configuration file.
 
-| Name              | Type       | Repeatable | CLI Option                | Description                                                                                                         | Default |
-|-------------------|------------|------------|---------------------------|---------------------------------------------------------------------------------------------------------------------|---------|
-| `paths`           | `string[]` | Yes        | (as arguments)            | Paths to where your feature files are - see [below](#finding-your-features)                                         | []      |
-| `backtrace`       | `boolean`  | No         | `--backtrace`, `-b`       | Show the full backtrace for errors                                                                                  | false   |
-| `dryRun`          | `boolean`  | No         | `--dry-run`, `-d`         | Prepare a test run but don't run it - see [Dry Run](./dry_run.md)                                                   | false   |    
-| `forceExit`       | `boolean`  | No         | `--exit`, `--force-exit`  | Explicitly call `process.exit()` after the test run (when run via CLI) - see [CLI](./cli.md)                        | false   |
-| `failFast`        | `boolean`  | No         | `--fail-fast`             | Stop running tests when a test fails - see [Fail Fast](./fail_fast.md)                                              | false   |
-| `format`          | `string[]` | Yes        | `--format`, `-f`          | Name/path and (optionally) output file path of each formatter to use - see [Formatters](./formatters.md)            | []      |
-| `formatOptions`   | `object`   | Yes        | `--format-options`        | Options to be provided to formatters - see [Formatters](./formatters.md)                                            | {}      |
-| `import`          | `string[]` | Yes        | `--import`, `-i`          | Paths to where your support code is                                                                                 | []      |
-| `language`        | `string`   | No         | `--language`              | Default language for your feature files                                                                             | en      |
-| `loader`          | `string[]` | Yes        | `--loader`, `-l`          | Module descriptors for loaders to be registered ahead of loading support code - see [Transpiling](./transpiling.md) | []      |
-| `name`            | `string`   | No         | `--name`                  | Regular expressions of which scenario names should match one of to be run - see [Filtering](./filtering.md#names)   | []      |
-| `order`           | `string`   | No         | `--order`                 | Run in the order defined, or in a random order - see [Filtering and Ordering](./filtering.md#order)                 | defined |
-| `parallel`        | `number`   | No         | `--parallel`              | Run tests in parallel with the given number of worker processes - see [Parallel](./parallel.md)                     | 0       |
-| `publish`         | `boolean`  | No         | `--publish`               | Publish a report of your test run to <https://reports.cucumber.io/>                                                 | false   |
-| `require`         | `string[]` | Yes        | `--require`, `-r`         | Paths to where your support code is, for CommonJS - see [below](#finding-your-code)                                 | []      |
-| `requireModule`   | `string[]` | Yes        | `--require-module`        | Names of transpilation modules to load, loaded via `require()` - see [Transpiling](./transpiling.md)                | []      |
-| `retry`           | `number`   | No         | `--retry`                 | Retry failing tests up to the given number of times - see [Retry](./retry.md)                                       | 0       |
-| `retryTagFilter`  | `string`   | Yes        | `--retry-tag-filter`      | Tag expression to filter which scenarios can be retried - see [Retry](./retry.md)                                   |         |
-| `strict`          | `boolean`  | No         | `--strict`, `--no-strict` | Fail the test run if there are pending steps                                                                        | true    |
-| `tags`            | `string`   | Yes        | `--tags`, `-t`            | Tag expression to filter which scenarios should be run - see [Filtering](./filtering.md#tags)                       |         |
-| `worldParameters` | `object`   | Yes        | `--world-parameters`      | Parameters to be passed to your World - see [World](./support_files/world.md)                                       | {}      |
+| Name              | Type       | Repeatable | CLI Option                | Description                                                                                                        | Default |
+|-------------------|------------|------------|---------------------------|--------------------------------------------------------------------------------------------------------------------|---------|
+| `paths`           | `string[]` | Yes        | (as arguments)            | Paths to where your feature files are - see [below](#finding-your-features)                                        | []      |
+| `backtrace`       | `boolean`  | No         | `--backtrace`, `-b`       | Show the full backtrace for errors                                                                                 | false   |
+| `dryRun`          | `boolean`  | No         | `--dry-run`, `-d`         | Prepare a test run but don't run it - see [Dry Run](./dry_run.md)                                                  | false   |    
+| `forceExit`       | `boolean`  | No         | `--exit`, `--force-exit`  | Explicitly call `process.exit()` after the test run (when run via CLI) - see [CLI](./cli.md)                       | false   |
+| `failFast`        | `boolean`  | No         | `--fail-fast`             | Stop running tests when a test fails - see [Fail Fast](./fail_fast.md)                                             | false   |
+| `format`          | `string[]` | Yes        | `--format`, `-f`          | Name/path and (optionally) output file path of each formatter to use - see [Formatters](./formatters.md)           | []      |
+| `formatOptions`   | `object`   | Yes        | `--format-options`        | Options to be provided to formatters - see [Formatters](./formatters.md)                                           | {}      |
+| `import`          | `string[]` | Yes        | `--import`, `-i`          | Paths to where your support code is                                                                                | []      |
+| `language`        | `string`   | No         | `--language`              | Default language for your feature files                                                                            | en      |
+| `loader`          | `string[]` | Yes        | `--loader`, `-l`          | Module specifiers for loaders to be registered ahead of loading support code - see [Transpiling](./transpiling.md) | []      |
+| `name`            | `string`   | No         | `--name`                  | Regular expressions of which scenario names should match one of to be run - see [Filtering](./filtering.md#names)  | []      |
+| `order`           | `string`   | No         | `--order`                 | Run in the order defined, or in a random order - see [Filtering and Ordering](./filtering.md#order)                | defined |
+| `parallel`        | `number`   | No         | `--parallel`              | Run tests in parallel with the given number of worker processes - see [Parallel](./parallel.md)                    | 0       |
+| `publish`         | `boolean`  | No         | `--publish`               | Publish a report of your test run to <https://reports.cucumber.io/>                                                | false   |
+| `require`         | `string[]` | Yes        | `--require`, `-r`         | Paths to where your support code is, for CommonJS - see [below](#finding-your-code)                                | []      |
+| `requireModule`   | `string[]` | Yes        | `--require-module`        | Names of transpilation modules to load, loaded via `require()` - see [Transpiling](./transpiling.md)               | []      |
+| `retry`           | `number`   | No         | `--retry`                 | Retry failing tests up to the given number of times - see [Retry](./retry.md)                                      | 0       |
+| `retryTagFilter`  | `string`   | Yes        | `--retry-tag-filter`      | Tag expression to filter which scenarios can be retried - see [Retry](./retry.md)                                  |         |
+| `strict`          | `boolean`  | No         | `--strict`, `--no-strict` | Fail the test run if there are pending steps                                                                       | true    |
+| `tags`            | `string`   | Yes        | `--tags`, `-t`            | Tag expression to filter which scenarios should be run - see [Filtering](./filtering.md#tags)                      |         |
+| `worldParameters` | `object`   | Yes        | `--world-parameters`      | Parameters to be passed to your World - see [World](./support_files/world.md)                                      | {}      |
 
 ## Finding your features
 
