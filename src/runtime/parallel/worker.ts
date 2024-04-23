@@ -70,8 +70,8 @@ export default class Worker {
     )
     supportCodeCoordinates.requireModules.map((module) => tryRequire(module))
     supportCodeCoordinates.requirePaths.map((module) => tryRequire(module))
-    for (const descriptor of supportCodeCoordinates.loaders) {
-      register(descriptor, pathToFileURL(this.cwd))
+    for (const specifier of supportCodeCoordinates.loaders) {
+      register(specifier, pathToFileURL('./'))
     }
     for (const path of supportCodeCoordinates.importPaths) {
       await import(pathToFileURL(path).toString())

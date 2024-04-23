@@ -39,9 +39,9 @@ export async function getSupportCodeLibrary({
     tryRequire(path)
   })
 
-  for (const descriptor of loaders) {
-    logger.debug(`Attempting to register loader "${descriptor}"`)
-    register(descriptor, pathToFileURL(cwd))
+  for (const specifier of loaders) {
+    logger.debug(`Attempting to register loader "${specifier}"`)
+    register(specifier, pathToFileURL('./'))
   }
 
   for (const path of importPaths) {

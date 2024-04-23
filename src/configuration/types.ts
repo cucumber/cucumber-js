@@ -75,7 +75,7 @@ export interface IConfiguration {
    */
   language: string
   /**
-   * Module descriptors for loaders to be registered ahead of loading support code
+   * Module specifier(s) for loaders to be registered ahead of loading support code
    * @default []
    */
   loader: string[]

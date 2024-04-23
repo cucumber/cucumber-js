@@ -102,7 +102,7 @@ const ArgvParser = {
       )
       .option(
         '-l, --loader <NODE_MODULE>',
-        'module descriptor(s) for loaders to be registered ahead of loading support code',
+        'module specifier(s) for loaders to be registered ahead of loading support code',
         ArgvParser.collect
       )
       .option(
