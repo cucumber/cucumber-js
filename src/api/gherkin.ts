@@ -78,16 +78,17 @@ export async function getFilteredPicklesAndErrors({
     },
     async (envelope) => {
       if (envelope.source) {
+        let newDataAfterExamplesModify = envelope.source.data
         const functionMatch = envelope.source.data.match(/@data:function:(.*)/)
 
         if (functionMatch) {
           dataFunction = functionMatch[1]
+          newDataAfterExamplesModify = await generateExamplesFromFunction(
+            envelope.source.data,
+            featurePaths[0]
+          )
         }
 
-        const newDataAfterExamplesModify = await generateExamplesFromFunction(
-          envelope.source.data,
-          featurePaths[0]
-        )
         const data = generateTestData(newDataAfterExamplesModify)
         envelope.source.data = data.newContent
         variables = data.variables
@@ -98,9 +99,9 @@ export async function getFilteredPicklesAndErrors({
         envelope.gherkinDocument.feature.children =
           envelope.gherkinDocument.feature.children.map((scenario) => {
             if (scenario.scenario) {
-              const { tableHeader, tableBody } = scenario.scenario.examples[0]
-
               if (dataFunction) {
+                const { tableHeader, tableBody } = scenario.scenario.examples[0]
+
                 functionVars = {
                   previous: tableHeader.cells.map((cell, index) => ({
                     header: cell.value,

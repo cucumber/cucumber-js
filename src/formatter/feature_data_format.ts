@@ -117,14 +117,15 @@ const generateExamplesFromFunction = async (
     .readdirSync(path.join(feature_path, '../step_definitions'))
     .filter((file) => file.endsWith('.ts') || file.endsWith('.mjs'))
 
-  const [mjsData] = await Promise.all(
-    mjsFiles.map(async (file) => {
-      const { [functionName]: func } = await import(
-        path.join(feature_path, '../step_definitions', file)
-      )
-      return func()
-    })
-  )
+  const [mjsData] = mjsFiles.map((file) => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { [functionName]: func } = require(path.join(
+      feature_path,
+      '../step_definitions',
+      file
+    ))
+    return func()
+  })
 
   const newExamples = headers.map((header) => {
     if (mjsData[header]) {
