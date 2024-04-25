@@ -15,12 +15,27 @@ import PickleFilter from '../pickle_filter'
 import { orderPickles } from '../cli/helpers'
 import { ISourcesCoordinates } from './types'
 import { ILogger } from '../logger'
-import { generateTestData } from '../formatter/feature_data_format'
+import {
+  generateExamplesFromFunction,
+  generateTestData,
+  generateExamplesFromFunctionGherkin,
+} from '../formatter/feature_data_format'
 
 interface PickleWithDocument {
   gherkinDocument: GherkinDocument
   location: Location
   pickle: Pickle
+}
+
+interface FunctionVars {
+  previous: {
+    header: string
+    value: any
+  }[]
+  new: {
+    header: string
+    value: any
+  }[]
 }
 
 export async function getFilteredPicklesAndErrors({
@@ -51,6 +66,8 @@ export async function getFilteredPicklesAndErrors({
       fake: string
     }[],
     pickleIndex = 0
+  let dataFunction: string | null = null
+  let functionVars: FunctionVars | null = null
 
   await gherkinFromPaths(
     featurePaths,
@@ -59,9 +76,19 @@ export async function getFilteredPicklesAndErrors({
       relativeTo: cwd,
       defaultDialect: coordinates.defaultDialect,
     },
-    (envelope) => {
+    async (envelope) => {
       if (envelope.source) {
-        const data = generateTestData(envelope.source.data)
+        const functionMatch = envelope.source.data.match(/@data:function:(.*)/)
+
+        if (functionMatch) {
+          dataFunction = functionMatch[1]
+        }
+
+        const newDataAfterExamplesModify = await generateExamplesFromFunction(
+          envelope.source.data,
+          featurePaths[0]
+        )
+        const data = generateTestData(newDataAfterExamplesModify)
         envelope.source.data = data.newContent
         variables = data.variables
         fakeData = data.otherFakeData
@@ -71,6 +98,34 @@ export async function getFilteredPicklesAndErrors({
         envelope.gherkinDocument.feature.children =
           envelope.gherkinDocument.feature.children.map((scenario) => {
             if (scenario.scenario) {
+              const { tableHeader, tableBody } = scenario.scenario.examples[0]
+
+              if (dataFunction) {
+                functionVars = {
+                  previous: tableHeader.cells.map((cell, index) => ({
+                    header: cell.value,
+                    value: tableBody[0].cells[index].value,
+                  })),
+                  new: [],
+                }
+
+                const generateResult = generateExamplesFromFunctionGherkin(
+                  tableHeader.cells,
+                  tableBody[0].cells,
+                  dataFunction,
+                  featurePaths[0]
+                )
+
+                functionVars.new = generateResult
+
+                generateResult.map(
+                  ({ value }, index) =>
+                    (scenario.scenario.examples[0].tableBody[0].cells[
+                      index
+                    ].value = value)
+                )
+              }
+
               scenario.scenario.steps = scenario.scenario.steps.map((step) => {
                 step.text = generateTestData(
                   step.text,
@@ -86,6 +141,14 @@ export async function getFilteredPicklesAndErrors({
 
       if (envelope.pickle) {
         envelope.pickle.steps = envelope.pickle.steps.map((step) => {
+          if (functionVars) {
+            functionVars.new.forEach(({ value }, index) => {
+              step.text = step.text.replace(
+                functionVars.previous[index].value,
+                value
+              )
+            })
+          }
           const generateData = generateTestData(step.text, variables, fakeData)
           step.text = generateData.newContent
           pickleIndex =
