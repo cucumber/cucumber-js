@@ -41,6 +41,7 @@ describe('resolvePaths', () => {
             requireModules: [],
             requirePaths: [],
             importPaths: [],
+            loaders: [],
           }
         )
 
@@ -68,6 +69,7 @@ describe('resolvePaths', () => {
           requireModules: [],
           requirePaths: [],
           importPaths: [],
+          loaders: [],
         }
       )
 
@@ -92,6 +94,7 @@ describe('resolvePaths', () => {
           requireModules: [],
           requirePaths: [],
           importPaths: [],
+          loaders: [],
         }
       )
 
@@ -120,6 +123,7 @@ describe('resolvePaths', () => {
             requireModules: [],
             requirePaths: [],
             importPaths: [],
+            loaders: [],
           }
         )
 
@@ -152,6 +156,7 @@ describe('resolvePaths', () => {
             requireModules: [],
             requirePaths: [],
             importPaths: [],
+            loaders: [],
           }
         )
 
@@ -186,6 +191,7 @@ describe('resolvePaths', () => {
             requireModules: [],
             requirePaths: [],
             importPaths: [],
+            loaders: [],
           }
         )
 
@@ -215,6 +221,7 @@ describe('resolvePaths', () => {
           requireModules: [],
           requirePaths: [],
           importPaths: [],
+          loaders: [],
         }
       )
 
@@ -240,6 +247,7 @@ describe('resolvePaths', () => {
           requireModules: [],
           requirePaths: [],
           importPaths: [],
+          loaders: [],
         }
       )
 
@@ -268,6 +276,7 @@ describe('resolvePaths', () => {
             requireModules: [],
             requirePaths: [],
             importPaths: [],
+            loaders: [],
           }
         )
 
@@ -298,6 +307,7 @@ describe('resolvePaths', () => {
             requireModules: [],
             requirePaths: [],
             importPaths: [],
+            loaders: [],
           }
         )
 
@@ -327,6 +337,7 @@ describe('resolvePaths', () => {
             requireModules: [],
             requirePaths: [],
             importPaths: [],
+            loaders: [],
           }
         )
 
@@ -361,6 +372,7 @@ describe('resolvePaths', () => {
           requireModules: [],
           requirePaths: [cjsSupportCodePath],
           importPaths: [esmSupportCodePath],
+          loaders: [],
         }
       )
 

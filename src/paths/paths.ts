@@ -13,6 +13,7 @@ export async function resolvePaths(
     requireModules: [],
     requirePaths: [],
     importPaths: [],
+    loaders: [],
   }
 ): Promise<IResolvedPaths> {
   const unexpandedSourcePaths = await getUnexpandedSourcePaths(

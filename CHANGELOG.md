@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Add `loader` option for ESM loader hooks [#2399](https://github.com/cucumber/cucumber-js/pull/2399)
 
 ## [10.5.1] - 2024-04-21
 ### Fixed

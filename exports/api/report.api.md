@@ -20,6 +20,7 @@ export interface IConfiguration {
     formatOptions: JsonObject;
     import: string[];
     language: string;
+    loader: string[];
     name: string[];
     order: IPickleOrder;
     parallel: number;
@@ -54,7 +55,7 @@ export interface ILoadSupportOptions {
     // (undocumented)
     sources: ISourcesCoordinates;
     // (undocumented)
-    support: ISupportCodeCoordinates;
+    support: Partial<ISupportCodeCoordinates>;
 }
 
 // @public
@@ -93,7 +94,7 @@ export interface IRunConfiguration {
     // (undocumented)
     sources: ISourcesCoordinates;
     // (undocumented)
-    support: ISupportCodeCoordinates;
+    support: Partial<ISupportCodeCoordinates>;
 }
 
 // @public
@@ -167,12 +168,13 @@ export interface ISourcesError {
 // @public
 export interface ISupportCodeCoordinates {
     importPaths: string[];
+    loaders: string[];
     requireModules: string[];
     requirePaths: string[];
 }
 
 // @public
-export type ISupportCodeCoordinatesOrLibrary = ISupportCodeCoordinates | ISupportCodeLibrary;
+export type ISupportCodeCoordinatesOrLibrary = Partial<ISupportCodeCoordinates> | ISupportCodeLibrary;
 
 // @public
 export interface ISupportCodeLibrary {

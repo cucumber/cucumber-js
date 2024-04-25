@@ -458,6 +458,7 @@ export class SupportCodeLibraryBuilder {
       requireModules: [],
       requirePaths: [],
       importPaths: [],
+      loaders: [],
     }
   ): void {
     this.cwd = cwd

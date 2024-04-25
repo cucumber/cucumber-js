@@ -33,7 +33,15 @@ export async function runCucumber(
   const supportCoordinates =
     'originalCoordinates' in options.support
       ? options.support.originalCoordinates
-      : options.support
+      : Object.assign(
+          {
+            requireModules: [],
+            requirePaths: [],
+            loaders: [],
+            importPaths: [],
+          },
+          options.support
+        )
 
   const pluginManager = await initializeForRunCucumber(
     logger,
@@ -61,8 +69,9 @@ export async function runCucumber(
           cwd,
           newId,
           requirePaths,
-          importPaths,
           requireModules: supportCoordinates.requireModules,
+          importPaths,
+          loaders: supportCoordinates.loaders,
         })
 
   const eventBroadcaster = new EventEmitter()
@@ -138,9 +147,6 @@ export async function runCucumber(
     pickleIds,
     newId,
     supportCodeLibrary,
-    requireModules: supportCoordinates.requireModules,
-    requirePaths,
-    importPaths,
     options: options.runtime,
   })
   const success = await runtime.start()

@@ -75,6 +75,11 @@ export interface IConfiguration {
    */
   language: string
   /**
+   * Module specifier(s) for loaders to be registered ahead of loading support code
+   * @default []
+   */
+  loader: string[]
+  /**
    * Regular expressions of which scenario names should match one of to be run
    * @default []
    * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/filtering.md#names}

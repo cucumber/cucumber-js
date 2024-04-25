@@ -43,7 +43,6 @@ describe('Cucumber Compatibility Kit', () => {
           requirePaths: [
             `${CCK_IMPLEMENTATIONS_PATH}/${suiteName}/${suiteName}.ts`,
           ],
-          importPaths: [],
         },
         runtime: {
           dryRun: false,

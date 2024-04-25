@@ -1,6 +1,6 @@
 # ES Modules (experimental)
 
-You can optionally write your support code (steps, hooks, etc) with native ES modules syntax - i.e. using `import` and `export` statements without transpiling.
+You can optionally write your support code (steps, hooks, etc) with native ES modules syntax - i.e. using `import` and `export` statements without transpiling to CommonJS.
 
 If your support code is written as ESM, you'll need to use the `import` configuration option to specify your files, rather than the `require` option, although we do automatically detect and import any `.mjs` files found within your features directory.
 
@@ -26,40 +26,12 @@ Then('the variable should contain {int}', function (number) {
 
 As well as support code, these things can also be in ES modules syntax:
 
-- Custom formatters
-- Custom snippets
+- [Configuration files](./configuration.md#files)
+- [Custom formatters](./custom_formatters.md)
+- [Custom snippets](./custom_snippet_syntaxes.md)
 
 You can use ES modules selectively/incrementally - so you can have a mixture of CommonJS and ESM in the same project.
 
-## Configuration file
-
-You can write your [configuration file](./configuration.md#files) in ESM format. Here's an example adapted from our [Profiles](./profiles.md) doc:
-
-```javascript
-const common = {
-  requireModule: ['ts-node/register'],
-  require: ['support/**/*.ts'],
-  worldParameters: {
-    appUrl: process.env.MY_APP_URL || 'http://localhost:3000/'
-  }
-}
-
-export default {
-  ...common,
-  format: ['progress-bar', 'html:cucumber-report.html'],
-}
-
-export const ci = {
-  ...common,
-  format: ['html:cucumber-report.html'],
-  publish: true
-}
-```
-
 ## Transpiling
 
-You can use [ESM loaders](https://nodejs.org/api/esm.html#loaders) to transpile your support code on the fly. The `requireModule` configuration option only works with CommonJS (i.e. `require` hooks) and is not applicable here. Cucumber doesn't have an equivalent option for ESM loaders because they currently can't be registered in-process, so you'll need to declare the loader externally, like this:
-
-```shell
-NODE_OPTIONS="--loader <loader>" npx cucumber-js
-```
+See [Transpiling](./transpiling.md#esm) for how to do just-in-time compilation that outputs ESM.

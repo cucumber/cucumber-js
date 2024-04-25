@@ -9,6 +9,7 @@ export const DEFAULT_CONFIGURATION: IConfiguration = {
   formatOptions: {},
   import: [],
   language: 'en',
+  loader: [],
   name: [],
   order: 'defined',
   paths: [],

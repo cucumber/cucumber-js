@@ -4,6 +4,7 @@ import { IConfiguration } from './types'
 const ADDITIVE_ARRAYS = [
   'format',
   'import',
+  'loader',
   'name',
   'paths',
   'require',

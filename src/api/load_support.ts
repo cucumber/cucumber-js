@@ -23,12 +23,21 @@ export async function loadSupport(
   const mergedEnvironment = mergeEnvironment(environment)
   const { cwd, logger } = mergedEnvironment
   const newId = IdGenerator.uuid()
+  const supportCoordinates = Object.assign(
+    {
+      requireModules: [],
+      requirePaths: [],
+      loaders: [],
+      importPaths: [],
+    },
+    options.support
+  )
   const pluginManager = await initializeForLoadSupport()
   const resolvedPaths = await resolvePaths(
     logger,
     cwd,
     options.sources,
-    options.support
+    supportCoordinates
   )
   pluginManager.emit('paths:resolve', resolvedPaths)
   const { requirePaths, importPaths } = resolvedPaths
@@ -36,8 +45,9 @@ export async function loadSupport(
     logger,
     cwd,
     newId,
-    requireModules: options.support.requireModules,
+    requireModules: supportCoordinates.requireModules,
     requirePaths,
+    loaders: supportCoordinates.loaders,
     importPaths,
   })
   await pluginManager.cleanup()
