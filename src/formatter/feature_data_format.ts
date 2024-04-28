@@ -94,15 +94,15 @@ const generateTestData = (
 const getDefinitionFunction = (feature_path: string, functionName: string) => {
   const mjsFiles = fs
     .readdirSync(path.join(feature_path, '../step_definitions'))
-    .filter((file) => file.endsWith('.ts') || file.endsWith('.mjs'))
-
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const importSync = require('import-sync')
+    .filter((file) => file === 'parameters.js')
 
   const [mjsData] = mjsFiles.map((file) => {
-    const { [functionName]: func } = importSync(
-      path.join(feature_path, '../step_definitions', file)
-    )
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { [functionName]: func } = require(path.join(
+      feature_path,
+      '../step_definitions',
+      file
+    ))
     return func()
   })
 
