@@ -91,10 +91,18 @@ const generateTestData = (
   }
 }
 
-const getDefinitionFunction = (feature_path: string, functionName: string) => {
+const getDefinitionFunction = (
+  feature_path: string,
+  functionName: string,
+  functionFile: string
+) => {
   const mjsFiles = fs
     .readdirSync(path.join(feature_path, '../step_definitions'))
-    .filter((file) => file === 'parameters.js')
+    .filter((file) => file === `${functionFile}.js`)
+
+  if (mjsFiles.length === 0) {
+    throw new Error(`File ${functionFile} not found in step_definitions folder`)
+  }
 
   const [mjsData] = mjsFiles.map((file) => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -103,6 +111,9 @@ const getDefinitionFunction = (feature_path: string, functionName: string) => {
       '../step_definitions',
       file
     ))
+    if (!func)
+      throw new Error(`Function ${functionName} not found in file ${file}`)
+
     return func()
   })
 
@@ -112,7 +123,8 @@ const getDefinitionFunction = (feature_path: string, functionName: string) => {
 const generateExamplesFromFunction = (
   data: string,
   feature_path: string,
-  functionName: string
+  functionName: string,
+  functionFile: string
 ) => {
   const examples = data.split('Examples:')[1].split('\n').slice(1)
   const headers = examples[0]
@@ -124,7 +136,11 @@ const generateExamplesFromFunction = (
     .map((value) => value.trim())
     .filter((header) => header !== '')
 
-  const mjsData = getDefinitionFunction(feature_path, functionName)
+  const mjsData = getDefinitionFunction(
+    feature_path,
+    functionName,
+    functionFile
+  )
 
   const newExamples = headers.map((header) => {
     if (mjsData[header]) {

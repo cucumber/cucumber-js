@@ -80,14 +80,17 @@ export async function getFilteredPicklesAndErrors({
     (envelope) => {
       if (envelope.source) {
         let newDataAfterExamplesModify = envelope.source.data
-        const functionMatch = envelope.source.data.match(/@data:function:(.*)/)
+        const functionMatch = envelope.source.data.match(
+          /@data:function:(.*?)\.(.*)/
+        )
 
         if (functionMatch) {
-          dataFunction = functionMatch[1]
+          dataFunction = functionMatch[2]
           const { newData, mjsData } = generateExamplesFromFunction(
             envelope.source.data,
             featurePaths[0],
-            dataFunction
+            dataFunction,
+            functionMatch[1]
           )
           newDataAfterExamplesModify = newData
           mjsDataFiles = mjsData
