@@ -68,6 +68,7 @@ export async function getFilteredPicklesAndErrors({
     pickleIndex = 0
   let dataFunction: string | null = null
   let functionVars: FunctionVars | null = null
+  let mjsDataFiles: any = null
 
   await gherkinFromPaths(
     featurePaths,
@@ -83,10 +84,13 @@ export async function getFilteredPicklesAndErrors({
 
         if (functionMatch) {
           dataFunction = functionMatch[1]
-          newDataAfterExamplesModify = await generateExamplesFromFunction(
+          const { newData, mjsData } = generateExamplesFromFunction(
             envelope.source.data,
-            featurePaths[0]
+            featurePaths[0],
+            dataFunction
           )
+          newDataAfterExamplesModify = newData
+          mjsDataFiles = mjsData
         }
 
         const data = generateTestData(newDataAfterExamplesModify)
@@ -113,8 +117,7 @@ export async function getFilteredPicklesAndErrors({
                 const generateResult = generateExamplesFromFunctionGherkin(
                   tableHeader.cells,
                   tableBody[0].cells,
-                  dataFunction,
-                  featurePaths[0]
+                  mjsDataFiles
                 )
 
                 functionVars.new = generateResult

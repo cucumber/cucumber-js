@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "1.0.39",
+  "version": "1.0.40",
   "homepage": "https://github.com/blinq-io/cucumber-js",
   "author": "blinq.io",
   "contributors": [
@@ -71,6 +71,7 @@
     "figures": "^3.2.0",
     "glob": "^7.1.6",
     "has-ansi": "^4.0.1",
+    "import-sync": "^2.2.2",
     "indent-string": "^4.0.0",
     "is-installed-globally": "^0.4.0",
     "is-stream": "^2.0.0",
@@ -109,6 +110,7 @@
     "@types/fs-extra": "9.0.13",
     "@types/glob": "7.2.0",
     "@types/has-ansi": "5.0.0",
+    "@types/httptoolkit__esm": "^3.3.0",
     "@types/lodash.merge": "4.6.7",
     "@types/lodash.mergewith": "4.6.7",
     "@types/luxon": "3.2.0",

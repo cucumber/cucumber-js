@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker'
 import fs from 'fs'
 import path from 'path'
 import { TableCell } from '@cucumber/messages'
+import importSync from 'import-sync'
 
 const generateTestData = (
   featureFileContent: string,
@@ -91,19 +92,28 @@ const generateTestData = (
   }
 }
 
-const generateExamplesFromFunction = async (
+const getDefinitionFunction = (feature_path: string, functionName: string) => {
+  const mjsFiles = fs
+    .readdirSync(path.join(feature_path, '../step_definitions'))
+    .filter((file) => file.endsWith('.ts') || file.endsWith('.mjs'))
+
+  const [mjsData] = mjsFiles.map((file) => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { [functionName]: func } = importSync(
+      path.join(feature_path, '../step_definitions', file)
+    )
+    return func()
+  })
+
+  return mjsData
+}
+
+const generateExamplesFromFunction = (
   data: string,
-  feature_path: string
+  feature_path: string,
+  functionName: string
 ) => {
-  const functionMatch = data.match(/@data:function:(.*)/)
-
-  if (!functionMatch) {
-    return data
-  }
-
-  const functionName = functionMatch[1]
-
-  const examples = data.split('Examples:\n')[1].split('\n')
+  const examples = data.split('Examples:')[1].split('\n').slice(1)
   const headers = examples[0]
     .split('|')
     .map((header) => header.trim())
@@ -113,19 +123,7 @@ const generateExamplesFromFunction = async (
     .map((value) => value.trim())
     .filter((header) => header !== '')
 
-  const mjsFiles = fs
-    .readdirSync(path.join(feature_path, '../step_definitions'))
-    .filter((file) => file.endsWith('.ts') || file.endsWith('.mjs'))
-
-  const [mjsData] = mjsFiles.map((file) => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { [functionName]: func } = require(path.join(
-      feature_path,
-      '../step_definitions',
-      file
-    ))
-    return func()
-  })
+  const mjsData = getDefinitionFunction(feature_path, functionName)
 
   const newExamples = headers.map((header) => {
     if (mjsData[header]) {
@@ -134,36 +132,21 @@ const generateExamplesFromFunction = async (
     return values[headers.indexOf(header)]
   })
 
-  let newExamplesString = data.split('Examples:\n')[1]
+  let newExamplesString = data.split('Examples:')[1]
   newExamples.forEach((example, index) => {
     newExamplesString = newExamplesString.replace(values[index], example)
   })
 
-  const newData = data.replace(data.split('Examples:\n')[1], newExamplesString)
+  const newData = data.replace(data.split('Examples:')[1], newExamplesString)
 
-  return newData
+  return { newData, mjsData }
 }
 
 const generateExamplesFromFunctionGherkin = (
   headers: readonly TableCell[],
   values: readonly TableCell[],
-  functionName: string,
-  feature_path: string
+  mjsData: any
 ) => {
-  const mjsFiles = fs
-    .readdirSync(path.join(feature_path, '../step_definitions'))
-    .filter((file) => file.endsWith('.ts') || file.endsWith('.mjs'))
-
-  const [mjsData] = mjsFiles.map((file) => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { [functionName]: func } = require(path.join(
-      feature_path,
-      '../step_definitions',
-      file
-    ))
-    return func()
-  })
-
   const newExamples = headers.map(({ value: header }, index) => {
     if (mjsData[header]) {
       return { header, value: mjsData[header] }
