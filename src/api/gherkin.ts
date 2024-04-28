@@ -77,7 +77,7 @@ export async function getFilteredPicklesAndErrors({
       relativeTo: cwd,
       defaultDialect: coordinates.defaultDialect,
     },
-    async (envelope) => {
+    (envelope) => {
       if (envelope.source) {
         let newDataAfterExamplesModify = envelope.source.data
         const functionMatch = envelope.source.data.match(/@data:function:(.*)/)
