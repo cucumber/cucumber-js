@@ -2,7 +2,6 @@ import { faker } from '@faker-js/faker'
 import fs from 'fs'
 import path from 'path'
 import { TableCell } from '@cucumber/messages'
-import importSync from 'import-sync'
 
 const generateTestData = (
   featureFileContent: string,
@@ -97,8 +96,10 @@ const getDefinitionFunction = (feature_path: string, functionName: string) => {
     .readdirSync(path.join(feature_path, '../step_definitions'))
     .filter((file) => file.endsWith('.ts') || file.endsWith('.mjs'))
 
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const importSync = require('import-sync')
+
   const [mjsData] = mjsFiles.map((file) => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { [functionName]: func } = importSync(
       path.join(feature_path, '../step_definitions', file)
     )
