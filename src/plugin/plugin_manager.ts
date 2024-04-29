@@ -8,6 +8,7 @@ import {
   CoordinatorPluginEventKey,
   CoordinatorPluginTransformEventKey,
   Operation,
+  FormatterPlugin,
 } from './types'
 
 type HandlerRegistry = {
@@ -27,10 +28,25 @@ export class PluginManager {
     event: K,
     handler: CoordinatorPluginEventHandler<K>
   ) {
-    this.handlers[event].push(handler)
+    this.handlers[event]?.push(handler)
   }
 
-  async init<OptionsType>(
+  async initFormatter<OptionsType>(
+    plugin: FormatterPlugin<OptionsType>,
+    options: OptionsType,
+    write: (buffer: string | Uint8Array) => void
+  ) {
+    const cleanupFn = await plugin.formatter({
+      on: (key, handler) => this.register(key, handler),
+      options,
+      write,
+    })
+    if (typeof cleanupFn === 'function') {
+      this.cleanupFns.push(cleanupFn)
+    }
+  }
+
+  async initCoordinator<OptionsType>(
     operation: Operation,
     plugin: InternalPlugin<OptionsType>,
     options: OptionsType,

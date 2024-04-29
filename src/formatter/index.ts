@@ -2,6 +2,7 @@ import { Writable } from 'node:stream'
 import { EventEmitter } from 'node:events'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
+import { FormatterPlugin } from '../plugin'
 import { IColorFns } from './get_color_fns'
 import { EventDataCollector } from './helpers'
 import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
@@ -20,6 +21,7 @@ export interface FormatOptions {
   [customKey: string]: any
 }
 
+export type FormatterImplementation = typeof Formatter | FormatterPlugin
 export type IFormatterStream = Writable
 export type IFormatterLogFn = (buffer: string | Uint8Array) => void
 export type IFormatterCleanupFn = () => Promise<any>

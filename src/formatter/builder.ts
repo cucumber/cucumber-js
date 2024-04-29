@@ -36,11 +36,16 @@ export interface IBuildOptions {
 }
 
 const FormatterBuilder = {
-  async build(type: string, options: IBuildOptions): Promise<Formatter> {
-    const FormatterConstructor = await FormatterBuilder.getConstructorByType(
-      type,
-      options.cwd
-    )
+  async build(
+    FormatterConstructor: string | typeof Formatter,
+    options: IBuildOptions
+  ): Promise<Formatter> {
+    if (typeof FormatterConstructor === 'string') {
+      FormatterConstructor = await FormatterBuilder.getConstructorByType(
+        FormatterConstructor,
+        options.cwd
+      )
+    }
     const colorFns = getColorFns(
       options.stream,
       options.env,

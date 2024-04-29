@@ -62,3 +62,19 @@ export interface InternalPlugin<OptionsType = any> {
   type: 'plugin'
   coordinator: CoordinatorPluginFunction<OptionsType>
 }
+
+export interface FormatterPluginContext<OptionsType> {
+  on: (key: 'message', handler: (value: Envelope) => void) => void
+  options: OptionsType
+  write: (buffer: string | Uint8Array) => void
+}
+
+export type FormatterPluginFunction<OptionsType> = (
+  context: FormatterPluginContext<OptionsType>
+) => Promisable<PluginCleanup | void>
+
+export interface FormatterPlugin<OptionsType = any> {
+  type: 'formatter'
+  formatter: FormatterPluginFunction<OptionsType>
+  documentation: string
+}
