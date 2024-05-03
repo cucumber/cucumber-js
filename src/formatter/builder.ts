@@ -1,7 +1,5 @@
-import path from 'node:path'
 import { EventEmitter } from 'node:events'
 import { Writable as WritableStream } from 'node:stream'
-import { pathToFileURL } from 'node:url'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
@@ -10,6 +8,7 @@ import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
 import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascript_snippet_syntax'
 import getColorFns from './get_color_fns'
 import Formatters from './helpers/formatters'
+import { importCode } from './import_code'
 import Formatter, {
   FormatOptions,
   IFormatterCleanupFn,
@@ -105,14 +104,9 @@ const FormatterBuilder = {
     descriptor: string,
     cwd: string
   ) {
-    let normalized: URL | string = descriptor
-    if (descriptor.startsWith('.')) {
-      normalized = pathToFileURL(path.resolve(cwd, descriptor))
-    } else if (descriptor.startsWith('file://')) {
-      normalized = new URL(descriptor)
-    }
-    let CustomClass = await FormatterBuilder.loadFile(normalized)
-    CustomClass = FormatterBuilder.resolveConstructor(CustomClass)
+    const CustomClass = FormatterBuilder.resolveConstructor(
+      await importCode(descriptor, cwd)
+    )
     if (doesHaveValue(CustomClass)) {
       return CustomClass
     } else {
