@@ -5,9 +5,9 @@ import FormatterBuilder from './builder'
 
 describe('custom class loading', () => {
   const varieties = [
-    'esm.mjs',
-    'exports_dot_default.cjs',
-    'module_dot_exports.cjs',
+    'legacy_esm.mjs',
+    'legacy_exports_dot_default.cjs',
+    'legacy_module_dot_exports.cjs',
   ]
   varieties.forEach((filename) => {
     describe(filename, () => {

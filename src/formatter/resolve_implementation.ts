@@ -1,6 +1,6 @@
 import builtin from './builtin'
 import { importCode } from './import_code'
-import { resolveClassOrPlugin } from './resolve_class_or_plugin'
+import { findClassOrPlugin } from './find_class_or_plugin'
 import { FormatterImplementation } from './index'
 
 export async function resolveImplementation(
@@ -11,12 +11,10 @@ export async function resolveImplementation(
     return builtin[specifier]
   } else {
     const imported = await importCode(specifier, cwd)
-    const resolved = resolveClassOrPlugin(imported)
-    if (!resolved) {
-      throw new Error(
-        `Custom formatter (${specifier}) does not export a function/class`
-      )
+    const found = findClassOrPlugin(imported)
+    if (!found) {
+      throw new Error(`${specifier} does not export a function/class`)
     }
-    return resolved
+    return found
   }
 }

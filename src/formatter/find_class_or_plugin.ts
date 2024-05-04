@@ -1,6 +1,6 @@
 import { doesNotHaveValue } from '../value_checker'
 
-export function resolveClassOrPlugin(imported: any) {
+export function findClassOrPlugin(imported: any) {
   if (doesNotHaveValue(imported)) {
     return null
   }
@@ -21,6 +21,11 @@ export function resolveClassOrPlugin(imported: any) {
   } else if (
     typeof imported.default === 'object' &&
     typeof imported.default.default === 'function'
+  ) {
+    return imported.default.default
+  } else if (
+    typeof imported.default.default === 'object' &&
+    imported.default.default.type === 'formatter'
   ) {
     return imported.default.default
   }
