@@ -1,4 +1,4 @@
 module.exports = {
   type: 'formatter',
-  formatter() {}
+  formatter() {},
 }

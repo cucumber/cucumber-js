@@ -1,33 +1,22 @@
 import { doesNotHaveValue } from '../value_checker'
 
 export function findClassOrPlugin(imported: any) {
-  if (doesNotHaveValue(imported)) {
+  return findRecursive(imported, 3)
+}
+
+function findRecursive(thing: any, depth: number): any {
+  if (doesNotHaveValue(thing)) {
     return null
   }
-  if (typeof imported === 'function') {
-    return imported
-  } else if (typeof imported === 'object' && imported.type === 'formatter') {
-    return imported
-  } else if (
-    typeof imported === 'object' &&
-    typeof imported.default === 'function'
-  ) {
-    return imported.default
-  } else if (
-    typeof imported.default === 'object' &&
-    imported.default.type === 'formatter'
-  ) {
-    return imported.default
-  } else if (
-    typeof imported.default === 'object' &&
-    typeof imported.default.default === 'function'
-  ) {
-    return imported.default.default
-  } else if (
-    typeof imported.default.default === 'object' &&
-    imported.default.default.type === 'formatter'
-  ) {
-    return imported.default.default
+  if (typeof thing === 'function') {
+    return thing
+  }
+  if (typeof thing === 'object' && thing.type === 'formatter') {
+    return thing
+  }
+  depth--
+  if (depth > 0) {
+    return findRecursive(thing.default, depth)
   }
   return null
 }
