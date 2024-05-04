@@ -41,6 +41,11 @@ For ESM, you need to use the `loader` configuration option to register `ts-node`
 
 The value of `loader` will usually be a package/module name, but if you have a loader you've authored locally, you can provide a path that's relative to your project's working directory.
 
+Note that some LTS version streams of Node.js introduced this loaders support fairly recently, and you might need to upgrade to a newer minor version:
+
+- 18.x - you need at least 18.19.0
+- 20.x - you need at least 20.6.0
+
 ### Environment variable
 
 In versions earlier than v10.6.0 (without the `loader` option), you can still instruct Node.js to register the loader on the process via the `NODE_OPTIONS` environment variable, like this:
