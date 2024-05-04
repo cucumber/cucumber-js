@@ -132,7 +132,7 @@ export class Formatter {
 
 // @public (undocumented)
 export const FormatterBuilder: {
-    build(type: string, options: IBuildOptions): Promise<Formatter>;
+    build(FormatterConstructor: string | typeof Formatter, options: IBuildOptions): Promise<Formatter>;
     getConstructorByType(type: string, cwd: string): Promise<typeof Formatter>;
     getStepDefinitionSnippetBuilder({ cwd, snippetInterface, snippetSyntax, supportCodeLibrary, }: IGetStepDefinitionSnippetBuilderOptions): Promise<StepDefinitionSnippetBuilder>;
     loadCustomClass(type: 'formatter' | 'syntax', descriptor: string, cwd: string): Promise<any>;

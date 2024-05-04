@@ -120,6 +120,27 @@ Feature: custom formatter
       <duration-stat>
       """
 
+  Scenario: formatter plugins
+    Given a file named "simple_formatter.js" with:
+    """
+    module.exports = {
+      type: 'formatter',
+      formatter({ on, write }) {
+        on('message', (message) => {
+          if (message.testRunFinished) {
+            write('Test run finished!')
+          }
+        })
+      }
+    }
+    """
+    When I run cucumber-js with `--format ./simple_formatter.js`
+    Then it fails
+    And it outputs the text:
+    """
+    Test run finished!
+    """
+
   Scenario Outline: supported module formats
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """

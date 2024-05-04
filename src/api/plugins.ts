@@ -15,7 +15,7 @@ export async function initializeForLoadSources(
 ): Promise<PluginManager> {
   // eventually we'll load plugin packages here
   const pluginManager = new PluginManager()
-  await pluginManager.init(
+  await pluginManager.initCoordinator(
     'loadSources',
     filterPlugin,
     coordinates,
@@ -37,14 +37,14 @@ export async function initializeForRunCucumber(
 ): Promise<PluginManager> {
   // eventually we'll load plugin packages here
   const pluginManager = new PluginManager()
-  await pluginManager.init(
+  await pluginManager.initCoordinator(
     'runCucumber',
     publishPlugin,
     configuration.formats.publish,
     logger,
     environment
   )
-  await pluginManager.init(
+  await pluginManager.initCoordinator(
     'runCucumber',
     filterPlugin,
     configuration.sources,

@@ -1,8 +1,8 @@
 import { Command } from 'commander'
 import merge from 'lodash.merge'
 import { dialects } from '@cucumber/gherkin'
-import Formatters from '../formatter/helpers/formatters'
 import { version } from '../version'
+import builtin from '../formatter/builtin'
 import { IConfiguration } from './types'
 
 export interface IParsedArgvOptions {
@@ -81,7 +81,11 @@ const ArgvParser = {
       .option(
         '-f, --format <TYPE[:PATH]>',
         'specify the output format, optionally supply PATH to redirect formatter output (repeatable).  Available formats:\n' +
-          Formatters.buildFormattersDocumentationString(),
+          Object.entries(builtin).reduce(
+            (previous, [key, formatter]) =>
+              previous + `    ${key}: ${formatter.documentation}\n`,
+            ''
+          ),
         ArgvParser.collect
       )
       .option(

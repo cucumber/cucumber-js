@@ -95,6 +95,7 @@ export async function runCucumber(
     eventDataCollector,
     configuration: options.formats,
     supportCodeLibrary,
+    pluginManager,
   })
   await emitMetaMessage(eventBroadcaster, env)
 
@@ -150,8 +151,8 @@ export async function runCucumber(
     options: options.runtime,
   })
   const success = await runtime.start()
-  await cleanupFormatters()
   await pluginManager.cleanup()
+  await cleanupFormatters()
 
   return {
     success: success && !formatterStreamError,

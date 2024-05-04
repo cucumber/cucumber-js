@@ -19,7 +19,7 @@ describe('PluginManager', () => {
   it('passes the correct context to the coordinator function', async () => {
     const pluginManager = new PluginManager()
     const coordinator = sinon.fake()
-    await pluginManager.init(
+    await pluginManager.initCoordinator(
       'runCucumber',
       {
         type: 'plugin',
@@ -42,7 +42,7 @@ describe('PluginManager', () => {
     const pluginManager = new PluginManager()
     const cleanup1 = sinon.fake()
     const cleanup2 = sinon.fake()
-    await pluginManager.init(
+    await pluginManager.initCoordinator(
       'runCucumber',
       {
         type: 'plugin',
@@ -52,7 +52,7 @@ describe('PluginManager', () => {
       logger,
       environment
     )
-    await pluginManager.init(
+    await pluginManager.initCoordinator(
       'runCucumber',
       {
         type: 'plugin',
@@ -74,7 +74,7 @@ describe('PluginManager', () => {
       const pluginManager = new PluginManager()
       const handler1 = sinon.fake()
       const handler2 = sinon.fake()
-      await pluginManager.init(
+      await pluginManager.initCoordinator(
         'runCucumber',
         {
           type: 'plugin',
@@ -84,7 +84,7 @@ describe('PluginManager', () => {
         logger,
         environment
       )
-      await pluginManager.init(
+      await pluginManager.initCoordinator(
         'runCucumber',
         {
           type: 'plugin',
@@ -131,7 +131,7 @@ describe('PluginManager', () => {
 
     it('should apply transforms in the order registered', async () => {
       const pluginManager = new PluginManager()
-      await pluginManager.init(
+      await pluginManager.initCoordinator(
         'runCucumber',
         {
           type: 'plugin',
@@ -146,7 +146,7 @@ describe('PluginManager', () => {
         logger,
         environment
       )
-      await pluginManager.init(
+      await pluginManager.initCoordinator(
         'runCucumber',
         {
           type: 'plugin',
@@ -171,7 +171,7 @@ describe('PluginManager', () => {
 
     it('should treat undefined as a noop', async () => {
       const pluginManager = new PluginManager()
-      await pluginManager.init(
+      await pluginManager.initCoordinator(
         'runCucumber',
         {
           type: 'plugin',
