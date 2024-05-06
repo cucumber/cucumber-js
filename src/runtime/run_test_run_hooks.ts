@@ -3,6 +3,7 @@ import UserCodeRunner from '../user_code_runner'
 import { formatLocation } from '../formatter/helpers'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
+import { runInTestRunScope } from './scope'
 
 export type RunsTestRunHooks = (
   definitions: TestRunHookDefinition[],
@@ -19,15 +20,19 @@ export const makeRunTestRunHooks = (
     ? async () => {}
     : async (definitions, name) => {
         for (const hookDefinition of definitions) {
-          const { error } = await UserCodeRunner.run({
-            argsArray: [],
-            fn: hookDefinition.code,
-            thisArg: { parameters: worldParameters },
-            timeoutInMilliseconds: valueOrDefault(
-              hookDefinition.options.timeout,
-              defaultTimeout
-            ),
-          })
+          const { error } = await runInTestRunScope(
+            { context: { parameters: worldParameters } },
+            () =>
+              UserCodeRunner.run({
+                argsArray: [],
+                fn: hookDefinition.code,
+                thisArg: { parameters: worldParameters },
+                timeoutInMilliseconds: valueOrDefault(
+                  hookDefinition.options.timeout,
+                  defaultTimeout
+                ),
+              })
+          )
           if (doesHaveValue(error)) {
             const location = formatLocation(hookDefinition)
             throw new Error(errorMessage(name, location), { cause: error })

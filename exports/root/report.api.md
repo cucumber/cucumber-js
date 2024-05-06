@@ -159,6 +159,9 @@ declare namespace formatterHelpers {
 }
 export { formatterHelpers }
 
+// @public
+export function getContext<ParametersType = any>(): IContext<ParametersType>;
+
 // @public (undocumented)
 function getGherkinExampleRuleMap(gherkinDocument: messages.GherkinDocument): Record<string, messages.Rule>;
 
@@ -189,6 +192,9 @@ function getStepKeywordType({ keyword, language, previousKeywordType, }: IGetSte
 // @public (undocumented)
 function getUsage({ stepDefinitions, eventDataCollector, }: IGetUsageRequest): IUsage[];
 
+// @public
+export function getWorld<ParametersType = any>(): IWorld<ParametersType>;
+
 declare namespace GherkinDocumentParser {
     export {
         getGherkinStepMap,
@@ -200,6 +206,12 @@ declare namespace GherkinDocumentParser {
 
 // @public (undocumented)
 export const Given: IDefineStep_2;
+
+// @public (undocumented)
+export interface IContext<ParametersType = any> {
+    // (undocumented)
+    readonly parameters: ParametersType;
+}
 
 // @public (undocumented)
 export interface IFormatterOptions {

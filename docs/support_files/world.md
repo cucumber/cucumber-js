@@ -31,17 +31,28 @@ Scenario: Will fail
   Given my color is "red"
   Then my color should not be red  
 ```
-**Important Note:** The following will NOT work as [arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) do not have their own bindings to `this` and are not suitable for the [apply](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply) method Cucumber uses internally to call your [step definitions](./step_definitions.md) and
-[hooks](./hooks.md).
+
+## Arrow functions
+
+ℹ️ Added in v10.7.0
+
+[Arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) have traditionally not played nicely with Cucumber's pattern of binding the World to `this`, because of their different scoping behaviour. However, you can now use the `getWorld` function to get a handle on your World from an arrow function. Here's the equivalent of the first example in this doc:
 
 ```javascript
-// This WON'T work!!
-Then("my color should not be blue", () => {
-  if (this.color === "red") {
+const { Given, Then, getWorld } = require('@cucumber/cucumber')
+
+Given("my color is {string}", (color) => {
+  getWorld().color = color
+})
+
+Then("my color should not be red", () => {
+  if (getWorld().color === "red") {
     throw new Error("Wrong Color");
   }
 });
 ```
+
+Note that this will throw if you try to call it outside of a step or hook.
 
 ## Built-in world
 
