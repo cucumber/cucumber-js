@@ -19,19 +19,18 @@ export const makeRunTestRunHooks = (
   dryRun
     ? async () => {}
     : async (definitions, name) => {
+        const context = { parameters: worldParameters }
         for (const hookDefinition of definitions) {
-          const { error } = await runInTestRunScope(
-            { context: { parameters: worldParameters } },
-            () =>
-              UserCodeRunner.run({
-                argsArray: [],
-                fn: hookDefinition.code,
-                thisArg: { parameters: worldParameters },
-                timeoutInMilliseconds: valueOrDefault(
-                  hookDefinition.options.timeout,
-                  defaultTimeout
-                ),
-              })
+          const { error } = await runInTestRunScope({ context }, () =>
+            UserCodeRunner.run({
+              argsArray: [],
+              fn: hookDefinition.code,
+              thisArg: context,
+              timeoutInMilliseconds: valueOrDefault(
+                hookDefinition.options.timeout,
+                defaultTimeout
+              ),
+            })
           )
           if (doesHaveValue(error)) {
             const location = formatLocation(hookDefinition)
