@@ -1,5 +1,6 @@
 import * as messages from '@cucumber/messages'
-
+import { Table } from 'console-table-printer'
+import { object } from 'yup'
 // type JsonException = messages.Exception
 type JsonTimestamp = number //messages.Timestamp
 type JsonStepType = 'Unknown' | 'Context' | 'Action' | 'Outcome' | 'Conjunction'
@@ -112,7 +113,7 @@ export default class ReportGenerator {
   private testStepMap = new Map<string, messages.TestStep>()
   private stepReportMap = new Map<string, JsonStep>()
   private testCaseReportMap = new Map<string, JsonTestProgress>()
-
+  private scenarioIterationCountMap = new Map<string, number>()
   reportFolder: null | string = null
 
   handleMessage(envelope: messages.Envelope) {
@@ -178,6 +179,7 @@ export default class ReportGenerator {
         this.onTestRunFinished(testRunFinished)
         break
       }
+
       // case "parameterType" : { break}
       // case "undefinedParameterType": { break}
     }
@@ -262,7 +264,8 @@ export default class ReportGenerator {
         if (tableRow.id === exampleId) {
           for (let i = 0; i < examples.tableHeader.cells.length; i++) {
             parameters[examples.tableHeader.cells[i].value] =
-              tableRow.cells[i].value
+              //@ts-ignore
+              tableRow.cells[i].finalData
           }
         }
       }
@@ -286,9 +289,24 @@ export default class ReportGenerator {
     const scenarioId = pickle.astNodeIds[0]
     const scenario = this._findScenario(doc, scenarioId)
     const scenarioName = scenario.name
-
+    if (!this.scenarioIterationCountMap.has(scenarioId)) {
+      this.scenarioIterationCountMap.set(scenarioId, 1)
+    }
     const parameters = this._getParameters(scenario, pickle.astNodeIds[1])
-
+    const table = new Table({
+      columns: Object.keys(parameters).map((key) => ({ name: key })),
+    })
+    console.log(
+      `\nRunning scenario ${scenarioName} iteration ${this.scenarioIterationCountMap.get(
+        scenarioId
+      )} with parameters:\n`
+    )
+    table.addRow(parameters)
+    table.printTable()
+    this.scenarioIterationCountMap.set(
+      scenarioId,
+      this.scenarioIterationCountMap.get(scenarioId) + 1
+    )
     const steps: JsonStep[] = pickle.steps.map((pickleStep) => {
       const stepId = pickleStep.astNodeIds[0]
       const step = this.stepMap.get(stepId)

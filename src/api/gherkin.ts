@@ -100,6 +100,8 @@ export async function getFilteredPicklesAndErrors({
         envelope.source.data = data.newContent
         variables = data.variables
         fakeData = data.otherFakeData
+        // //@ts-ignore
+        // envelope.source.fakeData = fakeData
       }
 
       if (envelope.gherkinDocument && envelope.gherkinDocument.feature) {
@@ -132,7 +134,24 @@ export async function getFilteredPicklesAndErrors({
                     ].value = value)
                 )
               }
-
+              let fakeDataIdx = 0
+              scenario.scenario.examples.forEach((example) => {
+                example.tableBody.forEach((row) => {
+                  row.cells.forEach((cell, index) => {
+                    let finalData = cell.value
+                    if (
+                      detectFakerVar(cell.value) &&
+                      fakeDataIdx < fakeData.length &&
+                      fakeData[fakeDataIdx].var === cell.value
+                    ) {
+                      finalData = fakeData[fakeDataIdx].fake
+                      fakeDataIdx++
+                    }
+                    //@ts-ignore
+                    cell.finalData = finalData
+                  })
+                })
+              })
               scenario.scenario.steps = scenario.scenario.steps.map((step) => {
                 step.text = generateTestData(
                   step.text,
@@ -223,4 +242,14 @@ async function gherkinFromPaths(
     gherkinMessageStream.on('end', resolve)
     gherkinMessageStream.on('error', reject)
   })
+}
+
+function detectFakerVar(str: string | null) {
+  if (str === null) return false
+  const pattern = /^{{.*}}$/
+  const match = str.match(pattern)
+  if (match) {
+    return true
+  }
+  return false
 }
