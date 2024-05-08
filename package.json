@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "1.0.46",
+  "version": "1.0.47",
   "homepage": "https://github.com/blinq-io/cucumber-js",
   "author": "blinq.io",
   "contributors": [
@@ -66,6 +66,7 @@
     "chalk": "^4.1.2",
     "cli-table3": "0.6.3",
     "commander": "^10.0.0",
+    "console-table-printer": "^2.12.0",
     "debug": "^4.3.4",
     "error-stack-parser": "^2.1.4",
     "figures": "^3.2.0",
