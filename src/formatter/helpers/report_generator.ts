@@ -1,6 +1,5 @@
 import * as messages from '@cucumber/messages'
 import { Table } from 'console-table-printer'
-import { object } from 'yup'
 // type JsonException = messages.Exception
 type JsonTimestamp = number //messages.Timestamp
 type JsonStepType = 'Unknown' | 'Context' | 'Action' | 'Outcome' | 'Conjunction'
@@ -264,8 +263,7 @@ export default class ReportGenerator {
         if (tableRow.id === exampleId) {
           for (let i = 0; i < examples.tableHeader.cells.length; i++) {
             parameters[examples.tableHeader.cells[i].value] =
-              //@ts-ignore
-              tableRow.cells[i].finalData
+              tableRow.cells[i].value
           }
         }
       }

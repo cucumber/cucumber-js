@@ -138,17 +138,13 @@ export async function getFilteredPicklesAndErrors({
               scenario.scenario.examples.forEach((example) => {
                 example.tableBody.forEach((row) => {
                   row.cells.forEach((cell, index) => {
-                    let finalData = cell.value
                     if (
-                      detectFakerVar(cell.value) &&
                       fakeDataIdx < fakeData.length &&
                       fakeData[fakeDataIdx].var === cell.value
                     ) {
-                      finalData = fakeData[fakeDataIdx].fake
+                      cell.value = fakeData[fakeDataIdx].fake
                       fakeDataIdx++
                     }
-                    //@ts-ignore
-                    cell.finalData = finalData
                   })
                 })
               })
@@ -242,14 +238,4 @@ async function gherkinFromPaths(
     gherkinMessageStream.on('end', resolve)
     gherkinMessageStream.on('error', reject)
   })
-}
-
-function detectFakerVar(str: string | null) {
-  if (str === null) return false
-  const pattern = /^{{.*}}$/
-  const match = str.match(pattern)
-  if (match) {
-    return true
-  }
-  return false
 }
