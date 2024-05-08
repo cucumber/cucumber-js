@@ -100,8 +100,6 @@ export async function getFilteredPicklesAndErrors({
         envelope.source.data = data.newContent
         variables = data.variables
         fakeData = data.otherFakeData
-        // //@ts-ignore
-        // envelope.source.fakeData = fakeData
       }
 
       if (envelope.gherkinDocument && envelope.gherkinDocument.feature) {
