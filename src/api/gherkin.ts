@@ -132,7 +132,20 @@ export async function getFilteredPicklesAndErrors({
                     ].value = value)
                 )
               }
-
+              let fakeDataIdx = 0
+              scenario.scenario.examples.forEach((example) => {
+                example.tableBody.forEach((row) => {
+                  row.cells.forEach((cell, index) => {
+                    if (
+                      fakeDataIdx < fakeData.length &&
+                      fakeData[fakeDataIdx].var === cell.value
+                    ) {
+                      cell.value = fakeData[fakeDataIdx].fake
+                      fakeDataIdx++
+                    }
+                  })
+                })
+              })
               scenario.scenario.steps = scenario.scenario.steps.map((step) => {
                 step.text = generateTestData(
                   step.text,
