@@ -300,7 +300,8 @@ export default class ReportGenerator {
       )} with parameters:\n`
     )
     table.addRow(parameters)
-    table.printTable()
+    const tableStr = table.render()
+    console.log('\n' + tableStr + '\n')
     this.scenarioIterationCountMap.set(
       scenarioId,
       this.scenarioIterationCountMap.get(scenarioId) + 1
