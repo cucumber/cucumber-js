@@ -1,5 +1,4 @@
 import * as messages from '@cucumber/messages'
-import { Table } from 'console-table-printer'
 // type JsonException = messages.Exception
 type JsonTimestamp = number //messages.Timestamp
 type JsonStepType = 'Unknown' | 'Context' | 'Action' | 'Outcome' | 'Conjunction'
@@ -291,17 +290,13 @@ export default class ReportGenerator {
       this.scenarioIterationCountMap.set(scenarioId, 1)
     }
     const parameters = this._getParameters(scenario, pickle.astNodeIds[1])
-    const table = new Table({
-      columns: Object.keys(parameters).map((key) => ({ name: key })),
-    })
     console.log(
       `\nRunning scenario ${scenarioName} iteration ${this.scenarioIterationCountMap.get(
         scenarioId
-      )} with parameters:\n`
+      )} with parameters:\n
+        ${JSON.stringify(parameters)}\n 
+      `
     )
-    table.addRow(parameters)
-    const tableStr = table.render()
-    console.log('\n' + tableStr + '\n')
     this.scenarioIterationCountMap.set(
       scenarioId,
       this.scenarioIterationCountMap.get(scenarioId) + 1
