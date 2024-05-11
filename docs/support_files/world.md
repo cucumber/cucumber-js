@@ -36,17 +36,17 @@ Scenario: Will fail
 
 ℹ️ Added in v10.7.0
 
-[Arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) have traditionally not played nicely with Cucumber's pattern of binding the World to `this`, because of their different scoping behaviour. However, you can now use the `getWorld` function to get a handle on your World from an arrow function. Here's the equivalent of the first example in this doc:
+[Arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) have traditionally not played nicely with Cucumber's pattern of binding the World to `this`, because of their different scoping behaviour. However, you can now use the `world` object to get a handle on your World from an arrow function. Here's the equivalent of the first example in this doc:
 
 ```javascript
-const { Given, Then, getWorld } = require('@cucumber/cucumber')
+const { Given, Then, world } = require('@cucumber/cucumber')
 
 Given("my color is {string}", (color) => {
-  getWorld().color = color
+  world.color = color
 })
 
 Then("my color should not be red", () => {
-  if (getWorld().color === "red") {
+  if (world.color === "red") {
     throw new Error("Wrong Color");
   }
 });

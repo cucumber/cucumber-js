@@ -52,6 +52,10 @@ export const BeforeStep: (<WorldType = IWorld_2<any>>(code: TestStepHookFunction
 // @public @deprecated (undocumented)
 export const Cli: typeof Cli_2;
 
+// @beta
+const context_2: IContext<any>;
+export { context_2 as context }
+
 // @public (undocumented)
 export class DataTable {
     constructor(sourceTable: messages.PickleTable | string[][]);
@@ -159,9 +163,6 @@ declare namespace formatterHelpers {
 }
 export { formatterHelpers }
 
-// @public
-export function getContext<ParametersType = any>(): IContext<ParametersType>;
-
 // @public (undocumented)
 function getGherkinExampleRuleMap(gherkinDocument: messages.GherkinDocument): Record<string, messages.Rule>;
 
@@ -191,9 +192,6 @@ function getStepKeywordType({ keyword, language, previousKeywordType, }: IGetSte
 
 // @public (undocumented)
 function getUsage({ stepDefinitions, eventDataCollector, }: IGetUsageRequest): IUsage[];
-
-// @public
-export function getWorld<ParametersType = any>(): IWorld<ParametersType>;
 
 declare namespace GherkinDocumentParser {
     export {
@@ -542,6 +540,9 @@ export class World<ParametersType = any> implements IWorld<ParametersType> {
     // (undocumented)
     readonly parameters: ParametersType;
 }
+
+// @beta
+export const world: IWorld<any>;
 
 // @public (undocumented)
 export function wrapPromiseWithTimeout<T>(promise: Promise<T>, timeoutInMilliseconds: number, timeoutMessage?: string): Promise<T>;

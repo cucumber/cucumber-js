@@ -1,4 +1,4 @@
-Feature: Scope helpers
+Feature: Scope proxies
 
   Background:
     Given a file named "features/a.feature" with:
@@ -25,38 +25,38 @@ Feature: Scope helpers
     }
     """
 
-  Scenario: getWorld and getContext can be used from appropriate scopes
+  Scenario: world and context can be used from appropriate scopes
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {BeforeAll,Given,BeforeStep,Before,getWorld,getContext} = require('@cucumber/cucumber')
+      const {BeforeAll,Given,BeforeStep,Before,world,context} = require('@cucumber/cucumber')
       const assert = require('node:assert/strict')
 
-      BeforeAll(() => assert.equal(getContext().parameters.a, 1))
-      Given('a step', () => assert(getWorld().isWorld()))
-      BeforeStep(() => assert(getWorld().isWorld()))
-      Before(() => assert(getWorld().isWorld()))
+      BeforeAll(() => assert.equal(context.parameters.a, 1))
+      Given('a step', () => assert(world.isWorld()))
+      BeforeStep(() => assert(world.isWorld()))
+      Before(() => assert(world.isWorld()))
       """
     When I run cucumber-js
     Then it passes
 
-  Scenario: getWorld cannot be used outside correct scope
+  Scenario: world proxy cannot be used outside correct scope
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {BeforeAll,getWorld} = require('@cucumber/cucumber')
+      const {BeforeAll,world} = require('@cucumber/cucumber')
       const assert = require('node:assert/strict')
 
-      BeforeAll(() => assert(getWorld().isWorld()))
+      BeforeAll(() => assert(world.isWorld()))
       """
     When I run cucumber-js
     Then it fails
 
-  Scenario: getContext cannot be used outside correct scope
+  Scenario: context proxy cannot be used outside correct scope
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {Given,getContext} = require('@cucumber/cucumber')
+      const {Given,context} = require('@cucumber/cucumber')
       const assert = require('node:assert/strict')
 
-      Given(() => console.log(getContext().parameters))
+      Given(() => console.log(context.parameters))
       """
     When I run cucumber-js
     Then it fails

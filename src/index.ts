@@ -61,7 +61,7 @@ export {
   IWorldOptions,
 } from './support_code_library_builder/world'
 export { IContext } from './support_code_library_builder/context'
-export { getWorld, getContext } from './runtime/scope'
+export { worldProxy as world, contextProxy as context } from './runtime/scope'
 export { parallelCanAssignHelpers }
 
 export {
