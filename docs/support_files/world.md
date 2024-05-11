@@ -34,7 +34,7 @@ Scenario: Will fail
 
 ## Arrow functions
 
-ℹ️ Added in v10.7.0
+ℹ️ Added in v10.8.0
 
 [Arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions) have traditionally not played nicely with Cucumber's pattern of binding the World to `this`, because of their different scoping behaviour. However, you can now use the `world` object to get a handle on your World from an arrow function. Here's the equivalent of the first example in this doc:
 
