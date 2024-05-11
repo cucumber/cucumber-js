@@ -8,7 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
-- Ensure that parallel workers remain in-progress during retries. [#2404](https://github.com/cucumber/cucumber-js/pull/2404) 
+### Added
+- Explicit support for Node.js 22 ([#2405](https://github.com/cucumber/cucumber-js/pull/2405))
+
+### Fixed
+- Ensure that parallel workers remain in-progress during retries ([#2404](https://github.com/cucumber/cucumber-js/pull/2404)) 
 
 ## [10.6.0] - 2024-04-25
 ### Added
