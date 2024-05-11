@@ -77,3 +77,52 @@ Feature: Running scenarios in parallel
     When I run cucumber-js with `--parallel 2`
     Then it passes
     And `testCaseStarted` envelope has `workerId`
+
+  Scenario: running in parallel respects `parallelCanAssign` rules on retried scenarios
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {When, setParallelCanAssign} = require('@cucumber/cucumber')
+
+      When(/^I wait slowly$/, function(callback) {
+        setTimeout(callback, 200 * 2)
+      })
+      
+      When(/^I wait quickly$/, function(callback) {
+        setTimeout(callback, 200 * 1)
+      })
+
+      let counter = 0;
+      When(/^I fail and have to retry$/, function() {
+        counter += 1;
+        if (counter < 4) {
+          throw new Error('Failed as expected')
+        }
+      })
+
+      setParallelCanAssign(function(pickleInQuestion, picklesInProgress) {
+        const runningCount = picklesInProgress.length;
+        const picklesInProgressAllInParallel = picklesInProgress.every(p => p.tags.find(t => t.name === '@parallel') !== undefined);
+        const shouldRunInParallel = pickleInQuestion.tags.find((t) => t.name === '@parallel') !== undefined;
+
+        return ((!shouldRunInParallel && runningCount < 1) || shouldRunInParallel) && picklesInProgressAllInParallel;
+      })
+      """
+    And a file named "features/a.feature" with:
+      """
+      Feature: Testing parallelism with retries
+        @parallel
+        Scenario: fail_parallel
+          When I wait quickly
+          And I fail and have to retry
+
+        @parallel
+        Scenario: pass_parallel
+          When I wait slowly
+        
+        Scenario: pass_sync
+          When I wait quickly
+      """
+    When I run cucumber-js with `--parallel 2 --retry 3`
+    Then it passes
+    And the first two scenarios run in parallel while the last runs sequentially
+    And the scenario 'fail_parallel' retried 3 times
