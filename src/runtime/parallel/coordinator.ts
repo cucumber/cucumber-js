@@ -98,8 +98,7 @@ export default class Coordinator implements IRuntime {
       const envelope = message.jsonEnvelope
       this.eventBroadcaster.emit('envelope', envelope)
       if (doesHaveValue(envelope.testCaseFinished)) {
-        delete this.inProgressPickles[worker.id]
-        this.parseTestCaseResult(envelope.testCaseFinished)
+        this.parseTestCaseResult(envelope.testCaseFinished, worker.id)
       }
     } else {
       throw new Error(
@@ -187,15 +186,19 @@ export default class Coordinator implements IRuntime {
     }
   }
 
-  parseTestCaseResult(testCaseFinished: messages.TestCaseFinished): void {
+  parseTestCaseResult(
+    testCaseFinished: messages.TestCaseFinished,
+    workerId: string
+  ): void {
     const { worstTestStepResult } = this.eventDataCollector.getTestCaseAttempt(
       testCaseFinished.testCaseStartedId
     )
-    if (
-      !testCaseFinished.willBeRetried &&
-      shouldCauseFailure(worstTestStepResult.status, this.options)
-    ) {
-      this.success = false
+    if (!testCaseFinished.willBeRetried) {
+      delete this.inProgressPickles[workerId]
+
+      if (shouldCauseFailure(worstTestStepResult.status, this.options)) {
+        this.success = false
+      }
     }
   }
 

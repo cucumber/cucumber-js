@@ -11,6 +11,13 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Added
 - Add `world` and `context` to allow accessing state from arrow functions ([#2402](https://github.com/cucumber/cucumber-js/pull/2402)) 
 
+## [10.7.0] - 2024-05-11
+### Added
+- Explicit support for Node.js 22 ([#2405](https://github.com/cucumber/cucumber-js/pull/2405))
+
+### Fixed
+- Ensure that parallel workers remain in-progress during retries ([#2404](https://github.com/cucumber/cucumber-js/pull/2404))
+
 ## [10.6.0] - 2024-04-25
 ### Added
 - Add `loader` option for ESM loader hooks [#2399](https://github.com/cucumber/cucumber-js/pull/2399)
@@ -1611,7 +1618,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.6.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.7.0...HEAD
+[10.7.0]: https://github.com/cucumber/cucumber-js/compare/v10.6.0...v10.7.0
 [10.6.0]: https://github.com/cucumber/cucumber-js/compare/v10.5.1...v10.6.0
 [10.5.1]: https://github.com/cucumber/cucumber-js/compare/v10.5.0...v10.5.1
 [10.5.0]: https://github.com/cucumber/cucumber-js/compare/v10.4.0...v10.5.0
