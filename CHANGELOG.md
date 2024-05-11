@@ -8,11 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [10.7.0] - 2024-05-11
 ### Added
 - Explicit support for Node.js 22 ([#2405](https://github.com/cucumber/cucumber-js/pull/2405))
 
 ### Fixed
-- Ensure that parallel workers remain in-progress during retries ([#2404](https://github.com/cucumber/cucumber-js/pull/2404)) 
+- Ensure that parallel workers remain in-progress during retries ([#2404](https://github.com/cucumber/cucumber-js/pull/2404))
 
 ## [10.6.0] - 2024-04-25
 ### Added
@@ -1614,7 +1616,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.6.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.7.0...HEAD
+[10.7.0]: https://github.com/cucumber/cucumber-js/compare/v10.6.0...v10.7.0
 [10.6.0]: https://github.com/cucumber/cucumber-js/compare/v10.5.1...v10.6.0
 [10.5.1]: https://github.com/cucumber/cucumber-js/compare/v10.5.0...v10.5.1
 [10.5.0]: https://github.com/cucumber/cucumber-js/compare/v10.4.0...v10.5.0
