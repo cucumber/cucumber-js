@@ -64,7 +64,6 @@ class RunUploadService {
   }
 
   async uploadFile(filePath: string, preSignedUrl: string) {
-    console.log('Uploading file:', filePath)
     const fileStream = createReadStream(filePath)
 
     try {
