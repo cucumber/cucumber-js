@@ -32,14 +32,37 @@ export default class ReportUploader {
   async uploadRun(report: JsonReport, runName: string) {
     const runDoc = await this.uploadService.createRunDocument(runName)
     const runDocId = runDoc._id
-    const formData = new FormData()
     const reportFolder = this.reportGenerator.reportFolder
     if (!fs.existsSync(reportFolder)) {
       fs.mkdirSync(reportFolder)
     }
-    const zipPath = await this.createZip(reportFolder, report)
-    formData.append(runDocId, fs.readFileSync(zipPath), 'report.zip')
-    await this.uploadService.upload(formData)
+    if (process.env.NODE_ENV_BLINQ === 'local') {
+      const formData = new FormData()
+      const zipPath = await this.createZip(reportFolder, report)
+      formData.append(runDocId, fs.readFileSync(zipPath), 'report.zip')
+      await this.uploadService.upload(formData)
+    } else {
+      const fileUris = getFileUrisScreenShotDir(reportFolder)
+      try {
+        const preSignedUrls = await this.uploadService.getPreSignedUrls(
+          fileUris,
+          runDocId
+        )
+        await Promise.all(
+          fileUris
+            .filter((fileUri) => preSignedUrls[fileUri])
+            .map((fileUri) => {
+              return this.uploadService.uploadFile(
+                path.join(reportFolder, fileUri),
+                preSignedUrls[fileUri]
+              )
+            })
+        )
+        await this.uploadService.uploadComplete(runDocId, report)
+      } catch (err) {
+        throw new Error('Failed to upload  all the files')
+      }
+    }
     return { runId: runDoc._id, projectId: runDoc.project_id }
   }
   async createZip(reportFolder: string | null, report: JsonReport) {
@@ -63,4 +86,9 @@ export default class ReportUploader {
     )
     return zipPath
   }
+}
+const getFileUrisScreenShotDir = (reportFolder: string) => {
+  const files = fs.readdirSync(path.join(reportFolder, 'screenshots'))
+
+  return files.map((file) => path.join('screenshots', file))
 }
