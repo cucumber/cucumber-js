@@ -43,13 +43,11 @@ export default class ReportUploader {
       await this.uploadService.upload(formData)
     } else {
       const fileUris = getFileUrisScreenShotDir(reportFolder)
-      console.log('fileUris', fileUris)
       try {
         const preSignedUrls = await this.uploadService.getPreSignedUrls(
           fileUris,
           runDocId
         )
-        console.log('preSignedUrls', preSignedUrls)
         await Promise.all(
           fileUris
             .filter((fileUri) => preSignedUrls[fileUri])
