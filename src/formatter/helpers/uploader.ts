@@ -51,15 +51,14 @@ export default class ReportUploader {
         )
         console.log('preSignedUrls', preSignedUrls)
         await Promise.all(
-          fileUris.map((fileUri) => {
-            if (preSignedUrls[fileUri]) {
+          fileUris
+            .filter((fileUri) => preSignedUrls[fileUri])
+            .map((fileUri) => {
               return this.uploadService.uploadFile(
                 path.join(reportFolder, fileUri),
                 preSignedUrls[fileUri]
               )
-            }
-            return Promise<void>
-          })
+            })
         )
         await this.uploadService.uploadComplete(runDocId, report)
       } catch (err) {
