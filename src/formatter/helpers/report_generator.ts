@@ -293,8 +293,7 @@ export default class ReportGenerator {
     console.log(
       `\nRunning scenario ${scenarioName} iteration ${this.scenarioIterationCountMap.get(
         scenarioId
-      )} with parameters:\n
-        ${JSON.stringify(parameters, null, 4)}\n 
+      )} with parameters:\n${JSON.stringify(parameters, null, 4)}\n 
       `
     )
     this.scenarioIterationCountMap.set(

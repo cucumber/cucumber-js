@@ -51,6 +51,12 @@ class RunUploadService {
       {
         fileUris,
         runId,
+      },
+      {
+        headers: {
+          Authorization: 'Bearer ' + this.accessToken,
+          'x-source': 'cucumber_js',
+        },
       }
     )
     if (response.status !== 200) {
