@@ -291,7 +291,7 @@ export default class ReportGenerator {
     }
     const parameters = this._getParameters(scenario, pickle.astNodeIds[1])
     console.log(
-      `\nRunning scenario ${scenarioName} iteration ${this.scenarioIterationCountMap.get(
+      `Running scenario ${scenarioName} iteration ${this.scenarioIterationCountMap.get(
         scenarioId
       )} with parameters:\n${JSON.stringify(parameters, null, 4)}\n 
       `
