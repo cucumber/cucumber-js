@@ -82,7 +82,7 @@ class RunUploadService {
           'Content-Length': fileSize,
         },
       })
-      console.log('File uploaded successfully:', filePath)
+      console.log('Uploaded successfully:\n', filePath)
     } catch (error) {
       console.error('Error uploading file:', error)
     } finally {
