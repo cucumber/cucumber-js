@@ -56,6 +56,10 @@ You then just need to specify the `import` option as above for your support code
 
 (This approach is no longer recommended, and you might see a warning from Node.js telling you so.)
 
+### tsconfig-paths
+
+It's not unusual for people to use some path remapping and [`tsconfig-paths`](https://www.npmjs.com/package/tsconfig-paths) as part of their TypeScript setup. See [this open issue](https://github.com/dividab/tsconfig-paths/issues/243) regarding ESM support in that library.
+
 ## Source maps
 
 Source maps are used to ensure accurate source references and stack traces in Cucumber's reporting, by giving traceability from a transpiled piece of code back to the original source code.
