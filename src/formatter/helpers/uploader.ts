@@ -90,5 +90,5 @@ export default class ReportUploader {
 const getFileUrisScreenShotDir = (reportFolder: string) => {
   const files = fs.readdirSync(path.join(reportFolder, 'screenshots'))
 
-  return files.map((file) => path.join('screenshots', file))
+  return files.map((file) => ['screenshots', file].join('/'))
 }
