@@ -60,6 +60,8 @@ export {
   IWorld,
   IWorldOptions,
 } from './support_code_library_builder/world'
+export { IContext } from './support_code_library_builder/context'
+export { worldProxy as world, contextProxy as context } from './runtime/scope'
 export { parallelCanAssignHelpers }
 
 export {

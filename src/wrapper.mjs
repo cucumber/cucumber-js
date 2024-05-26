@@ -34,6 +34,8 @@ export const setWorldConstructor = cucumber.setWorldConstructor
 export const Then = cucumber.Then
 export const When = cucumber.When
 export const World = cucumber.World
+export const world = cucumber.world
+export const context = cucumber.context
 export const parallelCanAssignHelpers = cucumber.parallelCanAssignHelpers
 
 export const wrapPromiseWithTimeout = cucumber.wrapPromiseWithTimeout

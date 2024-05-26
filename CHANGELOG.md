@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Add `world` and `context` to allow accessing state from arrow functions ([#2402](https://github.com/cucumber/cucumber-js/pull/2402)) 
 
 ## [10.7.0] - 2024-05-11
 ### Added

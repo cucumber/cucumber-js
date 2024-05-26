@@ -52,6 +52,10 @@ export const BeforeStep: (<WorldType = IWorld_2<any>>(code: TestStepHookFunction
 // @public @deprecated (undocumented)
 export const Cli: typeof Cli_2;
 
+// @beta
+const context_2: IContext<any>;
+export { context_2 as context }
+
 // @public (undocumented)
 export class DataTable {
     constructor(sourceTable: messages.PickleTable | string[][]);
@@ -200,6 +204,12 @@ declare namespace GherkinDocumentParser {
 
 // @public (undocumented)
 export const Given: IDefineStep_2;
+
+// @public (undocumented)
+export interface IContext<ParametersType = any> {
+    // (undocumented)
+    readonly parameters: ParametersType;
+}
 
 // @public (undocumented)
 export interface IFormatterOptions {
@@ -530,6 +540,9 @@ export class World<ParametersType = any> implements IWorld<ParametersType> {
     // (undocumented)
     readonly parameters: ParametersType;
 }
+
+// @beta
+export const world: IWorld<any>;
 
 // @public (undocumented)
 export function wrapPromiseWithTimeout<T>(promise: Promise<T>, timeoutInMilliseconds: number, timeoutMessage?: string): Promise<T>;
