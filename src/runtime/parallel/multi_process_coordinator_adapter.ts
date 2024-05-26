@@ -9,7 +9,7 @@ import { IRuntimeOptions } from '..'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
 import { IStopwatch, create } from '../stopwatch'
-import { assembleTestCases, IAssembledTestCases } from '../assemble_test_cases'
+import { IAssembledTestCases } from '../assemble_test_cases'
 import { ILogger } from '../../logger'
 import { ICoordinatorReport, IWorkerCommand } from './command_types'
 
@@ -52,7 +52,6 @@ export class MultiProcessCoordinatorAdapter {
   private readonly stopwatch: IStopwatch
   private onFinish: (success: boolean) => void
   private readonly options: IRuntimeOptions
-  private readonly newId: IdGenerator.NewId
   private readonly pickleIds: string[]
   private assembledTestCases: IAssembledTestCases
   private readonly inProgressPickles: Record<string, messages.Pickle>
@@ -70,7 +69,6 @@ export class MultiProcessCoordinatorAdapter {
     eventDataCollector,
     pickleIds,
     options,
-    newId,
     supportCodeLibrary,
     numberOfWorkers,
   }: INewCoordinatorOptions) {
@@ -80,7 +78,6 @@ export class MultiProcessCoordinatorAdapter {
     this.eventDataCollector = eventDataCollector
     this.stopwatch = create()
     this.options = options
-    this.newId = newId
     this.supportCodeLibrary = supportCodeLibrary
     this.pickleIds = Array.from(pickleIds)
     this.numberOfWorkers = numberOfWorkers
@@ -90,15 +87,8 @@ export class MultiProcessCoordinatorAdapter {
     this.idleInterventions = 0
   }
 
-  async start(): Promise<boolean> {
-    this.assembledTestCases = await assembleTestCases({
-      eventBroadcaster: this.eventBroadcaster,
-      newId: this.newId,
-      pickles: this.pickleIds.map((pickleId) =>
-        this.eventDataCollector.getPickle(pickleId)
-      ),
-      supportCodeLibrary: this.supportCodeLibrary,
-    })
+  async start(assembledTestCases: IAssembledTestCases): Promise<boolean> {
+    this.assembledTestCases = assembledTestCases
     return await new Promise<boolean>((resolve) => {
       for (let i = 0; i < this.numberOfWorkers; i++) {
         this.startWorker(i.toString(), this.numberOfWorkers)
