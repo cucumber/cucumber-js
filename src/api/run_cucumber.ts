@@ -4,6 +4,7 @@ import { EventDataCollector } from '../formatter/helpers'
 import { emitMetaMessage, emitSupportCodeMessages } from '../cli/helpers'
 import { resolvePaths } from '../paths'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
+import { version } from '../version'
 import { IRunOptions, IRunEnvironment, IRunResult } from './types'
 import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
@@ -27,6 +28,11 @@ export async function runCucumber(
 ): Promise<IRunResult> {
   const mergedEnvironment = mergeEnvironment(environment)
   const { cwd, stdout, stderr, env, logger } = mergedEnvironment
+
+  logger.debug(`Running cucumber-js ${version} 
+Working directory: ${cwd}
+Running from: ${__dirname}  
+`)
 
   const newId = IdGenerator.uuid()
 
