@@ -91,13 +91,6 @@ export class MultiProcessCoordinatorAdapter {
   }
 
   async start(): Promise<boolean> {
-    const envelope: messages.Envelope = {
-      testRunStarted: {
-        timestamp: this.stopwatch.timestamp(),
-      },
-    }
-    this.eventBroadcaster.emit('envelope', envelope)
-    this.stopwatch.start()
     this.assembledTestCases = await assembleTestCases({
       eventBroadcaster: this.eventBroadcaster,
       newId: this.newId,
@@ -210,13 +203,6 @@ export class MultiProcessCoordinatorAdapter {
     if (
       Object.values(this.workers).every((x) => x.state === WorkerState.closed)
     ) {
-      const envelope: messages.Envelope = {
-        testRunFinished: {
-          timestamp: this.stopwatch.timestamp(),
-          success, // TODO shouldnt this be this.success?
-        },
-      }
-      this.eventBroadcaster.emit('envelope', envelope)
       this.onFinish(this.success)
     }
   }
