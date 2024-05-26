@@ -19,13 +19,16 @@ export default class Coordinator implements IRuntime {
   private readonly pickleIds: string[]
   private readonly adapter: MultiProcessCoordinatorAdapter
 
-  constructor(options: INewCoordinatorOptions) {
+  constructor(options: Omit<INewCoordinatorOptions, 'stopwatch'>) {
     this.newId = options.newId
     this.eventBroadcaster = options.eventBroadcaster
     this.eventDataCollector = options.eventDataCollector
     this.supportCodeLibrary = options.supportCodeLibrary
     this.pickleIds = [...options.pickleIds]
-    this.adapter = new MultiProcessCoordinatorAdapter(options)
+    this.adapter = new MultiProcessCoordinatorAdapter({
+      ...options,
+      stopwatch: this.stopwatch,
+    })
   }
 
   async start(): Promise<boolean> {
