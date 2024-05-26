@@ -8,8 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [10.8.0] - 2024-05-26
 ### Added
-- Add `world` and `context` to allow accessing state from arrow functions ([#2402](https://github.com/cucumber/cucumber-js/pull/2402)) 
+- Add `world` and `context` to allow accessing state from arrow functions ([#2402](https://github.com/cucumber/cucumber-js/pull/2402))
 
 ## [10.7.0] - 2024-05-11
 ### Added
@@ -1618,7 +1620,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.7.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.8.0...HEAD
+[10.8.0]: https://github.com/cucumber/cucumber-js/compare/v10.7.0...v10.8.0
 [10.7.0]: https://github.com/cucumber/cucumber-js/compare/v10.6.0...v10.7.0
 [10.6.0]: https://github.com/cucumber/cucumber-js/compare/v10.5.1...v10.6.0
 [10.5.1]: https://github.com/cucumber/cucumber-js/compare/v10.5.0...v10.5.1

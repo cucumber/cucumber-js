@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "10.7.0",
+  "version": "10.8.0",
   "funding": "https://opencollective.com/cucumber",
   "homepage": "https://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com>",
