@@ -5,6 +5,7 @@ import { EventDataCollector } from '../formatter/helpers'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import Coordinator from '../runtime/parallel/coordinator'
 import { ILogger } from '../logger'
+import { MultiProcessCoordinatorAdapter } from '../runtime/parallel/multi_process_coordinator_adapter'
 import { IRunOptionsRuntime } from './types'
 
 export function makeRuntime({
@@ -27,7 +28,7 @@ export function makeRuntime({
   options: IRunOptionsRuntime
 }): IRuntime {
   if (parallel > 0) {
-    return new Coordinator({
+    const adapter = new MultiProcessCoordinatorAdapter({
       cwd,
       logger,
       eventBroadcaster,
@@ -37,6 +38,14 @@ export function makeRuntime({
       newId,
       supportCodeLibrary,
       numberOfWorkers: parallel,
+    })
+    return new Coordinator({
+      eventBroadcaster,
+      eventDataCollector,
+      pickleIds,
+      newId,
+      supportCodeLibrary,
+      adapter,
     })
   }
   return new Runtime({

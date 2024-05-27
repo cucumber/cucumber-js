@@ -11,10 +11,11 @@ import { doesHaveValue } from '../../value_checker'
 import { IAssembledTestCases } from '../assemble_test_cases'
 import { ILogger } from '../../logger'
 import { ICoordinatorReport, IWorkerCommand } from './command_types'
+import { CoordinatorAdapter } from './adapter'
 
 const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
 
-export interface INewCoordinatorOptions {
+interface Options {
   cwd: string
   logger: ILogger
   eventBroadcaster: EventEmitter
@@ -44,7 +45,7 @@ interface IPicklePlacement {
   pickle: messages.Pickle
 }
 
-export class MultiProcessCoordinatorAdapter {
+export class MultiProcessCoordinatorAdapter implements CoordinatorAdapter {
   private readonly cwd: string
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
@@ -69,7 +70,7 @@ export class MultiProcessCoordinatorAdapter {
     options,
     supportCodeLibrary,
     numberOfWorkers,
-  }: INewCoordinatorOptions) {
+  }: Options) {
     this.cwd = cwd
     this.logger = logger
     this.eventBroadcaster = eventBroadcaster

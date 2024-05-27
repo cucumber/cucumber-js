@@ -5,10 +5,16 @@ import { timestamp } from '../stopwatch'
 import { assembleTestCases } from '../assemble_test_cases'
 import { EventDataCollector } from '../../formatter/helpers'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
-import {
-  INewCoordinatorOptions,
-  MultiProcessCoordinatorAdapter,
-} from './multi_process_coordinator_adapter'
+import { CoordinatorAdapter } from './adapter'
+
+interface Options {
+  eventBroadcaster: EventEmitter
+  eventDataCollector: EventDataCollector
+  newId: IdGenerator.NewId
+  pickleIds: string[]
+  supportCodeLibrary: SupportCodeLibrary
+  adapter: CoordinatorAdapter
+}
 
 export default class Coordinator implements IRuntime {
   private readonly newId: IdGenerator.NewId
@@ -16,15 +22,15 @@ export default class Coordinator implements IRuntime {
   private readonly eventDataCollector: EventDataCollector
   private readonly supportCodeLibrary: SupportCodeLibrary
   private readonly pickleIds: string[]
-  private readonly adapter: MultiProcessCoordinatorAdapter
+  private readonly adapter: CoordinatorAdapter
 
-  constructor(options: INewCoordinatorOptions) {
+  constructor(options: Options) {
     this.newId = options.newId
     this.eventBroadcaster = options.eventBroadcaster
     this.eventDataCollector = options.eventDataCollector
     this.supportCodeLibrary = options.supportCodeLibrary
     this.pickleIds = [...options.pickleIds]
-    this.adapter = new MultiProcessCoordinatorAdapter(options)
+    this.adapter = options.adapter
   }
 
   async start(): Promise<boolean> {
