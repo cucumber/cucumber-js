@@ -12,7 +12,7 @@ import TestStepHookDefinition from '../models/test_step_hook_definition'
 import { IDefinition } from '../models/definition'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import StepDefinition from '../models/step_definition'
-import { IStopwatch } from './stopwatch'
+import { timestamp } from './stopwatch'
 import StepRunner from './step_runner'
 import AttachmentManager from './attachment_manager'
 import { getAmbiguousStepException } from './helpers'
@@ -20,7 +20,6 @@ import { getAmbiguousStepException } from './helpers'
 export interface INewTestCaseRunnerOptions {
   workerId?: string
   eventBroadcaster: EventEmitter
-  stopwatch: IStopwatch
   gherkinDocument: messages.GherkinDocument
   newId: IdGenerator.NewId
   pickle: messages.Pickle
@@ -38,7 +37,6 @@ export default class TestCaseRunner {
   private currentTestCaseStartedId: string
   private currentTestStepId: string
   private readonly eventBroadcaster: EventEmitter
-  private readonly stopwatch: IStopwatch
   private readonly gherkinDocument: messages.GherkinDocument
   private readonly newId: IdGenerator.NewId
   private readonly pickle: messages.Pickle
@@ -54,7 +52,6 @@ export default class TestCaseRunner {
   constructor({
     workerId,
     eventBroadcaster,
-    stopwatch,
     gherkinDocument,
     newId,
     pickle,
@@ -87,7 +84,6 @@ export default class TestCaseRunner {
       }
     )
     this.eventBroadcaster = eventBroadcaster
-    this.stopwatch = stopwatch
     this.gherkinDocument = gherkinDocument
     this.maxAttempts = 1 + (skip ? 0 : retries)
     this.newId = newId
@@ -167,7 +163,7 @@ export default class TestCaseRunner {
       testStepStarted: {
         testCaseStartedId: this.currentTestCaseStartedId,
         testStepId,
-        timestamp: this.stopwatch.timestamp(),
+        timestamp: timestamp(),
       },
     }
     this.eventBroadcaster.emit('envelope', testStepStarted)
@@ -180,7 +176,7 @@ export default class TestCaseRunner {
         testCaseStartedId: this.currentTestCaseStartedId,
         testStepId,
         testStepResult,
-        timestamp: this.stopwatch.timestamp(),
+        timestamp: timestamp(),
       },
     }
     this.eventBroadcaster.emit('envelope', testStepFinished)
@@ -213,7 +209,7 @@ export default class TestCaseRunner {
         attempt,
         testCaseId: this.testCase.id,
         id: this.currentTestCaseStartedId,
-        timestamp: this.stopwatch.timestamp(),
+        timestamp: timestamp(),
       },
     }
     if (this.workerId) {
@@ -258,7 +254,7 @@ export default class TestCaseRunner {
     const testCaseFinished: messages.Envelope = {
       testCaseFinished: {
         testCaseStartedId: this.currentTestCaseStartedId,
-        timestamp: this.stopwatch.timestamp(),
+        timestamp: timestamp(),
         willBeRetried,
       },
     }

@@ -8,7 +8,6 @@ import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntimeOptions } from '..'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
-import { IStopwatch } from '../stopwatch'
 import { IAssembledTestCases } from '../assemble_test_cases'
 import { ILogger } from '../../logger'
 import { ICoordinatorReport, IWorkerCommand } from './command_types'
@@ -18,7 +17,6 @@ const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
 export interface INewCoordinatorOptions {
   cwd: string
   logger: ILogger
-  stopwatch: IStopwatch
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   options: IRuntimeOptions
@@ -50,7 +48,6 @@ export class MultiProcessCoordinatorAdapter {
   private readonly cwd: string
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
-  private readonly stopwatch: IStopwatch
   private onFinish: (success: boolean) => void
   private readonly options: IRuntimeOptions
   private readonly pickleIds: string[]
@@ -66,7 +63,6 @@ export class MultiProcessCoordinatorAdapter {
   constructor({
     cwd,
     logger,
-    stopwatch,
     eventBroadcaster,
     eventDataCollector,
     pickleIds,
@@ -76,7 +72,6 @@ export class MultiProcessCoordinatorAdapter {
   }: INewCoordinatorOptions) {
     this.cwd = cwd
     this.logger = logger
-    this.stopwatch = stopwatch
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
     this.options = options
@@ -268,7 +263,6 @@ export class MultiProcessCoordinatorAdapter {
       run: {
         retries,
         skip,
-        elapsed: this.stopwatch.duration(),
         pickle,
         testCase,
         gherkinDocument,

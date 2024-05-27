@@ -8,7 +8,6 @@ import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
 import { makeRunTestRunHooks, RunsTestRunHooks } from '../run_test_run_hooks'
-import { create } from '../stopwatch'
 import TestCaseRunner from '../test_case_runner'
 import tryRequire from '../../try_require'
 import {
@@ -116,15 +115,12 @@ export default class Worker {
     gherkinDocument,
     pickle,
     testCase,
-    elapsed,
     retries,
     skip,
   }: IWorkerCommandRun): Promise<void> {
-    const stopwatch = create(elapsed)
     const testCaseRunner = new TestCaseRunner({
       workerId: this.id,
       eventBroadcaster: this.eventBroadcaster,
-      stopwatch,
       gherkinDocument,
       newId: this.newId,
       pickle,
