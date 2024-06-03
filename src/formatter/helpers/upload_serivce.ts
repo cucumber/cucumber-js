@@ -82,9 +82,10 @@ class RunUploadService {
           'Content-Length': fileSize,
         },
       })
-      console.log('Uploaded successfully:\n', filePath)
     } catch (error) {
-      console.error('Error uploading file:', error)
+      if (process.env.NODE_ENV_BLINQ === 'dev') {
+        console.error('Error uploading file:', error)
+      }
     } finally {
       fileStream.close()
     }
