@@ -76,6 +76,7 @@ export type JsonStep = {
   text: string
   commands: JsonCommand[]
   result: JsonStepResult
+  data?: any
 }
 export type RetrainStats = {
   result: JsonTestResult
@@ -367,12 +368,25 @@ export default class ReportGenerator {
       status: 'STARTED'
       startTime: JsonTimestamp
     }
+    let data = {}
+    if (fs.existsSync(path.join(this.reportFolder, 'data.json'))) {
+      try {
+        data = JSON.parse(
+          fs.readFileSync(path.join(this.reportFolder, 'data.json'), 'utf8')
+        )
+      } catch (error) {
+        console.log('Error reading data.json')
+      }
+    }
     stepProgess.result = {
       status: testStepResult.status,
       startTime: prevStepResult.startTime,
       endTime: this.getTimeStamp(timestamp),
       message: testStepResult.message,
       // exception: testStepResult.exception,
+    }
+    if (Object.keys(data).length > 0) {
+      stepProgess.data = data
     }
   }
   getLogFileContent() {
