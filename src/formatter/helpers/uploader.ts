@@ -13,6 +13,8 @@ const URL =
     : 'https://api.blinq.io/api/runs'
 
 const REPORT_SERVICE_URL = process.env.REPORT_SERVICE_URL ?? URL
+const BATCH_SIZE = 10
+const MAX_RETRIES = 3
 const REPORT_SERVICE_TOKEN =
   process.env.TOKEN ?? process.env.REPORT_SERVICE_TOKEN
 
@@ -48,16 +50,28 @@ export default class ReportUploader {
           fileUris,
           runDocId
         )
-        await Promise.all(
-          fileUris
-            .filter((fileUri) => preSignedUrls[fileUri])
-            .map((fileUri) => {
-              return this.uploadService.uploadFile(
-                path.join(reportFolder, fileUri),
-                preSignedUrls[fileUri]
-              )
-            })
-        )
+        for (let i = 0; i < fileUris.length; i += BATCH_SIZE) {
+          const batch = fileUris.slice(
+            i,
+            Math.min(i + BATCH_SIZE, fileUris.length)
+          )
+          await Promise.all(
+            batch
+              .filter((fileUri) => preSignedUrls[fileUri])
+              .map(async (fileUri) => {
+                for (let j = 0; j < MAX_RETRIES; j++) {
+                  const success = await this.uploadService.uploadFile(
+                    path.join(reportFolder, fileUri),
+                    preSignedUrls[fileUri]
+                  )
+                  if (success) {
+                    return
+                  }
+                }
+                console.error('Failed to upload file:', fileUri)
+              })
+          )
+        }
         await this.uploadService.uploadComplete(runDocId, report)
       } catch (err) {
         throw new Error('Failed to upload  all the files')
