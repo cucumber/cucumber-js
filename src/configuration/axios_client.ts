@@ -34,8 +34,9 @@ const createAxiosClient = () => {
   } catch (error) {
     console.log(error.message)
     throw new Error(
-      'Error creating axios client',
-      error instanceof Error ? error.message : error.response.data
+      `Error creating axios client ${
+        error instanceof Error ? error.message : error.response.data
+      }`
     )
   }
 }
