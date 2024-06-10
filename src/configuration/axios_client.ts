@@ -26,7 +26,6 @@ const getProxy = (): Agent | null => {
 const createAxiosClient = () => {
   try {
     const agent: string | Agent = getProxy()
-    console.log(agent)
     return axios.create({
       httpAgent: agent,
       proxy: false,
