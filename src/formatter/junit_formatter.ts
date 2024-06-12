@@ -20,7 +20,7 @@ import {
 import { getPickleStepMap, getStepKeyword } from './helpers/pickle_parser'
 import Formatter, { IFormatterOptions } from './'
 
-interface IJUnitTestSuite {
+export interface IJUnitTestSuite {
   name: string
   failures: number
   skipped: number
@@ -28,7 +28,7 @@ interface IJUnitTestSuite {
   tests: IJUnitTestCase[]
 }
 
-interface IJUnitTestCase {
+export interface IJUnitTestCase {
   classname: string
   name: string
   time: number
@@ -258,32 +258,65 @@ export default class JunitFormatter extends Formatter {
     this.log(this.buildXmlReport(testSuite))
   }
 
+  buildTestSuite(testSuite: IJUnitTestSuite): Record<string, any> {
+    return {
+      testsuite: {
+        '@failures': testSuite.failures,
+        '@skipped': testSuite.skipped,
+        '@name': testSuite.name,
+        '@time': testSuite.time,
+        '@tests': testSuite.tests.length,
+      },
+    }
+  }
+
+  buildTestCase(test: IJUnitTestCase): Record<string, any> {
+    return {
+      testcase: {
+        '@classname': test.classname,
+        '@name': test.name,
+        '@time': test.time,
+      },
+    }
+  }
+
+  buildSkippedCase(_test: IJUnitTestCase): Record<string, any> {
+    return {
+      skipped: {},
+    }
+  }
+
+  buildFailedCase(test: IJUnitTestCase): Record<string, any> {
+    return {
+      failure: {
+        '@type': test.result.failure?.type,
+        '@message': test.result.failure?.message,
+        '#cdata': test.result.failure?.detail,
+      },
+    }
+  }
+
+  buildSystemOutput(test: IJUnitTestCase): Record<string, any> {
+    return {
+      'system-out': {
+        '#cdata': test.systemOutput,
+      },
+    }
+  }
+
   private buildXmlReport(testSuite: IJUnitTestSuite): string {
-    const xmlReport = xmlbuilder
-      .create('testsuite', { invalidCharReplacement: '' })
-      .att('failures', testSuite.failures)
-      .att('skipped', testSuite.skipped)
-      .att('name', testSuite.name)
-      .att('time', testSuite.time)
-      .att('tests', testSuite.tests.length)
+    const xmlReport = xmlbuilder.create(this.buildTestSuite(testSuite), {
+      invalidCharReplacement: '',
+    })
+
     testSuite.tests.forEach((test) => {
-      const xmlTestCase = xmlReport.ele('testcase', {
-        classname: test.classname,
-        name: test.name,
-        time: test.time,
-      })
+      const xmlTestCase = xmlReport.ele(this.buildTestCase(test))
       if (test.result.status === TestStepResultStatus.SKIPPED) {
-        xmlTestCase.ele('skipped')
+        xmlTestCase.ele(this.buildSkippedCase(test))
       } else if (test.result.status !== TestStepResultStatus.PASSED) {
-        const xmlFailure = xmlTestCase.ele('failure', {
-          type: test.result.failure?.type,
-          message: test.result.failure?.message,
-        })
-        if (test.result?.failure) {
-          xmlFailure.cdata(test.result.failure.detail)
-        }
+        xmlTestCase.ele(this.buildFailedCase(test))
       }
-      xmlTestCase.ele('system-out', {}).cdata(test.systemOutput)
+      xmlTestCase.ele(this.buildSystemOutput(test))
     })
 
     return xmlReport.end({ pretty: true })
