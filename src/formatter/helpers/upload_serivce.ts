@@ -73,7 +73,7 @@ class RunUploadService {
 
   async uploadFile(filePath: string, preSignedUrl: string) {
     const fileStream = createReadStream(filePath)
-
+    let success = true
     try {
       const fileStats = await fs.stat(filePath)
       const fileSize = fileStats.size
@@ -84,12 +84,15 @@ class RunUploadService {
           'Content-Length': fileSize,
         },
       })
-      console.log('Uploaded successfully:\n', filePath)
     } catch (error) {
-      console.error('Error uploading file:', error)
+      if (process.env.NODE_ENV_BLINQ === 'dev') {
+        console.error('Error uploading file:', error)
+      }
+      success = false
     } finally {
       fileStream.close()
     }
+    return success
   }
   async uploadComplete(runId: string, report: JsonReport) {
     const response = await axiosClient.post(

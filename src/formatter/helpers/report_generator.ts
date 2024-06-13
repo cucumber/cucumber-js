@@ -1,4 +1,6 @@
 import * as messages from '@cucumber/messages'
+import fs from 'fs'
+import path from 'path'
 // type JsonException = messages.Exception
 type JsonTimestamp = number //messages.Timestamp
 type JsonStepType = 'Unknown' | 'Context' | 'Action' | 'Outcome' | 'Conjunction'
@@ -74,6 +76,7 @@ export type JsonStep = {
   text: string
   commands: JsonCommand[]
   result: JsonStepResult
+  data?: any
 }
 export type RetrainStats = {
   result: JsonTestResult
@@ -90,6 +93,7 @@ export type JsonTestProgress = {
   steps: JsonStep[]
   result: JsonTestResult
   retrainStats?: RetrainStats
+  webLog: any
 }
 
 export type JsonReport = {
@@ -325,6 +329,7 @@ export default class ReportGenerator {
         status: 'STARTED',
         startTime: this.getTimeStamp(timestamp),
       },
+      webLog: [],
     })
     this.report.testCases.push(this.testCaseReportMap.get(id))
   }
@@ -363,12 +368,51 @@ export default class ReportGenerator {
       status: 'STARTED'
       startTime: JsonTimestamp
     }
+    let data = {}
+    if (fs.existsSync(path.join(this.reportFolder, 'data.json'))) {
+      try {
+        data = JSON.parse(
+          fs.readFileSync(path.join(this.reportFolder, 'data.json'), 'utf8')
+        )
+      } catch (error) {
+        console.log('Error reading data.json')
+      }
+    }
     stepProgess.result = {
       status: testStepResult.status,
       startTime: prevStepResult.startTime,
       endTime: this.getTimeStamp(timestamp),
       message: testStepResult.message,
       // exception: testStepResult.exception,
+    }
+    if (Object.keys(data).length > 0) {
+      stepProgess.data = data
+    }
+  }
+  getLogFileContent() {
+    let projectPath = process.cwd()
+    if (process.env.PROJECT_PATH) {
+      projectPath = process.env.PROJECT_PATH
+    }
+    const logFolder = path.join(projectPath, 'logs', 'web')
+    if (!fs.existsSync(logFolder)) {
+      return []
+    }
+    let nextId = 1
+    while (fs.existsSync(path.join(logFolder, `${nextId}.json`))) {
+      nextId++
+    }
+    if (nextId === 1) {
+      return []
+    }
+    try {
+      const logFileContent = fs.readFileSync(
+        path.join(logFolder, `${nextId - 1}.json`),
+        'utf8'
+      )
+      return JSON.parse(logFileContent)
+    } catch (error) {
+      return []
     }
   }
   private getTestCaseResult(steps: JsonStep[]) {
@@ -407,6 +451,7 @@ export default class ReportGenerator {
       startTime: prevResult.startTime,
       endTime: this.getTimeStamp(timestamp),
     }
+    testProgress.webLog = this.getLogFileContent()
   }
   private onTestRunFinished(testRunFinished: messages.TestRunFinished) {
     const { timestamp, success, message } = testRunFinished
