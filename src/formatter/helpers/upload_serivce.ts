@@ -1,12 +1,14 @@
-import axios from 'axios'
+/* eslint-disable no-console */
 import FormData from 'form-data'
 import { createReadStream } from 'fs'
 import fs from 'fs/promises'
 import { JsonReport } from './report_generator'
+import { axiosClient } from '../../configuration/axios_client'
+
 class RunUploadService {
   constructor(private runsApiBaseURL: string, private accessToken: string) {}
   async createRunDocument(name: string) {
-    const runDocResult = await axios.post(
+    const runDocResult = await axiosClient.post(
       this.runsApiBaseURL + '/cucumber-runs/create',
       {
         name: name ? name : 'TEST',
@@ -27,7 +29,7 @@ class RunUploadService {
     return runDocResult.data.run
   }
   async upload(formData: FormData) {
-    const response = await axios.post(
+    const response = await axiosClient.post(
       this.runsApiBaseURL + '/cucumber-runs/upload',
       formData,
       {
@@ -46,7 +48,7 @@ class RunUploadService {
     }
   }
   async getPreSignedUrls(fileUris: string[], runId: string) {
-    const response = await axios.post(
+    const response = await axiosClient.post(
       this.runsApiBaseURL + '/cucumber-runs/generateuploadurls',
       {
         fileUris,
@@ -76,7 +78,7 @@ class RunUploadService {
       const fileStats = await fs.stat(filePath)
       const fileSize = fileStats.size
 
-      await axios.put(preSignedUrl, fileStream, {
+      await axiosClient.put(preSignedUrl, fileStream, {
         headers: {
           'Content-Type': 'application/octet-stream',
           'Content-Length': fileSize,
@@ -93,7 +95,7 @@ class RunUploadService {
     return success
   }
   async uploadComplete(runId: string, report: JsonReport) {
-    const response = await axios.post(
+    const response = await axiosClient.post(
       this.runsApiBaseURL + '/cucumber-runs/uploadcomplete',
       {
         runId,

@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "1.0.61",
+  "version": "1.0.63",
   "homepage": "https://github.com/blinq-io/cucumber-js",
   "author": "blinq.io",
   "contributors": [
@@ -60,6 +60,7 @@
     "@cucumber/messages": "22.0.0",
     "@cucumber/tag-expressions": "5.0.1",
     "@faker-js/faker": "^8.0.2",
+    "@types/tunnel": "^0.0.7",
     "assertion-error-formatter": "^3.0.0",
     "axios": "^1.6.2",
     "capital-case": "^1.0.4",
@@ -89,6 +90,7 @@
     "supports-color": "^8.1.1",
     "tmp": "^0.2.1",
     "tmp-promise": "^3.0.3",
+    "tunnel": "^0.0.6",
     "util-arity": "^1.1.0",
     "verror": "^1.10.0",
     "xmlbuilder": "^15.1.1",
