@@ -4,6 +4,10 @@ import CucumberHtmlStream from '@cucumber/html-formatter'
 import resolvePkg from 'resolve-pkg'
 import { FormatterPlugin } from '../../plugin'
 
+interface Options {
+  externalAttachments?: true
+}
+
 export default {
   type: 'formatter',
   formatter({ on, write }) {
@@ -22,4 +26,4 @@ export default {
     }
   },
   documentation: 'Outputs a HTML report',
-} satisfies FormatterPlugin
+} satisfies FormatterPlugin<Options>
