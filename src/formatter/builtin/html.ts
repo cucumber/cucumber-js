@@ -10,7 +10,8 @@ interface Options {
 
 export default {
   type: 'formatter',
-  formatter({ on, write }) {
+  formatter({ on, logger, write, directory }) {
+    logger.warn('Directory for HTML formatter: ' + directory)
     const htmlStream = new CucumberHtmlStream(
       resolvePkg('@cucumber/html-formatter', { cwd: __dirname }) +
         '/dist/main.css',

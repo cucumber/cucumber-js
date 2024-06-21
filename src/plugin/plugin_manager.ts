@@ -34,12 +34,14 @@ export class PluginManager {
   async initFormatter<OptionsType>(
     plugin: FormatterPlugin<OptionsType>,
     options: OptionsType,
+    logger: ILogger,
     write: (buffer: string | Uint8Array) => void,
     directory?: string
   ) {
     const cleanupFn = await plugin.formatter({
       on: (key, handler) => this.register(key, handler),
       options,
+      logger,
       write,
       directory,
     })

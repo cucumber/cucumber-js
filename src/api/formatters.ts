@@ -74,6 +74,7 @@ export async function initializeFormatters({
       await pluginManager.initFormatter(
         implementation,
         configuration.options,
+        logger,
         stream.write.bind(stream),
         directory
       )
