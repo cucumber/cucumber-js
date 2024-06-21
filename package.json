@@ -218,7 +218,7 @@
     "@cucumber/gherkin": "28.0.0",
     "@cucumber/gherkin-streams": "5.0.1",
     "@cucumber/gherkin-utils": "9.0.0",
-    "@cucumber/html-formatter": "21.3.1",
+    "@cucumber/html-formatter": "21.4.0",
     "@cucumber/message-streams": "4.0.1",
     "@cucumber/messages": "24.1.0",
     "@cucumber/tag-expressions": "6.1.0",
