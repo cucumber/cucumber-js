@@ -9,11 +9,12 @@ export async function createStream(
   onStreamError: () => void,
   cwd: string,
   logger: ILogger
-): Promise<Writable> {
+) {
   const absoluteTarget = path.resolve(cwd, target)
+  const directory = path.dirname(absoluteTarget)
 
   try {
-    await mkdirp(path.dirname(absoluteTarget))
+    await mkdirp(directory)
   } catch (error) {
     logger.warn('Failed to ensure directory for formatter target exists')
   }
@@ -27,5 +28,8 @@ export async function createStream(
     onStreamError()
   })
 
-  return stream
+  return {
+    directory,
+    stream,
+  }
 }

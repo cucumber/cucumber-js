@@ -39,6 +39,7 @@ export async function initializeFormatters({
 
   async function initializeFormatter(
     stream: IFormatterStream,
+    directory: string | undefined,
     target: string,
     specifier: string
   ): Promise<void> {
@@ -73,7 +74,8 @@ export async function initializeFormatters({
       await pluginManager.initFormatter(
         implementation,
         configuration.options,
-        stream.write.bind(stream)
+        stream.write.bind(stream),
+        directory
       )
       if (stream !== stdout) {
         cleanupFns.push(promisify<any>(stream.end.bind(stream)))
@@ -81,13 +83,15 @@ export async function initializeFormatters({
     }
   }
 
-  await initializeFormatter(stdout, 'stdout', configuration.stdout)
+  await initializeFormatter(stdout, undefined, 'stdout', configuration.stdout)
   for (const [target, specifier] of Object.entries(configuration.files)) {
-    await initializeFormatter(
-      await createStream(target, onStreamError, cwd, logger),
+    const { stream, directory } = await createStream(
       target,
-      specifier
+      onStreamError,
+      cwd,
+      logger
     )
+    await initializeFormatter(stream, directory, target, specifier)
   }
 
   return async function () {

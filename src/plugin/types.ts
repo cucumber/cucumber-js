@@ -67,6 +67,7 @@ export interface FormatterPluginContext<OptionsType> {
   on: (key: 'message', handler: (value: Envelope) => void) => void
   options: OptionsType
   write: (buffer: string | Uint8Array) => void
+  directory?: string
 }
 
 export type FormatterPluginFunction<OptionsType> = (
