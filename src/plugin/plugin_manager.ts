@@ -40,7 +40,9 @@ export class PluginManager {
   ) {
     const cleanupFn = await plugin.formatter({
       on: (key, handler) => this.register(key, handler),
-      options,
+      options: plugin.optionsKey
+        ? ((options as any)[plugin.optionsKey] as OptionsType)
+        : options,
       logger,
       write,
       directory,

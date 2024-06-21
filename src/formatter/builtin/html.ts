@@ -27,4 +27,5 @@ export default {
     }
   },
   documentation: 'Outputs a HTML report',
+  optionsKey: 'html',
 } satisfies FormatterPlugin<Options>
