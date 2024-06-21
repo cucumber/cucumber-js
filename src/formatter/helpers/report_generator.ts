@@ -99,6 +99,10 @@ export type JsonTestProgress = {
 export type JsonReport = {
   testCases: JsonTestProgress[]
   result: JsonReportResult
+  env: {
+    name: string
+    baseUrl: string
+  }
 }
 
 export default class ReportGenerator {
@@ -107,6 +111,10 @@ export default class ReportGenerator {
       status: 'UNKNOWN',
     },
     testCases: [] as JsonTestProgress[],
+    env: {
+      name: '',
+      baseUrl: '',
+    },
   }
   private gherkinDocumentMap = new Map<string, messages.GherkinDocument>()
   private stepMap = new Map<string, messages.Step>()
@@ -349,6 +357,11 @@ export default class ReportGenerator {
     const { testStepId, body, mediaType } = attachment
     if (mediaType === 'text/plain') {
       this.reportFolder = body.replaceAll('\\', '/')
+      return
+    }
+    if (mediaType === 'application/json+env') {
+      const data = JSON.parse(body)
+      this.report.env = data
     }
     const testStep = this.testStepMap.get(testStepId)
     if (testStep.pickleStepId === undefined) return
