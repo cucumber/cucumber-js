@@ -20,6 +20,11 @@ interface Options {
 export default {
   type: 'formatter',
   formatter({ on, options, write, directory }) {
+    if (!directory && options.externalAttachments) {
+      throw new Error(
+        'Unable to externalise attachments when formatter is not writing to a file'
+      )
+    }
     const newId = IdGenerator.uuid()
     const htmlStream = new CucumberHtmlStream(
       resolvePkg('@cucumber/html-formatter', { cwd: __dirname }) +
@@ -66,11 +71,8 @@ const encodingsMap = {
 function externaliseAttachment(
   newId: () => string,
   original: Attachment,
-  directory?: string
+  directory: string
 ) {
-  if (!directory) {
-    return { attachment: original }
-  }
   if (original.mediaType === 'text/x.cucumber.log+plain') {
     return { attachment: original }
   }
