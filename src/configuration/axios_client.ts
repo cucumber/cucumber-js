@@ -27,7 +27,7 @@ const createAxiosClient = () => {
   try {
     const agent: string | Agent = getProxy()
     return axios.create({
-      httpAgent: agent,
+      httpsAgent: agent,
       proxy: false,
     })
   } catch (error) {
