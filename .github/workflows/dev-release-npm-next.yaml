@@ -2,7 +2,7 @@ name: Release NPM (latest)
 
 on:
   push:
-    branches: [dev, fix_proxy_err]
+    branches: [dev]
 
 jobs:
   publish-npm:
