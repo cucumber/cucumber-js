@@ -14,6 +14,9 @@ export interface FormatRerunOptions {
 
 export interface FormatOptions {
   colorsEnabled?: boolean
+  html?: {
+    externalAttachments?: boolean
+  }
   rerun?: FormatRerunOptions
   snippetInterface?: SnippetInterface
   snippetSyntax?: string
