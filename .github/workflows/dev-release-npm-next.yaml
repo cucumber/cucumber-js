@@ -17,8 +17,8 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
       - run: npm install-test
-      - name: Version Bump
-        run: npm version patch
+      - name: Version Bump 
+        run: npm version patch --force
       - uses: cucumber/action-publish-npm@v1.1.0
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
