@@ -121,6 +121,7 @@ export default class BVTAnalysisFormatter extends Formatter {
     return {
       result: finalResult,
       testCases: finalTestCases,
+      env : report.env
     }
   }
   private async processTestCase(
