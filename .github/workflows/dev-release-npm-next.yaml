@@ -2,7 +2,7 @@ name: Release NPM (latest)
 
 on:
   push:
-    branches: [dev, fix_stage_run]
+    branches: [dev]
 
 jobs:
   publish-npm:
