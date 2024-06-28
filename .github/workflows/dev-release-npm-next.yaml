@@ -19,7 +19,7 @@ jobs:
           node-version: '18'
           cache: 'npm'
           cache-dependency-path: package-lock.json
-      
+      - run: npm install-test
 
       - name: Configure git
         run: |
@@ -61,7 +61,7 @@ jobs:
           git commit -m "new version commited"
           git push origin AI-987-change-workflows-to-update-ver      
 
-      - run: npm install-test
+      
       - uses: cucumber/action-publish-npm@v1.1.0
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
