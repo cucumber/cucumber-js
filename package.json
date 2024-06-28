@@ -8,12 +8,13 @@
     "gherkin",
     "tests"
   ],
-  "version": "1.0.63",
+  "version": "1.0.70-dev",
   "homepage": "https://github.com/blinq-io/cucumber-js",
   "author": "blinq.io",
   "contributors": [
     "blinq.io"
   ],
+  
   "repository": {
     "type": "git",
     "url": "git@github.com:blinq-io/cucumber-js.git"
@@ -181,8 +182,7 @@
     "test": "npm run types-test && npm run unit-test && npm run cck-test && npm run feature-test",
     "types-test": "tsd",
     "unit-test": "mocha 'src/**/*_spec.ts'",
-    "update-dependencies": "npx npm-check-updates --upgrade",
-    "version-bump": "npm version patch"
+    "update-dependencies": "npx npm-check-updates --upgrade"
   },
   "bin": {
     "cucumber-js": "bin/cucumber.js",
