@@ -2,7 +2,7 @@ name: Release NPM (latest)
 
 on:
   push:
-    branches: ["dev","AI-987-change-workflows-to-update-ver"]
+    branches: ["dev"]
 
 permissions:
   contents: write    
@@ -59,7 +59,7 @@ jobs:
         run: |
           git add ${{ github.workspace }}/package.json ${{ github.workspace }}/package-lock.json
           git commit -m "new version commited"
-          git push origin AI-987-change-workflows-to-update-ver      
+          git push origin dev     
 
       
       - uses: cucumber/action-publish-npm@v1.1.0
