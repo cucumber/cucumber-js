@@ -4,6 +4,9 @@ on:
   push:
     branches: ["dev","AI-987-change-workflows-to-update-ver"]
 
+permissions:
+  contents: write    
+
 jobs:
   publish-npm:
     name: Publish NPM module
