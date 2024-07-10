@@ -229,13 +229,13 @@ export default class BVTAnalysisFormatter extends Formatter {
     })
   }
   private logReportLink(runId: string, projectId: string) {
-    let reportLinkBaseUrl = 'https://app.blinq.io'
+    let reportLinkBaseUrl = 'https://www.app.blinq.io'
     if (process.env.NODE_ENV_BLINQ === 'local') {
       reportLinkBaseUrl = 'http://localhost:3000'
     } else if (process.env.NODE_ENV_BLINQ === 'dev') {
-      reportLinkBaseUrl = 'https://dev.app.blinq.io'
+      reportLinkBaseUrl = 'https://www.dev.app.blinq.io'
     } else if (process.env.NODE_ENV_BLINQ === 'stage') {
-      reportLinkBaseUrl = 'https://stage.app.blinq.io'
+      reportLinkBaseUrl = 'https://www.stage.app.blinq.io'
     }
     const reportLink = `${reportLinkBaseUrl}/${projectId}/run-report/${runId}`
     this.log(`Report link: ${reportLink}\n`)
