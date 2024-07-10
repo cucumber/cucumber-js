@@ -4,6 +4,8 @@ const path = require('path')
 const JSZip = require('jszip')
 const { mkdirSync, writeFileSync } = require('node:fs')
 const axios = require('axios').default
+const tunnel = require('tunnel')
+
 let token = null
 let extractPath = null
 const getSSoUrl = () => {
@@ -17,6 +19,25 @@ const getSSoUrl = () => {
   }
 }
 
+const getProxy = () => {
+  if (!process.env.PROXY) {
+    return null
+  }
+
+  const proxy = process.env.PROXY
+  const url = new URL(proxy)
+  const proxyObject = {
+    host: url.hostname,
+    port: Number(url.port),
+  }
+
+  const { username, password } = url
+
+  if (username && password) {
+    proxyObject.proxyAuth = `${username}:${password}`
+  }
+  return tunnel.httpsOverHttp({ proxy: proxyObject })
+}
 const getWorkSpaceUrl = () => {
   switch (process.env.NODE_ENV_BLINQ) {
     case 'local':
@@ -85,18 +106,21 @@ const downloadAndInstall = async (extractPath, token) => {
     const accessKeyUrl = `${ssoUrl}/getProjectByAccessKey`
     const response = await axios.post(accessKeyUrl, {
       access_key: token,
+      httpAgent: getProxy(),
+      proxy: false,
     })
-    if(response.status !== 200){
+    if (response.status !== 200) {
       console.error('Error: Invalid access key')
       process.exit(1)
     }
 
     const workspaceUrl = getWorkSpaceUrl() + '/pull-workspace'
-
     const res = await axios.get(workspaceUrl, {
       params: {
         projectId: response.data.project._id,
       },
+      httpAgent: getProxy(),
+      proxy: false,
       responseType: 'arraybuffer',
       headers: {
         Authorization: `Bearer ${token}`,

@@ -76,6 +76,7 @@ export type JsonStep = {
   text: string
   commands: JsonCommand[]
   result: JsonStepResult
+  data?: any
 }
 export type RetrainStats = {
   result: JsonTestResult
@@ -98,6 +99,10 @@ export type JsonTestProgress = {
 export type JsonReport = {
   testCases: JsonTestProgress[]
   result: JsonReportResult
+  env: {
+    name: string
+    baseUrl: string
+  }
 }
 
 export default class ReportGenerator {
@@ -106,6 +111,10 @@ export default class ReportGenerator {
       status: 'UNKNOWN',
     },
     testCases: [] as JsonTestProgress[],
+    env: {
+      name: '',
+      baseUrl: '',
+    },
   }
   private gherkinDocumentMap = new Map<string, messages.GherkinDocument>()
   private stepMap = new Map<string, messages.Step>()
@@ -348,6 +357,11 @@ export default class ReportGenerator {
     const { testStepId, body, mediaType } = attachment
     if (mediaType === 'text/plain') {
       this.reportFolder = body.replaceAll('\\', '/')
+      return
+    }
+    if (mediaType === 'application/json+env') {
+      const data = JSON.parse(body)
+      this.report.env = data
     }
     const testStep = this.testStepMap.get(testStepId)
     if (testStep.pickleStepId === undefined) return
@@ -367,12 +381,25 @@ export default class ReportGenerator {
       status: 'STARTED'
       startTime: JsonTimestamp
     }
+    let data = {}
+    if (fs.existsSync(path.join(this.reportFolder, 'data.json'))) {
+      try {
+        data = JSON.parse(
+          fs.readFileSync(path.join(this.reportFolder, 'data.json'), 'utf8')
+        )
+      } catch (error) {
+        console.log('Error reading data.json')
+      }
+    }
     stepProgess.result = {
       status: testStepResult.status,
       startTime: prevStepResult.startTime,
       endTime: this.getTimeStamp(timestamp),
       message: testStepResult.message,
       // exception: testStepResult.exception,
+    }
+    if (Object.keys(data).length > 0) {
+      stepProgess.data = data
     }
   }
   getLogFileContent() {
