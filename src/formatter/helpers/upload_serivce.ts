@@ -84,6 +84,7 @@ class RunUploadService {
           'Content-Length': fileSize,
         },
       })
+
     } catch (error) {
       if (process.env.NODE_ENV_BLINQ === 'dev') {
         console.error('Error uploading file:', error)
