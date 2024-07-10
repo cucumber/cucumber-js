@@ -2,10 +2,10 @@ name: Release NPM (latest)
 
 on:
   push:
-    branches: [main]
+    branches: [stage]
 
 permissions:
-    contents: write  
+      contents: write  
 
 jobs:
   publish-npm:
@@ -27,10 +27,10 @@ jobs:
           git config --global user.email "${{ secrets.GIT_USER_EMAIL }}"
           
 
-      - name: Fetch current version from npm with tag 'latest'
+      - name: Fetch current version from npm with tag 'beta'
         id: npm_version
         run: |
-            version=$(npm show @dev-blinq/cucumber-js@latest version)
+            version=$(npm show @dev-blinq/cucumber-js@beta version)
             echo "version=$version" >> $GITHUB_ENV
 
       - name: Increment version
@@ -38,7 +38,7 @@ jobs:
         run: |
           current_version=${{ env.version }}
           IFS='.' read -r -a version_parts <<< "$current_version"
-          preid="main"
+          preid="stage"
           patch_version=$((version_parts[2]+1))
           NEW_VERSION="${version_parts[0]}.${version_parts[1]}.${patch_version}-${preid}"
 
@@ -59,9 +59,10 @@ jobs:
         run: |
           git add ${{ github.workspace }}/package.json ${{ github.workspace }}/package-lock.json
           git commit -m "new version commited"
-          git push origin main     
+          git push origin stage     
 
       - uses: cucumber/action-publish-npm@v1.1.0
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
-          npm-tag: 'latest'
+          npm-tag: 'stage'
+

@@ -121,6 +121,7 @@ export default class BVTAnalysisFormatter extends Formatter {
     return {
       result: finalResult,
       testCases: finalTestCases,
+      env : report.env
     }
   }
   private async processTestCase(
@@ -233,9 +234,10 @@ export default class BVTAnalysisFormatter extends Formatter {
     if (process.env.NODE_ENV_BLINQ === 'local') {
       reportLinkBaseUrl = 'http://localhost:3000'
     } else if (process.env.NODE_ENV_BLINQ === 'dev') {
-      reportLinkBaseUrl = 'https://www.dev.app.blinq.io'
+      reportLinkBaseUrl = 'https://dev.app.blinq.io'
     } else if (process.env.NODE_ENV_BLINQ === 'stage') {
-      reportLinkBaseUrl = 'https://www.stage.app.blinq.io'
+      reportLinkBaseUrl = 'https://stage.app.blinq.io'
+
     }
     const reportLink = `${reportLinkBaseUrl}/${projectId}/run-report/${runId}`
     this.log(`Report link: ${reportLink}\n`)
