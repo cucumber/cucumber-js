@@ -2,7 +2,7 @@ name: Release NPM (latest)
 
 on:
   push:
-    branches: [dev, AI-1002]
+    branches: [dev]
 
 jobs:
   publish-npm:
