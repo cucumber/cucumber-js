@@ -28,25 +28,25 @@ jobs:
             version=$(npm show @dev-blinq/cucumber-js@next version)
             echo "version=$version" >> $GITHUB_ENV
 
-      # - name: Increment version
-      #   id: increment-version
-      #   run: |
-      #     current_version=${{ env.version }}
-      #     IFS='.' read -r -a version_parts <<< "$current_version"
-      #     preid="dev"
-      #     patch_version=$((version_parts[2]+1))
-      #     NEW_VERSION="${version_parts[0]}.${version_parts[1]}.${patch_version}-${preid}"
+      - name: Increment version
+        id: increment-version
+        run: |
+          current_version=${{ env.version }}
+          IFS='.' read -r -a version_parts <<< "$current_version"
+          preid="dev"
+          patch_version=$((version_parts[2]+1))
+          NEW_VERSION="${version_parts[0]}.${version_parts[1]}.${patch_version}-${preid}"
 
-      #     echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
+          echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
               
-      # - name: Update package.json with new npm version
-      #   run: |
-      #         jq --arg new_version "${{ env.new_version }}" '.version = $new_version' "${{ github.workspace }}/package.json" > "${{ github.workspace }}/package.json.tmp" && mv "${{ github.workspace }}/package.json.tmp" "${{ github.workspace }}/package.json"
+      - name: Update package.json with new npm version
+        run: |
+              jq --arg new_version "${{ env.new_version }}" '.version = $new_version' "${{ github.workspace }}/package.json" > "${{ github.workspace }}/package.json.tmp" && mv "${{ github.workspace }}/package.json.tmp" "${{ github.workspace }}/package.json"
 
 
-      # - name: Update package-lock.json
-      #   run: npm install --package-lock-only
-      #   working-directory: ${{ github.workspace }}      
+      - name: Update package-lock.json
+        run: npm install --package-lock-only
+        working-directory: ${{ github.workspace }}      
 
       
       - uses: cucumber/action-publish-npm@v1.1.0
