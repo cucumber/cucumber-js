@@ -22,6 +22,7 @@
     "email": "cukes@googlegroups.com",
     "url": "https://github.com/blinq-io/cucumber-js/issues"
   },
+  
   "directories": {
     "lib": "./lib"
   },
