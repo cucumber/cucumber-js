@@ -382,14 +382,14 @@ export default class ReportGenerator {
       startTime: JsonTimestamp
     }
     let data = {}
-    if (fs.existsSync(path.join(this.reportFolder, 'data.json'))) {
-      try {
+    try {
+      if (fs.existsSync(path.join(this.reportFolder, 'data.json'))) {
         data = JSON.parse(
           fs.readFileSync(path.join(this.reportFolder, 'data.json'), 'utf8')
         )
-      } catch (error) {
-        console.log('Error reading data.json')
       }
+    } catch (error) {
+      console.log('Error reading data.json')
     }
     stepProgess.result = {
       status: testStepResult.status,
