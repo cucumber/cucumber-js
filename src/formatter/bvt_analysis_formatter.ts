@@ -80,7 +80,7 @@ export default class BVTAnalysisFormatter extends Formatter {
   }
   private async analyzeReport(report: JsonReport) {
     if (report.result.status === 'PASSED') {
-      this.log('All tests passed. No need to retrain\n')
+      this.log('No test failed. No need to retrain\n')
       const uploadSuccessful = await this.uploadFinalReport(report)
       if (uploadSuccessful) {
         process.exit(0)
@@ -121,7 +121,7 @@ export default class BVTAnalysisFormatter extends Formatter {
     return {
       result: finalResult,
       testCases: finalTestCases,
-      env : report.env
+      env: report.env,
     }
   }
   private async processTestCase(
