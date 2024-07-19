@@ -90,6 +90,11 @@ export default class ReportUploader {
     return { runId: runDoc._id, projectId: runDoc.project_id }
   }
   async createZip(reportFolder: string | null, report: JsonReport) {
+    if (reportFolder === null) {
+      console.error('report folder is empty')
+      console.error('it is likey that there are no scenarios to run')
+      throw new Error('Empty report folder')
+    }
     const zip = new JSZip()
     zip.file('report.json', JSON.stringify(report, null, 2))
     const folder = zip.folder('screenshots')
