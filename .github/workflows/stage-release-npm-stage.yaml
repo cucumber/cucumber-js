@@ -22,10 +22,10 @@ jobs:
       - run: npm install-test
 
 
-      - name: Fetch current version from npm with tag 'beta'
+      - name: Fetch current version from npm with tag 'stage'
         id: npm_version
         run: |
-            version=$(npm show @dev-blinq/cucumber-js@beta version)
+            version=$(npm show @dev-blinq/cucumber-js@stage version)
             echo "version=$version" >> $GITHUB_ENV
 
       - name: Increment version
