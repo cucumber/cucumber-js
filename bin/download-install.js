@@ -44,6 +44,8 @@ const getWorkSpaceUrl = () => {
       return 'http://localhost:6000/api/workspace'
     case 'dev':
       return 'https://dev.api.blinq.io/api/workspace'
+    case "stage":
+      return 'https://stage.api.blinq.io/api/workspace'
     default:
       return 'https://api.blinq.io/api/workspace'
   }
