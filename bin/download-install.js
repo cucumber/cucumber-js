@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-console */
+/* eslint-disable no-undef */
 const { argv } = require('node:process')
 const fs = require('fs')
 const path = require('path')
@@ -14,6 +17,8 @@ const getSSoUrl = () => {
       return 'http://localhost:5000/api/auth'
     case 'dev':
       return 'https://dev.api.blinq.io/api/auth'
+    case "stage":
+      return 'https://stage.api.blinq.io/api/auth'
     default:
       return 'https://api.blinq.io/api/auth'
   }
@@ -112,6 +117,11 @@ const downloadAndInstall = async (extractPath, token) => {
       proxy: false,
     })
     if (response.status !== 200) {
+      console.error('Error: Unable to fetch project')
+      process.exit(1)
+    }
+    const data = response.data
+    if (!data.status) {
       console.error('Error: Invalid access key')
       process.exit(1)
     }
@@ -129,6 +139,11 @@ const downloadAndInstall = async (extractPath, token) => {
         'Response-Type': 'arraybuffer',
       },
     })
+
+    if (res.status !== 200) {
+      console.error('Error: Unable to fetch workspace')
+      process.exit(1)
+    }
 
     const zip = await JSZip.loadAsync(res.data)
     for (const filename of Object.keys(zip.files)) {
