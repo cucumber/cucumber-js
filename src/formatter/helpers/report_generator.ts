@@ -375,21 +375,34 @@ export default class ReportGenerator {
   private onTestStepFinished(testStepFinished: messages.TestStepFinished) {
     const { testStepId, testStepResult, timestamp } = testStepFinished
     const testStep = this.testStepMap.get(testStepId)
-    if (testStep.pickleStepId === undefined) return
+    if (testStep.pickleStepId === undefined) {
+      if (testStepResult.status === 'FAILED') {
+        console.error(
+          `Before/After hook failed with message: ${testStepResult.message}`
+        )
+      }
+      return
+    }
     const stepProgess = this.stepReportMap.get(testStep.pickleStepId)
     const prevStepResult = stepProgess.result as {
       status: 'STARTED'
       startTime: JsonTimestamp
     }
     let data = {}
-    if (fs.existsSync(path.join(this.reportFolder, 'data.json'))) {
-      try {
-        data = JSON.parse(
-          fs.readFileSync(path.join(this.reportFolder, 'data.json'), 'utf8')
+    try {
+      const reportFolder = this.reportFolder
+      if (reportFolder === null) {
+        throw new Error(
+          '"reportFolder" is "null". Failed to run BVT hooks. Please retry after running "Generate All" or "Record Scenario" '
         )
-      } catch (error) {
-        console.log('Error reading data.json')
       }
+      if (fs.existsSync(path.join(reportFolder, 'data.json'))) {
+        data = JSON.parse(
+          fs.readFileSync(path.join(reportFolder, 'data.json'), 'utf8')
+        )
+      }
+    } catch (error) {
+      console.log('Error reading data.json')
     }
     stepProgess.result = {
       status: testStepResult.status,
