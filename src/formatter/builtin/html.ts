@@ -63,6 +63,8 @@ export default {
   optionsKey: 'html',
 } satisfies FormatterPlugin<Options>
 
+const alwaysInlinedTypes = ['text/x.cucumber.log+plain', 'text/uri-list']
+
 const encodingsMap = {
   IDENTITY: 'utf-8',
   BASE64: 'base64',
@@ -73,7 +75,7 @@ function externaliseAttachment(
   original: Attachment,
   directory: string
 ) {
-  if (original.mediaType === 'text/x.cucumber.log+plain') {
+  if (alwaysInlinedTypes.includes(original.mediaType)) {
     return { attachment: original }
   }
   let filename = `attachment-${newId()}`

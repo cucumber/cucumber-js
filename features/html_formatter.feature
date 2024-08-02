@@ -15,6 +15,7 @@ Feature: HTML formatter
 
         Given('a step', () => {
           world.log('Logging some info')
+          world.link('https://cucumber.io')
           world.attach(btoa('Base64 text'), 'base64:text/plain')
           world.attach('Plain text', 'text/plain')
         })
