@@ -3,15 +3,16 @@ import * as messages from '@cucumber/messages'
 import { getWorstTestStepResult, IdGenerator } from '@cucumber/messages'
 import { JsonObject } from 'type-fest'
 import {
-  SupportCodeLibrary,
   ITestCaseHookParameter,
   ITestStepHookParameter,
+  SupportCodeLibrary,
 } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
 import { IDefinition } from '../models/definition'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import StepDefinition from '../models/step_definition'
+import { IWorldOptions } from '../support_code_library_builder/world'
 import { IStopwatch } from './stopwatch'
 import StepRunner from './step_runner'
 import AttachmentManager from './attachment_manager'
@@ -104,8 +105,9 @@ export default class TestCaseRunner {
     this.world = new this.supportCodeLibrary.World({
       attach: this.attachmentManager.create.bind(this.attachmentManager),
       log: this.attachmentManager.log.bind(this.attachmentManager),
+      link: this.attachmentManager.link.bind(this.attachmentManager),
       parameters: structuredClone(this.worldParameters),
-    })
+    } satisfies IWorldOptions)
     this.testStepResults = []
   }
 
