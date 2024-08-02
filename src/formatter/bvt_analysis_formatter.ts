@@ -192,6 +192,7 @@ export default class BVTAnalysisFormatter extends Formatter {
         process.cwd(),
         path.join(process.cwd(), testCase.uri),
         `${testCase.scenarioName}`,
+        'undefined',
         `${stepsToRetrain.join(',')}`,
       ]
 
