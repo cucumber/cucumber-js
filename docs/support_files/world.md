@@ -60,6 +60,7 @@ By default, the world is an instance of Cucumber's built-in `World` class. Cucum
 
 * `this.attach`: a method for adding [attachments](./attachments.md) to hooks/steps
 * `this.log`: a method for [logging](./attachments.md#logging) information from hooks/steps
+* `this.link`: a method for [linking](./attachments.md#links) to URLs from hooks/steps
 * `this.parameters`: an object of parameters passed in via configuration (see below)
 
 Your custom world will also receive these arguments, but it's up to you to decide what to do with them and they can be safely ignored.
