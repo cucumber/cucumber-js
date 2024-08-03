@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Support externalising attachments in HTML formatter ([#2413](https://github.com/cucumber/cucumber-js/pull/2413))
+- Support easily linking to external content via attachments ([#2413](https://github.com/cucumber/cucumber-js/pull/2413))
 
 ## [10.8.0] - 2024-05-26
 ### Added
