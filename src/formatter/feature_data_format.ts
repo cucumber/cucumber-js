@@ -67,7 +67,9 @@ const generateTestData = (
   while ((match = regexp.exec(featureFileContent)) !== null) {
     try {
       const fake =
-        duplicateFakeData && duplicateFakeData.length > 0
+        duplicateFakeData &&
+        duplicateFakeData.length > 0 &&
+        duplicateFakeData[0].var === match[0]
           ? duplicateFakeData.shift().fake
           : faker.helpers.fake(match[0])
       otherFakeData.push({
