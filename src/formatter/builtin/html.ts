@@ -2,7 +2,7 @@ import { promisify } from 'node:util'
 import { finished } from 'node:stream'
 import { writeFile } from 'node:fs'
 import path from 'node:path'
-import CucumberHtmlStream from '@cucumber/html-formatter'
+import { CucumberHtmlStream } from '@cucumber/html-formatter'
 import resolvePkg from 'resolve-pkg'
 import mimeTypes from 'mime'
 import {
