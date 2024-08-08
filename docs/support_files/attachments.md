@@ -142,8 +142,8 @@ Before(function () {
 After(function () {
   this.link(
     'https://github.com/cucumber/cucumber-js',
-    'https://github.com/cucumber/cucumber-js',
-    'https://github.com/cucumber/cucumber-js'
+    'https://github.com/cucumber/cucumber-jvm',
+    'https://github.com/cucumber/cucumber-ruby'
   );
 });
 ```
