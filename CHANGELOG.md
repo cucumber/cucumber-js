@@ -10,7 +10,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ## [Unreleased]
 ### Added
 - Support externalising attachments in HTML formatter (see [documentation](./docs/formatters.md#html)) ([#2413](https://github.com/cucumber/cucumber-js/pull/2413))
-- Support easily linking to external content via attachments (see [documentation](./docs/support_files/attachments.md#links)) ([#2413](https://github.com/cucumber/cucumber-js/pull/2413))
+- Support linking to external content via attachments (see [documentation](./docs/support_files/attachments.md#links)) ([#2413](https://github.com/cucumber/cucumber-js/pull/2413))
 
 ## [10.8.0] - 2024-05-26
 ### Added
