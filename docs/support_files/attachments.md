@@ -130,7 +130,7 @@ Anything you log will be attached as a string with a MIME type of `text/x.cucumb
 
 ## Links
 
-You can easily attach one or more links from your support code with the `link` function:
+You can attach one or more links from your support code with the `link` function:
 
 ```javascript
 var {Before, After} = require('@cucumber/cucumber');
