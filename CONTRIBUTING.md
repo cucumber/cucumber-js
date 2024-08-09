@@ -7,7 +7,7 @@ to give you a grounding in some of the basic concepts. We want you to feel safe 
 
 If anything in this guide or anywhere else in the codebase doesn't make sense to you, please let us know! It's through your feedback that we can make this codebase more welcoming, so we'll be glad to hear thoughts.
 
-You can chat with us in the [#committers-js](https://cucumberbdd.slack.com/archives/C612KCP1P) channel in our [Community Slack], or feel free to [raise an issue] if you're experiencing any friction trying make your contribution.
+You can chat with us in the [#committers](https://cucumber.io/community#discord) channel in our [Community Discord], or feel free to [raise an issue] if you're experiencing any friction trying make your contribution.
 
 ## Local setup
 
@@ -80,7 +80,7 @@ The runtime emits events with an [EventEmitter](https://nodejs.org/api/events.ht
 * The contributor should update the changelog
 * Each entry in the changelog should include a link to the relevant issues/PRs
 
-[Community Slack]: https://cucumber.io/community#slack
+[Community Discord]: https://cucumber.io/community#discord
 [raise an issue]: https://github.com/cucumber/cucumber-js/issues/new/choose
 [Developer Mode]: https://docs.microsoft.com/en-us/windows/apps/get-started/developer-mode-features-and-debugging
 [fork and clone]: https://docs.github.com/en/get-started/quickstart/fork-a-repo
