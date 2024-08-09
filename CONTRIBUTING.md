@@ -7,7 +7,7 @@ to give you a grounding in some of the basic concepts. We want you to feel safe 
 
 If anything in this guide or anywhere else in the codebase doesn't make sense to you, please let us know! It's through your feedback that we can make this codebase more welcoming, so we'll be glad to hear thoughts.
 
-You can chat with us in the [#committers-js](https://cucumberbdd.slack.com/archives/C612KCP1P) channel in our [Community Slack], or feel free to [raise an issue] if you're experiencing any friction trying make your contribution.
+You can chat with us in the [#committers](https://cucumber.io/community#discord) channel in our [Community Discord], or feel free to [raise an issue] if you're experiencing any friction trying make your contribution.
 
 ## Local setup
 
