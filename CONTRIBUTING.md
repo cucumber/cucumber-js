@@ -80,7 +80,7 @@ The runtime emits events with an [EventEmitter](https://nodejs.org/api/events.ht
 * The contributor should update the changelog
 * Each entry in the changelog should include a link to the relevant issues/PRs
 
-[Community Slack]: https://cucumber.io/community#slack
+[Community Discord]: https://cucumber.io/community#discord
 [raise an issue]: https://github.com/cucumber/cucumber-js/issues/new/choose
 [Developer Mode]: https://docs.microsoft.com/en-us/windows/apps/get-started/developer-mode-features-and-debugging
 [fork and clone]: https://docs.github.com/en/get-started/quickstart/fork-a-repo
