@@ -8,10 +8,7 @@ coverage/
 lib/
 node_modules
 tmp/
-reports/*.html
-reports/*.ndjson
-reports/*.txt
-reports/*.xml
+reports/
 yarn-error.log
 .vscode
 .DS_Store

@@ -127,3 +127,25 @@ After(function () {
 ```
 
 Anything you log will be attached as a string with a MIME type of `text/x.cucumber.log+plain`
+
+## Links
+
+You can attach one or more links from your support code with the `link` function:
+
+```javascript
+var {Before, After} = require('@cucumber/cucumber');
+
+Before(function () {
+  this.link('https://cucumber.io');
+});
+
+After(function () {
+  this.link(
+    'https://github.com/cucumber/cucumber-js',
+    'https://github.com/cucumber/cucumber-jvm',
+    'https://github.com/cucumber/cucumber-ruby'
+  );
+});
+```
+
+Links will be attached as a string with a MIME type of `text/uri-list`

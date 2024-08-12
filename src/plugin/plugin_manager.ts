@@ -34,12 +34,18 @@ export class PluginManager {
   async initFormatter<OptionsType>(
     plugin: FormatterPlugin<OptionsType>,
     options: OptionsType,
-    write: (buffer: string | Uint8Array) => void
+    logger: ILogger,
+    write: (buffer: string | Uint8Array) => void,
+    directory?: string
   ) {
     const cleanupFn = await plugin.formatter({
       on: (key, handler) => this.register(key, handler),
-      options,
+      options: plugin.optionsKey
+        ? (options as any)[plugin.optionsKey] ?? ({} as OptionsType)
+        : options,
+      logger,
       write,
+      directory,
     })
     if (typeof cleanupFn === 'function') {
       this.cleanupFns.push(cleanupFn)

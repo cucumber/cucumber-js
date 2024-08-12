@@ -90,6 +90,22 @@ You can:
 - Filter to specific statuses
 - Search by keywords or tag expressions
 
+#### Attachments
+
+By default, the HTML report includes all attachments from your test run as embedded data. This is simple and convenient, with the file being completely standalone and portable. But it can make for a _very_ large file if you have a lot of large attachments like screenshots, videos and other media. You can optionally have attachments saved to external files instead, if that works better for you:
+
+```json
+{
+  "formatOptions": {
+    "html": {
+      "externalAttachments": true
+    }
+  }
+}
+```
+
+This will cause attachments to be saved in the same directory as the report file, with filenames that look like `attachment-8e7c5d3d-1ef0-4be6-86e0-16362bad9531.png`. If you want to put the report file somewhere - say, a web server - to be viewed, you'll need to bring those files along with it.
+
 ### `message`
 
 Outputs all the [Cucumber Messages](https://github.com/cucumber/messages) for the test run as newline-delimited JSON, which can then be consumed by other tools.

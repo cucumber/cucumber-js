@@ -42,6 +42,7 @@ export type ICreateAttachment = ICreateStringAttachment &
   ICreateStreamAttachment &
   ICreateStreamAttachmentWithCallback
 export type ICreateLog = (text: string) => void
+export type ICreateLink = (text: string) => void
 
 export default class AttachmentManager {
   private readonly onAttachment: IAttachFunction
@@ -52,6 +53,10 @@ export default class AttachmentManager {
 
   log(text: string): void | Promise<void> {
     return this.create(text, 'text/x.cucumber.log+plain')
+  }
+
+  link(...url: string[]): void | Promise<void> {
+    return this.create(url.join('\n'), 'text/uri-list')
   }
 
   create(

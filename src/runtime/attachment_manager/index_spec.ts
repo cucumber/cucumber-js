@@ -432,6 +432,60 @@ describe('AttachmentManager', () => {
       })
     })
 
+    describe('link', () => {
+      it('adds a string attachment with the appropriate mime type', function () {
+        // Arrange
+        const attachments: IAttachment[] = []
+        const attachmentManager = new AttachmentManager((x) =>
+          attachments.push(x)
+        )
+
+        // Act
+        const result = attachmentManager.link(
+          'https://github.com/cucumber/cucumber-js'
+        )
+
+        // Assert
+        expect(result).to.eql(undefined)
+        expect(attachments).to.eql([
+          {
+            data: 'https://github.com/cucumber/cucumber-js',
+            media: {
+              contentType: 'text/uri-list',
+              encoding: 'IDENTITY',
+            },
+          },
+        ])
+      })
+
+      it('adds multiple urls delimited by newlines', function () {
+        // Arrange
+        const attachments: IAttachment[] = []
+        const attachmentManager = new AttachmentManager((x) =>
+          attachments.push(x)
+        )
+
+        // Act
+        const result = attachmentManager.link(
+          'https://github.com/cucumber/cucumber-js',
+          'https://github.com/cucumber/cucumber-jvm',
+          'https://github.com/cucumber/cucumber-ruby'
+        )
+
+        // Assert
+        expect(result).to.eql(undefined)
+        expect(attachments).to.eql([
+          {
+            data: 'https://github.com/cucumber/cucumber-js\nhttps://github.com/cucumber/cucumber-jvm\nhttps://github.com/cucumber/cucumber-ruby',
+            media: {
+              contentType: 'text/uri-list',
+              encoding: 'IDENTITY',
+            },
+          },
+        ])
+      })
+    })
+
     describe('unsupported data type', () => {
       it('throws', function () {
         // Arrange

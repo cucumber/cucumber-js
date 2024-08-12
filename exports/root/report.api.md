@@ -339,6 +339,8 @@ export interface IWorld<ParametersType = any> {
     // (undocumented)
     readonly attach: ICreateAttachment;
     // (undocumented)
+    readonly link: ICreateLink;
+    // (undocumented)
     readonly log: ICreateLog;
     // (undocumented)
     readonly parameters: ParametersType;
@@ -348,6 +350,8 @@ export interface IWorld<ParametersType = any> {
 export interface IWorldOptions<ParametersType = any> {
     // (undocumented)
     attach: ICreateAttachment;
+    // (undocumented)
+    link: ICreateLink;
     // (undocumented)
     log: ICreateLog;
     // (undocumented)
@@ -532,9 +536,11 @@ export const When: IDefineStep_2;
 
 // @public (undocumented)
 export class World<ParametersType = any> implements IWorld<ParametersType> {
-    constructor({ attach, log, parameters }: IWorldOptions<ParametersType>);
+    constructor({ attach, log, link, parameters, }: IWorldOptions<ParametersType>);
     // (undocumented)
     readonly attach: ICreateAttachment;
+    // (undocumented)
+    readonly link: ICreateLink;
     // (undocumented)
     readonly log: ICreateLog;
     // (undocumented)

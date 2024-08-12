@@ -23,6 +23,7 @@ describe('testCaseScope', () => {
     const customWorld = new CustomWorld({
       attach: sinon.stub() as unknown as ICreateAttachment,
       log: sinon.stub() as IFormatterLogFn,
+      link: sinon.stub() as (url: string) => void,
       parameters: {},
     })
     const customProxy = worldProxy as CustomWorld
@@ -41,6 +42,7 @@ describe('testCaseScope', () => {
       expect(Object.keys(customProxy)).to.deep.eq([
         'attach',
         'log',
+        'link',
         'parameters',
         'firstNumber',
         'secondNumber',
