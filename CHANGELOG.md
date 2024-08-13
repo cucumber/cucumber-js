@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [10.9.0] - 2024-08-13
 ### Added
 - Support externalising attachments in HTML formatter (see [documentation](./docs/formatters.md#html)) ([#2413](https://github.com/cucumber/cucumber-js/pull/2413))
 - Support linking to external content via attachments (see [documentation](./docs/support_files/attachments.md#links)) ([#2413](https://github.com/cucumber/cucumber-js/pull/2413))
@@ -1623,7 +1625,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.8.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v10.9.0...HEAD
+[10.9.0]: https://github.com/cucumber/cucumber-js/compare/v10.8.0...v10.9.0
 [10.8.0]: https://github.com/cucumber/cucumber-js/compare/v10.7.0...v10.8.0
 [10.7.0]: https://github.com/cucumber/cucumber-js/compare/v10.6.0...v10.7.0
 [10.6.0]: https://github.com/cucumber/cucumber-js/compare/v10.5.1...v10.6.0
