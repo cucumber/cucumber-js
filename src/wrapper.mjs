@@ -42,6 +42,3 @@ export const wrapPromiseWithTimeout = cucumber.wrapPromiseWithTimeout
 
 // Deprecated
 export const Cli = cucumber.Cli
-export const parseGherkinMessageStream = cucumber.parseGherkinMessageStream
-export const PickleFilter = cucumber.PickleFilter
-export const Runtime = cucumber.Runtime

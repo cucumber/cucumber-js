@@ -2,6 +2,16 @@
 
 This document describes breaking changes and how to upgrade. For a complete list of changes including minor and patch releases, please refer to the [changelog](./CHANGELOG.md).
 
+## 11.0.0
+
+### `parseGherkinMessageStream` and `PickleFilter`
+
+`parseGherkinMessageStream` was a way to process a stream of envelopes from Gherkin and resolve to an array of filtered, ordered pickle Ids. The `PickleFilter` class was used to provide a filter to the aforementioned function. These interfaces included internal implementation details from Cucumber which were difficult to assemble. To adapt, pivot to the `loadSources` function from the [JavaScript API](./docs/javascript_api.md), or raise an issue if you feel your use case isn't catered for.
+
+### `Runtime`
+
+The `Runtime` class was used internally to represent an instance of the serial test case runner. Its interface included internal implementation details from Cucumber which were difficult to assemble. To adapt, pivot to the `runCucumber` function from the [JavaScript API](./docs/javascript_api.md), or raise an issue if you feel your use case isn't catered for.
+
 ## 10.0.0
 
 ### Configuration files

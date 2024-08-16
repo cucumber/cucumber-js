@@ -10,11 +10,8 @@
 import { deprecate } from 'node:util'
 import * as messages from '@cucumber/messages'
 import { default as _Cli } from './cli'
-import * as cliHelpers from './cli/helpers'
 import * as formatterHelpers from './formatter/helpers'
-import { default as _PickleFilter } from './pickle_filter'
 import * as parallelCanAssignHelpers from './support_code_library_builder/parallel_can_assign_helpers'
-import { default as _Runtime } from './runtime'
 import supportCodeLibraryBuilder from './support_code_library_builder'
 import { version as _version } from './version'
 
@@ -81,25 +78,3 @@ export const Cli = deprecate(
   _Cli,
   '`Cli` is deprecated, use `runCucumber` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
 )
-/**
- * @deprecated use `loadSources` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md
- */
-export const parseGherkinMessageStream = deprecate(
-  cliHelpers.parseGherkinMessageStream,
-  '`parseGherkinMessageStream` is deprecated, use `loadSources` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
-)
-/**
- * @deprecated use `loadSources` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md
- */
-export const PickleFilter = deprecate(
-  _PickleFilter,
-  '`PickleFilter` is deprecated, use `loadSources` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
-)
-/**
- * @deprecated use `runCucumber` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md
- */
-export const Runtime = deprecate(
-  _Runtime,
-  '`Runtime` is deprecated, use `runCucumber` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
-)
-export { INewRuntimeOptions, IRuntimeOptions } from './runtime'
