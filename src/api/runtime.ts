@@ -5,10 +5,10 @@ import { EventDataCollector } from '../formatter/helpers'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import Coordinator from '../runtime/parallel/coordinator'
 import { ILogger } from '../logger'
-import { IRunOptionsRuntime } from './types'
+import { IRunEnvironment, IRunOptionsRuntime } from './types'
 
-export function makeRuntime({
-  cwd,
+export async function makeRuntime({
+  environment,
   logger,
   eventBroadcaster,
   eventDataCollector,
@@ -17,7 +17,7 @@ export function makeRuntime({
   supportCodeLibrary,
   options: { parallel, ...options },
 }: {
-  cwd: string
+  environment: IRunEnvironment
   logger: ILogger
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
@@ -25,10 +25,10 @@ export function makeRuntime({
   pickleIds: string[]
   supportCodeLibrary: SupportCodeLibrary
   options: IRunOptionsRuntime
-}): IRuntime {
+}): Promise<IRuntime> {
   if (parallel > 0) {
     return new Coordinator({
-      cwd,
+      cwd: environment.cwd,
       logger,
       eventBroadcaster,
       eventDataCollector,

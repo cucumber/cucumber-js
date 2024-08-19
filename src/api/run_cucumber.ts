@@ -146,8 +146,8 @@ Running from: ${__dirname}
     newId,
   })
 
-  const runtime = makeRuntime({
-    cwd,
+  const runtime = await makeRuntime({
+    environment,
     logger,
     eventBroadcaster,
     eventDataCollector,
