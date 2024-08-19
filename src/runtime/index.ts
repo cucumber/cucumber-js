@@ -7,7 +7,7 @@ import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { assembleTestCases } from './assemble_test_cases'
 import { retriesForPickle, shouldCauseFailure } from './helpers'
 import { makeRunTestRunHooks, RunsTestRunHooks } from './run_test_run_hooks'
-import { IStopwatch, create } from './stopwatch'
+import { IStopwatch, create, timestamp } from './stopwatch'
 import TestCaseRunner from './test_case_runner'
 
 export interface IRuntime {
@@ -77,7 +77,6 @@ export default class Runtime implements IRuntime {
     const skip = this.options.dryRun || (this.options.failFast && !this.success)
     const testCaseRunner = new TestCaseRunner({
       eventBroadcaster: this.eventBroadcaster,
-      stopwatch: this.stopwatch,
       gherkinDocument: this.eventDataCollector.getGherkinDocument(pickle.uri),
       newId: this.newId,
       pickle,
@@ -97,7 +96,7 @@ export default class Runtime implements IRuntime {
   async start(): Promise<boolean> {
     const testRunStarted: messages.Envelope = {
       testRunStarted: {
-        timestamp: this.stopwatch.timestamp(),
+        timestamp: timestamp(),
       },
     }
     this.eventBroadcaster.emit('envelope', testRunStarted)
@@ -124,7 +123,7 @@ export default class Runtime implements IRuntime {
     this.stopwatch.stop()
     const testRunFinished: messages.Envelope = {
       testRunFinished: {
-        timestamp: this.stopwatch.timestamp(),
+        timestamp: timestamp(),
         success: this.success,
       },
     }

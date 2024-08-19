@@ -8,7 +8,7 @@ import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntime, IRuntimeOptions } from '..'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
-import { IStopwatch, create } from '../stopwatch'
+import { IStopwatch, create, timestamp } from '../stopwatch'
 import { assembleTestCases, IAssembledTestCases } from '../assemble_test_cases'
 import { ILogger } from '../../logger'
 import { ICoordinatorReport, IWorkerCommand } from './command_types'
@@ -177,7 +177,7 @@ export default class Coordinator implements IRuntime {
     ) {
       const envelope: messages.Envelope = {
         testRunFinished: {
-          timestamp: this.stopwatch.timestamp(),
+          timestamp: timestamp(),
           success,
         },
       }
@@ -205,7 +205,7 @@ export default class Coordinator implements IRuntime {
   async start(): Promise<boolean> {
     const envelope: messages.Envelope = {
       testRunStarted: {
-        timestamp: this.stopwatch.timestamp(),
+        timestamp: timestamp(),
       },
     }
     this.eventBroadcaster.emit('envelope', envelope)

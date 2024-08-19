@@ -12,7 +12,6 @@ import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
 import TestCaseRunner from './test_case_runner'
-import { create } from './stopwatch'
 import { assembleTestCases } from './assemble_test_cases'
 import IEnvelope = messages.Envelope
 
@@ -50,7 +49,6 @@ async function testRunner(
   const runner = new TestCaseRunner({
     workerId: options.workerId,
     eventBroadcaster,
-    stopwatch: create(),
     gherkinDocument: options.gherkinDocument,
     newId,
     pickle: options.pickle,
