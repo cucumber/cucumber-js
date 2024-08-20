@@ -5,6 +5,7 @@ import { emitMetaMessage, emitSupportCodeMessages } from '../cli/helpers'
 import { resolvePaths } from '../paths'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { version } from '../version'
+import { IFilterablePickle } from '../filter'
 import { IRunOptions, IRunEnvironment, IRunResult } from './types'
 import { makeRuntime } from './runtime'
 import { initializeFormatters } from './formatters'
@@ -105,7 +106,7 @@ Running from: ${__dirname}
   })
   await emitMetaMessage(eventBroadcaster, env)
 
-  let pickleIds: string[] = []
+  let filteredPickles: ReadonlyArray<IFilterablePickle> = []
   let parseErrors: ParseError[] = []
   if (sourcePaths.length > 0) {
     const gherkinResult = await getPicklesAndErrors({
@@ -115,15 +116,14 @@ Running from: ${__dirname}
       coordinates: options.sources,
       onEnvelope: (envelope) => eventBroadcaster.emit('envelope', envelope),
     })
-    const filteredPickles = await pluginManager.transform(
+    filteredPickles = await pluginManager.transform(
       'pickles:filter',
       gherkinResult.filterablePickles
     )
-    const orderedPickles = await pluginManager.transform(
+    filteredPickles = await pluginManager.transform(
       'pickles:order',
       filteredPickles
     )
-    pickleIds = orderedPickles.map(({ pickle }) => pickle.id)
     parseErrors = gherkinResult.parseErrors
   }
   if (parseErrors.length) {
@@ -151,7 +151,7 @@ Running from: ${__dirname}
     logger,
     eventBroadcaster,
     eventDataCollector,
-    pickleIds,
+    filteredPickles,
     newId,
     supportCodeLibrary,
     options: options.runtime,

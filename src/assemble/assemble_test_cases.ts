@@ -4,23 +4,47 @@ import { IdGenerator } from '@cucumber/messages'
 import { Group } from '@cucumber/cucumber-expressions'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { doesHaveValue } from '../value_checker'
-
-export declare type IAssembledTestCases = Record<string, messages.TestCase>
-
-export interface IAssembleTestCasesOptions {
-  eventBroadcaster: EventEmitter
-  newId: IdGenerator.NewId
-  pickles: messages.Pickle[]
-  supportCodeLibrary: SupportCodeLibrary
-}
+import { IFilterablePickle } from '../filter'
+import { AssembledTestCase, TestCasesByPickleId } from './types'
 
 export async function assembleTestCases({
   eventBroadcaster,
   newId,
+  filteredPickles,
+  supportCodeLibrary,
+}: {
+  eventBroadcaster: EventEmitter
+  newId: IdGenerator.NewId
+  filteredPickles: ReadonlyArray<IFilterablePickle>
+  supportCodeLibrary: SupportCodeLibrary
+}): Promise<ReadonlyArray<AssembledTestCase>> {
+  const testCasesByPickleId = await assembleTestCasesByPickleId({
+    eventBroadcaster,
+    newId,
+    pickles: filteredPickles.map(({ pickle }) => pickle),
+    supportCodeLibrary,
+  })
+  return filteredPickles.map(({ gherkinDocument, pickle }) => {
+    return {
+      gherkinDocument,
+      pickle,
+      testCase: testCasesByPickleId[pickle.id],
+    }
+  })
+}
+
+export async function assembleTestCasesByPickleId({
+  eventBroadcaster,
+  newId,
   pickles,
   supportCodeLibrary,
-}: IAssembleTestCasesOptions): Promise<IAssembledTestCases> {
-  const result: IAssembledTestCases = {}
+}: {
+  eventBroadcaster: EventEmitter
+  newId: IdGenerator.NewId
+  pickles: messages.Pickle[]
+  supportCodeLibrary: SupportCodeLibrary
+}): Promise<TestCasesByPickleId> {
+  const result: TestCasesByPickleId = {}
   for (const pickle of pickles) {
     const { id: pickleId } = pickle
     const testCaseId = newId()

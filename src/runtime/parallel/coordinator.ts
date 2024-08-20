@@ -9,7 +9,10 @@ import { IRuntime, IRuntimeOptions } from '..'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
 import { IStopwatch, create, timestamp } from '../stopwatch'
-import { assembleTestCases, IAssembledTestCases } from '../assemble_test_cases'
+import {
+  assembleTestCasesByPickleId,
+  TestCasesByPickleId,
+} from '../../assemble'
 import { ILogger } from '../../logger'
 import { ICoordinatorReport, IWorkerCommand } from './command_types'
 
@@ -54,7 +57,7 @@ export default class Coordinator implements IRuntime {
   private readonly options: IRuntimeOptions
   private readonly newId: IdGenerator.NewId
   private readonly pickleIds: string[]
-  private assembledTestCases: IAssembledTestCases
+  private assembledTestCases: TestCasesByPickleId
   private readonly inProgressPickles: Record<string, messages.Pickle>
   private readonly workers: Record<string, IWorker>
   private readonly supportCodeLibrary: SupportCodeLibrary
@@ -210,7 +213,7 @@ export default class Coordinator implements IRuntime {
     }
     this.eventBroadcaster.emit('envelope', envelope)
     this.stopwatch.start()
-    this.assembledTestCases = await assembleTestCases({
+    this.assembledTestCases = await assembleTestCasesByPickleId({
       eventBroadcaster: this.eventBroadcaster,
       newId: this.newId,
       pickles: this.pickleIds.map((pickleId) =>

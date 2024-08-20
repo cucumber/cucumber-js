@@ -5,6 +5,7 @@ import { EventDataCollector } from '../formatter/helpers'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import Coordinator from '../runtime/parallel/coordinator'
 import { ILogger } from '../logger'
+import { IFilterablePickle } from '../filter'
 import { IRunEnvironment, IRunOptionsRuntime } from './types'
 
 export async function makeRuntime({
@@ -12,7 +13,7 @@ export async function makeRuntime({
   logger,
   eventBroadcaster,
   eventDataCollector,
-  pickleIds,
+  filteredPickles,
   newId,
   supportCodeLibrary,
   options: { parallel, ...options },
@@ -22,10 +23,11 @@ export async function makeRuntime({
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   newId: IdGenerator.NewId
-  pickleIds: string[]
+  filteredPickles: ReadonlyArray<IFilterablePickle>
   supportCodeLibrary: SupportCodeLibrary
   options: IRunOptionsRuntime
 }): Promise<IRuntime> {
+  const pickleIds = filteredPickles.map((pickle) => pickle.pickle.id)
   if (parallel > 0) {
     return new Coordinator({
       cwd: environment.cwd,

@@ -4,7 +4,7 @@ import { IdGenerator } from '@cucumber/messages'
 import { JsonObject } from 'type-fest'
 import { EventDataCollector } from '../formatter/helpers'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
-import { assembleTestCases } from './assemble_test_cases'
+import { assembleTestCasesByPickleId } from '../assemble'
 import { retriesForPickle, shouldCauseFailure } from './helpers'
 import { makeRunTestRunHooks, RunsTestRunHooks } from './run_test_run_hooks'
 import { IStopwatch, create, timestamp } from './stopwatch'
@@ -105,7 +105,7 @@ export default class Runtime implements IRuntime {
       this.supportCodeLibrary.beforeTestRunHookDefinitions,
       'a BeforeAll'
     )
-    const assembledTestCases = await assembleTestCases({
+    const assembledTestCases = await assembleTestCasesByPickleId({
       eventBroadcaster: this.eventBroadcaster,
       newId: this.newId,
       pickles: this.pickleIds.map((pickleId) =>

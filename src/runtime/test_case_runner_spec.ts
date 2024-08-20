@@ -11,8 +11,8 @@ import timeMethods from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
+import { assembleTestCasesByPickleId } from '../assemble/assemble_test_cases'
 import TestCaseRunner from './test_case_runner'
-import { assembleTestCases } from './assemble_test_cases'
 import IEnvelope = messages.Envelope
 
 interface ITestRunnerRequest {
@@ -36,7 +36,7 @@ async function testRunner(
   const eventBroadcaster = new EventEmitter()
   const newId = IdGenerator.incrementing()
   const testCase = (
-    await assembleTestCases({
+    await assembleTestCasesByPickleId({
       eventBroadcaster,
       newId,
       pickles: [options.pickle],
