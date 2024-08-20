@@ -5,7 +5,7 @@ import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
 import { retriesForPickle, shouldCauseFailure } from '../helpers'
 import { EventDataCollector } from '../../formatter/helpers'
-import { IRuntime, IRuntimeOptions } from '..'
+import { IRuntimeOptions } from '..'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
 import { IStopwatch, create, timestamp } from '../stopwatch'
@@ -14,6 +14,7 @@ import {
   TestCasesByPickleId,
 } from '../../assemble'
 import { ILogger } from '../../logger'
+import { CoordinatorAdapter } from '../types'
 import { ICoordinatorReport, IWorkerCommand } from './command_types'
 
 const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
@@ -48,7 +49,7 @@ interface IPicklePlacement {
   pickle: messages.Pickle
 }
 
-export default class Coordinator implements IRuntime {
+export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
   private readonly cwd: string
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector

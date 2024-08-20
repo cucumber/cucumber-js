@@ -3,9 +3,10 @@ import { IdGenerator } from '@cucumber/messages'
 import Runtime, { IRuntime } from '../runtime'
 import { EventDataCollector } from '../formatter/helpers'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
-import Coordinator from '../runtime/parallel/coordinator'
 import { ILogger } from '../logger'
 import { IFilterablePickle } from '../filter'
+import { Coordinator } from '../runtime/coordinator'
+import { ChildProcessCoordinatorAdapter } from '../runtime/parallel/coordinator_adapter'
 import { IRunEnvironment, IRunOptionsRuntime } from './types'
 
 export async function makeRuntime({
@@ -29,17 +30,19 @@ export async function makeRuntime({
 }): Promise<IRuntime> {
   const pickleIds = filteredPickles.map((pickle) => pickle.pickle.id)
   if (parallel > 0) {
-    return new Coordinator({
-      cwd: environment.cwd,
-      logger,
-      eventBroadcaster,
-      eventDataCollector,
-      pickleIds,
-      options,
-      newId,
-      supportCodeLibrary,
-      numberOfWorkers: parallel,
-    })
+    return new Coordinator(
+      new ChildProcessCoordinatorAdapter({
+        cwd: environment.cwd,
+        logger,
+        eventBroadcaster,
+        eventDataCollector,
+        pickleIds,
+        options,
+        newId,
+        supportCodeLibrary,
+        numberOfWorkers: parallel,
+      })
+    )
   }
   return new Runtime({
     eventBroadcaster,
