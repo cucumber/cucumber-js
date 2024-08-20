@@ -31,6 +31,7 @@ export async function makeRuntime({
   const pickleIds = filteredPickles.map((pickle) => pickle.pickle.id)
   if (parallel > 0) {
     return new Coordinator(
+      eventBroadcaster,
       new ChildProcessCoordinatorAdapter({
         cwd: environment.cwd,
         logger,

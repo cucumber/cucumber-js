@@ -8,7 +8,6 @@ import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntimeOptions } from '..'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
-import { timestamp } from '../stopwatch'
 import {
   assembleTestCasesByPickleId,
   TestCasesByPickleId,
@@ -177,13 +176,6 @@ export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
     if (
       Object.values(this.workers).every((x) => x.state === WorkerState.closed)
     ) {
-      const envelope: messages.Envelope = {
-        testRunFinished: {
-          timestamp: timestamp(),
-          success,
-        },
-      }
-      this.eventBroadcaster.emit('envelope', envelope)
       this.onFinish(this.success)
     }
   }
@@ -205,12 +197,6 @@ export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
   }
 
   async start(): Promise<boolean> {
-    const envelope: messages.Envelope = {
-      testRunStarted: {
-        timestamp: timestamp(),
-      },
-    }
-    this.eventBroadcaster.emit('envelope', envelope)
     this.assembledTestCases = await assembleTestCasesByPickleId({
       eventBroadcaster: this.eventBroadcaster,
       newId: this.newId,
