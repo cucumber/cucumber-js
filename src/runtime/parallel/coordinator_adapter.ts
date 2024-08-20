@@ -8,7 +8,7 @@ import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntimeOptions } from '..'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
-import { IStopwatch, create, timestamp } from '../stopwatch'
+import { timestamp } from '../stopwatch'
 import {
   assembleTestCasesByPickleId,
   TestCasesByPickleId,
@@ -53,7 +53,6 @@ export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
   private readonly cwd: string
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector
-  private readonly stopwatch: IStopwatch
   private onFinish: (success: boolean) => void
   private readonly options: IRuntimeOptions
   private readonly newId: IdGenerator.NewId
@@ -82,7 +81,6 @@ export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
     this.logger = logger
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
-    this.stopwatch = create()
     this.options = options
     this.newId = newId
     this.supportCodeLibrary = supportCodeLibrary
@@ -213,7 +211,6 @@ export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
       },
     }
     this.eventBroadcaster.emit('envelope', envelope)
-    this.stopwatch.start()
     this.assembledTestCases = await assembleTestCasesByPickleId({
       eventBroadcaster: this.eventBroadcaster,
       newId: this.newId,
@@ -291,7 +288,6 @@ export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
       run: {
         retries,
         skip,
-        elapsed: this.stopwatch.duration(),
         pickle,
         testCase,
         gherkinDocument,
