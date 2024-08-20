@@ -4,9 +4,9 @@ import Runtime, { IRuntime } from '../runtime'
 import { EventDataCollector } from '../formatter/helpers'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { ILogger } from '../logger'
-import { IFilterablePickle } from '../filter'
 import { Coordinator } from '../runtime/coordinator'
 import { ChildProcessCoordinatorAdapter } from '../runtime/parallel/coordinator_adapter'
+import { IFilterablePickle } from '../filter'
 import { IRunEnvironment, IRunOptionsRuntime } from './types'
 
 export async function makeRuntime({
@@ -28,18 +28,18 @@ export async function makeRuntime({
   supportCodeLibrary: SupportCodeLibrary
   options: IRunOptionsRuntime
 }): Promise<IRuntime> {
-  const pickleIds = filteredPickles.map((pickle) => pickle.pickle.id)
   if (parallel > 0) {
     return new Coordinator(
       eventBroadcaster,
+      newId,
+      filteredPickles,
+      supportCodeLibrary,
       new ChildProcessCoordinatorAdapter({
         cwd: environment.cwd,
         logger,
         eventBroadcaster,
         eventDataCollector,
-        pickleIds,
         options,
-        newId,
         supportCodeLibrary,
         numberOfWorkers: parallel,
       })
@@ -49,7 +49,7 @@ export async function makeRuntime({
     eventBroadcaster,
     eventDataCollector,
     newId,
-    pickleIds,
+    pickleIds: filteredPickles.map(({ pickle }) => pickle.id),
     supportCodeLibrary,
     options,
   })

@@ -1,3 +1,5 @@
+import { AssembledTestCase } from '../assemble'
+
 export interface CoordinatorAdapter {
-  start(): Promise<boolean>
+  start(assembledTestCases: ReadonlyArray<AssembledTestCase>): Promise<boolean>
 }

@@ -2,16 +2,12 @@ import { ChildProcess, fork } from 'node:child_process'
 import path from 'node:path'
 import { EventEmitter } from 'node:events'
 import * as messages from '@cucumber/messages'
-import { IdGenerator } from '@cucumber/messages'
 import { retriesForPickle, shouldCauseFailure } from '../helpers'
 import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntimeOptions } from '..'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
-import {
-  assembleTestCasesByPickleId,
-  TestCasesByPickleId,
-} from '../../assemble'
+import { AssembledTestCase } from '../../assemble'
 import { ILogger } from '../../logger'
 import { CoordinatorAdapter } from '../types'
 import { ICoordinatorReport, IWorkerCommand } from './command_types'
@@ -24,8 +20,6 @@ export interface INewCoordinatorOptions {
   eventBroadcaster: EventEmitter
   eventDataCollector: EventDataCollector
   options: IRuntimeOptions
-  newId: IdGenerator.NewId
-  pickleIds: string[]
   supportCodeLibrary: SupportCodeLibrary
   numberOfWorkers: number
 }
@@ -43,9 +37,9 @@ interface IWorker {
   id: string
 }
 
-interface IPicklePlacement {
+interface WorkPlacement {
   index: number
-  pickle: messages.Pickle
+  item: AssembledTestCase
 }
 
 export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
@@ -54,10 +48,8 @@ export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
   private readonly eventDataCollector: EventDataCollector
   private onFinish: (success: boolean) => void
   private readonly options: IRuntimeOptions
-  private readonly newId: IdGenerator.NewId
-  private readonly pickleIds: string[]
-  private assembledTestCases: TestCasesByPickleId
-  private readonly inProgressPickles: Record<string, messages.Pickle>
+  private todo: Array<AssembledTestCase>
+  private readonly inProgress: Record<string, AssembledTestCase>
   private readonly workers: Record<string, IWorker>
   private readonly supportCodeLibrary: SupportCodeLibrary
   private readonly numberOfWorkers: number
@@ -70,9 +62,7 @@ export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
     logger,
     eventBroadcaster,
     eventDataCollector,
-    pickleIds,
     options,
-    newId,
     supportCodeLibrary,
     numberOfWorkers,
   }: INewCoordinatorOptions) {
@@ -81,13 +71,11 @@ export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
     this.eventBroadcaster = eventBroadcaster
     this.eventDataCollector = eventDataCollector
     this.options = options
-    this.newId = newId
     this.supportCodeLibrary = supportCodeLibrary
-    this.pickleIds = Array.from(pickleIds)
     this.numberOfWorkers = numberOfWorkers
     this.success = true
     this.workers = {}
-    this.inProgressPickles = {}
+    this.inProgress = {}
     this.idleInterventions = 0
   }
 
@@ -116,10 +104,7 @@ export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
       return worker.state !== WorkerState.idle
     })
 
-    if (
-      Object.keys(this.inProgressPickles).length == 0 &&
-      this.pickleIds.length > 0
-    ) {
+    if (Object.keys(this.inProgress).length == 0 && this.todo.length > 0) {
       this.giveWork(triggeringWorker, true)
       this.idleInterventions++
     }
@@ -188,7 +173,7 @@ export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
       testCaseFinished.testCaseStartedId
     )
     if (!testCaseFinished.willBeRetried) {
-      delete this.inProgressPickles[workerId]
+      delete this.inProgress[workerId]
 
       if (shouldCauseFailure(worstTestStepResult.status, this.options)) {
         this.success = false
@@ -196,15 +181,10 @@ export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
     }
   }
 
-  async start(): Promise<boolean> {
-    this.assembledTestCases = await assembleTestCasesByPickleId({
-      eventBroadcaster: this.eventBroadcaster,
-      newId: this.newId,
-      pickles: this.pickleIds.map((pickleId) =>
-        this.eventDataCollector.getPickle(pickleId)
-      ),
-      supportCodeLibrary: this.supportCodeLibrary,
-    })
+  async start(
+    assembledTestCases: ReadonlyArray<AssembledTestCase>
+  ): Promise<boolean> {
+    this.todo = Array.from(assembledTestCases)
     return await new Promise<boolean>((resolve) => {
       for (let i = 0; i < this.numberOfWorkers; i++) {
         this.startWorker(i.toString(), this.numberOfWorkers)
@@ -221,13 +201,13 @@ export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
     })
   }
 
-  nextPicklePlacement(): IPicklePlacement {
-    for (let index = 0; index < this.pickleIds.length; index++) {
+  nextWorkPlacement(): WorkPlacement {
+    for (let index = 0; index < this.todo.length; index++) {
       const placement = this.placementAt(index)
       if (
         this.supportCodeLibrary.parallelCanAssign(
-          placement.pickle,
-          Object.values(this.inProgressPickles)
+          placement.item.pickle,
+          Object.values(this.inProgress).map(({ pickle }) => pickle)
         )
       ) {
         return placement
@@ -237,46 +217,38 @@ export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
     return null
   }
 
-  placementAt(index: number): IPicklePlacement {
+  placementAt(index: number): WorkPlacement {
     return {
       index,
-      pickle: this.eventDataCollector.getPickle(this.pickleIds[index]),
+      item: this.todo[index],
     }
   }
 
   giveWork(worker: IWorker, force: boolean = false): void {
-    if (this.pickleIds.length < 1) {
+    if (this.todo.length < 1) {
       const finalizeCommand: IWorkerCommand = { finalize: true }
       worker.state = WorkerState.running
       worker.process.send(finalizeCommand)
       return
     }
 
-    const picklePlacement = force
-      ? this.placementAt(0)
-      : this.nextPicklePlacement()
+    const workPlacement = force ? this.placementAt(0) : this.nextWorkPlacement()
 
-    if (picklePlacement === null) {
+    if (workPlacement === null) {
       return
     }
 
-    const { index: nextPickleIndex, pickle } = picklePlacement
+    const { index: nextIndex, item } = workPlacement
 
-    this.pickleIds.splice(nextPickleIndex, 1)
-    this.inProgressPickles[worker.id] = pickle
-    const testCase = this.assembledTestCases[pickle.id]
-    const gherkinDocument = this.eventDataCollector.getGherkinDocument(
-      pickle.uri
-    )
-    const retries = retriesForPickle(pickle, this.options)
+    this.todo.splice(nextIndex, 1)
+    this.inProgress[worker.id] = item
+    const retries = retriesForPickle(item.pickle, this.options)
     const skip = this.options.dryRun || (this.options.failFast && !this.success)
     const runCommand: IWorkerCommand = {
       run: {
+        ...item,
         retries,
         skip,
-        pickle,
-        testCase,
-        gherkinDocument,
       },
     }
     worker.state = WorkerState.running
