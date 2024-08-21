@@ -260,40 +260,6 @@ interface IGetStepKeywordRequest {
 }
 
 // @public (undocumented)
-export interface INewRuntimeOptions {
-    // (undocumented)
-    eventBroadcaster: EventEmitter;
-    // (undocumented)
-    eventDataCollector: EventDataCollector;
-    // (undocumented)
-    newId: IdGenerator.NewId;
-    // (undocumented)
-    options: IRuntimeOptions;
-    // (undocumented)
-    pickleIds: string[];
-    // (undocumented)
-    supportCodeLibrary: SupportCodeLibrary;
-}
-
-// @public (undocumented)
-export interface IRuntimeOptions {
-    // (undocumented)
-    dryRun: boolean;
-    // (undocumented)
-    failFast: boolean;
-    // (undocumented)
-    filterStacktraces: boolean;
-    // (undocumented)
-    retry: number;
-    // (undocumented)
-    retryTagFilter: string;
-    // (undocumented)
-    strict: boolean;
-    // (undocumented)
-    worldParameters: JsonObject;
-}
-
-// @public (undocumented)
 function isFailure(result: messages.TestStepResult, willBeRetried?: boolean): boolean;
 
 // @public (undocumented)
@@ -406,14 +372,8 @@ declare namespace parallelCanAssignHelpers {
 }
 export { parallelCanAssignHelpers }
 
-// @public @deprecated (undocumented)
-export const parseGherkinMessageStream: typeof cliHelpers.parseGherkinMessageStream;
-
 // @public (undocumented)
 function parseTestCaseAttempt({ testCaseAttempt, snippetBuilder, supportCodeLibrary, }: IParseTestCaseAttemptRequest): IParsedTestCaseAttempt;
-
-// @public @deprecated (undocumented)
-export const PickleFilter: typeof PickleFilter_2;
 
 declare namespace PickleParser {
     export {
@@ -450,9 +410,6 @@ export class RerunFormatter extends Formatter {
     // (undocumented)
     protected readonly separator: string;
 }
-
-// @public @deprecated (undocumented)
-export const Runtime: typeof Runtime_2;
 
 // @public (undocumented)
 export const setDefaultTimeout: (milliseconds: number) => void;

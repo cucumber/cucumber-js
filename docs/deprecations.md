@@ -22,30 +22,6 @@ The `Cli` class is used internally to represent an instance of the command-line 
 
 To adapt, pivot to the `runCucumber` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
 
-### `parseGherkinMessageStream`
-
-Deprecated in `8.0.0`, will be removed in `10.0.0` or later.
-
-`parseGherkinMessageStream` is a way to process a stream of envelopes from Gherkin and resolve to an array of filtered, ordered pickle Ids. Its interface includes internal implementation details from Cucumber which are difficult to assemble.
-
-To adapt, pivot to the `loadSources` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
-
-### `PickleFilter`
-
-Deprecated in `8.7.0`, will be removed in `10.0.0` or later.
-
-The `PickleFilter` class is used to provide a filter to the `parseGherkinMessageStream` function above.
-
-To adapt, pivot to the `loadSources` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
-
-### `Runtime`
-
-Deprecated in `8.7.0`, will be removed in `10.0.0` or later.
-
-The `Runtime` class is used internally to represent an instance of the serial test case runner. Its interface includes internal implementation details from Cucumber which are difficult to assemble.
-
-To adapt, pivot to the `runCucumber` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
-
 ### publishQuiet
 
 Deprecated in `9.4.0`. Will be removed in `11.0.0` or later.
