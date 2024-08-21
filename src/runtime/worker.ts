@@ -8,7 +8,7 @@ import { makeRunTestRunHooks, RunsTestRunHooks } from './run_test_run_hooks'
 import { IRuntimeOptions } from './index'
 
 export class Worker {
-  private success: boolean = true
+  #success: boolean = true
   private readonly runTestRunHooks: RunsTestRunHooks
 
   constructor(
@@ -33,6 +33,10 @@ export class Worker {
     )
   }
 
+  get success() {
+    return this.#success
+  }
+
   async runBeforeAllHooks() {
     await this.runTestRunHooks(
       this.supportCodeLibrary.beforeTestRunHookDefinitions,
@@ -53,7 +57,8 @@ export class Worker {
       pickle,
       testCase,
       retries: retriesForPickle(pickle, this.options),
-      skip: this.options.dryRun || (this.options.failFast && !this.success),
+      // TODO move skip logic to coordinator?
+      skip: this.options.dryRun || (this.options.failFast && !this.#success),
       filterStackTraces: this.options.filterStacktraces,
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.options.worldParameters,
@@ -62,7 +67,7 @@ export class Worker {
     const status = await testCaseRunner.run()
 
     if (shouldCauseFailure(status, this.options)) {
-      this.success = false
+      this.#success = false
     }
 
     return status

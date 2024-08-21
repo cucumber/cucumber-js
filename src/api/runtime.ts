@@ -1,12 +1,14 @@
 import { EventEmitter } from 'node:events'
 import { IdGenerator } from '@cucumber/messages'
-import Runtime, { IRuntime } from '../runtime'
+import { IRuntime } from '../runtime'
 import { EventDataCollector } from '../formatter/helpers'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { ILogger } from '../logger'
 import { Coordinator } from '../runtime/coordinator'
-import { ChildProcessCoordinatorAdapter } from '../runtime/parallel/coordinator_adapter'
+import { ChildProcessAdapter } from '../runtime/parallel/adapter'
 import { IFilterablePickle } from '../filter'
+import { InProcessAdapter } from '../runtime/serial/adapter'
+import { RuntimeAdapter } from '../runtime/types'
 import { IRunEnvironment, IRunOptionsRuntime } from './types'
 
 export async function makeRuntime({
@@ -28,29 +30,28 @@ export async function makeRuntime({
   supportCodeLibrary: SupportCodeLibrary
   options: IRunOptionsRuntime
 }): Promise<IRuntime> {
-  if (parallel > 0) {
-    return new Coordinator(
-      eventBroadcaster,
-      newId,
-      filteredPickles,
-      supportCodeLibrary,
-      new ChildProcessCoordinatorAdapter({
-        cwd: environment.cwd,
-        logger,
-        eventBroadcaster,
-        eventDataCollector,
-        options,
-        supportCodeLibrary,
-        numberOfWorkers: parallel,
-      })
-    )
-  }
-  return new Runtime({
+  const adapter: RuntimeAdapter =
+    parallel > 0
+      ? new ChildProcessAdapter({
+          cwd: environment.cwd,
+          logger,
+          eventBroadcaster,
+          eventDataCollector,
+          options,
+          supportCodeLibrary,
+          numberOfWorkers: parallel,
+        })
+      : new InProcessAdapter(
+          eventBroadcaster,
+          newId,
+          options,
+          supportCodeLibrary
+        )
+  return new Coordinator(
     eventBroadcaster,
-    eventDataCollector,
     newId,
-    pickleIds: filteredPickles.map(({ pickle }) => pickle.id),
+    filteredPickles,
     supportCodeLibrary,
-    options,
-  })
+    adapter
+  )
 }

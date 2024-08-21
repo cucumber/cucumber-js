@@ -3,7 +3,7 @@ import { Envelope, IdGenerator } from '@cucumber/messages'
 import { IFilterablePickle } from '../filter'
 import { assembleTestCases } from '../assemble'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
-import { CoordinatorAdapter } from './types'
+import { RuntimeAdapter } from './types'
 import { timestamp } from './stopwatch'
 import { IRuntime } from './index'
 
@@ -13,7 +13,7 @@ export class Coordinator implements IRuntime {
     private newId: IdGenerator.NewId,
     private filteredPickles: ReadonlyArray<IFilterablePickle>,
     private supportCodeLibrary: SupportCodeLibrary,
-    private adapter: CoordinatorAdapter
+    private adapter: RuntimeAdapter
   ) {}
 
   async start(): Promise<boolean> {

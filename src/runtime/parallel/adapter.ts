@@ -9,7 +9,7 @@ import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
 import { AssembledTestCase } from '../../assemble'
 import { ILogger } from '../../logger'
-import { CoordinatorAdapter } from '../types'
+import { RuntimeAdapter } from '../types'
 import { ICoordinatorReport, IWorkerCommand } from './command_types'
 
 const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
@@ -42,7 +42,7 @@ interface WorkPlacement {
   item: AssembledTestCase
 }
 
-export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
+export class ChildProcessAdapter implements RuntimeAdapter {
   private readonly cwd: string
   private readonly eventBroadcaster: EventEmitter
   private readonly eventDataCollector: EventDataCollector

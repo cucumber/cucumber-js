@@ -1,7 +1,5 @@
 import { AssembledTestCase } from '../assemble'
 
-export interface CoordinatorAdapter {
+export interface RuntimeAdapter {
   start(assembledTestCases: ReadonlyArray<AssembledTestCase>): Promise<boolean>
 }
-
-export interface WorkerAdapter {}

@@ -21,7 +21,7 @@ const { uuid } = IdGenerator
 type IExitFunction = (exitCode: number, error?: Error, message?: string) => void
 type IMessageSender = (command: ICoordinatorReport) => void
 
-export class ChildProcessWorkerAdapter {
+export class ChildProcessWorker {
   private readonly cwd: string
   private readonly exit: IExitFunction
 
