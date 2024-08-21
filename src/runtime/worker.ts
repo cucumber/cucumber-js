@@ -5,7 +5,7 @@ import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseRunner from './test_case_runner'
 import { retriesForPickle, shouldCauseFailure } from './helpers'
 import { makeRunTestRunHooks, RunsTestRunHooks } from './run_test_run_hooks'
-import { IRuntimeOptions } from './index'
+import { RuntimeOptions } from './index'
 
 export class Worker {
   #success: boolean = true
@@ -15,7 +15,7 @@ export class Worker {
     private readonly workerId: string | undefined,
     private readonly eventBroadcaster: EventEmitter,
     private readonly newId: IdGenerator.NewId,
-    private readonly options: IRuntimeOptions,
+    private readonly options: RuntimeOptions,
     private readonly supportCodeLibrary: SupportCodeLibrary
   ) {
     this.runTestRunHooks = makeRunTestRunHooks(

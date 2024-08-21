@@ -5,9 +5,9 @@ import { assembleTestCases } from '../assemble'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { RuntimeAdapter } from './types'
 import { timestamp } from './stopwatch'
-import { IRuntime } from './index'
+import { Runtime } from './index'
 
-export class Coordinator implements IRuntime {
+export class Coordinator implements Runtime {
   constructor(
     private eventBroadcaster: EventEmitter,
     private newId: IdGenerator.NewId,
@@ -16,7 +16,7 @@ export class Coordinator implements IRuntime {
     private adapter: RuntimeAdapter
   ) {}
 
-  async start(): Promise<boolean> {
+  async run(): Promise<boolean> {
     this.eventBroadcaster.emit('envelope', {
       testRunStarted: {
         timestamp: timestamp(),
@@ -30,7 +30,7 @@ export class Coordinator implements IRuntime {
       supportCodeLibrary: this.supportCodeLibrary,
     })
 
-    const success = await this.adapter.start(assembledTestCases)
+    const success = await this.adapter.run(assembledTestCases)
 
     this.eventBroadcaster.emit('envelope', {
       testRunFinished: {

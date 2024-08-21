@@ -1,14 +1,12 @@
 import { EventEmitter } from 'node:events'
 import { IdGenerator } from '@cucumber/messages'
-import { IRuntime } from '../runtime'
 import { EventDataCollector } from '../formatter/helpers'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { ILogger } from '../logger'
-import { Coordinator } from '../runtime/coordinator'
+import { Runtime, Coordinator, RuntimeAdapter } from '../runtime'
 import { ChildProcessAdapter } from '../runtime/parallel/adapter'
 import { IFilterablePickle } from '../filter'
 import { InProcessAdapter } from '../runtime/serial/adapter'
-import { RuntimeAdapter } from '../runtime/types'
 import { IRunEnvironment, IRunOptionsRuntime } from './types'
 
 export async function makeRuntime({
@@ -29,7 +27,7 @@ export async function makeRuntime({
   filteredPickles: ReadonlyArray<IFilterablePickle>
   supportCodeLibrary: SupportCodeLibrary
   options: IRunOptionsRuntime
-}): Promise<IRuntime> {
+}): Promise<Runtime> {
   const adapter: RuntimeAdapter =
     options.parallel > 0
       ? new ChildProcessAdapter(

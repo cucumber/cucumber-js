@@ -4,7 +4,7 @@ import * as messages from '@cucumber/messages'
 import { formatLocation } from '../formatter/helpers/location_helpers'
 import { PickleTagFilter } from '../pickle_filter'
 import StepDefinition from '../models/step_definition'
-import { IRuntimeOptions } from '.'
+import { RuntimeOptions } from '.'
 
 export function getAmbiguousStepException(
   stepDefinitions: StepDefinition[]
@@ -47,7 +47,7 @@ export function getAmbiguousStepException(
 
 export function retriesForPickle(
   pickle: messages.Pickle,
-  options: IRuntimeOptions
+  options: RuntimeOptions
 ): number {
   if (!options.retry) {
     return 0
@@ -69,7 +69,7 @@ export function retriesForPickle(
 
 export function shouldCauseFailure(
   status: messages.TestStepResultStatus,
-  options: IRuntimeOptions
+  options: RuntimeOptions
 ): boolean {
   if (options.dryRun) {
     return false

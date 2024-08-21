@@ -151,7 +151,7 @@ export class ChildProcessAdapter implements RuntimeAdapter {
     }
   }
 
-  async start(
+  async run(
     assembledTestCases: ReadonlyArray<AssembledTestCase>
   ): Promise<boolean> {
     this.todo = Array.from(assembledTestCases)

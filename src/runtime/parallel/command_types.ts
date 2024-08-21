@@ -1,5 +1,5 @@
 import { Envelope } from '@cucumber/messages'
-import { IRuntimeOptions } from '../index'
+import { RuntimeOptions } from '../index'
 import { ISupportCodeCoordinates } from '../../api'
 import { AssembledTestCase } from '../../assemble'
 
@@ -14,7 +14,7 @@ export interface IWorkerCommand {
 export interface IWorkerCommandInitialize {
   supportCodeCoordinates: ISupportCodeCoordinates
   supportCodeIds?: ICanonicalSupportCodeIds
-  options: IRuntimeOptions
+  options: RuntimeOptions
 }
 
 export interface ICanonicalSupportCodeIds {

@@ -8,7 +8,7 @@ import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
 import tryRequire from '../../try_require'
 import { Worker } from '../worker'
-import { IRuntimeOptions } from '../index'
+import { RuntimeOptions } from '../index'
 import { AssembledTestCase } from '../../assemble'
 import {
   ICoordinatorReport,
@@ -29,7 +29,7 @@ export class ChildProcessWorker {
   private readonly eventBroadcaster: EventEmitter
   private readonly newId: IdGenerator.NewId
   private readonly sendMessage: IMessageSender
-  private options: IRuntimeOptions
+  private options: RuntimeOptions
   private supportCodeLibrary: SupportCodeLibrary
   private worker: Worker
 

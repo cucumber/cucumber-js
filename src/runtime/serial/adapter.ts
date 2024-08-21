@@ -3,7 +3,7 @@ import { IdGenerator } from '@cucumber/messages'
 import { RuntimeAdapter } from '../types'
 import { AssembledTestCase } from '../../assemble'
 import { Worker } from '../worker'
-import { IRuntimeOptions } from '../index'
+import { RuntimeOptions } from '../index'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 
 export class InProcessAdapter implements RuntimeAdapter {
@@ -12,7 +12,7 @@ export class InProcessAdapter implements RuntimeAdapter {
   constructor(
     eventBroadcaster: EventEmitter,
     newId: IdGenerator.NewId,
-    options: IRuntimeOptions,
+    options: RuntimeOptions,
     supportCodeLibrary: SupportCodeLibrary
   ) {
     this.#worker = new Worker(
@@ -24,7 +24,7 @@ export class InProcessAdapter implements RuntimeAdapter {
     )
   }
 
-  async start(
+  async run(
     assembledTestCases: ReadonlyArray<AssembledTestCase>
   ): Promise<boolean> {
     await this.#worker.runBeforeAllHooks()

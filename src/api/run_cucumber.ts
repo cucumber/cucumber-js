@@ -156,7 +156,7 @@ Running from: ${__dirname}
     supportCodeLibrary,
     options: options.runtime,
   })
-  const success = await runtime.start()
+  const success = await runtime.run()
   await pluginManager.cleanup()
   await cleanupFormatters()
 
