@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- Major refactor of runtime code for both serial and parallel modes ([#2422](https://github.com/cucumber/cucumber-js/pull/2422))
+
 ### Removed
 - BREAKING CHANGE: Remove previously-deprecated `parseGherkinMessageStream` ([#2420](https://github.com/cucumber/cucumber-js/pull/2420))
 - BREAKING CHANGE: Remove previously-deprecated `PickleFilter` ([#2420](https://github.com/cucumber/cucumber-js/pull/2420))
