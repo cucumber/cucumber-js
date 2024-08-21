@@ -84,7 +84,7 @@ export class ChildProcessAdapter implements RuntimeAdapter {
     const workerProcess = fork(runWorkerPath, [], {
       cwd: this.environment.cwd,
       env: {
-        ...process.env,
+        ...this.environment.env,
         CUCUMBER_PARALLEL: 'true',
         CUCUMBER_TOTAL_WORKERS: total.toString(),
         CUCUMBER_WORKER_ID: id,
