@@ -6,7 +6,6 @@ import { IdGenerator } from '@cucumber/messages'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
-import { makeRunTestRunHooks, RunsTestRunHooks } from '../run_test_run_hooks'
 import tryRequire from '../../try_require'
 import { Worker } from '../worker'
 import { IRuntimeOptions } from '../index'
@@ -32,7 +31,6 @@ export class ChildProcessWorkerAdapter {
   private readonly sendMessage: IMessageSender
   private options: IRuntimeOptions
   private supportCodeLibrary: SupportCodeLibrary
-  private runTestRunHooks: RunsTestRunHooks
   private worker: Worker
 
   constructor({
@@ -78,17 +76,6 @@ export class ChildProcessWorkerAdapter {
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize(supportCodeIds)
 
     this.options = options
-    this.runTestRunHooks = makeRunTestRunHooks(
-      options.dryRun,
-      this.supportCodeLibrary.defaultTimeout,
-      this.options.worldParameters,
-      (name, location) =>
-        `${name} hook errored on worker ${this.id}, process exiting: ${location}`
-    )
-    await this.runTestRunHooks(
-      this.supportCodeLibrary.beforeTestRunHookDefinitions,
-      'a BeforeAll'
-    )
     this.worker = new Worker(
       this.id,
       this.eventBroadcaster,
@@ -96,14 +83,12 @@ export class ChildProcessWorkerAdapter {
       this.options,
       this.supportCodeLibrary
     )
+    await this.worker.runBeforeAllHooks()
     this.sendMessage({ ready: true })
   }
 
   async finalize(): Promise<void> {
-    await this.runTestRunHooks(
-      this.supportCodeLibrary.afterTestRunHookDefinitions,
-      'an AfterAll'
-    )
+    await this.worker.runAfterAllHooks()
     this.exit(0)
   }
 

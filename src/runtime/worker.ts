@@ -4,10 +4,12 @@ import { AssembledTestCase } from '../assemble'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseRunner from './test_case_runner'
 import { retriesForPickle, shouldCauseFailure } from './helpers'
+import { makeRunTestRunHooks, RunsTestRunHooks } from './run_test_run_hooks'
 import { IRuntimeOptions } from './index'
 
 export class Worker {
   private success: boolean = true
+  private readonly runTestRunHooks: RunsTestRunHooks
 
   constructor(
     private readonly workerId: string | undefined,
@@ -15,7 +17,28 @@ export class Worker {
     private readonly newId: IdGenerator.NewId,
     private readonly options: IRuntimeOptions,
     private readonly supportCodeLibrary: SupportCodeLibrary
-  ) {}
+  ) {
+    this.runTestRunHooks = makeRunTestRunHooks(
+      this.options.dryRun,
+      this.supportCodeLibrary.defaultTimeout,
+      this.options.worldParameters,
+      (name, location) => {
+        let message = `${name} hook errored`
+        if (this.workerId) {
+          message += ` on worker ${this.workerId}`
+        }
+        message += `, process exiting: ${location}`
+        return message
+      }
+    )
+  }
+
+  async runBeforeAllHooks() {
+    await this.runTestRunHooks(
+      this.supportCodeLibrary.beforeTestRunHookDefinitions,
+      'a BeforeAll'
+    )
+  }
 
   async runTestCase({
     gherkinDocument,
@@ -43,5 +66,12 @@ export class Worker {
     }
 
     return status
+  }
+
+  async runAfterAllHooks() {
+    await this.runTestRunHooks(
+      this.supportCodeLibrary.afterTestRunHookDefinitions,
+      'an AfterAll'
+    )
   }
 }
