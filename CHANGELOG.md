@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Removed
+- BREAKING CHANGE: Remove previously-deprecated `parseGherkinMessageStream` ([#2420](https://github.com/cucumber/cucumber-js/pull/2420))
+- BREAKING CHANGE: Remove previously-deprecated `PickleFilter` ([#2420](https://github.com/cucumber/cucumber-js/pull/2420))
+- BREAKING CHANGE: Remove previously-deprecated `Runtime` ([#2420](https://github.com/cucumber/cucumber-js/pull/2420))
 
 ## [10.9.0] - 2024-08-13
 ### Added
