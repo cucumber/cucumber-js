@@ -1,7 +1,6 @@
 import { EventEmitter } from 'node:events'
 import { Envelope, IdGenerator } from '@cucumber/messages'
-import { IFilterablePickle } from '../filter'
-import { assembleTestCases } from '../assemble'
+import { assembleTestCases, SourcedPickle } from '../assemble'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { RuntimeAdapter } from './types'
 import { timestamp } from './stopwatch'
@@ -11,7 +10,7 @@ export class Coordinator implements Runtime {
   constructor(
     private eventBroadcaster: EventEmitter,
     private newId: IdGenerator.NewId,
-    private filteredPickles: ReadonlyArray<IFilterablePickle>,
+    private sourcedPickles: ReadonlyArray<SourcedPickle>,
     private supportCodeLibrary: SupportCodeLibrary,
     private adapter: RuntimeAdapter
   ) {}
@@ -26,7 +25,7 @@ export class Coordinator implements Runtime {
     const assembledTestCases = await assembleTestCases({
       eventBroadcaster: this.eventBroadcaster,
       newId: this.newId,
-      filteredPickles: this.filteredPickles,
+      sourcedPickles: this.sourcedPickles,
       supportCodeLibrary: this.supportCodeLibrary,
     })
 

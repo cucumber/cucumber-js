@@ -1,6 +1,11 @@
 import { EventEmitter } from 'node:events'
-import { IdGenerator } from '@cucumber/messages'
-import * as messages from '@cucumber/messages'
+import {
+  Envelope,
+  GherkinDocument,
+  IdGenerator,
+  Pickle,
+  TestCase,
+} from '@cucumber/messages'
 import { afterEach, beforeEach, describe, it } from 'mocha'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import { expect } from 'chai'
@@ -8,31 +13,29 @@ import timeMethods from '../time'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import { parse } from '../../test/gherkin_helpers'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
-import { assembleTestCasesByPickleId } from './assemble_test_cases'
-import { TestCasesByPickleId } from './types'
+import { assembleTestCases } from './assemble_test_cases'
+import { AssembledTestCase } from './types'
 
-interface IRequest {
-  gherkinDocument: messages.GherkinDocument
-  pickles: messages.Pickle[]
+async function testAssembleTestCases({
+  gherkinDocument,
+  pickles,
+  supportCodeLibrary,
+}: {
+  gherkinDocument: GherkinDocument
+  pickles: Pickle[]
   supportCodeLibrary: SupportCodeLibrary
-}
-
-interface IResponse {
-  envelopes: messages.Envelope[]
-  result: TestCasesByPickleId
-}
-
-async function testAssembleTestCasesByPickleId(
-  options: IRequest
-): Promise<IResponse> {
-  const envelopes: messages.Envelope[] = []
+}): Promise<{
+  envelopes: Envelope[]
+  result: ReadonlyArray<AssembledTestCase>
+}> {
+  const envelopes: Envelope[] = []
   const eventBroadcaster = new EventEmitter()
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
-  const result = await assembleTestCasesByPickleId({
+  const result = await assembleTestCases({
     eventBroadcaster,
     newId: IdGenerator.incrementing(),
-    pickles: options.pickles,
-    supportCodeLibrary: options.supportCodeLibrary,
+    sourcedPickles: pickles.map((pickle) => ({ gherkinDocument, pickle })),
+    supportCodeLibrary,
   })
   return { envelopes, result }
 }
@@ -48,7 +51,7 @@ describe('assembleTestCases', () => {
     clock.uninstall()
   })
 
-  describe('assembleTestCasesByPickleId()', () => {
+  describe('assembleTestCases()', () => {
     it('emits testCase messages', async () => {
       // Arrange
       const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
@@ -68,13 +71,13 @@ describe('assembleTestCases', () => {
       })
 
       // Act
-      const { envelopes, result } = await testAssembleTestCasesByPickleId({
+      const { envelopes, result } = await testAssembleTestCases({
         gherkinDocument,
         pickles,
         supportCodeLibrary,
       })
 
-      const testCase1: messages.TestCase = {
+      const testCase0: TestCase = {
         id: '0',
         pickleId: pickles[0].id,
         testSteps: [
@@ -91,7 +94,7 @@ describe('assembleTestCases', () => {
         ],
       }
 
-      const testCase2: messages.TestCase = {
+      const testCase1: TestCase = {
         id: '2',
         pickleId: pickles[1].id,
         testSteps: [
@@ -111,15 +114,25 @@ describe('assembleTestCases', () => {
       // Assert
       expect(envelopes).to.eql([
         {
-          testCase: testCase1,
+          testCase: testCase0,
         },
         {
-          testCase: testCase2,
+          testCase: testCase1,
         },
       ])
 
-      expect(Object.keys(result)).to.eql([pickles[0].id, pickles[1].id])
-      expect(Object.values(result)).to.eql([testCase1, testCase2])
+      expect(result).to.eql([
+        {
+          gherkinDocument,
+          pickle: pickles[0],
+          testCase: testCase0,
+        },
+        {
+          gherkinDocument,
+          pickle: pickles[1],
+          testCase: testCase1,
+        },
+      ])
     })
 
     describe('with a parameterised step', () => {
@@ -140,7 +153,7 @@ describe('assembleTestCases', () => {
         })
 
         // Act
-        const { envelopes } = await testAssembleTestCasesByPickleId({
+        const { envelopes } = await testAssembleTestCases({
           gherkinDocument,
           pickles,
           supportCodeLibrary,
@@ -214,7 +227,7 @@ describe('assembleTestCases', () => {
         })
 
         // Act
-        const { envelopes } = await testAssembleTestCasesByPickleId({
+        const { envelopes } = await testAssembleTestCases({
           gherkinDocument,
           pickles,
           supportCodeLibrary,
@@ -268,7 +281,7 @@ describe('assembleTestCases', () => {
         })
 
         // Act
-        const { envelopes } = await testAssembleTestCasesByPickleId({
+        const { envelopes } = await testAssembleTestCases({
           gherkinDocument,
           pickles,
           supportCodeLibrary,

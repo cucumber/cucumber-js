@@ -150,7 +150,7 @@ Running from: ${__dirname}
     environment,
     logger,
     eventBroadcaster,
-    filteredPickles,
+    sourcedPickles: filteredPickles,
     newId,
     supportCodeLibrary,
     options: options.runtime,

@@ -22,7 +22,7 @@ const enum WorkerState {
   'new',
 }
 
-interface IWorker {
+interface ManagedWorker {
   state: WorkerState
   process: ChildProcess
   id: string
@@ -39,7 +39,7 @@ export class ChildProcessAdapter implements RuntimeAdapter {
   private onFinish: (success: boolean) => void
   private todo: Array<AssembledTestCase> = []
   private readonly inProgress: Record<string, AssembledTestCase> = {}
-  private readonly workers: Record<string, IWorker> = {}
+  private readonly workers: Record<string, ManagedWorker> = {}
 
   constructor(
     private readonly environment: IRunEnvironment,
@@ -49,7 +49,10 @@ export class ChildProcessAdapter implements RuntimeAdapter {
     private readonly supportCodeLibrary: SupportCodeLibrary
   ) {}
 
-  parseWorkerMessage(worker: IWorker, message: WorkerToCoordinatorEvent): void {
+  parseWorkerMessage(
+    worker: ManagedWorker,
+    message: WorkerToCoordinatorEvent
+  ): void {
     switch (message.type) {
       case 'READY':
         worker.state = WorkerState.idle
@@ -73,7 +76,7 @@ export class ChildProcessAdapter implements RuntimeAdapter {
     }
   }
 
-  awakenWorkers(triggeringWorker: IWorker): void {
+  awakenWorkers(triggeringWorker: ManagedWorker): void {
     Object.values(this.workers).forEach((worker) => {
       if (worker.state === WorkerState.idle) {
         this.giveWork(worker)
@@ -180,7 +183,7 @@ export class ChildProcessAdapter implements RuntimeAdapter {
     }
   }
 
-  giveWork(worker: IWorker, force: boolean = false): void {
+  giveWork(worker: ManagedWorker, force: boolean = false): void {
     if (this.todo.length < 1) {
       worker.state = WorkerState.running
       worker.process.send({ type: 'FINALIZE' } satisfies FinalizeCommand)

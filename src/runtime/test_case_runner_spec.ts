@@ -2,8 +2,8 @@ import { EventEmitter } from 'node:events'
 import sinon from 'sinon'
 import { expect } from 'chai'
 import { afterEach, beforeEach, describe, it } from 'mocha'
-import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
+import { Envelope, IdGenerator } from '@cucumber/messages'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import { parse } from '../../test/gherkin_helpers'
@@ -11,38 +11,36 @@ import timeMethods from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
-import { assembleTestCasesByPickleId } from '../assemble/assemble_test_cases'
+import { assembleTestCases } from '../assemble'
 import TestCaseRunner from './test_case_runner'
-import IEnvelope = messages.Envelope
 
-interface ITestRunnerRequest {
+async function testRunner(options: {
   workerId?: string
   gherkinDocument: messages.GherkinDocument
   pickle: messages.Pickle
   retries?: number
   skip?: boolean
   supportCodeLibrary: SupportCodeLibrary
-}
-
-interface ITestRunnerResponse {
+}): Promise<{
   envelopes: messages.Envelope[]
   result: messages.TestStepResultStatus
-}
-
-async function testRunner(
-  options: ITestRunnerRequest
-): Promise<ITestRunnerResponse> {
-  const envelopes: IEnvelope[] = []
+}> {
+  const envelopes: Envelope[] = []
   const eventBroadcaster = new EventEmitter()
   const newId = IdGenerator.incrementing()
   const testCase = (
-    await assembleTestCasesByPickleId({
+    await assembleTestCases({
       eventBroadcaster,
       newId,
-      pickles: [options.pickle],
+      sourcedPickles: [
+        {
+          gherkinDocument: options.gherkinDocument,
+          pickle: options.pickle,
+        },
+      ],
       supportCodeLibrary: options.supportCodeLibrary,
     })
-  )[options.pickle.id]
+  )[0].testCase
 
   // listen for envelopers _after_ we've assembled test cases
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))

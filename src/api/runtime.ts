@@ -4,15 +4,15 @@ import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { ILogger } from '../logger'
 import { Runtime, Coordinator, RuntimeAdapter } from '../runtime'
 import { ChildProcessAdapter } from '../runtime/parallel/adapter'
-import { IFilterablePickle } from '../filter'
 import { InProcessAdapter } from '../runtime/serial/adapter'
+import { SourcedPickle } from '../assemble'
 import { IRunEnvironment, IRunOptionsRuntime } from './types'
 
 export async function makeRuntime({
   environment,
   logger,
   eventBroadcaster,
-  filteredPickles,
+  sourcedPickles,
   newId,
   supportCodeLibrary,
   options,
@@ -21,7 +21,7 @@ export async function makeRuntime({
   logger: ILogger
   eventBroadcaster: EventEmitter
   newId: IdGenerator.NewId
-  filteredPickles: ReadonlyArray<IFilterablePickle>
+  sourcedPickles: ReadonlyArray<SourcedPickle>
   supportCodeLibrary: SupportCodeLibrary
   options: IRunOptionsRuntime
 }): Promise<Runtime> {
@@ -43,7 +43,7 @@ export async function makeRuntime({
   return new Coordinator(
     eventBroadcaster,
     newId,
-    filteredPickles,
+    sourcedPickles,
     supportCodeLibrary,
     adapter
   )

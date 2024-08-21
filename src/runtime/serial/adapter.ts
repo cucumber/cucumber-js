@@ -7,8 +7,8 @@ import { RuntimeOptions } from '../index'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 
 export class InProcessAdapter implements RuntimeAdapter {
-  #failing: boolean = false
-  #worker: Worker
+  private readonly worker: Worker
+  private failing: boolean = false
 
   constructor(
     eventBroadcaster: EventEmitter,
@@ -16,7 +16,7 @@ export class InProcessAdapter implements RuntimeAdapter {
     options: RuntimeOptions,
     supportCodeLibrary: SupportCodeLibrary
   ) {
-    this.#worker = new Worker(
+    this.worker = new Worker(
       undefined,
       eventBroadcaster,
       newId,
@@ -28,14 +28,14 @@ export class InProcessAdapter implements RuntimeAdapter {
   async run(
     assembledTestCases: ReadonlyArray<AssembledTestCase>
   ): Promise<boolean> {
-    await this.#worker.runBeforeAllHooks()
+    await this.worker.runBeforeAllHooks()
     for (const item of assembledTestCases) {
-      const success = await this.#worker.runTestCase(item, this.#failing)
+      const success = await this.worker.runTestCase(item, this.failing)
       if (!success) {
-        this.#failing = true
+        this.failing = true
       }
     }
-    await this.#worker.runAfterAllHooks()
-    return !this.#failing
+    await this.worker.runAfterAllHooks()
+    return !this.failing
   }
 }

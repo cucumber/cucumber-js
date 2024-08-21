@@ -3,7 +3,7 @@ import { PassThrough } from 'node:stream'
 import { promisify } from 'node:util'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
-import { RuntimeOptions } from '../src/runtime'
+import { Coordinator, RuntimeOptions } from '../src/runtime'
 import { EventDataCollector } from '../src/formatter/helpers'
 import FormatterBuilder from '../src/formatter/builder'
 import { SupportCodeLibrary } from '../src/support_code_library_builder/types'
@@ -11,9 +11,8 @@ import { ITestCaseAttempt } from '../src/formatter/helpers/event_data_collector'
 import { doesNotHaveValue } from '../src/value_checker'
 import { emitSupportCodeMessages } from '../src/cli/helpers'
 import { FormatOptions } from '../src/formatter'
-import { Coordinator } from '../src/runtime/coordinator'
-import { IFilterablePickle } from '../src/filter'
 import { InProcessAdapter } from '../src/runtime/serial/adapter'
+import { SourcedPickle } from '../src/assemble'
 import { generatePickles } from './gherkin_helpers'
 import { buildOptions, buildSupportCodeLibrary } from './runtime_helpers'
 
@@ -74,7 +73,7 @@ export async function testFormatter({
     cleanup: promisify(passThrough.end.bind(passThrough)),
     supportCodeLibrary,
   })
-  let filteredPickles: IFilterablePickle[] = []
+  let filteredPickles: SourcedPickle[] = []
   for (const source of sources) {
     const generated = await generatePickles({
       data: source.data,
@@ -111,7 +110,7 @@ export async function getTestCaseAttempts({
   }
   const eventBroadcaster = new EventEmitter()
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
-  let filteredPickles: IFilterablePickle[] = []
+  let filteredPickles: SourcedPickle[] = []
   for (const source of sources) {
     const generated = await generatePickles({
       data: source.data,
@@ -156,7 +155,7 @@ export async function getEnvelopesAndEventDataCollector({
     eventBroadcaster,
     newId: IdGenerator.uuid(),
   })
-  let filteredPickles: IFilterablePickle[] = []
+  let filteredPickles: SourcedPickle[] = []
 
   for (const source of sources) {
     const generated = await generatePickles({

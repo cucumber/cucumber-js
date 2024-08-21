@@ -4,7 +4,7 @@ import { SourceMediaType } from '@cucumber/messages'
 import { IGherkinOptions } from '@cucumber/gherkin'
 import { GherkinStreams } from '@cucumber/gherkin-streams'
 import { doesHaveValue } from '../src/value_checker'
-import { IFilterablePickle } from '../src/filter'
+import { SourcedPickle } from '../src/assemble'
 
 export interface IParsedSource {
   pickles: messages.Pickle[]
@@ -81,7 +81,7 @@ export async function generatePickles({
   data,
   eventBroadcaster,
   uri,
-}: GeneratePicklesRequest): Promise<ReadonlyArray<IFilterablePickle>> {
+}: GeneratePicklesRequest): Promise<ReadonlyArray<SourcedPickle>> {
   const { envelopes, gherkinDocument, pickles } = await parse({
     data,
     uri,
@@ -91,7 +91,7 @@ export async function generatePickles({
     return {
       gherkinDocument,
       pickle,
-    } as IFilterablePickle
+    }
   })
 }
 
