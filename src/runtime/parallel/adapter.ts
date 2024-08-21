@@ -1,16 +1,17 @@
 import { ChildProcess, fork } from 'node:child_process'
 import path from 'node:path'
 import { EventEmitter } from 'node:events'
-import * as messages from '@cucumber/messages'
-import { shouldCauseFailure } from '../helpers'
-import { EventDataCollector } from '../../formatter/helpers'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
-import { doesHaveValue } from '../../value_checker'
 import { AssembledTestCase } from '../../assemble'
 import { ILogger } from '../../logger'
 import { RuntimeAdapter } from '../types'
 import { IRunEnvironment, IRunOptionsRuntime } from '../../api'
-import { WorkerToCoordinatorEvent, CoordinatorToWorkerCommand } from './types'
+import {
+  FinalizeCommand,
+  InitializeCommand,
+  RunCommand,
+  WorkerToCoordinatorEvent,
+} from './types'
 
 const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
 
@@ -34,7 +35,7 @@ interface WorkPlacement {
 
 export class ChildProcessAdapter implements RuntimeAdapter {
   private idleInterventions: number = 0
-  private success: boolean = true
+  private failing: boolean = false
   private onFinish: (success: boolean) => void
   private todo: Array<AssembledTestCase> = []
   private readonly inProgress: Record<string, AssembledTestCase> = {}
@@ -44,25 +45,31 @@ export class ChildProcessAdapter implements RuntimeAdapter {
     private readonly environment: IRunEnvironment,
     private readonly logger: ILogger,
     private readonly eventBroadcaster: EventEmitter,
-    private readonly eventDataCollector: EventDataCollector,
     private readonly options: IRunOptionsRuntime,
     private readonly supportCodeLibrary: SupportCodeLibrary
   ) {}
 
   parseWorkerMessage(worker: IWorker, message: WorkerToCoordinatorEvent): void {
-    if (message.ready) {
-      worker.state = WorkerState.idle
-      this.awakenWorkers(worker)
-    } else if (doesHaveValue(message.envelope)) {
-      const envelope = message.envelope
-      this.eventBroadcaster.emit('envelope', envelope)
-      if (doesHaveValue(envelope.testCaseFinished)) {
-        this.parseTestCaseResult(envelope.testCaseFinished, worker.id)
-      }
-    } else {
-      throw new Error(
-        `Unexpected message from worker: ${JSON.stringify(message)}`
-      )
+    switch (message.type) {
+      case 'READY':
+        worker.state = WorkerState.idle
+        this.awakenWorkers(worker)
+        break
+      case 'ENVELOPE':
+        this.eventBroadcaster.emit('envelope', message.envelope)
+        break
+      case 'FINISHED':
+        if (!message.success) {
+          this.failing = true
+        }
+        delete this.inProgress[worker.id]
+        worker.state = WorkerState.idle
+        this.awakenWorkers(worker)
+        break
+      default:
+        throw new Error(
+          `Unexpected message from worker: ${JSON.stringify(message)}`
+        )
     }
   }
 
@@ -100,54 +107,33 @@ export class ChildProcessAdapter implements RuntimeAdapter {
       worker.state = WorkerState.closed
       this.onWorkerProcessClose(exitCode)
     })
-    const initializeCommand: CoordinatorToWorkerCommand = {
-      initialize: {
-        supportCodeCoordinates: this.supportCodeLibrary.originalCoordinates,
-        supportCodeIds: {
-          stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map(
-            (s) => s.id
+    worker.process.send({
+      type: 'INITIALIZE',
+      supportCodeCoordinates: this.supportCodeLibrary.originalCoordinates,
+      supportCodeIds: {
+        stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map(
+          (s) => s.id
+        ),
+        beforeTestCaseHookDefinitionIds:
+          this.supportCodeLibrary.beforeTestCaseHookDefinitions.map(
+            (h) => h.id
           ),
-          beforeTestCaseHookDefinitionIds:
-            this.supportCodeLibrary.beforeTestCaseHookDefinitions.map(
-              (h) => h.id
-            ),
-          afterTestCaseHookDefinitionIds:
-            this.supportCodeLibrary.afterTestCaseHookDefinitions.map(
-              (h) => h.id
-            ),
-        },
-        options: this.options,
+        afterTestCaseHookDefinitionIds:
+          this.supportCodeLibrary.afterTestCaseHookDefinitions.map((h) => h.id),
       },
-    }
-    worker.process.send(initializeCommand)
+      options: this.options,
+    } satisfies InitializeCommand)
   }
 
   onWorkerProcessClose(exitCode: number): void {
-    const success = exitCode === 0
-    if (!success) {
-      this.success = false
+    if (exitCode !== 0) {
+      this.failing = true
     }
 
     if (
       Object.values(this.workers).every((x) => x.state === WorkerState.closed)
     ) {
-      this.onFinish(this.success)
-    }
-  }
-
-  parseTestCaseResult(
-    testCaseFinished: messages.TestCaseFinished,
-    workerId: string
-  ): void {
-    const { worstTestStepResult } = this.eventDataCollector.getTestCaseAttempt(
-      testCaseFinished.testCaseStartedId
-    )
-    if (!testCaseFinished.willBeRetried) {
-      delete this.inProgress[workerId]
-
-      if (shouldCauseFailure(worstTestStepResult.status, this.options)) {
-        this.success = false
-      }
+      this.onFinish(!this.failing)
     }
   }
 
@@ -196,9 +182,8 @@ export class ChildProcessAdapter implements RuntimeAdapter {
 
   giveWork(worker: IWorker, force: boolean = false): void {
     if (this.todo.length < 1) {
-      const finalizeCommand: CoordinatorToWorkerCommand = { finalize: true }
       worker.state = WorkerState.running
-      worker.process.send(finalizeCommand)
+      worker.process.send({ type: 'FINALIZE' } satisfies FinalizeCommand)
       return
     }
 
@@ -214,7 +199,9 @@ export class ChildProcessAdapter implements RuntimeAdapter {
     this.inProgress[worker.id] = item
     worker.state = WorkerState.running
     worker.process.send({
-      run: item,
-    })
+      type: 'RUN',
+      assembledTestCase: item,
+      failing: this.failing,
+    } satisfies RunCommand)
   }
 }

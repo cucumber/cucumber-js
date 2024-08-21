@@ -11,7 +11,6 @@ import TestRunHookDefinition from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { formatLocation } from '../formatter/helpers'
 import { doesHaveValue } from '../value_checker'
-import { CanonicalSupportCodeIds } from '../runtime/parallel/types'
 import { GherkinStepKeyword } from '../models/gherkin_step_keyword'
 import validateArguments from './validate_arguments'
 
@@ -29,6 +28,7 @@ import {
   ParallelAssignmentValidator,
   ISupportCodeCoordinates,
   IDefineStep,
+  CanonicalSupportCodeIds,
 } from './types'
 import World from './world'
 import { getDefinitionLineAndUri } from './get_definition_line_and_uri'

@@ -1,6 +1,5 @@
 import { EventEmitter } from 'node:events'
 import { IdGenerator } from '@cucumber/messages'
-import { EventDataCollector } from '../formatter/helpers'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { ILogger } from '../logger'
 import { Runtime, Coordinator, RuntimeAdapter } from '../runtime'
@@ -13,7 +12,6 @@ export async function makeRuntime({
   environment,
   logger,
   eventBroadcaster,
-  eventDataCollector,
   filteredPickles,
   newId,
   supportCodeLibrary,
@@ -22,7 +20,6 @@ export async function makeRuntime({
   environment: IRunEnvironment
   logger: ILogger
   eventBroadcaster: EventEmitter
-  eventDataCollector: EventDataCollector
   newId: IdGenerator.NewId
   filteredPickles: ReadonlyArray<IFilterablePickle>
   supportCodeLibrary: SupportCodeLibrary
@@ -34,7 +31,6 @@ export async function makeRuntime({
           environment,
           logger,
           eventBroadcaster,
-          eventDataCollector,
           options,
           supportCodeLibrary
         )

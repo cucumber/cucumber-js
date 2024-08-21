@@ -151,6 +151,12 @@ export interface ISupportCodeCoordinates {
   loaders: string[]
 }
 
+export interface CanonicalSupportCodeIds {
+  stepDefinitionIds: string[]
+  beforeTestCaseHookDefinitionIds: string[]
+  afterTestCaseHookDefinitionIds: string[]
+}
+
 export interface SupportCodeLibrary {
   readonly originalCoordinates: ISupportCodeCoordinates
   readonly afterTestCaseHookDefinitions: TestCaseHookDefinition[]

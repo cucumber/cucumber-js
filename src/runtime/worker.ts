@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events'
-import { IdGenerator, TestStepResultStatus } from '@cucumber/messages'
+import { IdGenerator } from '@cucumber/messages'
 import { AssembledTestCase } from '../assemble'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseRunner from './test_case_runner'
@@ -8,7 +8,6 @@ import { makeRunTestRunHooks, RunsTestRunHooks } from './run_test_run_hooks'
 import { RuntimeOptions } from './index'
 
 export class Worker {
-  #success: boolean = true
   private readonly runTestRunHooks: RunsTestRunHooks
 
   constructor(
@@ -33,10 +32,6 @@ export class Worker {
     )
   }
 
-  get success() {
-    return this.#success
-  }
-
   async runBeforeAllHooks() {
     await this.runTestRunHooks(
       this.supportCodeLibrary.beforeTestRunHookDefinitions,
@@ -44,11 +39,10 @@ export class Worker {
     )
   }
 
-  async runTestCase({
-    gherkinDocument,
-    pickle,
-    testCase,
-  }: AssembledTestCase): Promise<TestStepResultStatus> {
+  async runTestCase(
+    { gherkinDocument, pickle, testCase }: AssembledTestCase,
+    failing: boolean
+  ): Promise<boolean> {
     const testCaseRunner = new TestCaseRunner({
       workerId: this.workerId,
       eventBroadcaster: this.eventBroadcaster,
@@ -57,8 +51,7 @@ export class Worker {
       pickle,
       testCase,
       retries: retriesForPickle(pickle, this.options),
-      // TODO move skip logic to coordinator?
-      skip: this.options.dryRun || (this.options.failFast && !this.#success),
+      skip: this.options.dryRun || (this.options.failFast && failing),
       filterStackTraces: this.options.filterStacktraces,
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.options.worldParameters,
@@ -66,11 +59,7 @@ export class Worker {
 
     const status = await testCaseRunner.run()
 
-    if (shouldCauseFailure(status, this.options)) {
-      this.#success = false
-    }
-
-    return status
+    return !shouldCauseFailure(status, this.options)
   }
 
   async runAfterAllHooks() {

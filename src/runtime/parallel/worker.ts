@@ -1,19 +1,17 @@
 import { EventEmitter } from 'node:events'
 import { pathToFileURL } from 'node:url'
 import { register } from 'node:module'
-import * as messages from '@cucumber/messages'
-import { IdGenerator } from '@cucumber/messages'
+import { Envelope, IdGenerator } from '@cucumber/messages'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
-import { doesHaveValue } from '../../value_checker'
 import tryRequire from '../../try_require'
 import { Worker } from '../worker'
 import { RuntimeOptions } from '../index'
-import { AssembledTestCase } from '../../assemble'
 import {
   WorkerToCoordinatorEvent,
   CoordinatorToWorkerCommand,
   InitializeCommand,
+  RunCommand,
 } from './types'
 
 const { uuid } = IdGenerator
@@ -50,9 +48,9 @@ export class ChildProcessWorker {
     this.exit = exit
     this.sendMessage = sendMessage
     this.eventBroadcaster = new EventEmitter()
-    this.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
-      this.sendMessage({ envelope: envelope })
-    })
+    this.eventBroadcaster.on('envelope', (envelope: Envelope) =>
+      this.sendMessage({ type: 'ENVELOPE', envelope })
+    )
   }
 
   async initialize({
@@ -84,7 +82,7 @@ export class ChildProcessWorker {
       this.supportCodeLibrary
     )
     await this.worker.runBeforeAllHooks()
-    this.sendMessage({ ready: true })
+    this.sendMessage({ type: 'READY' })
   }
 
   async finalize(): Promise<void> {
@@ -92,18 +90,28 @@ export class ChildProcessWorker {
     this.exit(0)
   }
 
-  async receiveMessage(message: CoordinatorToWorkerCommand): Promise<void> {
-    if (doesHaveValue(message.initialize)) {
-      await this.initialize(message.initialize)
-    } else if (message.finalize) {
-      await this.finalize()
-    } else if (doesHaveValue(message.run)) {
-      await this.runTestCase(message.run)
+  async receiveMessage(command: CoordinatorToWorkerCommand): Promise<void> {
+    switch (command.type) {
+      case 'INITIALIZE':
+        await this.initialize(command)
+        break
+      case 'RUN':
+        await this.runTestCase(command)
+        break
+      case 'FINALIZE':
+        await this.finalize()
+        break
     }
   }
 
-  async runTestCase(assembledTestCase: AssembledTestCase): Promise<void> {
-    await this.worker.runTestCase(assembledTestCase)
-    this.sendMessage({ ready: true })
+  async runTestCase(command: RunCommand): Promise<void> {
+    const success = await this.worker.runTestCase(
+      command.assembledTestCase,
+      command.failing
+    )
+    this.sendMessage({
+      type: 'FINISHED',
+      success,
+    })
   }
 }

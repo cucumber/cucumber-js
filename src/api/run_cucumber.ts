@@ -150,7 +150,6 @@ Running from: ${__dirname}
     environment,
     logger,
     eventBroadcaster,
-    eventDataCollector,
     filteredPickles,
     newId,
     supportCodeLibrary,

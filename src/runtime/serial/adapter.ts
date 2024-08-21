@@ -7,6 +7,7 @@ import { RuntimeOptions } from '../index'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 
 export class InProcessAdapter implements RuntimeAdapter {
+  #failing: boolean = false
   #worker: Worker
 
   constructor(
@@ -29,9 +30,12 @@ export class InProcessAdapter implements RuntimeAdapter {
   ): Promise<boolean> {
     await this.#worker.runBeforeAllHooks()
     for (const item of assembledTestCases) {
-      await this.#worker.runTestCase(item)
+      const success = await this.#worker.runTestCase(item, this.#failing)
+      if (!success) {
+        this.#failing = true
+      }
     }
     await this.#worker.runAfterAllHooks()
-    return this.#worker.success
+    return !this.#failing
   }
 }
