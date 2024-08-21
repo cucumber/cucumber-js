@@ -10,7 +10,7 @@ import { AssembledTestCase } from '../../assemble'
 import { ILogger } from '../../logger'
 import { RuntimeAdapter } from '../types'
 import { IRunEnvironment, IRunOptionsRuntime } from '../../api'
-import { ICoordinatorReport, IWorkerCommand } from './command_types'
+import { WorkerToCoordinatorEvent, CoordinatorToWorkerCommand } from './types'
 
 const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
 
@@ -49,12 +49,12 @@ export class ChildProcessAdapter implements RuntimeAdapter {
     private readonly supportCodeLibrary: SupportCodeLibrary
   ) {}
 
-  parseWorkerMessage(worker: IWorker, message: ICoordinatorReport): void {
+  parseWorkerMessage(worker: IWorker, message: WorkerToCoordinatorEvent): void {
     if (message.ready) {
       worker.state = WorkerState.idle
       this.awakenWorkers(worker)
-    } else if (doesHaveValue(message.jsonEnvelope)) {
-      const envelope = message.jsonEnvelope
+    } else if (doesHaveValue(message.envelope)) {
+      const envelope = message.envelope
       this.eventBroadcaster.emit('envelope', envelope)
       if (doesHaveValue(envelope.testCaseFinished)) {
         this.parseTestCaseResult(envelope.testCaseFinished, worker.id)
@@ -93,14 +93,14 @@ export class ChildProcessAdapter implements RuntimeAdapter {
     })
     const worker = { state: WorkerState.new, process: workerProcess, id }
     this.workers[id] = worker
-    worker.process.on('message', (message: ICoordinatorReport) => {
+    worker.process.on('message', (message: WorkerToCoordinatorEvent) => {
       this.parseWorkerMessage(worker, message)
     })
     worker.process.on('close', (exitCode) => {
       worker.state = WorkerState.closed
       this.onWorkerProcessClose(exitCode)
     })
-    const initializeCommand: IWorkerCommand = {
+    const initializeCommand: CoordinatorToWorkerCommand = {
       initialize: {
         supportCodeCoordinates: this.supportCodeLibrary.originalCoordinates,
         supportCodeIds: {
@@ -196,7 +196,7 @@ export class ChildProcessAdapter implements RuntimeAdapter {
 
   giveWork(worker: IWorker, force: boolean = false): void {
     if (this.todo.length < 1) {
-      const finalizeCommand: IWorkerCommand = { finalize: true }
+      const finalizeCommand: CoordinatorToWorkerCommand = { finalize: true }
       worker.state = WorkerState.running
       worker.process.send(finalizeCommand)
       return

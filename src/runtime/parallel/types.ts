@@ -5,19 +5,19 @@ import { AssembledTestCase } from '../../assemble'
 
 // Messages from Coordinator to Worker
 
-export interface IWorkerCommand {
-  initialize?: IWorkerCommandInitialize
+export interface CoordinatorToWorkerCommand {
+  initialize?: InitializeCommand
   run?: AssembledTestCase
   finalize?: boolean
 }
 
-export interface IWorkerCommandInitialize {
+export interface InitializeCommand {
   supportCodeCoordinates: ISupportCodeCoordinates
-  supportCodeIds?: ICanonicalSupportCodeIds
+  supportCodeIds?: CanonicalSupportCodeIds
   options: RuntimeOptions
 }
 
-export interface ICanonicalSupportCodeIds {
+export interface CanonicalSupportCodeIds {
   stepDefinitionIds: string[]
   beforeTestCaseHookDefinitionIds: string[]
   afterTestCaseHookDefinitionIds: string[]
@@ -25,7 +25,7 @@ export interface ICanonicalSupportCodeIds {
 
 // Messages from Worker to Coordinator
 
-export interface ICoordinatorReport {
-  jsonEnvelope?: Envelope
+export interface WorkerToCoordinatorEvent {
+  envelope?: Envelope
   ready?: boolean
 }

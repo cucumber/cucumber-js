@@ -11,15 +11,15 @@ import { Worker } from '../worker'
 import { RuntimeOptions } from '../index'
 import { AssembledTestCase } from '../../assemble'
 import {
-  ICoordinatorReport,
-  IWorkerCommand,
-  IWorkerCommandInitialize,
-} from './command_types'
+  WorkerToCoordinatorEvent,
+  CoordinatorToWorkerCommand,
+  InitializeCommand,
+} from './types'
 
 const { uuid } = IdGenerator
 
 type IExitFunction = (exitCode: number, error?: Error, message?: string) => void
-type IMessageSender = (command: ICoordinatorReport) => void
+type IMessageSender = (command: WorkerToCoordinatorEvent) => void
 
 export class ChildProcessWorker {
   private readonly cwd: string
@@ -51,7 +51,7 @@ export class ChildProcessWorker {
     this.sendMessage = sendMessage
     this.eventBroadcaster = new EventEmitter()
     this.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
-      this.sendMessage({ jsonEnvelope: envelope })
+      this.sendMessage({ envelope: envelope })
     })
   }
 
@@ -59,7 +59,7 @@ export class ChildProcessWorker {
     supportCodeCoordinates,
     supportCodeIds,
     options,
-  }: IWorkerCommandInitialize): Promise<void> {
+  }: InitializeCommand): Promise<void> {
     supportCodeLibraryBuilder.reset(
       this.cwd,
       this.newId,
@@ -92,7 +92,7 @@ export class ChildProcessWorker {
     this.exit(0)
   }
 
-  async receiveMessage(message: IWorkerCommand): Promise<void> {
+  async receiveMessage(message: CoordinatorToWorkerCommand): Promise<void> {
     if (doesHaveValue(message.initialize)) {
       await this.initialize(message.initialize)
     } else if (message.finalize) {
