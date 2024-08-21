@@ -4,25 +4,15 @@ import { EventEmitter } from 'node:events'
 import * as messages from '@cucumber/messages'
 import { shouldCauseFailure } from '../helpers'
 import { EventDataCollector } from '../../formatter/helpers'
-import { IRuntimeOptions } from '..'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
 import { AssembledTestCase } from '../../assemble'
 import { ILogger } from '../../logger'
 import { RuntimeAdapter } from '../types'
+import { IRunEnvironment, IRunOptionsRuntime } from '../../api'
 import { ICoordinatorReport, IWorkerCommand } from './command_types'
 
 const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
-
-export interface INewCoordinatorOptions {
-  cwd: string
-  logger: ILogger
-  eventBroadcaster: EventEmitter
-  eventDataCollector: EventDataCollector
-  options: IRuntimeOptions
-  supportCodeLibrary: SupportCodeLibrary
-  numberOfWorkers: number
-}
 
 const enum WorkerState {
   'idle',
@@ -43,41 +33,21 @@ interface WorkPlacement {
 }
 
 export class ChildProcessAdapter implements RuntimeAdapter {
-  private readonly cwd: string
-  private readonly eventBroadcaster: EventEmitter
-  private readonly eventDataCollector: EventDataCollector
+  private idleInterventions: number = 0
+  private success: boolean = true
   private onFinish: (success: boolean) => void
-  private readonly options: IRuntimeOptions
-  private todo: Array<AssembledTestCase>
-  private readonly inProgress: Record<string, AssembledTestCase>
-  private readonly workers: Record<string, IWorker>
-  private readonly supportCodeLibrary: SupportCodeLibrary
-  private readonly numberOfWorkers: number
-  private readonly logger: ILogger
-  private success: boolean
-  private idleInterventions: number
+  private todo: Array<AssembledTestCase> = []
+  private readonly inProgress: Record<string, AssembledTestCase> = {}
+  private readonly workers: Record<string, IWorker> = {}
 
-  constructor({
-    cwd,
-    logger,
-    eventBroadcaster,
-    eventDataCollector,
-    options,
-    supportCodeLibrary,
-    numberOfWorkers,
-  }: INewCoordinatorOptions) {
-    this.cwd = cwd
-    this.logger = logger
-    this.eventBroadcaster = eventBroadcaster
-    this.eventDataCollector = eventDataCollector
-    this.options = options
-    this.supportCodeLibrary = supportCodeLibrary
-    this.numberOfWorkers = numberOfWorkers
-    this.success = true
-    this.workers = {}
-    this.inProgress = {}
-    this.idleInterventions = 0
-  }
+  constructor(
+    private readonly environment: IRunEnvironment,
+    private readonly logger: ILogger,
+    private readonly eventBroadcaster: EventEmitter,
+    private readonly eventDataCollector: EventDataCollector,
+    private readonly options: IRunOptionsRuntime,
+    private readonly supportCodeLibrary: SupportCodeLibrary
+  ) {}
 
   parseWorkerMessage(worker: IWorker, message: ICoordinatorReport): void {
     if (message.ready) {
@@ -112,7 +82,7 @@ export class ChildProcessAdapter implements RuntimeAdapter {
 
   startWorker(id: string, total: number): void {
     const workerProcess = fork(runWorkerPath, [], {
-      cwd: this.cwd,
+      cwd: this.environment.cwd,
       env: {
         ...process.env,
         CUCUMBER_PARALLEL: 'true',
@@ -186,8 +156,8 @@ export class ChildProcessAdapter implements RuntimeAdapter {
   ): Promise<boolean> {
     this.todo = Array.from(assembledTestCases)
     return await new Promise<boolean>((resolve) => {
-      for (let i = 0; i < this.numberOfWorkers; i++) {
-        this.startWorker(i.toString(), this.numberOfWorkers)
+      for (let i = 0; i < this.options.parallel; i++) {
+        this.startWorker(i.toString(), this.options.parallel)
       }
       this.onFinish = (status) => {
         if (this.idleInterventions > 0) {

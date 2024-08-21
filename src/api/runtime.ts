@@ -19,7 +19,7 @@ export async function makeRuntime({
   filteredPickles,
   newId,
   supportCodeLibrary,
-  options: { parallel, ...options },
+  options,
 }: {
   environment: IRunEnvironment
   logger: ILogger
@@ -31,16 +31,15 @@ export async function makeRuntime({
   options: IRunOptionsRuntime
 }): Promise<IRuntime> {
   const adapter: RuntimeAdapter =
-    parallel > 0
-      ? new ChildProcessAdapter({
-          cwd: environment.cwd,
+    options.parallel > 0
+      ? new ChildProcessAdapter(
+          environment,
           logger,
           eventBroadcaster,
           eventDataCollector,
           options,
-          supportCodeLibrary,
-          numberOfWorkers: parallel,
-        })
+          supportCodeLibrary
+        )
       : new InProcessAdapter(
           eventBroadcaster,
           newId,
