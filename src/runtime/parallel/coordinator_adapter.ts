@@ -2,7 +2,7 @@ import { ChildProcess, fork } from 'node:child_process'
 import path from 'node:path'
 import { EventEmitter } from 'node:events'
 import * as messages from '@cucumber/messages'
-import { retriesForPickle, shouldCauseFailure } from '../helpers'
+import { shouldCauseFailure } from '../helpers'
 import { EventDataCollector } from '../../formatter/helpers'
 import { IRuntimeOptions } from '..'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
@@ -242,16 +242,9 @@ export class ChildProcessCoordinatorAdapter implements CoordinatorAdapter {
 
     this.todo.splice(nextIndex, 1)
     this.inProgress[worker.id] = item
-    const retries = retriesForPickle(item.pickle, this.options)
-    const skip = this.options.dryRun || (this.options.failFast && !this.success)
-    const runCommand: IWorkerCommand = {
-      run: {
-        ...item,
-        retries,
-        skip,
-      },
-    }
     worker.state = WorkerState.running
-    worker.process.send(runCommand)
+    worker.process.send({
+      run: item,
+    })
   }
 }

@@ -3,18 +3,18 @@ import { pathToFileURL } from 'node:url'
 import { register } from 'node:module'
 import * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
-import { JsonObject } from 'type-fest'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue } from '../../value_checker'
 import { makeRunTestRunHooks, RunsTestRunHooks } from '../run_test_run_hooks'
-import TestCaseRunner from '../test_case_runner'
 import tryRequire from '../../try_require'
+import { Worker } from '../worker'
+import { IRuntimeOptions } from '../index'
+import { AssembledTestCase } from '../../assemble'
 import {
   ICoordinatorReport,
   IWorkerCommand,
   IWorkerCommandInitialize,
-  IWorkerCommandRun,
 } from './command_types'
 
 const { uuid } = IdGenerator
@@ -22,18 +22,18 @@ const { uuid } = IdGenerator
 type IExitFunction = (exitCode: number, error?: Error, message?: string) => void
 type IMessageSender = (command: ICoordinatorReport) => void
 
-export default class Worker {
+export class ChildProcessWorkerAdapter {
   private readonly cwd: string
   private readonly exit: IExitFunction
 
   private readonly id: string
   private readonly eventBroadcaster: EventEmitter
-  private filterStacktraces: boolean
   private readonly newId: IdGenerator.NewId
   private readonly sendMessage: IMessageSender
+  private options: IRuntimeOptions
   private supportCodeLibrary: SupportCodeLibrary
-  private worldParameters: JsonObject
   private runTestRunHooks: RunsTestRunHooks
+  private worker: Worker
 
   constructor({
     cwd,
@@ -77,18 +77,24 @@ export default class Worker {
     }
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize(supportCodeIds)
 
-    this.worldParameters = options.worldParameters
-    this.filterStacktraces = options.filterStacktraces
+    this.options = options
     this.runTestRunHooks = makeRunTestRunHooks(
       options.dryRun,
       this.supportCodeLibrary.defaultTimeout,
-      this.worldParameters,
+      this.options.worldParameters,
       (name, location) =>
         `${name} hook errored on worker ${this.id}, process exiting: ${location}`
     )
     await this.runTestRunHooks(
       this.supportCodeLibrary.beforeTestRunHookDefinitions,
       'a BeforeAll'
+    )
+    this.worker = new Worker(
+      this.id,
+      this.eventBroadcaster,
+      this.newId,
+      this.options,
+      this.supportCodeLibrary
     )
     this.sendMessage({ ready: true })
   }
@@ -111,27 +117,8 @@ export default class Worker {
     }
   }
 
-  async runTestCase({
-    gherkinDocument,
-    pickle,
-    testCase,
-    retries,
-    skip,
-  }: IWorkerCommandRun): Promise<void> {
-    const testCaseRunner = new TestCaseRunner({
-      workerId: this.id,
-      eventBroadcaster: this.eventBroadcaster,
-      gherkinDocument,
-      newId: this.newId,
-      pickle,
-      testCase,
-      retries,
-      skip,
-      filterStackTraces: this.filterStacktraces,
-      supportCodeLibrary: this.supportCodeLibrary,
-      worldParameters: this.worldParameters,
-    })
-    await testCaseRunner.run()
+  async runTestCase(assembledTestCase: AssembledTestCase): Promise<void> {
+    await this.worker.runTestCase(assembledTestCase)
     this.sendMessage({ ready: true })
   }
 }
