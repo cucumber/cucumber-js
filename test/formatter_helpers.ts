@@ -3,7 +3,7 @@ import { PassThrough } from 'node:stream'
 import { promisify } from 'node:util'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
-import { Coordinator, RuntimeOptions } from '../src/runtime'
+import { RuntimeOptions } from '../src/runtime'
 import { EventDataCollector } from '../src/formatter/helpers'
 import FormatterBuilder from '../src/formatter/builder'
 import { SupportCodeLibrary } from '../src/support_code_library_builder/types'
@@ -11,12 +11,12 @@ import { ITestCaseAttempt } from '../src/formatter/helpers/event_data_collector'
 import { doesNotHaveValue } from '../src/value_checker'
 import { emitSupportCodeMessages } from '../src/cli/helpers'
 import { FormatOptions } from '../src/formatter'
-import { InProcessAdapter } from '../src/runtime/serial/adapter'
 import { SourcedPickle } from '../src/assemble'
+import { makeRuntime } from '../src/api/runtime'
+import { IRunEnvironment } from '../src/api'
 import { generatePickles } from './gherkin_helpers'
 import { buildOptions, buildSupportCodeLibrary } from './runtime_helpers'
-
-const { uuid } = IdGenerator
+import { FakeLogger } from './fake_logger'
 
 export interface ITestSource {
   data: string
@@ -55,7 +55,7 @@ export async function testFormatter({
   emitSupportCodeMessages({
     supportCodeLibrary,
     eventBroadcaster,
-    newId: uuid(),
+    newId: IdGenerator.uuid(),
   })
   let output = ''
   const logFn = (data: string): void => {
@@ -73,28 +73,29 @@ export async function testFormatter({
     cleanup: promisify(passThrough.end.bind(passThrough)),
     supportCodeLibrary,
   })
-  let filteredPickles: SourcedPickle[] = []
+
+  let sourcedPickles: SourcedPickle[] = []
   for (const source of sources) {
     const generated = await generatePickles({
       data: source.data,
       eventBroadcaster,
       uri: source.uri,
     })
-    filteredPickles = filteredPickles.concat(generated)
+    sourcedPickles = sourcedPickles.concat(generated)
   }
-  const runtime = new Coordinator(
-    eventBroadcaster,
-    uuid(),
-    filteredPickles,
-    supportCodeLibrary,
-    new InProcessAdapter(
-      eventBroadcaster,
-      uuid(),
-      buildOptions(runtimeOptions),
-      supportCodeLibrary
-    )
-  )
 
+  const runtime = await makeRuntime({
+    environment: {} as IRunEnvironment,
+    logger: new FakeLogger(),
+    eventBroadcaster,
+    sourcedPickles,
+    newId: IdGenerator.uuid(),
+    supportCodeLibrary,
+    options: {
+      ...buildOptions(runtimeOptions),
+      parallel: 0,
+    },
+  })
   await runtime.run()
 
   return normalizeSummaryDuration(output)
@@ -105,35 +106,11 @@ export async function getTestCaseAttempts({
   supportCodeLibrary,
   sources = [],
 }: ITestRunOptions): Promise<ITestCaseAttempt[]> {
-  if (doesNotHaveValue(supportCodeLibrary)) {
-    supportCodeLibrary = buildSupportCodeLibrary()
-  }
-  const eventBroadcaster = new EventEmitter()
-  const eventDataCollector = new EventDataCollector(eventBroadcaster)
-  let filteredPickles: SourcedPickle[] = []
-  for (const source of sources) {
-    const generated = await generatePickles({
-      data: source.data,
-      eventBroadcaster,
-      uri: source.uri,
-    })
-    filteredPickles = filteredPickles.concat(generated)
-  }
-  const runtime = new Coordinator(
-    eventBroadcaster,
-    uuid(),
-    filteredPickles,
+  const { eventDataCollector } = await getEnvelopesAndEventDataCollector({
+    runtimeOptions,
     supportCodeLibrary,
-    new InProcessAdapter(
-      eventBroadcaster,
-      uuid(),
-      buildOptions(runtimeOptions),
-      supportCodeLibrary
-    )
-  )
-
-  await runtime.run()
-
+    sources,
+  })
   return eventDataCollector.getTestCaseAttempts()
 }
 
@@ -155,32 +132,31 @@ export async function getEnvelopesAndEventDataCollector({
     eventBroadcaster,
     newId: IdGenerator.uuid(),
   })
-  let filteredPickles: SourcedPickle[] = []
 
+  let sourcedPickles: SourcedPickle[] = []
   for (const source of sources) {
     const generated = await generatePickles({
       data: source.data,
       eventBroadcaster,
       uri: source.uri,
     })
-    filteredPickles = filteredPickles.concat(
+    sourcedPickles = sourcedPickles.concat(
       generated.filter((item) => pickleFilter(item.pickle))
     )
   }
 
-  const runtime = new Coordinator(
+  const runtime = await makeRuntime({
+    environment: {} as IRunEnvironment,
+    logger: new FakeLogger(),
     eventBroadcaster,
-    uuid(),
-    filteredPickles,
+    sourcedPickles,
+    newId: IdGenerator.uuid(),
     supportCodeLibrary,
-    new InProcessAdapter(
-      eventBroadcaster,
-      uuid(),
-      buildOptions(runtimeOptions),
-      supportCodeLibrary
-    )
-  )
-
+    options: {
+      ...buildOptions(runtimeOptions),
+      parallel: 0,
+    },
+  })
   await runtime.run()
 
   return { envelopes, eventDataCollector }
