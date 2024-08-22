@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - main
-      - feat/unified-runner
   pull_request:
     branches:
       - main
