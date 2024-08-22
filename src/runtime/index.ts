@@ -1,2 +1,2 @@
-export * from './coordinator'
-export * from './types'
+export * from './make_runtime'
+export { Runtime, RuntimeOptions } from './types'

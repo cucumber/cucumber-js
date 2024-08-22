@@ -1,12 +1,13 @@
 import { EventEmitter } from 'node:events'
 import { IdGenerator } from '@cucumber/messages'
-import { SupportCodeLibrary } from '../support_code_library_builder/types'
+import { IRunEnvironment, IRunOptionsRuntime } from '../api'
 import { ILogger } from '../logger'
-import { Runtime, Coordinator, RuntimeAdapter } from '../runtime'
-import { ChildProcessAdapter } from '../runtime/parallel/adapter'
-import { InProcessAdapter } from '../runtime/serial/adapter'
 import { SourcedPickle } from '../assemble'
-import { IRunEnvironment, IRunOptionsRuntime } from './types'
+import { SupportCodeLibrary } from '../support_code_library_builder/types'
+import { Runtime, RuntimeAdapter } from './types'
+import { ChildProcessAdapter } from './parallel/adapter'
+import { InProcessAdapter } from './serial/adapter'
+import { Coordinator } from './coordinator'
 
 export async function makeRuntime({
   environment,
