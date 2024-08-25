@@ -8,13 +8,13 @@ import { getTestCaseAttempts } from '../../../test/formatter_helpers'
 import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
 import timeMethods, { durationBetweenTimestamps } from '../../time'
 import { buildSupportCodeLibrary } from '../../../test/runtime_helpers'
-import { IRuntimeOptions } from '../../runtime'
+import { RuntimeOptions } from '../../runtime'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesNotHaveValue } from '../../value_checker'
 import { formatSummary } from './summary_helpers'
 
 interface ITestFormatSummaryOptions {
-  runtimeOptions?: Partial<IRuntimeOptions>
+  runtimeOptions?: Partial<RuntimeOptions>
   sourceData: string
   supportCodeLibrary?: SupportCodeLibrary
   testRunStarted?: messages.TestRunStarted

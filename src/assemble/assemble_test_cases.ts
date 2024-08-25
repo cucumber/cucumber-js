@@ -1,46 +1,47 @@
 import { EventEmitter } from 'node:events'
-import * as messages from '@cucumber/messages'
-import { IdGenerator } from '@cucumber/messages'
+import {
+  Envelope,
+  IdGenerator,
+  Pickle,
+  TestCase,
+  TestStep,
+  Group as MessagesGroup,
+} from '@cucumber/messages'
 import { Group } from '@cucumber/cucumber-expressions'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { doesHaveValue } from '../value_checker'
-
-export declare type IAssembledTestCases = Record<string, messages.TestCase>
-
-export interface IAssembleTestCasesOptions {
-  eventBroadcaster: EventEmitter
-  newId: IdGenerator.NewId
-  pickles: messages.Pickle[]
-  supportCodeLibrary: SupportCodeLibrary
-}
+import { AssembledTestCase, SourcedPickle } from './types'
 
 export async function assembleTestCases({
   eventBroadcaster,
   newId,
-  pickles,
+  sourcedPickles,
   supportCodeLibrary,
-}: IAssembleTestCasesOptions): Promise<IAssembledTestCases> {
-  const result: IAssembledTestCases = {}
-  for (const pickle of pickles) {
-    const { id: pickleId } = pickle
+}: {
+  eventBroadcaster: EventEmitter
+  newId: IdGenerator.NewId
+  sourcedPickles: ReadonlyArray<SourcedPickle>
+  supportCodeLibrary: SupportCodeLibrary
+}): Promise<ReadonlyArray<AssembledTestCase>> {
+  return sourcedPickles.map(({ gherkinDocument, pickle }) => {
     const testCaseId = newId()
-    const fromBeforeHooks: messages.TestStep[] = makeBeforeHookSteps({
+    const fromBeforeHooks: TestStep[] = makeBeforeHookSteps({
       supportCodeLibrary,
       pickle,
       newId,
     })
-    const fromStepDefinitions: messages.TestStep[] = makeSteps({
+    const fromStepDefinitions: TestStep[] = makeSteps({
       pickle,
       supportCodeLibrary,
       newId,
     })
-    const fromAfterHooks: messages.TestStep[] = makeAfterHookSteps({
+    const fromAfterHooks: TestStep[] = makeAfterHookSteps({
       supportCodeLibrary,
       pickle,
       newId,
     })
-    const testCase: messages.TestCase = {
-      pickleId,
+    const testCase: TestCase = {
+      pickleId: pickle.id,
       id: testCaseId,
       testSteps: [
         ...fromBeforeHooks,
@@ -48,10 +49,13 @@ export async function assembleTestCases({
         ...fromAfterHooks,
       ],
     }
-    eventBroadcaster.emit('envelope', { testCase })
-    result[pickleId] = testCase
-  }
-  return result
+    eventBroadcaster.emit('envelope', { testCase } satisfies Envelope)
+    return {
+      gherkinDocument,
+      pickle,
+      testCase,
+    }
+  })
 }
 
 function makeAfterHookSteps({
@@ -60,9 +64,9 @@ function makeAfterHookSteps({
   newId,
 }: {
   supportCodeLibrary: SupportCodeLibrary
-  pickle: messages.Pickle
+  pickle: Pickle
   newId: IdGenerator.NewId
-}): messages.TestStep[] {
+}): TestStep[] {
   return supportCodeLibrary.afterTestCaseHookDefinitions
     .slice(0)
     .reverse()
@@ -79,9 +83,9 @@ function makeBeforeHookSteps({
   newId,
 }: {
   supportCodeLibrary: SupportCodeLibrary
-  pickle: messages.Pickle
+  pickle: Pickle
   newId: IdGenerator.NewId
-}): messages.TestStep[] {
+}): TestStep[] {
   return supportCodeLibrary.beforeTestCaseHookDefinitions
     .filter((hookDefinition) => hookDefinition.appliesToTestCase(pickle))
     .map((hookDefinition) => ({
@@ -95,10 +99,10 @@ function makeSteps({
   supportCodeLibrary,
   newId,
 }: {
-  pickle: messages.Pickle
+  pickle: Pickle
   supportCodeLibrary: SupportCodeLibrary
   newId: () => string
-}): messages.TestStep[] {
+}): TestStep[] {
   return pickle.steps.map((pickleStep) => {
     const stepDefinitions = supportCodeLibrary.stepDefinitions.filter(
       (stepDefinition) => stepDefinition.matchesStepName(pickleStep.text)
@@ -124,7 +128,7 @@ function makeSteps({
   })
 }
 
-function mapArgumentGroup(group: Group): messages.Group {
+function mapArgumentGroup(group: Group): MessagesGroup {
   return {
     start: group.start,
     value: group.value,

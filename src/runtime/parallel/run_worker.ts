@@ -1,5 +1,5 @@
 import { doesHaveValue } from '../../value_checker'
-import Worker from './worker'
+import { ChildProcessWorker } from './worker'
 
 function run(): void {
   const exit = (exitCode: number, error?: Error, message?: string): void => {
@@ -8,7 +8,7 @@ function run(): void {
     }
     process.exit(exitCode)
   }
-  const worker = new Worker({
+  const worker = new ChildProcessWorker({
     id: process.env.CUCUMBER_WORKER_ID,
     sendMessage: (message: any) => process.send(message),
     cwd: process.cwd(),

@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import { TimeConversion } from '@cucumber/messages'
-import { create } from './stopwatch'
+import { create, timestamp } from './stopwatch'
 
 describe('stopwatch', () => {
   it('returns a duration between the start and stop', async () => {
@@ -47,7 +47,7 @@ describe('stopwatch', () => {
 
   it('returns a timestamp close to now', () => {
     expect(
-      TimeConversion.timestampToMillisecondsSinceEpoch(create().timestamp())
+      TimeConversion.timestampToMillisecondsSinceEpoch(timestamp())
     ).to.be.closeTo(Date.now(), 100)
   })
 })

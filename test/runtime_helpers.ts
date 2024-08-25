@@ -1,6 +1,6 @@
 import { IdGenerator } from '@cucumber/messages'
 import { SupportCodeLibraryBuilder } from '../src/support_code_library_builder'
-import { IRuntimeOptions } from '../src/runtime'
+import { RuntimeOptions } from '../src/runtime'
 import {
   IDefineSupportCodeMethods,
   SupportCodeLibrary,
@@ -8,8 +8,8 @@ import {
 import { doesHaveValue } from '../src/value_checker'
 
 export function buildOptions(
-  overrides: Partial<IRuntimeOptions>
-): IRuntimeOptions {
+  overrides: Partial<RuntimeOptions>
+): RuntimeOptions {
   return {
     dryRun: false,
     failFast: false,

@@ -1,40 +1,35 @@
 import { EventEmitter } from 'node:events'
 import { pathToFileURL } from 'node:url'
 import { register } from 'node:module'
-import * as messages from '@cucumber/messages'
-import { IdGenerator } from '@cucumber/messages'
-import { JsonObject } from 'type-fest'
+import { Envelope, IdGenerator } from '@cucumber/messages'
 import supportCodeLibraryBuilder from '../../support_code_library_builder'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
-import { doesHaveValue } from '../../value_checker'
-import { makeRunTestRunHooks, RunsTestRunHooks } from '../run_test_run_hooks'
-import { create } from '../stopwatch'
-import TestCaseRunner from '../test_case_runner'
 import tryRequire from '../../try_require'
+import { Worker } from '../worker'
+import { RuntimeOptions } from '../index'
 import {
-  ICoordinatorReport,
-  IWorkerCommand,
-  IWorkerCommandInitialize,
-  IWorkerCommandRun,
-} from './command_types'
+  WorkerToCoordinatorEvent,
+  CoordinatorToWorkerCommand,
+  InitializeCommand,
+  RunCommand,
+} from './types'
 
 const { uuid } = IdGenerator
 
 type IExitFunction = (exitCode: number, error?: Error, message?: string) => void
-type IMessageSender = (command: ICoordinatorReport) => void
+type IMessageSender = (command: WorkerToCoordinatorEvent) => void
 
-export default class Worker {
+export class ChildProcessWorker {
   private readonly cwd: string
   private readonly exit: IExitFunction
 
   private readonly id: string
   private readonly eventBroadcaster: EventEmitter
-  private filterStacktraces: boolean
   private readonly newId: IdGenerator.NewId
   private readonly sendMessage: IMessageSender
+  private options: RuntimeOptions
   private supportCodeLibrary: SupportCodeLibrary
-  private worldParameters: JsonObject
-  private runTestRunHooks: RunsTestRunHooks
+  private worker: Worker
 
   constructor({
     cwd,
@@ -53,16 +48,16 @@ export default class Worker {
     this.exit = exit
     this.sendMessage = sendMessage
     this.eventBroadcaster = new EventEmitter()
-    this.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
-      this.sendMessage({ jsonEnvelope: envelope })
-    })
+    this.eventBroadcaster.on('envelope', (envelope: Envelope) =>
+      this.sendMessage({ type: 'ENVELOPE', envelope })
+    )
   }
 
   async initialize({
     supportCodeCoordinates,
     supportCodeIds,
     options,
-  }: IWorkerCommandInitialize): Promise<void> {
+  }: InitializeCommand): Promise<void> {
     supportCodeLibraryBuilder.reset(
       this.cwd,
       this.newId,
@@ -78,64 +73,45 @@ export default class Worker {
     }
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize(supportCodeIds)
 
-    this.worldParameters = options.worldParameters
-    this.filterStacktraces = options.filterStacktraces
-    this.runTestRunHooks = makeRunTestRunHooks(
-      options.dryRun,
-      this.supportCodeLibrary.defaultTimeout,
-      this.worldParameters,
-      (name, location) =>
-        `${name} hook errored on worker ${this.id}, process exiting: ${location}`
+    this.options = options
+    this.worker = new Worker(
+      this.id,
+      this.eventBroadcaster,
+      this.newId,
+      this.options,
+      this.supportCodeLibrary
     )
-    await this.runTestRunHooks(
-      this.supportCodeLibrary.beforeTestRunHookDefinitions,
-      'a BeforeAll'
-    )
-    this.sendMessage({ ready: true })
+    await this.worker.runBeforeAllHooks()
+    this.sendMessage({ type: 'READY' })
   }
 
   async finalize(): Promise<void> {
-    await this.runTestRunHooks(
-      this.supportCodeLibrary.afterTestRunHookDefinitions,
-      'an AfterAll'
-    )
+    await this.worker.runAfterAllHooks()
     this.exit(0)
   }
 
-  async receiveMessage(message: IWorkerCommand): Promise<void> {
-    if (doesHaveValue(message.initialize)) {
-      await this.initialize(message.initialize)
-    } else if (message.finalize) {
-      await this.finalize()
-    } else if (doesHaveValue(message.run)) {
-      await this.runTestCase(message.run)
+  async receiveMessage(command: CoordinatorToWorkerCommand): Promise<void> {
+    switch (command.type) {
+      case 'INITIALIZE':
+        await this.initialize(command)
+        break
+      case 'RUN':
+        await this.runTestCase(command)
+        break
+      case 'FINALIZE':
+        await this.finalize()
+        break
     }
   }
 
-  async runTestCase({
-    gherkinDocument,
-    pickle,
-    testCase,
-    elapsed,
-    retries,
-    skip,
-  }: IWorkerCommandRun): Promise<void> {
-    const stopwatch = create(elapsed)
-    const testCaseRunner = new TestCaseRunner({
-      workerId: this.id,
-      eventBroadcaster: this.eventBroadcaster,
-      stopwatch,
-      gherkinDocument,
-      newId: this.newId,
-      pickle,
-      testCase,
-      retries,
-      skip,
-      filterStackTraces: this.filterStacktraces,
-      supportCodeLibrary: this.supportCodeLibrary,
-      worldParameters: this.worldParameters,
+  async runTestCase(command: RunCommand): Promise<void> {
+    const success = await this.worker.runTestCase(
+      command.assembledTestCase,
+      command.failing
+    )
+    this.sendMessage({
+      type: 'FINISHED',
+      success,
     })
-    await testCaseRunner.run()
-    this.sendMessage({ ready: true })
   }
 }
