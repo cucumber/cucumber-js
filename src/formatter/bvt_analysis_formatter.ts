@@ -1,21 +1,17 @@
 import { Envelope, Meta } from '@cucumber/messages'
 import { spawn } from 'child_process'
+import { readFileSync } from 'fs'
 import path from 'path'
+import { withFile } from 'tmp-promise'
 import Formatter, { IFormatterOptions } from '.'
 import { doesHaveValue } from '../value_checker'
 import ReportGenerator, {
-  JsonFixedByAi,
   JsonReport,
-  JsonResultFailed,
-  JsonResultPassed,
-  JsonStep,
   JsonTestProgress,
   JsonTestResult,
   RetrainStats,
 } from './helpers/report_generator'
 import ReportUploader from './helpers/uploader'
-import { readFileSync } from 'fs'
-import { withFile } from 'tmp-promise'
 //User token
 const TOKEN = process.env.TOKEN
 interface MetaMessage extends Meta {
@@ -169,8 +165,7 @@ export default class BVTAnalysisFormatter extends Formatter {
     failedTestCases: number[],
     testCase: JsonTestProgress
   ): Promise<RetrainStats | null> {
-    const stepsToRetrain = testCase.steps.map((_, i) => i)
-    return await this.call_cucumber_client(stepsToRetrain, testCase)
+    return await this.call_cucumber_client(failedTestCases, testCase)
   }
 
   private async call_cucumber_client(
