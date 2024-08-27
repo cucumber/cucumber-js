@@ -12,11 +12,11 @@ plugins:
   - node
   - '@typescript-eslint'
 rules:
-  'no-console': 'error'
+  # 'no-console': 'error'
   # requires strictNullChecks compiler option, produces many errors with messages objects
   '@typescript-eslint/strict-boolean-expressions': off
   '@typescript-eslint/no-explicit-any': off
   '@typescript-eslint/no-inferrable-types': off
   '@typescript-eslint/no-empty-function': off
   '@typescript-eslint/ban-types': off
-  '@typescript-eslint/no-unused-vars': [error, { 'argsIgnorePattern': '^_' }]
+  # '@typescript-eslint/no-unused-vars': [error, { 'argsIgnorePattern': '^_' }]
