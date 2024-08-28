@@ -15,6 +15,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 - BREAKING CHANGE: Remove previously-deprecated `parseGherkinMessageStream` ([#2420](https://github.com/cucumber/cucumber-js/pull/2420))
 - BREAKING CHANGE: Remove previously-deprecated `PickleFilter` ([#2420](https://github.com/cucumber/cucumber-js/pull/2420))
 - BREAKING CHANGE: Remove previously-deprecated `Runtime` ([#2420](https://github.com/cucumber/cucumber-js/pull/2420))
+- BREAKING CHANGE: Remove support for Node.js 21 ([#2423](https://github.com/cucumber/cucumber-js/pull/2423))
 
 ## [10.9.0] - 2024-08-13
 ### Added

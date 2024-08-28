@@ -207,10 +207,10 @@
   },
   "types": "./lib/index.d.ts",
   "engines": {
-    "node": "18 || >=20"
+    "node": "18 || 20 || >=22"
   },
   "enginesTested": {
-    "node": "18 || 20 || 21 || 22"
+    "node": "18 || 20 || 22"
   },
   "dependencies": {
     "@cucumber/ci-environment": "10.0.1",
