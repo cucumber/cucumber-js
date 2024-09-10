@@ -20,7 +20,7 @@ import {
   generateTestData,
   generateExamplesFromFunctionGherkin,
 } from '../formatter/feature_data_format'
-
+import path from 'node:path'
 interface PickleWithDocument {
   gherkinDocument: GherkinDocument
   location: Location
@@ -69,7 +69,10 @@ export async function getFilteredPicklesAndErrors({
   let dataFunction: string | null = null
   let functionVars: FunctionVars | null = null
   let mjsDataFiles: any = null
-
+  let projectDir = process.cwd()
+  if (featurePaths.length > 0) {
+    projectDir = path.join(path.dirname(featurePaths[0]), '..', '..')
+  }
   await gherkinFromPaths(
     featurePaths,
     {
@@ -96,7 +99,12 @@ export async function getFilteredPicklesAndErrors({
           mjsDataFiles = mjsData
         }
 
-        const data = generateTestData(newDataAfterExamplesModify)
+        const data = generateTestData(
+          newDataAfterExamplesModify,
+          undefined,
+          undefined,
+          projectDir
+        )
         envelope.source.data = data.newContent
         variables = data.variables
         fakeData = data.otherFakeData
