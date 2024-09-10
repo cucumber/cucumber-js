@@ -9,16 +9,34 @@ const generateTestData = (
   fakeData?: {
     var: string
     fake: string
-  }[]
+  }[],
+  projectDir?: string
 ) => {
   const regexp = /\{\{([^}]+)\}\}/g
   const variableRegex = /^([a-zA-Z0-9_]*)=(.*)/g
   let newContent = featureFileContent
   let match: RegExpExecArray
+  if (!projectDir) {
+    projectDir = process.cwd()
+  }
+  const namespacePath = path.join(
+    projectDir,
+    'features',
+    'step_definitions',
+    'namespaces.json'
+  )
+  let namespaces: string[] = fs.existsSync(namespacePath)
+    ? JSON.parse(fs.readFileSync(namespacePath, 'utf-8'))
+    : []
+  if (!Array.isArray(namespaces)) {
+    namespaces = []
+  }
   const matches = []
   // collect all matches
   while ((match = regexp.exec(featureFileContent)) !== null) {
-    matches.push(match)
+    // match[0] is the full match, match[1] is the first capturing group
+    // Eg:- match[0] = {{name}}, match[1] = name
+    if (!namespaces.includes(match[1].split('.')[0])) matches.push(match)
   }
   // find all variables in the matches
   const variables: any = { ...vars }
@@ -63,8 +81,8 @@ const generateTestData = (
   const otherFakeData = []
   const duplicateFakeData = fakeData ? [...fakeData] : []
   let fakeIndex = 0
-
   while ((match = regexp.exec(featureFileContent)) !== null) {
+    if (namespaces.includes(match[1].split('.')[0])) continue
     try {
       const fake =
         duplicateFakeData &&
@@ -80,7 +98,7 @@ const generateTestData = (
       fakeIndex++
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.log('unknown faker variable:' + match[0])
+      console.log('info: unknown faker variable:' + match[0])
     }
   }
 
