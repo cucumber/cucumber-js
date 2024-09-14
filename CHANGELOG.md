@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Add missing setParallelCanAssign export ([#2427](https://github.com/cucumber/cucumber-js/pull/2427))
 
 ## [11.0.0] - 2024-08-29
 ### Changed
