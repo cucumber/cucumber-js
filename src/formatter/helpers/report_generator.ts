@@ -69,6 +69,14 @@ type JsonCommand = {
   text: string
   screenshotId?: string
   result: JsonCommandResult
+  webLog?: webLog[]
+  netWorkLog?: any[]
+}
+type webLog = {
+  type: string
+  text: string
+  location: string
+  time: string
 }
 export type JsonStep = {
   keyword: string
@@ -94,6 +102,7 @@ export type JsonTestProgress = {
   result: JsonTestResult
   retrainStats?: RetrainStats
   webLog: any
+  networkLog: any
 }
 
 export type JsonReport = {
@@ -124,6 +133,8 @@ export default class ReportGenerator {
   private stepReportMap = new Map<string, JsonStep>()
   private testCaseReportMap = new Map<string, JsonTestProgress>()
   private scenarioIterationCountMap = new Map<string, number>()
+  private logs: webLog[] = []
+  private networkLog: any[] = []
   reportFolder: null | string = null
 
   handleMessage(envelope: messages.Envelope) {
@@ -338,6 +349,7 @@ export default class ReportGenerator {
         startTime: this.getTimeStamp(timestamp),
       },
       webLog: [],
+      networkLog: [],
     })
     this.report.testCases.push(this.testCaseReportMap.get(id))
   }
@@ -362,6 +374,14 @@ export default class ReportGenerator {
     if (mediaType === 'application/json+env') {
       const data = JSON.parse(body)
       this.report.env = data
+    }
+    if (mediaType === 'application/json+log') {
+      const log: webLog = JSON.parse(body)
+      this.logs.push(log)
+    }
+    if (mediaType === 'application/json+network') {
+      const networkLog = JSON.parse(body)
+      this.networkLog.push(networkLog)
     }
     const testStep = this.testStepMap.get(testStepId)
     if (testStep.pickleStepId === undefined) return
@@ -477,7 +497,8 @@ export default class ReportGenerator {
       startTime: prevResult.startTime,
       endTime: this.getTimeStamp(timestamp),
     }
-    testProgress.webLog = this.getLogFileContent()
+    testProgress.webLog = this.logs
+    testProgress.networkLog = this.networkLog
   }
   private onTestRunFinished(testRunFinished: messages.TestRunFinished) {
     const { timestamp, success, message } = testRunFinished
