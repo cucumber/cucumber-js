@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker'
 import fs from 'fs'
 import path from 'path'
 import { TableCell } from '@cucumber/messages'
+import JSON5 from 'json5'
 
 const generateTestData = (
   featureFileContent: string,
@@ -12,7 +13,7 @@ const generateTestData = (
   }[],
   projectDir?: string
 ) => {
-  const regexp = /\{\{([^}]+)\}\}/g
+  const regexp = /\{\{([^}]*\([^)]*\))\}\}/g
   const variableRegex = /^([a-zA-Z0-9_]*)=(.*)/g
   let newContent = featureFileContent
   let match: RegExpExecArray
@@ -71,7 +72,9 @@ const generateTestData = (
 
     for (const key in variables) {
       const variable = variables[key]
-      const fake = faker.helpers.fake(`{{${variable.toFake}}}`)
+      const fake = getFakeString(
+        variable.toFake.substring(2, variable.toFake.length - 2)
+      )
       newContent = newContent.replaceAll(`{{${variable.var}}}`, fake)
       variables[key].fake = fake
     }
@@ -89,7 +92,7 @@ const generateTestData = (
         duplicateFakeData.length > 0 &&
         duplicateFakeData[0].var === match[0]
           ? duplicateFakeData.shift().fake
-          : faker.helpers.fake(match[0])
+          : getFakeString(match[0].substring(2, match[0].length - 2))
       otherFakeData.push({
         var: match[0],
         fake,
@@ -108,6 +111,24 @@ const generateTestData = (
     otherFakeData,
     changed: newContent !== featureFileContent,
     fakeIndex,
+  }
+}
+
+const getFakeString = (content: string) => {
+  const faking = content.split('(')[0].split('.')
+  const argument = content.substring(
+    content.indexOf('(') + 1,
+    content.indexOf(')')
+  )
+  let fakeFunc: any = faker
+  faking.forEach((f: string) => {
+    fakeFunc = fakeFunc[f]
+  })
+
+  try {
+    return fakeFunc(JSON5.parse(argument))
+  } catch (error) {
+    return fakeFunc(argument)
   }
 }
 
