@@ -22,7 +22,6 @@
     "email": "cukes@googlegroups.com",
     "url": "https://github.com/blinq-io/cucumber-js/issues"
   },
-  
   "directories": {
     "lib": "./lib"
   },
@@ -76,6 +75,7 @@
     "indent-string": "^4.0.0",
     "is-installed-globally": "^0.4.0",
     "is-stream": "^2.0.0",
+    "json5": "^2.2.3",
     "jszip": "^3.10.1",
     "knuth-shuffle-seeded": "^1.0.6",
     "lodash.merge": "^4.6.2",
