@@ -1,8 +1,9 @@
 import { Envelope, Meta } from '@cucumber/messages'
 import { spawn } from 'child_process'
-import { readFileSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
+import { mkdir, unlink, writeFile } from 'fs/promises'
 import path from 'path'
-import { withFile } from 'tmp-promise'
+import { tmpName } from 'tmp'
 import Formatter, { IFormatterOptions } from '.'
 import { doesHaveValue } from '../value_checker'
 import ReportGenerator, {
@@ -12,6 +13,7 @@ import ReportGenerator, {
   RetrainStats,
 } from './helpers/report_generator'
 import ReportUploader from './helpers/uploader'
+import os from 'os'
 //User token
 const TOKEN = process.env.TOKEN
 interface MetaMessage extends Meta {
@@ -194,9 +196,23 @@ export default class BVTAnalysisFormatter extends Formatter {
       if (process.env.BLINQ_ENV) {
         args.push(`--env=${process.env.BLINQ_ENV}`)
       }
-      // const temporaryFileTask = await import('tempy')
-      withFile(async ({ path: tempFile, fd }) => {
-        // when this function returns or throws - release the file
+
+      if (!existsSync(path.join(this.getAppDataDir(), 'blinq.io', '.temp'))) {
+        mkdir(path.join(this.getAppDataDir(), 'blinq.io', '.temp'), {
+          recursive: true,
+        })
+      }
+
+      tmpName(async (err, name) => {
+        const tempFile = path.join(
+          this.getAppDataDir(),
+          'blinq.io',
+          '.temp',
+          path.basename(name)
+        )
+        console.log('File path: ', tempFile)
+        await writeFile(tempFile, '', 'utf-8')
+
         args.push(`--temp-file=${tempFile}`)
         const cucumberClient = spawn('node', [cucumber_client_path, ...args], {
           env: {
@@ -212,10 +228,11 @@ export default class BVTAnalysisFormatter extends Formatter {
           console.error(data.toString())
         })
 
-        cucumberClient.on('close', (code) => {
+        cucumberClient.on('close', async (code) => {
           if (code === 0) {
             const reportData = readFileSync(tempFile, 'utf-8')
             const retrainStats = JSON.parse(reportData) as RetrainStats
+            await unlink(tempFile)
             resolve(retrainStats)
           } else {
             this.log('Error retraining\n')
@@ -237,5 +254,26 @@ export default class BVTAnalysisFormatter extends Formatter {
     }
     const reportLink = `${reportLinkBaseUrl}/${projectId}/run-report/${runId}`
     this.log(`Report link: ${reportLink}\n`)
+  }
+
+  private getAppDataDir() {
+    if (process.env.BLINQ_APPDATA_DIR) {
+      return process.env.BLINQ_APPDATA_DIR
+    }
+
+    let appDataDir: string
+
+    switch (process.platform) {
+      case 'win32':
+        appDataDir = process.env.APPDATA!
+        break
+      case 'darwin':
+        appDataDir = path.join(os.homedir(), 'Library', 'Application Support')
+        break
+      default:
+        appDataDir = path.join(os.homedir(), '.config')
+        break
+    }
+    return appDataDir
   }
 }
