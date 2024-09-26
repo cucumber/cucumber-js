@@ -2,7 +2,7 @@ import ReportGenerator, { JsonReport } from './report_generator'
 import { RunUploadService } from './upload_serivce'
 
 import FormData from 'form-data'
-import fs from 'fs'
+import fs, { writeFileSync } from 'fs'
 import JSZip from 'jszip'
 import path from 'path'
 
@@ -48,13 +48,20 @@ export default class ReportUploader {
     if (!fs.existsSync(reportFolder)) {
       fs.mkdirSync(reportFolder)
     }
+    writeFileSync(
+      path.join(reportFolder, 'report.json'),
+      JSON.stringify(report, null, 2)
+    )
     if (process.env.NODE_ENV_BLINQ === 'local') {
       const formData = new FormData()
       const zipPath = await this.createZip(reportFolder, report)
       formData.append(runDocId, fs.readFileSync(zipPath), 'report.zip')
       await this.uploadService.upload(formData)
     } else {
-      const fileUris = getFileUrisScreenShotDir(reportFolder)
+      const fileUris = [
+        ...getFileUrisScreenShotDir(reportFolder),
+        'report.json',
+      ]
       try {
         const preSignedUrls = await this.uploadService.getPreSignedUrls(
           fileUris,
@@ -82,7 +89,7 @@ export default class ReportUploader {
               })
           )
         }
-        await this.uploadService.uploadComplete(runDocId, report)
+        await this.uploadService.uploadComplete(runDocId, runDoc.project_id)
       } catch (err) {
         throw new Error('Failed to upload  all the files')
       }

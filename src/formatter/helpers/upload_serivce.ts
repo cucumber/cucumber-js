@@ -95,12 +95,12 @@ class RunUploadService {
     }
     return success
   }
-  async uploadComplete(runId: string, report: JsonReport) {
+  async uploadComplete(runId: string, projectId: string) {
     const response = await axiosClient.post(
-      this.runsApiBaseURL + '/cucumber-runs/uploadcomplete',
+      this.runsApiBaseURL + '/cucumber-runs/uploadCompletion',
       {
         runId,
-        report,
+        projectId,
       },
       {
         headers: {
