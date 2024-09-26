@@ -217,6 +217,7 @@ export default class BVTAnalysisFormatter extends Formatter {
         const cucumberClient = spawn('node', [cucumber_client_path, ...args], {
           env: {
             ...process.env,
+            TEMP_FILE_PATH: tempFile,
           },
         })
 
