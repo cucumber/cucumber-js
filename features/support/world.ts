@@ -6,7 +6,6 @@ import util from 'node:util'
 import { Console } from 'node:console'
 import { expect } from 'chai'
 import toString from 'stream-to-string'
-import stripAnsi from 'strip-ansi'
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
 import FakeReportServer from '../../test/fake_report_server'
@@ -139,7 +138,7 @@ export class World {
       error: result.error,
       errorOutput: result.stderr,
       envelopes,
-      output: stripAnsi(result.stdout),
+      output: util.stripVTControlCharacters(result.stdout),
     }
     this.verifiedLastRunError = false
     expect(this.lastRun.output).to.not.include('Unhandled rejection')
