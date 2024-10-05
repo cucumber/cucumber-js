@@ -1,7 +1,7 @@
 import { Writable } from 'node:stream'
+import { stripVTControlCharacters } from 'node:util'
 import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
-import stripAnsi from 'strip-ansi'
 import { InternalPlugin } from '../plugin'
 import { IPublishConfig } from './types'
 import HttpStream from './http_stream'
@@ -48,7 +48,7 @@ compose the console message on this end.
  */
 function sanitisePublishOutput(raw: string, stderr: Writable) {
   if (!supportsColor(stderr) && hasAnsi(raw)) {
-    return stripAnsi(raw)
+    return stripVTControlCharacters(raw)
   }
   return raw
 }
