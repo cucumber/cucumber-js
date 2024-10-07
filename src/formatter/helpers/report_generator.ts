@@ -377,11 +377,11 @@ export default class ReportGenerator {
     }
     if (mediaType === 'application/json+log') {
       const log: webLog = JSON.parse(body)
-      this.logs.push(log)
+      if (this.logs.length < 1000) this.logs.push(log)
     }
     if (mediaType === 'application/json+network') {
       const networkLog = JSON.parse(body)
-      this.networkLog.push(networkLog)
+      if (this.networkLog.length < 1000) this.networkLog.push(networkLog)
     }
     const testStep = this.testStepMap.get(testStepId)
     if (testStep.pickleStepId === undefined) return
@@ -499,6 +499,8 @@ export default class ReportGenerator {
     }
     testProgress.webLog = this.logs
     testProgress.networkLog = this.networkLog
+    this.networkLog = []
+    this.logs = []
   }
   private onTestRunFinished(testRunFinished: messages.TestRunFinished) {
     const { timestamp, success, message } = testRunFinished
