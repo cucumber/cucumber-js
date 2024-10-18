@@ -40,6 +40,10 @@ class RunUploadService {
         },
       }
     )
+    if (response.status === 401) {
+      console.log('Warning: Your trial plan has ended. Cannot upload reports and perform retraining');
+      throw new Error('Warning: Your trial plan has ended. Cannot upload reports and perform retraining')
+    }
     if (response.status !== 200) {
       throw new Error('Failed to upload run to the server')
     }
@@ -61,6 +65,10 @@ class RunUploadService {
         },
       }
     )
+    if (response.status === 403) {
+      console.log('Warning: Your trial plan has ended. Cannot upload reports and perform retraining');
+      throw new Error('Warning: Your trial plan has ended. Cannot upload reports and perform retraining')
+    }
     if (response.status !== 200) {
       throw new Error('Failed to get pre-signed urls for the files')
     }
