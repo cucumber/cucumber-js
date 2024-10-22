@@ -20,6 +20,10 @@ class RunUploadService {
         },
       }
     )
+    if (runDocResult.status === 403) {
+      console.log('Warning: Your trial plan has ended. Cannot create or upload reports');
+      throw new Error('Warning: Your trial plan has ended. Cannot create or upload reports');
+    }
     if (runDocResult.status !== 200) {
       throw new Error('Failed to create run document in the server')
     }
