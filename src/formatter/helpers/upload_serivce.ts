@@ -35,7 +35,7 @@ class RunUploadService {
         )
         process.exit(1)
       }
-      throw new Error('Failed to create run document in the server: ', error)
+      throw new Error('Failed to create run document in the server: ' + error)
     }
   }
   async upload(formData: FormData) {
