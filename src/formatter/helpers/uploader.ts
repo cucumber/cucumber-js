@@ -51,6 +51,7 @@ export default class ReportUploader {
       const fileUris = [
         ...getFileUrisScreenShotDir(reportFolder),
         'report.json',
+        'network.json',
       ]
       try {
         const preSignedUrls = await this.uploadService.getPreSignedUrls(
