@@ -14,6 +14,8 @@ const getSSoUrl = () => {
       return 'http://localhost:5000/api/auth'
     case 'dev':
       return 'https://dev.api.blinq.io/api/auth'
+    case 'stage':
+      return 'https://stage.api.blinq.io/api/auth'
     default:
       return 'https://api.blinq.io/api/auth'
   }
@@ -100,26 +102,31 @@ const dirExists = (path) => {
 }
 const ssoUrl = getSSoUrl()
 
+const getProjectByAccessKey = async (access_key) => {
+  const accessKeyUrl = `${ssoUrl}/getProjectByAccessKey`
+  const response = await axios.post(accessKeyUrl, {
+    access_key,
+    httpAgent: getProxy(),
+    proxy: false,
+  })
+  if (response.status !== 200) {
+    console.error('Error: Invalid access key')
+    process.exit(1)
+  }
+  return response.data
+};
+
 const downloadAndInstall = async (extractPath, token) => {
   if (!dirExists(extractPath)) {
     fs.mkdirSync(extractPath, { recursive: true })
   }
   try {
-    const accessKeyUrl = `${ssoUrl}/getProjectByAccessKey`
-    const response = await axios.post(accessKeyUrl, {
-      access_key: token,
-      httpAgent: getProxy(),
-      proxy: false,
-    })
-    if (response.status !== 200) {
-      console.error('Error: Invalid access key')
-      process.exit(1)
-    }
+    const data = await getProjectByAccessKey(token)
 
     const workspaceUrl = getWorkSpaceUrl() + '/pull-workspace'
     const res = await axios.get(workspaceUrl, {
       params: {
-        projectId: response.data.project._id,
+        projectId: data.project._id,
       },
       httpAgent: getProxy(),
       proxy: false,
