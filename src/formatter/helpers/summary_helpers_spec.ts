@@ -217,6 +217,8 @@ describe('SummaryHelpers', () => {
           '    Given a skipped step',
           '  Scenario: a6',
           '    Given an undefined step',
+          // an unknown scenario
+          '  Scenario:',
         ].join('\n')
 
         // Act
@@ -224,7 +226,7 @@ describe('SummaryHelpers', () => {
 
         // Assert
         expect(output).to.contain(
-          '6 scenarios (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
+          '6 scenarios (1 failed, 1 ambiguous, 1 unknown, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
             '6 steps (1 failed, 1 ambiguous, 1 undefined, 1 pending, 1 skipped, 1 passed)\n' +
             '0m00.000s (executing steps: 0m00.000s)\n'
         )
