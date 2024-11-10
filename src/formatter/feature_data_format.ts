@@ -115,16 +115,26 @@ const generateTestData = (
 }
 
 const getFakeString = (content: string) => {
+  // content example: helpers.fromRegExp('#{2,9}')
   const faking = content.split('(')[0].split('.')
+  // faking example: ['helpers', 'fromRegExp']
   const argument = content.substring(
     content.indexOf('(') + 1,
     content.indexOf(')')
   )
+  // argument example: '#{2,9}'
+
   let fakeFunc: any = faker
   faking.forEach((f: string) => {
     fakeFunc = fakeFunc[f]
   })
-
+  let regexpParam = false
+  if (faking.length === 2 && faking[1] === 'fromRegExp') {
+    regexpParam = true
+  }
+  if (regexpParam) {
+    return fakeFunc(new RegExp(argument))
+  }
   try {
     return fakeFunc(JSON5.parse(argument))
   } catch (error) {
