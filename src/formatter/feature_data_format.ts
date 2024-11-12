@@ -120,7 +120,7 @@ const getFakeString = (content: string) => {
   // faking example: ['helpers', 'fromRegExp']
   const argument = content.substring(
     content.indexOf('(') + 1,
-    content.indexOf(')')
+    content.lastIndexOf(')')
   )
   // argument example: '#{2,9}'
 
