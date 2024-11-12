@@ -78,8 +78,16 @@ export default class BVTAnalysisFormatter extends Formatter {
     })
   }
   private async analyzeReport(report: JsonReport) {
-    if (report.result.status === 'PASSED') {
-      this.log('No test failed. No need to retrain\n')
+    if (
+      report.result.status === 'PASSED' ||
+      process.env.NO_RETRAIN === 'false'
+    ) {
+      if (report.result.status === 'PASSED') {
+        this.log('No test failed. No need to retrain\n')
+      }
+      if (process.env.NO_RETRAIN === 'false') {
+        this.log('Retraining is disabled because the failing step is api\n')
+      }
       const uploadSuccessful = await this.uploadFinalReport(report)
       if (uploadSuccessful) {
         process.exit(0)
@@ -87,6 +95,7 @@ export default class BVTAnalysisFormatter extends Formatter {
 
       process.exit(1)
     }
+
     //checking if the type of report.result is JsonResultFailed or not
     this.log('Some tests failed, starting the retraining...\n')
     if (!('startTime' in report.result) || !('endTime' in report.result)) {
@@ -168,10 +177,12 @@ export default class BVTAnalysisFormatter extends Formatter {
     failedTestCases: number[],
     testCase: JsonTestProgress
   ): Promise<RetrainStats | null> {
-     const data = await getProjectByAccessKey(TOKEN);
-    const currentTimestampInSeconds = Math.floor(Date.now() / 1000);
-    if( data.project.expriration_date < currentTimestampInSeconds){
-      console.log('Warning: Your project has expired, retraining is restricted. Please contact sales.')
+    const data = await getProjectByAccessKey(TOKEN)
+    const currentTimestampInSeconds = Math.floor(Date.now() / 1000)
+    if (data.project.expriration_date < currentTimestampInSeconds) {
+      console.log(
+        'Warning: Your project has expired, retraining is restricted. Please contact sales.'
+      )
       process.exit(1)
     }
     return await this.call_cucumber_client(failedTestCases, testCase)
