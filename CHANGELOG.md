@@ -9,6 +9,9 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ## [Unreleased]
 
+### Added
+- Add the timestamp of the start time of the testsuite to the JUnit reporter ([#2443](https://github.com/cucumber/cucumber-js/pull/2443))
+
 ## [11.0.1] - 2024-09-14
 ### Fixed
 - Add missing setParallelCanAssign export ([#2427](https://github.com/cucumber/cucumber-js/pull/2427))
