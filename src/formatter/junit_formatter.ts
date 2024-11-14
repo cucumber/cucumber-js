@@ -9,7 +9,9 @@ import {
   Rule,
   TestStepResult,
   TestStepResultStatus,
+  TimeConversion,
 } from '@cucumber/messages'
+
 import { doesHaveValue } from '../value_checker'
 import { valueOrDefault } from '../value_checker'
 import { ITestCaseAttempt } from './helpers/event_data_collector'
@@ -26,6 +28,7 @@ interface IJUnitTestSuite {
   skipped: number
   time: number
   tests: IJUnitTestCase[]
+  timestamp?: string
 }
 
 interface IJUnitTestCase {
@@ -70,6 +73,7 @@ interface IBuildJUnitTestStepOptions {
 export default class JunitFormatter extends Formatter {
   private readonly names: Record<string, string[]> = {}
   private readonly suiteName: string
+  private testRunStarted?: messages.Timestamp
   public static readonly documentation: string = 'Outputs JUnit report'
 
   constructor(options: IFormatterOptions) {
@@ -79,6 +83,9 @@ export default class JunitFormatter extends Formatter {
       'cucumber-js'
     )
     options.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
+      if (doesHaveValue(envelope.testRunStarted)) {
+        this.testRunStarted = envelope.testRunStarted.timestamp
+      }
       if (doesHaveValue(envelope.testRunFinished)) {
         this.onTestRunFinished()
       }
@@ -89,6 +96,15 @@ export default class JunitFormatter extends Formatter {
     return this.eventDataCollector
       .getTestCaseAttempts()
       .filter((attempt) => !attempt.willBeRetried)
+  }
+  private getTimestamp(): string | undefined {
+    if (!this.testRunStarted) {
+      return undefined
+    }
+    const ms = TimeConversion.timestampToMillisecondsSinceEpoch(
+      this.testRunStarted
+    )
+    return new Date(ms).toISOString().slice(0, -5)
   }
 
   private getTestSteps(
@@ -253,6 +269,7 @@ export default class JunitFormatter extends Formatter {
       failures,
       skipped,
       time: tests.reduce((total, test) => total + test.time, 0),
+      timestamp: this.getTimestamp(),
     }
 
     this.log(this.buildXmlReport(testSuite))
@@ -266,6 +283,9 @@ export default class JunitFormatter extends Formatter {
       .att('name', testSuite.name)
       .att('time', testSuite.time)
       .att('tests', testSuite.tests.length)
+    if (testSuite.timestamp) {
+      xmlReport.att('timestamp', testSuite.timestamp)
+    }
     testSuite.tests.forEach((test) => {
       const xmlTestCase = xmlReport.ele('testcase', {
         classname: test.classname,
