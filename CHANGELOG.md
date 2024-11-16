@@ -14,6 +14,9 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Changed
 - Replace JUnit formatter with messages-based package ([#2445](https://github.com/cucumber/cucumber-js/pull/2445))
 
+### Fixed
+- Handle UNKNOWN status when rendering test run outcome ([#2441](https://github.com/cucumber/cucumber-js/pull/2441))
+
 ## [11.0.1] - 2024-09-14
 ### Fixed
 - Add missing setParallelCanAssign export ([#2427](https://github.com/cucumber/cucumber-js/pull/2427))
