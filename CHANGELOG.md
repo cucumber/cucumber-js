@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Add support for Node.js 23 ([#2446](https://github.com/cucumber/cucumber-js/pull/2446))
+
 ### Changed
 - Replace JUnit formatter with messages-based package ([#2445](https://github.com/cucumber/cucumber-js/pull/2445))
 
