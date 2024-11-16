@@ -7,11 +7,11 @@ import { ITestCaseAttempt } from './event_data_collector'
 const STATUS_REPORT_ORDER = [
   messages.TestStepResultStatus.FAILED,
   messages.TestStepResultStatus.AMBIGUOUS,
-  messages.TestStepResultStatus.UNKNOWN,
   messages.TestStepResultStatus.UNDEFINED,
   messages.TestStepResultStatus.PENDING,
   messages.TestStepResultStatus.SKIPPED,
   messages.TestStepResultStatus.PASSED,
+  messages.TestStepResultStatus.UNKNOWN,
 ]
 
 export interface IFormatSummaryRequest {
