@@ -11,6 +11,7 @@ const STATUS_REPORT_ORDER = [
   messages.TestStepResultStatus.PENDING,
   messages.TestStepResultStatus.SKIPPED,
   messages.TestStepResultStatus.PASSED,
+  messages.TestStepResultStatus.UNKNOWN,
 ]
 
 export interface IFormatSummaryRequest {
