@@ -59,7 +59,6 @@ export default {
       await Promise.all(writeOperations)
     }
   },
-  documentation: 'Outputs a HTML report',
   optionsKey: 'html',
 } satisfies FormatterPlugin<Options>
 

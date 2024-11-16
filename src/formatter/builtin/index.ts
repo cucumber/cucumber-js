@@ -7,13 +7,13 @@ import SnippetsFormatter from '../snippets_formatter'
 import SummaryFormatter from '../summary_formatter'
 import UsageFormatter from '../usage_formatter'
 import UsageJsonFormatter from '../usage_json_formatter'
-import JunitFormatter from '../junit_formatter'
 import messageFormatter from './message'
 import htmlFormatter from './html'
 
-const builtin: Record<string, FormatterImplementation> = {
+const builtin = {
   // new plugin-based formatters
   html: htmlFormatter,
+  junit: '@cucumber/junit-xml-formatter',
   message: messageFormatter,
   // legacy class-based formatters
   json: JsonFormatter,
@@ -24,7 +24,22 @@ const builtin: Record<string, FormatterImplementation> = {
   summary: SummaryFormatter,
   usage: UsageFormatter,
   'usage-json': UsageJsonFormatter,
-  junit: JunitFormatter,
-}
+} as const satisfies Record<string, FormatterImplementation | string>
 
-export default builtin
+export default builtin as Record<string, FormatterImplementation | string>
+
+export const documentation = {
+  // new plugin-based formatters
+  html: 'Outputs a HTML report',
+  junit: 'Produces a JUnit XML report',
+  message: 'Emits Cucumber messages in newline-delimited JSON',
+  // legacy class-based formatters
+  json: JsonFormatter.documentation,
+  progress: ProgressFormatter.documentation,
+  'progress-bar': ProgressBarFormatter.documentation,
+  rerun: RerunFormatter.documentation,
+  snippets: SnippetsFormatter.documentation,
+  summary: SummaryFormatter.documentation,
+  usage: UsageFormatter.documentation,
+  'usage-json': UsageJsonFormatter.documentation,
+} satisfies Record<keyof typeof builtin, string>
