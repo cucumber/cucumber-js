@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- Replace JUnit formatter with messages-based package ([#2445](https://github.com/cucumber/cucumber-js/pull/2445))
 
 ## [11.0.1] - 2024-09-14
 ### Fixed
