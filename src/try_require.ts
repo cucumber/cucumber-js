@@ -14,6 +14,12 @@ export default function tryRequire(path: string) {
       Either change the file to CommonJS syntax or use the --import directive instead of --require.`,
         { cause: error }
       )
+    } else if (error.code === 'ERR_REQUIRE_ASYNC_MODULE') {
+      throw Error(
+        `Cucumber expected a CommonJS module or simple ES module at '${path}' but found an async ES module.
+      Either change the file so it can be required or use the --import directive instead of --require.`,
+        { cause: error }
+      )
     } else {
       throw error
     }
