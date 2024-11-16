@@ -78,6 +78,5 @@ export type FormatterPluginFunction<OptionsType> = (
 export interface FormatterPlugin<OptionsType = any> {
   type: 'formatter'
   formatter: FormatterPluginFunction<OptionsType>
-  documentation: string
   optionsKey?: string
 }
