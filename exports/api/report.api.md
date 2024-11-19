@@ -58,6 +58,13 @@ export interface ILoadSupportOptions {
     support: Partial<ISupportCodeCoordinates>;
 }
 
+// @beta
+export interface ILogger {
+    debug: (...content: any[]) => void;
+    error: (...content: any[]) => void;
+    warn: (...content: any[]) => void;
+}
+
 // @public
 export type IPickleOrder = 'defined' | 'random' | `random:${string}`;
 

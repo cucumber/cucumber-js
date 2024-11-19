@@ -1,4 +1,5 @@
-import { IConfiguration, loadConfiguration, runCucumber } from '../api'
+import { expectAssignable } from 'tsd'
+import { IConfiguration, ILogger, loadConfiguration, runCucumber } from '../api'
 
 // should allow api usage from /api subpath
 const provided: Partial<IConfiguration> = {
@@ -6,3 +7,6 @@ const provided: Partial<IConfiguration> = {
 }
 const { runConfiguration } = await loadConfiguration({ provided })
 const { success } = await runCucumber(runConfiguration)
+
+// ILogger must be implemented by Console
+expectAssignable<ILogger>(console)

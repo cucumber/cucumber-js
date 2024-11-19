@@ -9,6 +9,7 @@
 
 export { IConfiguration } from '../configuration'
 export { IPickleOrder } from '../filter'
+export { ILogger } from '../logger'
 export { IPublishConfig } from '../publish'
 export * from './load_configuration'
 export * from './load_sources'
