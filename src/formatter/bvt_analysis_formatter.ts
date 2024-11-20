@@ -86,7 +86,9 @@ export default class BVTAnalysisFormatter extends Formatter {
         this.log('No test failed. No need to retrain\n')
       }
       if (process.env.NO_RETRAIN === 'false') {
-        this.log('Retraining is disabled because the failing step is api\n')
+        this.log(
+          'Retraining is skipped since the failed step contains an API request\n'
+        )
       }
       const uploadSuccessful = await this.uploadFinalReport(report)
       if (uploadSuccessful) {
