@@ -1,6 +1,6 @@
 import { Envelope, Meta } from '@cucumber/messages'
 import { spawn } from 'child_process'
-import { readFileSync, existsSync } from 'fs'
+import { readFileSync, existsSync, writeFileSync } from 'fs'
 import { mkdir, unlink, writeFile } from 'fs/promises'
 import path from 'path'
 import { tmpName } from 'tmp'
@@ -170,6 +170,13 @@ export default class BVTAnalysisFormatter extends Formatter {
         this.log(err.stack)
       }
       success = false
+    }
+    finally {
+      try{
+      writeFileSync(path.join(this.reportGenerator.reportFolder,"report.json"), JSON.stringify(finalReport, null, 2), 'utf-8')
+      }   catch(e){
+    console.error('failed to write report.json to local disk')
+}
     }
 
     //this.log(JSON.stringify(finalReport, null, 2))
