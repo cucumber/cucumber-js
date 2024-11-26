@@ -10,6 +10,8 @@ const URL =
     ? 'https://dev.api.blinq.io/api/runs'
     : process.env.NODE_ENV_BLINQ === 'local'
     ? 'http://localhost:5001/api/runs'
+    : process.env.NODE_ENV_BLINQ === 'stage'
+    ? 'https://stage.api.blinq.io/api/runs'
     : 'https://api.blinq.io/api/runs'
 
 const REPORT_SERVICE_URL = process.env.REPORT_SERVICE_URL ?? URL
