@@ -1,0 +1,38 @@
+name: PR Tests
+
+on:
+  pull_request:
+    branches:
+      - dev  # Trigger the workflow when a PR is created targeting the `dev` branch
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js (replace version if necessary)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Adjust to your required Node.js version
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Run tests
+      - name: Run tests
+        run: |
+          npm run types-test
+          npm run unit-test
+          npm run cck-test
+          npm run feature-test
+
+    # Step 5: Block PR if tests fail (Exit code is non-zero)
+      - name: Block PR if tests fail
+        if: ${{ failure() }}
+        run: exit 1
