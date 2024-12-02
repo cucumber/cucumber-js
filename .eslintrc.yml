@@ -11,6 +11,7 @@ plugins:
   - import
   - node
   - '@typescript-eslint'
+  
 rules:
   # 'no-console': 'error'
   # requires strictNullChecks compiler option, produces many errors with messages objects
