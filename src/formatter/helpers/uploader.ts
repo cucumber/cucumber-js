@@ -51,7 +51,8 @@ export default class ReportUploader {
       await this.uploadService.upload(formData)
     } else {
       const fileUris = [
-        ...getFileUrisScreenShotDir(reportFolder),
+        ...getFileUris(reportFolder, 'screenshots'),
+        ...getFileUris(reportFolder, 'trace'),
         'report.json',
         'network.json',
       ]
@@ -120,4 +121,13 @@ const getFileUrisScreenShotDir = (reportFolder: string) => {
   const files = fs.readdirSync(path.join(reportFolder, 'screenshots'))
 
   return files.map((file) => ['screenshots', file].join('/'))
+}
+
+const getFileUris = (reportFolder: string, targetFolder: string) => {
+  const resultFolder = path.join(reportFolder, targetFolder)
+  if (!fs.existsSync(resultFolder)) {
+    return []
+  }
+  const files = fs.readdirSync(resultFolder)
+  return files.map((file) => [targetFolder, file].join('/'))
 }
