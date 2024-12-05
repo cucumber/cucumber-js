@@ -1,5 +1,5 @@
 const axios = require('axios')
-const TOKEN = '5f1bc205aca61dd3bfce7fba2d4f3f05'
+const TOKEN = '*****************************************************'
 const createRun = async () => {
   const run = await axios.post(
     'https://dev.api.blinq.io/api/runs/cucumber-runs/create',
