@@ -2,9 +2,13 @@
 import FormData from 'form-data'
 import { createReadStream } from 'fs'
 import fs from 'fs/promises'
-import { JsonReport } from './report_generator'
+import { JsonReport, JsonTestProgress } from './report_generator'
 import { axiosClient } from '../../configuration/axios_client'
+import path from 'path'
+import { logReportLink } from '../bvt_analysis_formatter'
 
+const BATCH_SIZE = 10
+const MAX_RETRIES = 3
 class RunUploadService {
   constructor(private runsApiBaseURL: string, private accessToken: string) {}
   async createRunDocument(name: string) {
@@ -97,6 +101,67 @@ class RunUploadService {
     return response.data.uploadUrls
   }
 
+  async uploadTestCase(
+    testCaseReport: JsonTestProgress,
+    runId: string,
+    projectId: string,
+    reportFolder: string
+  ) {
+    const fileUris = []
+    //iterate over all the files in the JsonCommand.screenshotId and insert them into the fileUris array
+    for (const step of testCaseReport.steps) {
+      for (const command of step.commands) {
+        if (command.screenshotId) {
+          fileUris.push(
+            path.join('screenshots', String(command.screenshotId) + '.png')
+          )
+        }
+      }
+    }
+    const preSignedUrls = await this.getPreSignedUrls(fileUris, runId)
+    //upload all the files in the fileUris array
+    try {
+      for (let i = 0; i < fileUris.length; i += BATCH_SIZE) {
+        const batch = fileUris.slice(
+          i,
+          Math.min(i + BATCH_SIZE, fileUris.length)
+        )
+        await Promise.all(
+          batch
+            .filter((fileUri) => preSignedUrls[fileUri])
+            .map(async (fileUri) => {
+              for (let j = 0; j < MAX_RETRIES; j++) {
+                const success = await this.uploadFile(
+                  path.join(reportFolder, fileUri),
+                  preSignedUrls[fileUri]
+                )
+                if (success) {
+                  return
+                }
+              }
+              console.error('Failed to upload file:', fileUri)
+            })
+        )
+      }
+      await axiosClient.post(
+        this.runsApiBaseURL + '/cucumber-runs/createNewTestCase',
+        {
+          runId,
+          projectId,
+          testProgressReport: testCaseReport,
+        },
+        {
+          headers: {
+            Authorization: 'Bearer ' + this.accessToken,
+            'x-source': 'cucumber_js',
+          },
+        }
+      )
+      logReportLink(runId, projectId)
+    } catch (e) {
+      console.error(`failed to upload the test case: ${testCaseReport.id} ${e}`)
+    }
+  }
   async uploadFile(filePath: string, preSignedUrl: string) {
     const fileStream = createReadStream(filePath)
     let success = true

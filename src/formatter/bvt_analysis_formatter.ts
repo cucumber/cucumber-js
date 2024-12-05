@@ -38,7 +38,7 @@ export default class BVTAnalysisFormatter extends Formatter {
     options.eventBroadcaster.on(
       'envelope',
       async (envelope: EnvelopeWithMetaMessage) => {
-        this.reportGenerator.handleMessage(envelope)
+        await this.reportGenerator.handleMessage(envelope)
         if (
           doesHaveValue(envelope.meta) &&
           doesHaveValue(envelope.meta.runName)
@@ -51,7 +51,7 @@ export default class BVTAnalysisFormatter extends Formatter {
           if (process.env.BVT_FORMATTER === 'ANALYSIS') {
             await this.analyzeReport(report)
           } else {
-            await this.uploadReport(report)
+            // await this.uploadReport(report)
           }
           this.exit = true
         }
@@ -90,12 +90,8 @@ export default class BVTAnalysisFormatter extends Formatter {
           'Retraining is skipped since the failed step contains an API request\n'
         )
       }
-      const uploadSuccessful = await this.uploadFinalReport(report)
-      if (uploadSuccessful) {
-        process.exit(0)
-      }
-
-      process.exit(1)
+      // const uploadSuccessful = await this.uploadFinalReport(report)
+      process.exit(0)
     }
 
     //checking if the type of report.result is JsonResultFailed or not
@@ -163,20 +159,23 @@ export default class BVTAnalysisFormatter extends Formatter {
         finalReport,
         this.runName
       )
-      this.logReportLink(runId, projectId)
+      logReportLink(runId, projectId)
     } catch (err) {
       this.log('Error uploading report\n')
       if ('stack' in err) {
         this.log(err.stack)
       }
       success = false
-    }
-    finally {
-      try{
-      writeFileSync(path.join(this.reportGenerator.reportFolder,"report.json"), JSON.stringify(finalReport, null, 2), 'utf-8')
-      }   catch(e){
-    console.error('failed to write report.json to local disk')
-}
+    } finally {
+      try {
+        writeFileSync(
+          path.join(this.reportGenerator.reportFolder, 'report.json'),
+          JSON.stringify(finalReport, null, 2),
+          'utf-8'
+        )
+      } catch (e) {
+        console.error('failed to write report.json to local disk')
+      }
     }
 
     //this.log(JSON.stringify(finalReport, null, 2))
@@ -270,18 +269,6 @@ export default class BVTAnalysisFormatter extends Formatter {
       })
     })
   }
-  private logReportLink(runId: string, projectId: string) {
-    let reportLinkBaseUrl = 'https://app.blinq.io'
-    if (process.env.NODE_ENV_BLINQ === 'local') {
-      reportLinkBaseUrl = 'http://localhost:3000'
-    } else if (process.env.NODE_ENV_BLINQ === 'dev') {
-      reportLinkBaseUrl = 'https://dev.app.blinq.io'
-    } else if (process.env.NODE_ENV_BLINQ === 'stage') {
-      reportLinkBaseUrl = 'https://stage.app.blinq.io'
-    }
-    const reportLink = `${reportLinkBaseUrl}/${projectId}/run-report/${runId}`
-    this.log(`Report link: ${reportLink}\n`)
-  }
 
   private getAppDataDir() {
     if (process.env.BLINQ_APPDATA_DIR) {
@@ -303,4 +290,17 @@ export default class BVTAnalysisFormatter extends Formatter {
     }
     return appDataDir
   }
+}
+
+export function logReportLink(runId: string, projectId: string) {
+  let reportLinkBaseUrl = 'https://app.blinq.io'
+  if (process.env.NODE_ENV_BLINQ === 'local') {
+    reportLinkBaseUrl = 'http://localhost:3000'
+  } else if (process.env.NODE_ENV_BLINQ === 'dev') {
+    reportLinkBaseUrl = 'https://dev.app.blinq.io'
+  } else if (process.env.NODE_ENV_BLINQ === 'stage') {
+    reportLinkBaseUrl = 'https://stage.app.blinq.io'
+  }
+  const reportLink = `${reportLinkBaseUrl}/${projectId}/run-report/${runId}`
+  console.log(`Report link: ${reportLink}\n`)
 }
