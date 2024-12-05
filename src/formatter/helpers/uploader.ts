@@ -109,7 +109,7 @@ export default class ReportUploader {
     const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' })
     // save zip file
     const zipPath = path.join(reportFolder, 'report.zip')
-    fs.writeFileSync(zipPath, zipBuffer)
+    fs.writeFileSync(zipPath, new Uint8Array(zipBuffer))
     fs.writeFileSync(
       path.join(reportFolder, 'report.json'),
       JSON.stringify(report, null, 2)

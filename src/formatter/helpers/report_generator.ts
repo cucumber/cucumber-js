@@ -1,10 +1,25 @@
 import * as messages from '@cucumber/messages'
 import fs from 'fs'
 import path from 'path'
+import { RunUploadService } from './upload_serivce'
 // type JsonException = messages.Exception
 type JsonTimestamp = number //messages.Timestamp
 type JsonStepType = 'Unknown' | 'Context' | 'Action' | 'Outcome' | 'Conjunction'
 
+const URL =
+  process.env.NODE_ENV_BLINQ === 'dev'
+    ? 'https://dev.api.blinq.io/api/runs'
+    : process.env.NODE_ENV_BLINQ === 'local'
+    ? 'http://localhost:5001/api/runs'
+    : process.env.NODE_ENV_BLINQ === 'stage'
+    ? 'https://stage.api.blinq.io/api/runs'
+    : 'https://api.blinq.io/api/runs'
+
+const REPORT_SERVICE_URL = process.env.REPORT_SERVICE_URL ?? URL
+const BATCH_SIZE = 10
+const MAX_RETRIES = 3
+const REPORT_SERVICE_TOKEN =
+  process.env.TOKEN ?? process.env.REPORT_SERVICE_TOKEN
 export type JsonResultUnknown = {
   status: 'UNKNOWN'
 }
@@ -114,6 +129,12 @@ export type JsonReport = {
   }
 }
 
+interface MetaMessage extends messages.Meta {
+  runName: string
+}
+interface EnvelopeWithMetaMessage extends messages.Envelope {
+  meta: MetaMessage
+}
 export default class ReportGenerator {
   private report: JsonReport = {
     result: {
@@ -135,9 +156,17 @@ export default class ReportGenerator {
   private scenarioIterationCountMap = new Map<string, number>()
   private logs: webLog[] = []
   private networkLog: any[] = []
+  private runName = ''
   reportFolder: null | string = null
+  private uploadService = new RunUploadService(
+    REPORT_SERVICE_URL,
+    REPORT_SERVICE_TOKEN
+  )
 
-  handleMessage(envelope: messages.Envelope) {
+  async handleMessage(envelope: EnvelopeWithMetaMessage) {
+    if (envelope.meta && envelope.meta.runName) {
+      this.runName = envelope.meta.runName
+    }
     const type = Object.keys(envelope)[0] as keyof messages.Envelope
     switch (type) {
       // case "meta": { break}
@@ -191,7 +220,7 @@ export default class ReportGenerator {
       }
       case 'testCaseFinished': {
         const testCaseFinished = envelope[type]
-        this.onTestCaseFinished(testCaseFinished)
+        await this.onTestCaseFinished(testCaseFinished)
         break
       }
       // case "hook": { break} // After Hook
@@ -218,6 +247,7 @@ export default class ReportGenerator {
       message: message,
     }
   }
+
   private onGherkinDocument(doc: messages.GherkinDocument) {
     this.gherkinDocumentMap.set(doc.uri, doc)
     doc.feature.children.forEach((child) => {
@@ -483,7 +513,9 @@ export default class ReportGenerator {
       status: 'PASSED',
     } as const
   }
-  private onTestCaseFinished(testCaseFinished: messages.TestCaseFinished) {
+  private async onTestCaseFinished(
+    testCaseFinished: messages.TestCaseFinished
+  ) {
     const { testCaseStartedId, timestamp } = testCaseFinished
     const testProgress = this.testCaseReportMap.get(testCaseStartedId)
     const prevResult = testProgress.result as {
@@ -501,6 +533,31 @@ export default class ReportGenerator {
     testProgress.networkLog = this.networkLog
     this.networkLog = []
     this.logs = []
+    await this.uploadTestCase(testProgress)
+  }
+  private async uploadTestCase(testCase: JsonTestProgress) {
+    let runId = ''
+    let projectId = ''
+    try {
+      if (process.env.RUN_ID && process.env.PROJECT_ID) {
+        runId = process.env.RUN_ID
+        projectId = process.env.PROJECT_ID
+      } else {
+        const runDoc = await this.uploadService.createRunDocument(this.runName)
+        runId = runDoc._id
+        projectId = runDoc.project_id
+        process.env.RUN_ID = runId
+        process.env.PROJECT_ID = projectId
+      }
+      await this.uploadService.uploadTestCase(
+        testCase,
+        runId,
+        projectId,
+        this.reportFolder
+      )
+    } catch (e) {
+      console.error('Error uploading test case:', e)
+    }
   }
   private onTestRunFinished(testRunFinished: messages.TestRunFinished) {
     const { timestamp, success, message } = testRunFinished
