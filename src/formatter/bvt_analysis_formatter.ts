@@ -98,7 +98,9 @@ export default class BVTAnalysisFormatter extends Formatter {
         )
       }
       // const uploadSuccessful = await this.uploadFinalReport(report)
-      process.exit(0)
+      // process.exit(0)
+      this.exit = true
+      return
     }
 
     //checking if the type of report.result is JsonResultFailed or not
