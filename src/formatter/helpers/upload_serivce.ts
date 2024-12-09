@@ -5,7 +5,7 @@ import fs from 'fs/promises'
 import { JsonReport, JsonTestProgress } from './report_generator'
 import { axiosClient } from '../../configuration/axios_client'
 import path from 'path'
-import { logReportLink } from '../../../lib/formatter/bvt_analysis_formatter'
+import { logReportLink } from '../bvt_analysis_formatter'
 
 const REPORT_SERVICE_URL = process.env.REPORT_SERVICE_URL ?? URL
 const BATCH_SIZE = 10
