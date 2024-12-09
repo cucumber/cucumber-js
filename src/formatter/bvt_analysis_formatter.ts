@@ -70,9 +70,12 @@ export default class BVTAnalysisFormatter extends Formatter {
   async finished(): Promise<any> {
     await new Promise((resolve) => {
       const checkInterval = setInterval(() => {
-        const anyRem = JSON.parse(String(process.env.UPLOADING_TEST_CASE)) as
-          | undefined
-          | string[]
+        let anyRem
+        if (process.env.UPLOADING_TEST_CASE) {
+          anyRem = JSON.parse(process.env.UPLOADING_TEST_CASE) as string[]
+        } else {
+          anyRem = undefined
+        }
 
         if (this.exit && (!anyRem || anyRem.length === 0)) {
           clearInterval(checkInterval)
