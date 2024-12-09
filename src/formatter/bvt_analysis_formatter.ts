@@ -81,7 +81,7 @@ export default class BVTAnalysisFormatter extends Formatter {
           clearInterval(checkInterval)
           resolve(null)
         }
-      }, 1000) // check every 100ms
+      }, 100) // check every 100ms
     })
   }
   private async analyzeReport(report: JsonReport) {

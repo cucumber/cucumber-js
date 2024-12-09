@@ -538,6 +538,13 @@ export default class ReportGenerator {
   private async uploadTestCase(testCase: JsonTestProgress) {
     let runId = ''
     let projectId = ''
+    if (!process.env.UPLOADING_TEST_CASE) {
+      process.env.UPLOADING_TEST_CASE = '[]'
+    }
+    const anyRemArr = JSON.parse(process.env.UPLOADING_TEST_CASE) as string[]
+    const randomID = Math.random().toString(36).substring(7)
+    anyRemArr.push(randomID)
+    process.env.UPLOADING_TEST_CASE = JSON.stringify(anyRemArr)
     try {
       if (process.env.RUN_ID && process.env.PROJECT_ID) {
         runId = process.env.RUN_ID
@@ -557,6 +564,10 @@ export default class ReportGenerator {
       )
     } catch (e) {
       console.error('Error uploading test case:', e)
+    } finally {
+      const arrRem = JSON.parse(process.env.UPLOADING_TEST_CASE) as string[]
+      arrRem.splice(arrRem.indexOf(randomID), 1)
+      process.env.UPLOADING_TEST_CASE = JSON.stringify(arrRem)
     }
   }
   private onTestRunFinished(testRunFinished: messages.TestRunFinished) {
