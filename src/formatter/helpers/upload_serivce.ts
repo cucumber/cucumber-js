@@ -7,8 +7,11 @@ import { axiosClient } from '../../configuration/axios_client'
 import path from 'path'
 import { logReportLink } from '../bvt_analysis_formatter'
 
+const REPORT_SERVICE_URL = process.env.REPORT_SERVICE_URL ?? URL
 const BATCH_SIZE = 10
 const MAX_RETRIES = 3
+const REPORT_SERVICE_TOKEN =
+  process.env.TOKEN ?? process.env.REPORT_SERVICE_TOKEN
 class RunUploadService {
   constructor(private runsApiBaseURL: string, private accessToken: string) {}
   async createRunDocument(name: string) {
@@ -107,6 +110,13 @@ class RunUploadService {
     projectId: string,
     reportFolder: string
   ) {
+    if (!process.env.UPLOADING_TEST_CASE) {
+      process.env.UPLOADING_TEST_CASE = '[]'
+    }
+    const anyRemArr = JSON.parse(process.env.UPLOADING_TEST_CASE) as string[]
+    const randomID = Math.random().toString(36).substring(7)
+    anyRemArr.push(randomID)
+    process.env.UPLOADING_TEST_CASE = JSON.stringify(anyRemArr)
     const fileUris = []
     //iterate over all the files in the JsonCommand.screenshotId and insert them into the fileUris array
     for (const step of testCaseReport.steps) {
@@ -158,6 +168,9 @@ class RunUploadService {
         }
       )
       logReportLink(runId, projectId)
+      const arrRem = JSON.parse(process.env.UPLOADING_TEST_CASE) as string[]
+      arrRem.splice(arrRem.indexOf(randomID), 1)
+      process.env.UPLOADING_TEST_CASE = JSON.stringify(arrRem)
     } catch (e) {
       console.error(`failed to upload the test case: ${testCaseReport.id} ${e}`)
     }
