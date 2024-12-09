@@ -70,11 +70,15 @@ export default class BVTAnalysisFormatter extends Formatter {
   async finished(): Promise<any> {
     await new Promise((resolve) => {
       const checkInterval = setInterval(() => {
-        if (this.exit) {
+        const anyRem = JSON.parse(String(process.env.UPLOADING_TEST_CASE)) as
+          | undefined
+          | string[]
+
+        if (this.exit && (!anyRem || anyRem.length === 0)) {
           clearInterval(checkInterval)
           resolve(null)
         }
-      }, 100) // check every 100ms
+      }, 1000) // check every 100ms
     })
   }
   private async analyzeReport(report: JsonReport) {
