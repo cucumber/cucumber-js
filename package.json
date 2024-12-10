@@ -299,7 +299,7 @@
     "express": "^4.21.0",
     "fs-extra": "10.1.0",
     "genversion": "3.1.1",
-    "mocha": "10.2.0",
+    "mocha": "^11.0.1",
     "mustache": "4.2.0",
     "nyc": "15.1.0",
     "prettier": "3.0.3",
