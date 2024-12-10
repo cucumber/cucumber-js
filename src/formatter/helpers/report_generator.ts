@@ -447,13 +447,13 @@ export default class ReportGenerator {
       startTime: JsonTimestamp
     }
     let data = {}
-    const reportFolder = this.reportFolder
-    if (reportFolder === null) {
-      throw new Error(
-        '"reportFolder" is "null". Failed to run BVT hooks. Please retry after running "Generate All" or "Record Scenario" '
-      )
-    }
     try {
+      const reportFolder = this.reportFolder
+      if (reportFolder === null) {
+        throw new Error(
+          '"reportFolder" is "null". Failed to run BVT hooks. Please retry after running "Generate All" or "Record Scenario" '
+        )
+      }
       if (fs.existsSync(path.join(reportFolder, 'data.json'))) {
         data = JSON.parse(
           fs.readFileSync(path.join(reportFolder, 'data.json'), 'utf8')
