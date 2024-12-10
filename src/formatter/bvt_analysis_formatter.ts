@@ -78,8 +78,13 @@ export default class BVTAnalysisFormatter extends Formatter {
         }
 
         if (this.exit && (!anyRem || anyRem.length === 0)) {
-          clearInterval(checkInterval)
-          resolve(null)
+          // clearInterval(checkInterval)
+          // resolve(null)
+          if (this.reportGenerator.getReport().result.status === 'FAILED') {
+            process.exit(1)
+          } else {
+            process.exit(0)
+          }
         }
       }, 100) // check every 100ms
     })
