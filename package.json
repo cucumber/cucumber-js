@@ -163,6 +163,7 @@
     "Ted de Koning",
     "temyers <temyers@users.noreply.github.com>",
     "Tim Perry <tim.perry@softwire.com>",
+    "Toluwap (https://github.com/harcop)",
     "Tom V <tom@toc.com>",
     "Tomer Ben-Rachel <tomerpacific@gmail.com>",
     "Tristan Dunn <tristanzdunn@gmail.com>",
@@ -298,7 +299,7 @@
     "express": "^4.21.0",
     "fs-extra": "10.1.0",
     "genversion": "3.1.1",
-    "mocha": "10.2.0",
+    "mocha": "^11.0.1",
     "mustache": "4.2.0",
     "nyc": "15.1.0",
     "prettier": "3.0.3",
@@ -309,9 +310,9 @@
     "stream-to-string": "1.2.0",
     "ts-node": "10.9.1",
     "tsd": "0.25.0",
-    "typedoc": "^0.25.4",
-    "typedoc-plugin-extras": "^3.0.0",
-    "typescript": "4.9.4"
+    "typedoc": "^0.26.11",
+    "typedoc-plugin-extras": "^3.1.0",
+    "typescript": "^4.9.5"
   },
   "overrides": {
     "ansi-regex": "^5.0.1"
