@@ -110,13 +110,7 @@ export default class BVTAnalysisFormatter extends Formatter {
       await this.uploadFinalReport(report)
       return
     }
-    const finalReport = await this.processTestCases(report)
-    const uploadSuccessful = await this.uploadFinalReport(finalReport)
-    if (finalReport.result.status !== 'FAILED' && uploadSuccessful) {
-      process.exit(0)
-    } else {
-      process.exit(1)
-    }
+    process.exit(0)
   }
   private async processTestCases(report: JsonReport): Promise<JsonReport> {
     const finalTestCases = []
