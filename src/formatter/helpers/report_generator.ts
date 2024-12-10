@@ -412,6 +412,10 @@ export default class ReportGenerator {
     if (mediaType === 'application/json+env') {
       const data = JSON.parse(body)
       this.report.env = data
+      this.report.testCases.map((testCase) => {
+        testCase.env = data
+        return testCase
+      })
     }
     if (mediaType === 'application/json+log') {
       const log: webLog = JSON.parse(body)
