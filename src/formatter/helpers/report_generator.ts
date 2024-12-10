@@ -118,6 +118,10 @@ export type JsonTestProgress = {
   retrainStats?: RetrainStats
   webLog: any
   networkLog: any
+  env: {
+    name: string
+    baseUrl: string
+  }
 }
 
 export type JsonReport = {
@@ -380,6 +384,10 @@ export default class ReportGenerator {
       },
       webLog: [],
       networkLog: [],
+      env: {
+        name: this.report.env.name,
+        baseUrl: this.report.env.baseUrl,
+      },
     })
     this.report.testCases.push(this.testCaseReportMap.get(id))
   }
