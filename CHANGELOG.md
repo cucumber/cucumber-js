@@ -10,6 +10,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ## [Unreleased]
 ### Fixed
 - Correctly report error in publish plugin ([#2454](https://github.com/cucumber/cucumber-js/pull/2454))
+- Reverse AfterAll execution order ([#2456](https://github.com/cucumber/cucumber-js/pull/2456))
 
 ## [11.1.0] - 2024-11-17
 ### Added
