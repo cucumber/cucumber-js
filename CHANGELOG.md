@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [11.1.1] - 2024-12-11
 ### Fixed
 - Correctly report error in publish plugin ([#2454](https://github.com/cucumber/cucumber-js/pull/2454))
 - Reverse AfterAll execution order ([#2456](https://github.com/cucumber/cucumber-js/pull/2456))
@@ -1652,7 +1654,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v11.1.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v11.1.1...HEAD
+[11.1.1]: https://github.com/cucumber/cucumber-js/compare/v11.1.0...v11.1.1
 [11.1.0]: https://github.com/cucumber/cucumber-js/compare/v11.0.1...v11.1.0
 [11.0.1]: https://github.com/cucumber/cucumber-js/compare/v11.0.0...v11.0.1
 [11.0.0]: https://github.com/cucumber/cucumber-js/compare/v10.9.0...v11.0.0
