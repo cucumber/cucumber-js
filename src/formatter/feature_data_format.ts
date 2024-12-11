@@ -138,6 +138,10 @@ const getFakeString = (content: string) => {
   try {
     return fakeFunc(JSON5.parse(argument))
   } catch (error) {
+    if (!argument) {
+      return fakeFunc()
+    }
+
     return fakeFunc(argument)
   }
 }
