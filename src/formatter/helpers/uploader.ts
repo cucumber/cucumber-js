@@ -1,4 +1,8 @@
-import ReportGenerator, { JsonReport } from './report_generator'
+import axios from 'axios'
+import ReportGenerator, {
+  JsonReport,
+  JsonTestProgress,
+} from './report_generator'
 import { RunUploadService } from './upload_serivce'
 
 import FormData from 'form-data'
@@ -91,6 +95,18 @@ export default class ReportUploader {
     }
     return { runId: runDoc._id, projectId: runDoc.project_id }
   }
+
+  async modifyTestCase(testCase: JsonTestProgress) {
+    const runId = process.env.RUN_ID
+    if (!runId) {
+      return
+    }
+    const projectId = process.env.PROJECT_ID
+    if (!projectId) {
+      return
+    }
+    await this.uploadService.modifyTestCase(runId, projectId, testCase)
+  }
   async createZip(reportFolder: string | null, report: JsonReport) {
     if (reportFolder === null) {
       console.error('report folder is empty')
@@ -118,6 +134,7 @@ export default class ReportUploader {
     return zipPath
   }
 }
+
 const getFileUrisScreenShotDir = (reportFolder: string) => {
   const files = fs.readdirSync(path.join(reportFolder, 'screenshots'))
 
