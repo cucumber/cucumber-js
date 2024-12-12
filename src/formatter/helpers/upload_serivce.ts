@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 import FormData from 'form-data'
-import { createReadStream } from 'fs'
+import { createReadStream, existsSync } from 'fs'
 import fs from 'fs/promises'
+
 import { JsonReport, JsonTestProgress } from './report_generator'
 import { axiosClient } from '../../configuration/axios_client'
 import path from 'path'
@@ -207,6 +208,39 @@ class RunUploadService {
     }
     if (response.data.status !== true) {
       throw new Error('Failed to mark run as complete')
+    }
+  }
+  async modifyTestCase(
+    runId: string,
+    projectId: string,
+    testProgressReport: JsonTestProgress
+  ) {
+    try {
+      const res = await axiosClient.post(
+        this.runsApiBaseURL + '/cucumber-runs/modifyTestCase',
+        {
+          runId,
+          projectId,
+          testProgressReport,
+        },
+        {
+          headers: {
+            Authorization: 'Bearer ' + this.accessToken,
+            'x-source': 'cucumber_js',
+          },
+        }
+      )
+      if (res.status !== 200) {
+        throw new Error('')
+      }
+      if (res.data.status !== true) {
+        throw new Error('')
+      }
+      logReportLink(runId, projectId)
+    } catch (e) {
+      console.error(
+        `failed to modify the test case: ${testProgressReport.id} ${e}`
+      )
     }
   }
 }
