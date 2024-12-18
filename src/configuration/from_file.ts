@@ -3,7 +3,6 @@ import path from 'node:path'
 import { promisify } from 'node:util'
 import { pathToFileURL } from 'node:url'
 import YAML from 'yaml'
-import readPkgUp from 'read-pkg-up'
 import { ILogger } from '../logger'
 import { IConfiguration } from './types'
 import { mergeConfigurations } from './merge_configurations'
@@ -108,24 +107,20 @@ async function loadFile(
       break
     case '.js':
       {
-        const parentPackage = await readPackageJson(filePath)
-        if (!parentPackage) {
+        logger.debug(
+          `Loading configuration file "${file}" as ambiguous CommonJS/ESM based on extension`
+        )
+        const ambiguous = await import(pathToFileURL(filePath).toString())
+        if ('module.exports' in ambiguous) {
           logger.debug(
-            `Loading configuration file "${file}" as CommonJS based on absence of a parent package`
+            `Treating configuration file "${file}" as CommonJS based on heuristics`
           )
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
-          definitions = require(filePath)
-        } else if (parentPackage.type === 'module') {
-          logger.debug(
-            `Loading configuration file "${file}" as ESM based on "${parentPackage.name}" package type`
-          )
-          definitions = await import(pathToFileURL(filePath).toString())
+          definitions = ambiguous.default
         } else {
           logger.debug(
-            `Loading configuration file "${file}" as CommonJS based on "${parentPackage.name}" package type`
+            `Treating configuration file "${file}" as ESM based on heuristics`
           )
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
-          definitions = require(filePath)
+          definitions = ambiguous
         }
       }
       break
@@ -136,9 +131,4 @@ async function loadFile(
     throw new Error(`Configuration file ${filePath} does not export an object`)
   }
   return definitions
-}
-
-async function readPackageJson(filePath: string) {
-  const parentPackage = await readPkgUp({ cwd: path.dirname(filePath) })
-  return parentPackage?.packageJson
 }
