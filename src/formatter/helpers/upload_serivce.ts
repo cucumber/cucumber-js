@@ -117,7 +117,7 @@ class RunUploadService {
       for (const command of step.commands) {
         if (command.screenshotId) {
           fileUris.push(
-            path.join('screenshots', String(command.screenshotId) + '.png')
+            'screenshots' + '/' + String(command.screenshotId) + '.png'
           )
         }
       }
