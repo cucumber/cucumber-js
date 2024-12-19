@@ -33,9 +33,8 @@ jobs:
         run: |
           current_version=${{ env.version }}
           IFS='.' read -r -a version_parts <<< "$current_version"
-          preid="main"
           patch_version=$((version_parts[2]+1))
-          NEW_VERSION="${version_parts[0]}.${version_parts[1]}.${patch_version}-${preid}"
+          NEW_VERSION="${version_parts[0]}.${version_parts[1]}.${patch_version}"
 
           echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
               
