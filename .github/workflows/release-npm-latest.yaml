@@ -52,3 +52,16 @@ jobs:
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
           npm-tag: 'latest'
+
+  dispatch:
+    name: Dispatch to Target Repository
+    runs-on: ubuntu-latest
+    needs: publish-npm
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.TOKEN_GITHUB }}
+          repository: blinq-io/ai-qa
+          event-type: trigger-cucumber-main
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
