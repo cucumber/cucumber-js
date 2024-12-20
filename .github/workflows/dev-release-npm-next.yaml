@@ -1,4 +1,4 @@
-name: Release NPM (latest)
+name: Publish dev cucumber-js (@next)
 
 on:
   push:
@@ -53,3 +53,18 @@ jobs:
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
           npm-tag: 'next'
+
+  trigger-Cucumber-client-workflow:
+    name: Trigger Workflow in cucumber-client
+    runs-on: ubuntu-latest
+    needs: publish-npm
+    steps:
+      - name: Trigger ai-qa Workflow
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }} # Add this secret in your repository
+        run: |
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/blinq-io/ai-qa/dispatches \
+            -d '{"event_type": "trigger-cucumber-dev"}'
