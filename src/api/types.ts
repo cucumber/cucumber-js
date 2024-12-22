@@ -319,7 +319,7 @@ export interface IRunEnvironment {
    * Environment variables
    * @default process.env
    */
-  env?: NodeJS.ProcessEnv
+  env?: Record<string, string>
   /**
    * Whether debug logging should be emitted to {@link IRunEnvironment.stderr}
    * @default false
