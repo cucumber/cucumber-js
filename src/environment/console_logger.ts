@@ -1,6 +1,6 @@
 import { Console } from 'node:console'
 import { Writable } from 'node:stream'
-import { ILogger } from '../environment'
+import { ILogger } from './types'
 
 export class ConsoleLogger implements ILogger {
   private console: Console
@@ -11,17 +11,17 @@ export class ConsoleLogger implements ILogger {
     this.console = new Console(this.stream)
   }
 
-  debug(...content: any[]): void {
+  debug(message?: any, ...optionalParams: any[]): void {
     if (this.debugEnabled) {
-      this.console.debug(...content)
+      this.console.debug(message, ...optionalParams)
     }
   }
 
-  error(...content: any[]): void {
-    this.console.error(...content)
+  error(message?: any, ...optionalParams: any[]): void {
+    this.console.error(message, ...optionalParams)
   }
 
-  warn(...content: any[]): void {
-    this.console.warn(...content)
+  warn(message?: any, ...optionalParams: any[]): void {
+    this.console.warn(message, ...optionalParams)
   }
 }

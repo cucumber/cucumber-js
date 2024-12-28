@@ -1,9 +1,9 @@
 import { Writable } from 'node:stream'
 
 export interface ILogger {
-  debug: (...content: any[]) => void
-  error: (...content: any[]) => void
-  warn: (...content: any[]) => void
+  debug: (message?: any, ...optionalParams: any[]) => void
+  error: (message?: any, ...optionalParams: any[]) => void
+  warn: (message?: any, ...optionalParams: any[]) => void
 }
 
 /**
