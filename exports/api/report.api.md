@@ -101,7 +101,7 @@ export interface IRunConfiguration {
 export interface IRunEnvironment {
     cwd?: string;
     debug?: boolean;
-    env?: Record<string, string>;
+    env?: Record<string, string | undefined>;
     stderr?: Writable;
     stdout?: Writable;
 }

@@ -1,12 +1,16 @@
 import { Envelope } from '@cucumber/messages'
 import { ArrayValues, Promisable } from 'type-fest'
-import { IRunEnvironment } from '../api'
-import { ILogger } from '../logger'
+import { IRunEnvironment } from '../environment'
+import { ILogger } from '../environment'
 import { IFilterablePickle } from '../filter'
 import { IResolvedPaths } from '../paths'
 import { coordinatorTransformKeys, coordinatorVoidKeys } from './events'
 
 export type Operation = 'loadSources' | 'loadSupport' | 'runCucumber'
+
+export type CoordinatorPluginEnvironment = Required<
+  Pick<IRunEnvironment, 'cwd' | 'stderr' | 'env'>
+>
 
 export type CoordinatorPluginVoidEventKey = ArrayValues<
   typeof coordinatorVoidKeys
@@ -42,7 +46,7 @@ export interface CoordinatorPluginContext<OptionsType> {
   ) => void
   options: OptionsType
   logger: ILogger
-  environment: Required<IRunEnvironment>
+  environment: CoordinatorPluginEnvironment
 }
 
 export type CoordinatorPluginFunction<OptionsType> = (

@@ -1,6 +1,6 @@
 import { Console } from 'node:console'
 import { Writable } from 'node:stream'
-import { ILogger } from '../logger'
+import { ILogger } from '../environment'
 
 export class ConsoleLogger implements ILogger {
   private console: Console

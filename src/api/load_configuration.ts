@@ -6,13 +6,10 @@ import {
   parseConfiguration,
   validateConfiguration,
 } from '../configuration'
+import { mergeEnvironment } from '../environment/merge_environment'
+import { IRunEnvironment } from '../environment'
 import { convertConfiguration } from './convert_configuration'
-import { mergeEnvironment } from './environment'
-import {
-  IRunEnvironment,
-  IResolvedConfiguration,
-  ILoadConfigurationOptions,
-} from './types'
+import { IResolvedConfiguration, ILoadConfigurationOptions } from './types'
 
 /**
  * Load user-authored configuration to be used in a test run

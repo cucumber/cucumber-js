@@ -1,5 +1,5 @@
 import stringArgv from 'string-argv'
-import { ILogger } from '../logger'
+import { ILogger } from '../environment'
 import { IConfiguration } from './types'
 import ArgvParser from './argv_parser'
 import { checkSchema } from './check_schema'

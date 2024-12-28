@@ -5,7 +5,7 @@ import { IFormatterStream } from '../formatter'
 import { EventDataCollector } from '../formatter/helpers'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import FormatterBuilder from '../formatter/builder'
-import { ILogger } from '../logger'
+import { ILogger } from '../environment'
 import { createStream } from '../formatter/create_stream'
 import { resolveImplementation } from '../formatter/resolve_implementation'
 import { PluginManager } from '../plugin'
@@ -74,7 +74,6 @@ export async function initializeFormatters({
       await pluginManager.initFormatter(
         implementation,
         configuration.options,
-        logger,
         stream.write.bind(stream),
         directory
       )

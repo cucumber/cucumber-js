@@ -7,10 +7,11 @@ import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { version } from '../version'
 import { IFilterablePickle } from '../filter'
 import { makeRuntime } from '../runtime'
-import { IRunOptions, IRunEnvironment, IRunResult } from './types'
+import { mergeEnvironment } from '../environment/merge_environment'
+import { IRunEnvironment } from '../environment'
+import { IRunOptions, IRunResult } from './types'
 import { initializeFormatters } from './formatters'
 import { getSupportCodeLibrary } from './support'
-import { mergeEnvironment } from './environment'
 import { getPicklesAndErrors } from './gherkin'
 import { initializeForRunCucumber } from './plugins'
 
@@ -51,7 +52,6 @@ Running from: ${__dirname}
         )
 
   const pluginManager = await initializeForRunCucumber(
-    logger,
     {
       ...options,
       support: supportCoordinates,

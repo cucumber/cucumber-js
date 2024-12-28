@@ -1,23 +1,22 @@
 import sinon from 'sinon'
 import { expect } from 'chai'
-import { IRunEnvironment } from '../api'
-import { ILogger } from '../logger'
 import { FakeLogger } from '../../test/fake_logger'
 import { IFilterablePickle } from '../filter'
+import { UsableEnvironment } from '../environment'
 import { PluginManager } from './plugin_manager'
 
 describe('PluginManager', () => {
-  const environment: Required<IRunEnvironment> = {
+  const usableEnvironment: UsableEnvironment = {
     cwd: 'cwd',
     stdout: process.stdout,
     stderr: process.stderr,
     env: {},
     debug: false,
+    logger: new FakeLogger(),
   }
-  const logger: ILogger = new FakeLogger()
 
   it('passes the correct context to the coordinator function', async () => {
-    const pluginManager = new PluginManager()
+    const pluginManager = new PluginManager(usableEnvironment)
     const coordinator = sinon.fake()
     await pluginManager.initCoordinator(
       'runCucumber',
@@ -25,21 +24,23 @@ describe('PluginManager', () => {
         type: 'plugin',
         coordinator,
       },
-      {},
-      logger,
-      environment
+      {}
     )
 
     expect(coordinator).to.have.been.calledOnce
     expect(coordinator.lastCall.firstArg.operation).to.eq('runCucumber')
     expect(coordinator.lastCall.firstArg.on).to.exist
     expect(coordinator.lastCall.firstArg.options).to.deep.eq({})
-    expect(coordinator.lastCall.firstArg.logger).to.eq(logger)
-    expect(coordinator.lastCall.firstArg.environment).to.eq(environment)
+    expect(coordinator.lastCall.firstArg.logger).to.eq(usableEnvironment.logger)
+    expect(Object.keys(coordinator.lastCall.firstArg.environment)).to.deep.eq([
+      'cwd',
+      'stderr',
+      'env',
+    ])
   })
 
   it('calls cleanup functions from all plugins', async () => {
-    const pluginManager = new PluginManager()
+    const pluginManager = new PluginManager(usableEnvironment)
     const cleanup1 = sinon.fake()
     const cleanup2 = sinon.fake()
     await pluginManager.initCoordinator(
@@ -48,9 +49,7 @@ describe('PluginManager', () => {
         type: 'plugin',
         coordinator: () => cleanup1,
       },
-      {},
-      logger,
-      environment
+      {}
     )
     await pluginManager.initCoordinator(
       'runCucumber',
@@ -58,9 +57,7 @@ describe('PluginManager', () => {
         type: 'plugin',
         coordinator: () => cleanup2,
       },
-      {},
-      logger,
-      environment
+      {}
     )
 
     await pluginManager.cleanup()
@@ -71,7 +68,7 @@ describe('PluginManager', () => {
 
   describe('void events', () => {
     it(`emits void event to all handlers`, async () => {
-      const pluginManager = new PluginManager()
+      const pluginManager = new PluginManager(usableEnvironment)
       const handler1 = sinon.fake()
       const handler2 = sinon.fake()
       await pluginManager.initCoordinator(
@@ -80,9 +77,7 @@ describe('PluginManager', () => {
           type: 'plugin',
           coordinator: ({ on }) => on('message', handler1),
         },
-        {},
-        logger,
-        environment
+        {}
       )
       await pluginManager.initCoordinator(
         'runCucumber',
@@ -90,9 +85,7 @@ describe('PluginManager', () => {
           type: 'plugin',
           coordinator: ({ on }) => on('message', handler2),
         },
-        {},
-        logger,
-        environment
+        {}
       )
 
       const value = {
@@ -130,7 +123,7 @@ describe('PluginManager', () => {
     ] as IFilterablePickle[]
 
     it('should apply transforms in the order registered', async () => {
-      const pluginManager = new PluginManager()
+      const pluginManager = new PluginManager(usableEnvironment)
       await pluginManager.initCoordinator(
         'runCucumber',
         {
@@ -142,9 +135,7 @@ describe('PluginManager', () => {
             )
           },
         },
-        {},
-        logger,
-        environment
+        {}
       )
       await pluginManager.initCoordinator(
         'runCucumber',
@@ -157,9 +148,7 @@ describe('PluginManager', () => {
             )
           },
         },
-        {},
-        logger,
-        environment
+        {}
       )
 
       const result = await pluginManager.transform(
@@ -170,7 +159,7 @@ describe('PluginManager', () => {
     })
 
     it('should treat undefined as a noop', async () => {
-      const pluginManager = new PluginManager()
+      const pluginManager = new PluginManager(usableEnvironment)
       await pluginManager.initCoordinator(
         'runCucumber',
         {
@@ -178,9 +167,7 @@ describe('PluginManager', () => {
           // bail, nothing to be done
           coordinator: ({ on }) => on('pickles:filter', () => undefined),
         },
-        {},
-        logger,
-        environment
+        {}
       )
 
       const result = await pluginManager.transform(

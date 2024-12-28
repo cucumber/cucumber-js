@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { glob } from 'glob'
 import fs from 'mz/fs'
-import { ILogger } from '../logger'
+import { ILogger } from '../environment'
 import { ISourcesCoordinates, ISupportCodeCoordinates } from '../api'
 import { IResolvedPaths } from './types'
 
