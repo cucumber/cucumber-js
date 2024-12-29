@@ -8,24 +8,12 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@cucumber/cucumber" style="text-decoration: none">
-    <img src="https://img.shields.io/npm/v/@cucumber/cucumber?style=flat&color=dark-green" alt="Cucumber JavaScript version">
-  </a>
-  <a href="https://github.com/cucumber/cucumber-js/actions" style="text-decoration: none">
-    <img src="https://github.com/cucumber/cucumber-js/actions/workflows/build.yaml/badge.svg" alt="Build status">
-  </a>
-  <a href="https://coveralls.io/github/cucumber/cucumber-js?branch=master" style="text-decoration: none">
-    <img src="https://coveralls.io/repos/github/cucumber/cucumber-js/badge.svg?branch=main" alt="Coverage">
-  </a>
-  <a href="https://opencollective.com/cucumber">
-    <img src="https://opencollective.com/cucumber/backers/badge.svg" alt="Cucumber backers">
-  </a>
-  <a href="https://opencollective.com/cucumber">
-    <img src="https://opencollective.com/cucumber/sponsors/badge.svg" alt="Cucumber sponsors">
-  </a>
-  <a href="https://vshymanskyy.github.io/StandWithUkraine">
-    <img src="https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg" alt="Ukraine solidarity">
-  </a>
+  <a href="https://www.npmjs.com/package/@cucumber/cucumber" style="text-decoration: none"><img src="https://img.shields.io/npm/v/@cucumber/cucumber?style=flat&color=dark-green" alt="Latest version on npm"></a>
+  <a href="https://github.com/cucumber/cucumber-js/actions" style="text-decoration: none"><img src="https://github.com/cucumber/cucumber-js/actions/workflows/build.yaml/badge.svg" alt="Build status"></a>
+  <a href="https://coveralls.io/github/cucumber/cucumber-js?branch=master" style="text-decoration: none"><img src="https://coveralls.io/repos/github/cucumber/cucumber-js/badge.svg?branch=main" alt="Coverage"></a>
+  <a href="https://opencollective.com/cucumber"><img src="https://opencollective.com/cucumber/backers/badge.svg" alt="Backers"></a>
+  <a href="https://opencollective.com/cucumber"><img src="https://opencollective.com/cucumber/sponsors/badge.svg" alt="Sponsors"></a>
+  <a href="https://vshymanskyy.github.io/StandWithUkraine"><img src="https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg" alt="Ukraine solidarity"></a>
 </p>
 
 [Cucumber](https://github.com/cucumber) is a tool for running automated tests written in plain language. Because they're
