@@ -3,7 +3,8 @@ import { Writable } from 'node:stream'
 import { ILogger } from './types'
 
 export class ConsoleLogger implements ILogger {
-  private console: Console
+  private readonly console: Console
+
   constructor(
     private stream: Writable,
     private debugEnabled: boolean
