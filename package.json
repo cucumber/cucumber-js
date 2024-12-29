@@ -247,7 +247,6 @@
     "mkdirp": "^2.1.5",
     "mz": "^2.7.0",
     "progress": "^2.0.3",
-    "read-pkg-up": "^7.0.1",
     "resolve-pkg": "^2.0.0",
     "semver": "7.5.3",
     "string-argv": "0.3.1",
