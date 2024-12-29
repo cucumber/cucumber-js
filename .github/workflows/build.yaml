@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - main
-      - config-import-rework
   pull_request:
     branches:
       - main
