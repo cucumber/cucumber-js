@@ -6,8 +6,7 @@ import {
   parseConfiguration,
   validateConfiguration,
 } from '../configuration'
-import { mergeEnvironment } from '../environment/merge_environment'
-import { IRunEnvironment } from '../environment'
+import { IRunEnvironment, makeEnvironment } from '../environment'
 import { convertConfiguration } from './convert_configuration'
 import { IResolvedConfiguration, ILoadConfigurationOptions } from './types'
 
@@ -22,7 +21,7 @@ export async function loadConfiguration(
   options: ILoadConfigurationOptions = {},
   environment: IRunEnvironment = {}
 ): Promise<IResolvedConfiguration> {
-  const { cwd, env, logger } = mergeEnvironment(environment)
+  const { cwd, env, logger } = makeEnvironment(environment)
   const configFile = options.file ?? locateFile(cwd)
   if (configFile) {
     logger.debug(`Configuration will be loaded from "${configFile}"`)

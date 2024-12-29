@@ -1,7 +1,6 @@
 import { IdGenerator } from '@cucumber/messages'
 import { resolvePaths } from '../paths'
-import { mergeEnvironment } from '../environment/merge_environment'
-import { IRunEnvironment } from '../environment'
+import { IRunEnvironment, makeEnvironment } from '../environment'
 import {
   ILoadSourcesResult,
   IPlannedPickle,
@@ -23,7 +22,7 @@ export async function loadSources(
   coordinates: ISourcesCoordinates,
   environment: IRunEnvironment = {}
 ): Promise<ILoadSourcesResult> {
-  const mergedEnvironment = mergeEnvironment(environment)
+  const mergedEnvironment = makeEnvironment(environment)
   const { cwd, logger } = mergedEnvironment
   const newId = IdGenerator.uuid()
   const pluginManager = await initializeForLoadSources(

@@ -1,7 +1,7 @@
 import { ConsoleLogger } from './console_logger'
 import { UsableEnvironment, IRunEnvironment } from './types'
 
-export function mergeEnvironment(provided: IRunEnvironment): UsableEnvironment {
+export function makeEnvironment(provided: IRunEnvironment): UsableEnvironment {
   const fullEnvironment = Object.assign(
     {},
     {

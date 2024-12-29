@@ -7,8 +7,7 @@ import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { version } from '../version'
 import { IFilterablePickle } from '../filter'
 import { makeRuntime } from '../runtime'
-import { mergeEnvironment } from '../environment/merge_environment'
-import { IRunEnvironment } from '../environment'
+import { IRunEnvironment, makeEnvironment } from '../environment'
 import { IRunOptions, IRunResult } from './types'
 import { initializeFormatters } from './formatters'
 import { getSupportCodeLibrary } from './support'
@@ -28,7 +27,7 @@ export async function runCucumber(
   environment: IRunEnvironment = {},
   onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
-  const mergedEnvironment = mergeEnvironment(environment)
+  const mergedEnvironment = makeEnvironment(environment)
   const { cwd, stdout, stderr, env, logger } = mergedEnvironment
 
   logger.debug(`Running cucumber-js ${version} 
