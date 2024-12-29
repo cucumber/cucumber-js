@@ -3,9 +3,9 @@ import path from 'node:path'
 import { EventEmitter } from 'node:events'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { AssembledTestCase } from '../../assemble'
-import { ILogger } from '../../logger'
+import { ILogger, IRunEnvironment } from '../../environment'
 import { RuntimeAdapter } from '../types'
-import { IRunEnvironment, IRunOptionsRuntime } from '../../api'
+import { IRunOptionsRuntime } from '../../api'
 import {
   FinalizeCommand,
   InitializeCommand,

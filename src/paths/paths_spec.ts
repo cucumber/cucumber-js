@@ -5,7 +5,7 @@ import fsExtra from 'fs-extra'
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import { FakeLogger } from '../../test/fake_logger'
-import { ILogger } from '../logger'
+import { ILogger } from '../environment'
 import { resolvePaths } from './paths'
 
 async function buildTestWorkingDirectory(): Promise<string> {

@@ -2,7 +2,7 @@ import path from 'node:path'
 import { Writable } from 'node:stream'
 import { mkdirp } from 'mkdirp'
 import fs from 'mz/fs'
-import { ILogger } from '../logger'
+import { ILogger } from '../environment'
 
 export async function createStream(
   target: string,

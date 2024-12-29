@@ -1,4 +1,4 @@
-import { ILogger } from '../logger'
+import { ILogger } from '../environment'
 import { IConfiguration } from './types'
 
 export function validateConfiguration(

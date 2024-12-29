@@ -4,7 +4,7 @@ import {
   splitFormatDescriptor,
 } from '../configuration'
 import { IPublishConfig } from '../publish'
-import { ILogger } from '../logger'
+import { ILogger } from '../environment'
 import { IRunConfiguration } from './types'
 
 export async function convertConfiguration(

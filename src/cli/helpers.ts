@@ -8,7 +8,7 @@ import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { version } from '../version'
-import { ILogger } from '../logger'
+import { ILogger } from '../environment'
 import { ILineAndUri } from '../types'
 import { IPickleOrder } from '../filter'
 
