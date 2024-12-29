@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="./docs/images/logo.svg" alt="">
+  <img src="./docs/images/logo.svg" alt="" width="75">
   <br>
   Cucumber
 </h1>
