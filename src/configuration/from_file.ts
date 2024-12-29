@@ -93,37 +93,25 @@ async function loadFile(
       )
       break
     case '.cjs':
-      logger.debug(
-        `Loading configuration file "${file}" as CommonJS based on extension`
-      )
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      definitions = require(filePath)
-      break
-    case '.mjs':
-      logger.debug(
-        `Loading configuration file "${file}" as ESM based on extension`
-      )
-      definitions = await import(pathToFileURL(filePath).toString())
-      break
     case '.js':
-      {
+    case '.mjs': {
+      logger.debug(
+        `Loading configuration file "${file}" as JavaScript based on extension`
+      )
+      const ambiguous = await import(pathToFileURL(filePath).toString())
+      if ('module.exports' in ambiguous) {
         logger.debug(
-          `Loading configuration file "${file}" as ambiguous CommonJS/ESM based on extension`
+          `Treating configuration file "${file}" as CommonJS based on heuristics`
         )
-        const ambiguous = await import(pathToFileURL(filePath).toString())
-        if ('module.exports' in ambiguous) {
-          logger.debug(
-            `Treating configuration file "${file}" as CommonJS based on heuristics`
-          )
-          definitions = ambiguous.default
-        } else {
-          logger.debug(
-            `Treating configuration file "${file}" as ESM based on heuristics`
-          )
-          definitions = ambiguous
-        }
+        definitions = ambiguous['module.exports']
+      } else {
+        logger.debug(
+          `Treating configuration file "${file}" as ESM based on heuristics`
+        )
+        definitions = ambiguous
       }
       break
+    }
     default:
       throw new Error(`Unsupported configuration file extension "${extension}"`)
   }
