@@ -15,6 +15,7 @@ import ReportGenerator, {
 import ReportUploader from './helpers/uploader'
 import os from 'os'
 import { getProjectByAccessKey } from './api'
+import SummaryFormatter from './summary_formatter'
 //User token
 const TOKEN = process.env.TOKEN
 interface MetaMessage extends Meta {
@@ -30,8 +31,11 @@ export default class BVTAnalysisFormatter extends Formatter {
   private exit = false
   private START: number
   private runName: string
+  private summaryFormatter: SummaryFormatter
+
   constructor(options: IFormatterOptions) {
     super(options)
+    this.summaryFormatter = new SummaryFormatter(options)
     if (!TOKEN && process.env.BVT_FORMATTER === 'ANALYSIS') {
       throw new Error('TOKEN must be set')
     }
