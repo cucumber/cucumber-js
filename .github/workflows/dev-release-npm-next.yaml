@@ -1,4 +1,4 @@
-name: Release NPM (latest)
+name: Publish dev cucumber-js (@next)
 
 on:
   push:
@@ -53,3 +53,16 @@ jobs:
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
           npm-tag: 'next'
+
+  dispatch:
+    name: Dispatch to Target Repository
+    runs-on: ubuntu-latest
+    needs: publish-npm
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.TOKEN_GITHUB }}
+          repository: blinq-io/ai-qa
+          event-type: trigger-cucumber-dev
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
