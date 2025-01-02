@@ -84,7 +84,6 @@ type JsonCommand = {
   text: string
   screenshotId?: string
   result: JsonCommandResult
-  webLog?: webLog[]
   netWorkLog?: any[]
 }
 type webLog = {
@@ -99,6 +98,7 @@ export type JsonStep = {
   text: string
   commands: JsonCommand[]
   result: JsonStepResult
+  webLog: webLog[]
   data?: any
 }
 export type RetrainStats = {
@@ -160,6 +160,7 @@ export default class ReportGenerator {
   private scenarioIterationCountMap = new Map<string, number>()
   private logs: webLog[] = []
   private networkLog: any[] = []
+  private stepLogs: webLog[] = []
   private runName = ''
   reportFolder: null | string = null
   private uploadService = new RunUploadService(
@@ -368,6 +369,7 @@ export default class ReportGenerator {
         result: {
           status: 'UNKNOWN',
         },
+        webLog: [],
       })
       return this.stepReportMap.get(pickleStep.id)
     })
@@ -419,7 +421,10 @@ export default class ReportGenerator {
     }
     if (mediaType === 'application/json+log') {
       const log: webLog = JSON.parse(body)
-      if (this.logs.length < 1000) this.logs.push(log)
+      if (this.logs.length < 1000) {
+        this.logs.push(log)
+        this.stepLogs.push(log)
+      }
     }
     if (mediaType === 'application/json+network') {
       const networkLog = JSON.parse(body)
@@ -473,6 +478,8 @@ export default class ReportGenerator {
       message: testStepResult.message,
       // exception: testStepResult.exception,
     }
+    stepProgess.webLog = this.stepLogs
+    this.stepLogs = []
     if (Object.keys(data).length > 0) {
       stepProgess.data = data
     }
