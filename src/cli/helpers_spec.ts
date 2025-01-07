@@ -1,6 +1,6 @@
 import { EventEmitter } from 'node:events'
 import * as messages from '@cucumber/messages'
-import { IdGenerator } from '@cucumber/messages'
+import { HookType, IdGenerator } from '@cucumber/messages'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import {
@@ -227,6 +227,7 @@ describe('helpers', () => {
         {
           hook: {
             id: '0',
+            type: HookType.BEFORE_TEST_CASE,
             name: 'before hook',
             tagExpression: '@hooks-tho',
             sourceReference: {
@@ -240,6 +241,7 @@ describe('helpers', () => {
         {
           hook: {
             id: '1',
+            type: HookType.AFTER_TEST_CASE,
             name: 'after hook',
             tagExpression: undefined,
             sourceReference: {
@@ -253,6 +255,7 @@ describe('helpers', () => {
         {
           hook: {
             id: '2',
+            type: HookType.AFTER_TEST_CASE,
             name: undefined,
             tagExpression: undefined,
             sourceReference: {
@@ -302,6 +305,7 @@ describe('helpers', () => {
         {
           hook: {
             id: '0',
+            type: HookType.BEFORE_TEST_RUN,
             sourceReference: {
               uri: 'features/support/run-hooks.js',
               location: {
@@ -313,6 +317,7 @@ describe('helpers', () => {
         {
           hook: {
             id: '1',
+            type: HookType.AFTER_TEST_RUN,
             sourceReference: {
               uri: 'features/support/run-hooks.js',
               location: {
@@ -324,6 +329,7 @@ describe('helpers', () => {
         {
           hook: {
             id: '2',
+            type: HookType.AFTER_TEST_RUN,
             sourceReference: {
               uri: 'features/support/run-hooks.js',
               location: {

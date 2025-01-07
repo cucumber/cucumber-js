@@ -2,11 +2,9 @@ import { EventEmitter } from 'node:events'
 import os from 'node:os'
 import shuffle from 'knuth-shuffle-seeded'
 import * as messages from '@cucumber/messages'
-import { IdGenerator } from '@cucumber/messages'
+import { Envelope, HookType, IdGenerator } from '@cucumber/messages'
 import detectCiEnvironment from '@cucumber/ci-environment'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
-import TestCaseHookDefinition from '../models/test_case_hook_definition'
-import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { version } from '../version'
 import { ILogger } from '../environment'
 import { ILineAndUri } from '../types'
@@ -144,42 +142,54 @@ function emitTestCaseHooks(
   supportCodeLibrary: SupportCodeLibrary,
   eventBroadcaster: EventEmitter
 ): void {
-  ;[]
-    .concat(
+  ;[
+    [
       supportCodeLibrary.beforeTestCaseHookDefinitions,
-      supportCodeLibrary.afterTestCaseHookDefinitions
-    )
-    .forEach((testCaseHookDefinition: TestCaseHookDefinition) => {
-      const envelope: messages.Envelope = {
+      HookType.BEFORE_TEST_CASE,
+    ] as const,
+    [
+      supportCodeLibrary.afterTestCaseHookDefinitions,
+      HookType.AFTER_TEST_CASE,
+    ] as const,
+  ].forEach(([hooks, type]) => {
+    hooks.forEach((hook) => {
+      eventBroadcaster.emit('envelope', {
         hook: {
-          id: testCaseHookDefinition.id,
-          name: testCaseHookDefinition.name,
-          tagExpression: testCaseHookDefinition.tagExpression,
-          sourceReference: makeSourceReference(testCaseHookDefinition),
+          id: hook.id,
+          type,
+          name: hook.name,
+          tagExpression: hook.tagExpression,
+          sourceReference: makeSourceReference(hook),
         },
-      }
-      eventBroadcaster.emit('envelope', envelope)
+      } satisfies Envelope)
     })
+  })
 }
 
 function emitTestRunHooks(
   supportCodeLibrary: SupportCodeLibrary,
   eventBroadcaster: EventEmitter
 ): void {
-  ;[]
-    .concat(
+  ;[
+    [
       supportCodeLibrary.beforeTestRunHookDefinitions,
-      supportCodeLibrary.afterTestRunHookDefinitions
-    )
-    .forEach((testRunHookDefinition: TestRunHookDefinition) => {
-      const envelope: messages.Envelope = {
+      HookType.BEFORE_TEST_RUN,
+    ] as const,
+    [
+      supportCodeLibrary.afterTestRunHookDefinitions,
+      HookType.AFTER_TEST_RUN,
+    ] as const,
+  ].forEach(([hooks, type]) => {
+    hooks.forEach((hook) => {
+      eventBroadcaster.emit('envelope', {
         hook: {
-          id: testRunHookDefinition.id,
-          sourceReference: makeSourceReference(testRunHookDefinition),
+          id: hook.id,
+          type,
+          sourceReference: makeSourceReference(hook),
         },
-      }
-      eventBroadcaster.emit('envelope', envelope)
+      } satisfies Envelope)
     })
+  })
 }
 
 export function emitSupportCodeMessages({
