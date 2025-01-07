@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- `junit` formatter now includes `timestamp` attribute ([junit-xml-formatter#45](https://github.com/cucumber/junit-xml-formatter/pull/45))
+- `Hook` message now includes `type` ([#2463](https://github.com/cucumber/cucumber-js/pull/2463))
+- `TestRunStarted` message now includes `id`; `TestCase` and `TestRunFinished` messages reference it in `testRunStartedId` ([#2463](https://github.com/cucumber/cucumber-js/pull/2463))
 
 ## [11.1.1] - 2024-12-11
 ### Fixed

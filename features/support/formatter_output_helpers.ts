@@ -110,6 +110,7 @@ export const ignorableKeys = [
   'pickleId',
   'pickleStepId',
   'stepDefinitionIds',
+  'testRunStartedId',
   'testCaseId',
   'testCaseStartedId',
   'testStepId',

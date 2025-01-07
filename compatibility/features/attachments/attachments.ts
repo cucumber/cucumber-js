@@ -1,8 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { Before, When } from '../../../src'
-
-Before(() => undefined)
+import { When } from '../../../src'
 
 When(
   'the string {string} is attached as {string}',
@@ -89,4 +87,8 @@ When('a PDF document is attached and renamed', async function () {
       fileName: 'renamed.pdf',
     }
   )
+})
+
+When('a link to {string} is attached', async function (uri: string) {
+  this.link(uri)
 })

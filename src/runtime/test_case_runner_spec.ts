@@ -29,17 +29,18 @@ async function testRunner(options: {
   const eventBroadcaster = new EventEmitter()
   const newId = IdGenerator.incrementing()
   const testCase = (
-    await assembleTestCases({
+    await assembleTestCases(
+      newId(),
       eventBroadcaster,
       newId,
-      sourcedPickles: [
+      [
         {
           gherkinDocument: options.gherkinDocument,
           pickle: options.pickle,
         },
       ],
-      supportCodeLibrary: options.supportCodeLibrary,
-    })
+      options.supportCodeLibrary
+    )
   )[0].testCase
 
   // listen for envelopers _after_ we've assembled test cases
@@ -112,29 +113,29 @@ describe('TestCaseRunner', () => {
           {
             testCaseStarted: {
               attempt: 0,
-              id: '2',
-              testCaseId: '0',
+              id: '3',
+              testCaseId: '1',
               timestamp: predictableTimestamp(0),
             },
           },
           {
             testStepStarted: {
-              testCaseStartedId: '2',
-              testStepId: '1',
+              testCaseStartedId: '3',
+              testStepId: '2',
               timestamp: predictableTimestamp(0),
             },
           },
           {
             testStepFinished: {
-              testCaseStartedId: '2',
+              testCaseStartedId: '3',
               testStepResult: passedTestResult,
-              testStepId: '1',
+              testStepId: '2',
               timestamp: predictableTimestamp(1),
             },
           },
           {
             testCaseFinished: {
-              testCaseStartedId: '2',
+              testCaseStartedId: '3',
               timestamp: predictableTimestamp(1),
               willBeRetried: false,
             },
@@ -294,21 +295,21 @@ describe('TestCaseRunner', () => {
           {
             testCaseStarted: {
               attempt: 0,
-              id: '2',
-              testCaseId: '0',
+              id: '3',
+              testCaseId: '1',
               timestamp: predictableTimestamp(0),
             },
           },
           {
             testStepStarted: {
-              testCaseStartedId: '2',
-              testStepId: '1',
+              testCaseStartedId: '3',
+              testStepId: '2',
               timestamp: predictableTimestamp(0),
             },
           },
           {
             testStepFinished: {
-              testCaseStartedId: '2',
+              testCaseStartedId: '3',
               testStepResult: {
                 duration: messages.TimeConversion.millisecondsToDuration(1),
                 message: 'Oh no!',
@@ -319,13 +320,13 @@ describe('TestCaseRunner', () => {
                 },
                 status: messages.TestStepResultStatus.FAILED,
               },
-              testStepId: '1',
+              testStepId: '2',
               timestamp: predictableTimestamp(1),
             },
           },
           {
             testCaseFinished: {
-              testCaseStartedId: '2',
+              testCaseStartedId: '3',
               timestamp: predictableTimestamp(1),
               willBeRetried: true,
             },
@@ -333,32 +334,32 @@ describe('TestCaseRunner', () => {
           {
             testCaseStarted: {
               attempt: 1,
-              id: '3',
-              testCaseId: '0',
+              id: '4',
+              testCaseId: '1',
               timestamp: predictableTimestamp(1),
             },
           },
           {
             testStepStarted: {
-              testCaseStartedId: '3',
-              testStepId: '1',
+              testCaseStartedId: '4',
+              testStepId: '2',
               timestamp: predictableTimestamp(1),
             },
           },
           {
             testStepFinished: {
-              testCaseStartedId: '3',
+              testCaseStartedId: '4',
               testStepResult: {
                 duration: messages.TimeConversion.millisecondsToDuration(1),
                 status: messages.TestStepResultStatus.PASSED,
               },
-              testStepId: '1',
+              testStepId: '2',
               timestamp: predictableTimestamp(2),
             },
           },
           {
             testCaseFinished: {
-              testCaseStartedId: '3',
+              testCaseStartedId: '4',
               timestamp: predictableTimestamp(2),
               willBeRetried: false,
             },
@@ -561,8 +562,8 @@ describe('TestCaseRunner', () => {
         testCaseStarted: {
           workerId: 'foo',
           attempt: 0,
-          id: '2',
-          testCaseId: '0',
+          id: '3',
+          testCaseId: '1',
           timestamp: predictableTimestamp(0),
         },
       })
