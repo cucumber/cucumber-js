@@ -3,7 +3,6 @@ import path from 'node:path'
 import { promisify } from 'node:util'
 import { pathToFileURL } from 'node:url'
 import YAML from 'yaml'
-import readPkgUp from 'read-pkg-up'
 import { ILogger } from '../environment'
 import { IConfiguration } from './types'
 import { mergeConfigurations } from './merge_configurations'
@@ -139,6 +138,7 @@ async function loadFile(
 }
 
 async function readPackageJson(filePath: string) {
-  const parentPackage = await readPkgUp({ cwd: path.dirname(filePath) })
+  const { readPackageUp } = await import('read-package-up')
+  const parentPackage = await readPackageUp({ cwd: path.dirname(filePath) })
   return parentPackage?.packageJson
 }
