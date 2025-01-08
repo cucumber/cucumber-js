@@ -13,6 +13,9 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 - `Hook` message now includes `type` ([#2463](https://github.com/cucumber/cucumber-js/pull/2463))
 - `TestRunStarted` message now includes `id`; `TestCase` and `TestRunFinished` messages reference it in `testRunStartedId` ([#2463](https://github.com/cucumber/cucumber-js/pull/2463))
 
+### Fixed
+- Enable world proxy in parameter transformers ([#2465](https://github.com/cucumber/cucumber-js/pull/2465))
+
 ## [11.1.1] - 2024-12-11
 ### Fixed
 - Correctly report error in publish plugin ([#2454](https://github.com/cucumber/cucumber-js/pull/2454))
