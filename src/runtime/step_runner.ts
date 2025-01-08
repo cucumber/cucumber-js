@@ -32,10 +32,12 @@ export async function run({
   let error: any, result: any, invocationData: IGetInvocationDataResponse
 
   try {
-    invocationData = await stepDefinition.getInvocationParameters({
-      hookParameter,
-      step,
-      world,
+    await runInTestCaseScope({ world }, async () => {
+      invocationData = await stepDefinition.getInvocationParameters({
+        hookParameter,
+        step,
+        world,
+      })
     })
   } catch (err) {
     error = err
