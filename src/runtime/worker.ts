@@ -64,7 +64,7 @@ export class Worker {
 
   async runAfterAllHooks() {
     await this.runTestRunHooks(
-      this.supportCodeLibrary.afterTestRunHookDefinitions,
+      this.supportCodeLibrary.afterTestRunHookDefinitions.slice(0).reverse(),
       'an AfterAll'
     )
   }

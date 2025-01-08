@@ -1,4 +1,4 @@
-import { ILogger } from '../logger'
+import { ILogger } from '../environment'
 
 export function splitFormatDescriptor(
   logger: ILogger,

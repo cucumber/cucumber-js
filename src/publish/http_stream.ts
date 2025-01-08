@@ -68,7 +68,11 @@ export default class HttpStream extends Transform {
                 {},
                 (err2, res2) => {
                   if (doesHaveValue(err2)) return callback(err2)
-                  this.emitErrorUnlessHttp2xx(res2, this.url, this.method)
+                  this.emitErrorUnlessHttp2xx(
+                    res2,
+                    res1.headers.location,
+                    'PUT'
+                  )
                   callback()
                 }
               )

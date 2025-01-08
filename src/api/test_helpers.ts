@@ -3,7 +3,7 @@ import { PassThrough } from 'node:stream'
 import fs from 'mz/fs'
 import { reindent } from 'reindent-template-literals'
 import { IdGenerator } from '@cucumber/messages'
-import { IRunEnvironment } from './types'
+import { IRunEnvironment } from '../environment'
 
 const newId = IdGenerator.uuid()
 

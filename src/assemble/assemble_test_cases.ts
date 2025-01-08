@@ -12,17 +12,13 @@ import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { doesHaveValue } from '../value_checker'
 import { AssembledTestCase, SourcedPickle } from './types'
 
-export async function assembleTestCases({
-  eventBroadcaster,
-  newId,
-  sourcedPickles,
-  supportCodeLibrary,
-}: {
-  eventBroadcaster: EventEmitter
-  newId: IdGenerator.NewId
-  sourcedPickles: ReadonlyArray<SourcedPickle>
+export async function assembleTestCases(
+  testRunStartedId: string,
+  eventBroadcaster: EventEmitter,
+  newId: IdGenerator.NewId,
+  sourcedPickles: ReadonlyArray<SourcedPickle>,
   supportCodeLibrary: SupportCodeLibrary
-}): Promise<ReadonlyArray<AssembledTestCase>> {
+): Promise<ReadonlyArray<AssembledTestCase>> {
   return sourcedPickles.map(({ gherkinDocument, pickle }) => {
     const testCaseId = newId()
     const fromBeforeHooks: TestStep[] = makeBeforeHookSteps({
@@ -41,6 +37,7 @@ export async function assembleTestCases({
       newId,
     })
     const testCase: TestCase = {
+      testRunStartedId,
       pickleId: pickle.id,
       id: testCaseId,
       testSteps: [

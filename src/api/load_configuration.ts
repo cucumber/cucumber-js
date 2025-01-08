@@ -6,13 +6,9 @@ import {
   parseConfiguration,
   validateConfiguration,
 } from '../configuration'
+import { IRunEnvironment, makeEnvironment } from '../environment'
 import { convertConfiguration } from './convert_configuration'
-import { mergeEnvironment } from './environment'
-import {
-  IRunEnvironment,
-  IResolvedConfiguration,
-  ILoadConfigurationOptions,
-} from './types'
+import { IResolvedConfiguration, ILoadConfigurationOptions } from './types'
 
 /**
  * Load user-authored configuration to be used in a test run
@@ -25,7 +21,7 @@ export async function loadConfiguration(
   options: ILoadConfigurationOptions = {},
   environment: IRunEnvironment = {}
 ): Promise<IResolvedConfiguration> {
-  const { cwd, env, logger } = mergeEnvironment(environment)
+  const { cwd, env, logger } = makeEnvironment(environment)
   const configFile = options.file ?? locateFile(cwd)
   if (configFile) {
     logger.debug(`Configuration will be loaded from "${configFile}"`)

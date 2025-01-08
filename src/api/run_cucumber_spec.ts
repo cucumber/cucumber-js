@@ -1,7 +1,7 @@
 import { Envelope, TestStepResultStatus } from '@cucumber/messages'
 import { expect } from 'chai'
+import { IRunEnvironment } from '../environment'
 import { runCucumber } from './run_cucumber'
-import { IRunEnvironment } from './types'
 import { loadSupport } from './load_support'
 import { loadConfiguration } from './load_configuration'
 import { setupEnvironment, teardownEnvironment } from './test_helpers'

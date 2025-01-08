@@ -7,10 +7,10 @@ import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { version } from '../version'
 import { IFilterablePickle } from '../filter'
 import { makeRuntime } from '../runtime'
-import { IRunOptions, IRunEnvironment, IRunResult } from './types'
+import { IRunEnvironment, makeEnvironment } from '../environment'
+import { IRunOptions, IRunResult } from './types'
 import { initializeFormatters } from './formatters'
 import { getSupportCodeLibrary } from './support'
-import { mergeEnvironment } from './environment'
 import { getPicklesAndErrors } from './gherkin'
 import { initializeForRunCucumber } from './plugins'
 
@@ -27,7 +27,7 @@ export async function runCucumber(
   environment: IRunEnvironment = {},
   onMessage?: (message: Envelope) => void
 ): Promise<IRunResult> {
-  const mergedEnvironment = mergeEnvironment(environment)
+  const mergedEnvironment = makeEnvironment(environment)
   const { cwd, stdout, stderr, env, logger } = mergedEnvironment
 
   logger.debug(`Running cucumber-js ${version} 
@@ -51,7 +51,6 @@ Running from: ${__dirname}
         )
 
   const pluginManager = await initializeForRunCucumber(
-    logger,
     {
       ...options,
       support: supportCoordinates,

@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { IRunEnvironment } from './types'
+import { IRunEnvironment } from '../environment'
 import { setupEnvironment, teardownEnvironment } from './test_helpers'
 import { loadConfiguration } from './load_configuration'
 

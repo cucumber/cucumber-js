@@ -1,5 +1,5 @@
 import sinon from 'sinon'
-import { ILogger } from '../src/logger'
+import { ILogger } from '../src/environment'
 
 export class FakeLogger implements ILogger {
   debug = sinon.fake()

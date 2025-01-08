@@ -15,6 +15,10 @@ Feature: Environment Hooks
       """
 
   Scenario: before all / after all hooks
+
+    BeforeAll hooks run once each before any scenarios, in declaration order
+    AfterAll hooks run once each after all scenarios, in reverse declaration order
+
     Given a file named "features/support/hooks.js" with:
       """
       const {AfterAll, BeforeAll, Given} = require('@cucumber/cucumber')
@@ -27,18 +31,28 @@ Feature: Environment Hooks
         counter += counter
       })
 
-      Given('first step', function() {
+      BeforeAll(function() {
         expect(counter).to.eql(2)
         counter += counter
       })
 
-      Given('second step', function() {
+      Given('first step', function() {
         expect(counter).to.eql(4)
         counter += counter
       })
 
-      AfterAll(function() {
+      Given('second step', function() {
         expect(counter).to.eql(8)
+        counter += counter
+      })
+
+      AfterAll(function() {
+        expect(counter).to.eql(32)
+        counter += counter
+      })
+
+      AfterAll(function() {
+        expect(counter).to.eql(16)
         counter += counter
       })
       """

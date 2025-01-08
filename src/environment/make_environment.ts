@@ -1,12 +1,7 @@
-import { ILogger } from '../logger'
-import { IRunEnvironment } from './types'
 import { ConsoleLogger } from './console_logger'
+import { UsableEnvironment, IRunEnvironment } from './types'
 
-type EnvironmentWithLogger = Required<IRunEnvironment> & { logger: ILogger }
-
-export function mergeEnvironment(
-  provided: IRunEnvironment
-): EnvironmentWithLogger {
+export function makeEnvironment(provided: IRunEnvironment): UsableEnvironment {
   const fullEnvironment = Object.assign(
     {},
     {
