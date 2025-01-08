@@ -113,7 +113,7 @@ features/**/*.{feature,feature.md}
 If your features are somewhere else, you can override this by proving your own [glob](https://github.com/isaacs/node-glob) or directory:
 
 - In a configuration file `{ paths: ['somewhere-else/**/*.feature'] }`
-- On the CLI `cucumber-js somewhere-else/**/*.feature`
+- On the CLI `cucumber-js 'somewhere-else/**/*.feature'` (note that the argument is quoted - this is to avoid your shell expanding the glob itself which might lead to different behaviour than what's documented here)
 
 This option is repeatable, so you can provide several values and they'll be combined.
 
