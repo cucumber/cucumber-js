@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [11.2.0] - 2025-01-09
 ### Added
 - `junit` formatter now includes `timestamp` attribute ([junit-xml-formatter#45](https://github.com/cucumber/junit-xml-formatter/pull/45))
 - `Hook` message now includes `type` ([#2463](https://github.com/cucumber/cucumber-js/pull/2463))
@@ -1661,7 +1663,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v11.1.1...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v11.2.0...HEAD
+[11.2.0]: https://github.com/cucumber/cucumber-js/compare/v11.1.1...v11.2.0
 [11.1.1]: https://github.com/cucumber/cucumber-js/compare/v11.1.0...v11.1.1
 [11.1.0]: https://github.com/cucumber/cucumber-js/compare/v11.0.1...v11.1.0
 [11.0.1]: https://github.com/cucumber/cucumber-js/compare/v11.0.0...v11.0.1
