@@ -76,7 +76,7 @@ function formatStep({
       } else if (fileName) {
         message = `: ${fileName}`
       }
-      text += indentString(`Attachment (${mediaType})${message}\n`, 4)
+      //text += indentString(`Attachment (${mediaType})${message}\n`, 4)
     })
   }
   const message = getStepMessage(testStep)
