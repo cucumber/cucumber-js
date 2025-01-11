@@ -153,7 +153,11 @@ export default class BVTAnalysisFormatter extends Formatter {
       return testCase
     }
     const failedTestSteps = testCase.steps
-      .map((step, i) => (step.result.status === 'FAILED' ? i : null))
+      .map((step, i) =>
+        step.result.status === 'FAILED' || step.result.status === 'UNDEFINED'
+          ? i
+          : null
+      )
       .filter((i) => i !== null)
     const retrainStats = await this.retrain(failedTestSteps, testCase)
 
