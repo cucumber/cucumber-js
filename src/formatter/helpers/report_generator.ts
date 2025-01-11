@@ -450,6 +450,25 @@ export default class ReportGenerator {
       }
       return
     }
+    if (testStepResult.status === 'UNDEFINED') {
+      const step = this.stepReportMap.get(testStep.pickleStepId)
+      const stepName = step ? step.keyword + ' ' + step.text : 'Undefined step'
+      const undefinedCommand: messages.Attachment = {
+        testStepId: testStepId,
+        body: JSON.stringify({
+          type: 'error',
+          text: 'Undefined step: ' + stepName,
+          result: {
+            status: 'FAILED',
+            startTime: this.getTimeStamp(timestamp),
+            endTime: this.getTimeStamp(timestamp),
+          },
+        }),
+        mediaType: 'application/json',
+        contentEncoding: messages.AttachmentContentEncoding.IDENTITY,
+      }
+      this.onAttachment(undefinedCommand)
+    }
     const stepProgess = this.stepReportMap.get(testStep.pickleStepId)
     const prevStepResult = stepProgess.result as {
       status: 'STARTED'
