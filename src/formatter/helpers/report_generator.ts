@@ -584,7 +584,11 @@ export default class ReportGenerator {
     anyRemArr.push(randomID)
     process.env.UPLOADING_TEST_CASE = JSON.stringify(anyRemArr)
     try {
-      if (process.env.RUN_ID && process.env.PROJECT_ID) {
+      if (
+        process.env.RUN_ID &&
+        process.env.PROJECT_ID &&
+        !process.env.IGNORE_ENV_VARIABLES
+      ) {
         runId = process.env.RUN_ID
         projectId = process.env.PROJECT_ID
       } else {
