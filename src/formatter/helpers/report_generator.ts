@@ -584,15 +584,21 @@ export default class ReportGenerator {
     anyRemArr.push(randomID)
     process.env.UPLOADING_TEST_CASE = JSON.stringify(anyRemArr)
     try {
-      if (process.env.RUN_ID && process.env.PROJECT_ID) {
+      if (
+        process.env.RUN_ID &&
+        process.env.PROJECT_ID &&
+        !process.env.IGNORE_ENV_VARIABLES
+      ) {
         runId = process.env.RUN_ID
         projectId = process.env.PROJECT_ID
       } else {
         const runDoc = await this.uploadService.createRunDocument(this.runName)
         runId = runDoc._id
         projectId = runDoc.project_id
-        process.env.RUN_ID = runId
-        process.env.PROJECT_ID = projectId
+        if (!process.env.IGNORE_ENV_VARIABLES) {
+          process.env.RUN_ID = runId
+          process.env.PROJECT_ID = projectId
+        }
       }
       await this.uploadService.uploadTestCase(
         testCase,
