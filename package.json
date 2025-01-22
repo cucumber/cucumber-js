@@ -220,7 +220,7 @@
     "@cucumber/cucumber-expressions": "18.0.1",
     "@cucumber/gherkin": "30.0.4",
     "@cucumber/gherkin-streams": "5.0.1",
-    "@cucumber/gherkin-utils": "9.0.0",
+    "@cucumber/gherkin-utils": "9.1.0",
     "@cucumber/html-formatter": "21.8.0",
     "@cucumber/junit-xml-formatter": "0.7.1",
     "@cucumber/message-streams": "4.0.1",
