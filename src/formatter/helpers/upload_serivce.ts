@@ -7,6 +7,7 @@ import { JsonReport, JsonTestProgress } from './report_generator'
 import { axiosClient } from '../../configuration/axios_client'
 import path from 'path'
 import { logReportLink } from '../bvt_analysis_formatter'
+import { ActionEvents, SERVICES_URI } from './constants'
 
 const REPORT_SERVICE_URL = process.env.REPORT_SERVICE_URL ?? URL
 const BATCH_SIZE = 10
@@ -161,6 +162,24 @@ class RunUploadService {
           },
         }
       )
+
+      try {
+        await axiosClient.post(
+          `${SERVICES_URI.STORAGE}/event`,
+          {
+            event: ActionEvents.upload_report,
+          },
+          {
+            headers: {
+              Authorization: 'Bearer ' + this.accessToken,
+              'x-source': 'cucumber_js',
+              'x-bvt-project-id': projectId,
+            },
+          }
+        )
+      } catch (error) {
+        // no event tracking
+      }
       logReportLink(runId, projectId)
     } catch (e) {
       console.error(`failed to upload the test case: ${testCaseReport.id} ${e}`)
@@ -208,6 +227,24 @@ class RunUploadService {
     }
     if (response.data.status !== true) {
       throw new Error('Failed to mark run as complete')
+    }
+
+    try {
+      await axiosClient.post(
+        `${SERVICES_URI.STORAGE}/event`,
+        {
+          event: ActionEvents.upload_report,
+        },
+        {
+          headers: {
+            Authorization: 'Bearer ' + this.accessToken,
+            'x-source': 'cucumber_js',
+            'x-bvt-project-id': projectId,
+          },
+        }
+      )
+    } catch (error) {
+      // no event tracking
     }
   }
   async modifyTestCase(

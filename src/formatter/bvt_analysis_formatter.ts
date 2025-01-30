@@ -16,6 +16,8 @@ import ReportUploader from './helpers/uploader'
 import os from 'os'
 import { getProjectByAccessKey } from './api'
 import SummaryFormatter from './summary_formatter'
+import { ActionEvents, SERVICES_URI } from './helpers/constants'
+import { axiosClient } from '../configuration/axios_client'
 //User token
 const TOKEN = process.env.TOKEN
 interface MetaMessage extends Meta {
@@ -39,6 +41,7 @@ export default class BVTAnalysisFormatter extends Formatter {
     if (!TOKEN && process.env.BVT_FORMATTER === 'ANALYSIS') {
       throw new Error('TOKEN must be set')
     }
+    this.sendEvent(ActionEvents.cli_run_tests)
     options.eventBroadcaster.on(
       'envelope',
       async (envelope: EnvelopeWithMetaMessage) => {
@@ -59,6 +62,21 @@ export default class BVTAnalysisFormatter extends Formatter {
           }
           this.exit = true
         }
+      }
+    )
+  }
+
+  private sendEvent(event: ActionEvents) {
+    axiosClient.post(
+      `${SERVICES_URI.STORAGE}/event`,
+      {
+        event,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+          'x-source': 'cucumber_js',
+        },
       }
     )
   }
