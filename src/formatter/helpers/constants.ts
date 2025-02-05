@@ -8,7 +8,7 @@ export const DEV = {
   SSO: 'https://dev.api.blinq.io/api/auth',
   WORKSPACE: 'https://dev.api.blinq.io/api/workspace',
   RUNS: 'https://dev.api.blinq.io/api/runs',
-  STORAGE: 'http://localhost:5050/api/storage',
+  STORAGE: 'https://dev.api.blinq.io/api/storage',
 }
 export const PROD = {
   SSO: 'https://api.blinq.io/api/auth',
