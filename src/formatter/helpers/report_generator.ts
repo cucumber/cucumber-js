@@ -606,12 +606,35 @@ export default class ReportGenerator {
         projectId,
         this.reportFolder
       )
+      this.writeTestCaseReportToDisk(testCase)
     } catch (e) {
       console.error('Error uploading test case:', e)
     } finally {
       const arrRem = JSON.parse(process.env.UPLOADING_TEST_CASE) as string[]
       arrRem.splice(arrRem.indexOf(randomID), 1)
       process.env.UPLOADING_TEST_CASE = JSON.stringify(arrRem)
+    }
+  }
+  private writeTestCaseReportToDisk(testCase: JsonTestProgress) {
+    try {
+      let i = 0
+      while (fs.existsSync(path.join(this.reportFolder, `${i}`))) {
+        i++
+      }
+      fs.mkdirSync(path.join(this.reportFolder, `${i}`))
+      //exclude network log from the saved report
+      const networkLog = testCase.networkLog
+      delete testCase.networkLog
+      fs.writeFileSync(
+        path.join(this.reportFolder, `${i}`, `report.json`),
+        JSON.stringify(testCase, null, 2)
+      )
+      fs.writeFileSync(
+        path.join(this.reportFolder, `${i}`, `network.json`),
+        JSON.stringify(networkLog, null, 2)
+      )
+    } catch (error) {
+      console.error('Error writing test case report to disk:', error)
     }
   }
   private onTestRunFinished(testRunFinished: messages.TestRunFinished) {
