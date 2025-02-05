@@ -67,18 +67,22 @@ export default class BVTAnalysisFormatter extends Formatter {
   }
 
   private sendEvent(event: ActionEvents) {
-    axiosClient.post(
-      `${SERVICES_URI.STORAGE}/event`,
-      {
-        event,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-          'x-source': 'cucumber_js',
+    axiosClient
+      .post(
+        `${SERVICES_URI.STORAGE}/event`,
+        {
+          event,
         },
-      }
-    )
+        {
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+            'x-source': 'cucumber_js',
+          },
+        }
+      )
+      .catch((err) => {
+        // Error with events, ignoring
+      })
   }
 
   private async uploadReport(report: JsonReport) {
