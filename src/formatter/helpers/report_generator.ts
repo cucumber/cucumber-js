@@ -616,23 +616,26 @@ export default class ReportGenerator {
     }
   }
   private writeTestCaseReportToDisk(testCase: JsonTestProgress) {
-    let i = 0
-    while (fs.existsSync(path.join(this.reportFolder, `${i}`))) {
-      i++
+    try {
+      let i = 0
+      while (fs.existsSync(path.join(this.reportFolder, `${i}`))) {
+        i++
+      }
+      fs.mkdirSync(path.join(this.reportFolder, `${i}`))
+      //exclude network log from the saved report
+      const networkLog = testCase.networkLog
+      delete testCase.networkLog
+      fs.writeFileSync(
+        path.join(this.reportFolder, `${i}`, `report.json`),
+        JSON.stringify(testCase, null, 2)
+      )
+      fs.writeFileSync(
+        path.join(this.reportFolder, `${i}`, `network.json`),
+        JSON.stringify(networkLog, null, 2)
+      )
+    } catch (error) {
+      console.error('Error writing test case report to disk:', error)
     }
-    fs.mkdirSync(path.join(this.reportFolder, `${i}`))
-    //exclude network log from the saved report
-    const networkLog = testCase.networkLog
-    delete testCase.networkLog
-    fs.writeFileSync(
-      path.join(this.reportFolder, `${i}`, `report.json`),
-      JSON.stringify(testCase, null, 2)
-    )
-    testCase.networkLog = networkLog
-    fs.writeFileSync(
-      path.join(this.reportFolder, `${i}`, `network.json`),
-      JSON.stringify(testCase.networkLog, null, 2)
-    )
   }
   private onTestRunFinished(testRunFinished: messages.TestRunFinished) {
     const { timestamp, success, message } = testRunFinished
