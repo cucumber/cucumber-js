@@ -3,7 +3,7 @@
 # top-most EditorConfig file
 root = true
 
-# 4 space indentation
+# 2 space indentation
 [*]
 indent_style = space
 indent_size = 2
