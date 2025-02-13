@@ -99,6 +99,7 @@ export type JsonStep = {
   commands: JsonCommand[]
   result: JsonStepResult
   webLog: webLog[]
+  networkData: any[]
   data?: any
 }
 export type RetrainStats = {
@@ -161,6 +162,7 @@ export default class ReportGenerator {
   private logs: webLog[] = []
   private networkLog: any[] = []
   private stepLogs: webLog[] = []
+  private stepNetworkLogs: any[] = []
   private runName = ''
   reportFolder: null | string = null
   private uploadService = new RunUploadService(
@@ -369,6 +371,7 @@ export default class ReportGenerator {
         result: {
           status: 'UNKNOWN',
         },
+        networkData: [],
         webLog: [],
       })
       return this.stepReportMap.get(pickleStep.id)
@@ -429,6 +432,7 @@ export default class ReportGenerator {
     if (mediaType === 'application/json+network') {
       const networkLog = JSON.parse(body)
       if (this.networkLog.length < 1000) this.networkLog.push(networkLog)
+      this.stepNetworkLogs.push(networkLog)
     }
     const testStep = this.testStepMap.get(testStepId)
     if (testStep.pickleStepId === undefined) return
@@ -498,6 +502,8 @@ export default class ReportGenerator {
       // exception: testStepResult.exception,
     }
     stepProgess.webLog = this.stepLogs
+    stepProgess.networkData = this.stepNetworkLogs
+    this.stepNetworkLogs = []
     this.stepLogs = []
     if (Object.keys(data).length > 0) {
       stepProgess.data = data
