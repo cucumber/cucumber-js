@@ -186,12 +186,10 @@ export default class BVTAnalysisFormatter extends Formatter {
     if (!retrainStats) {
       return testCase
     }
-    if (retrainStats.result.status === 'PASSED') {
-      await this.uploader.modifyTestCase({
-        ...testCase,
-        retrainStats,
-      })
-    }
+    await this.uploader.modifyTestCase({
+      ...testCase,
+      retrainStats,
+    })
 
     return {
       ...testCase,
@@ -310,7 +308,15 @@ export default class BVTAnalysisFormatter extends Formatter {
             resolve(retrainStats)
           } else {
             this.log('Error retraining\n')
-            resolve(null)
+            try {
+              const reportData = readFileSync(tempFile, 'utf-8')
+              const retrainStats = JSON.parse(reportData) as RetrainStats
+              await unlink(tempFile)
+              resolve(retrainStats)
+            } catch (e) {
+              this.log('Error  reading scenario report\n ' + e)
+              resolve(null)
+            }
           }
         })
       })
