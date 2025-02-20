@@ -10,10 +10,10 @@ const URL =
   process.env.NODE_ENV_BLINQ === 'dev'
     ? 'https://dev.api.blinq.io/api/runs'
     : process.env.NODE_ENV_BLINQ === 'local'
-    ? 'http://localhost:5001/api/runs'
-    : process.env.NODE_ENV_BLINQ === 'stage'
-    ? 'https://stage.api.blinq.io/api/runs'
-    : 'https://api.blinq.io/api/runs'
+      ? 'http://localhost:5001/api/runs'
+      : process.env.NODE_ENV_BLINQ === 'stage'
+        ? 'https://stage.api.blinq.io/api/runs'
+        : 'https://api.blinq.io/api/runs'
 
 const REPORT_SERVICE_URL = process.env.REPORT_SERVICE_URL ?? URL
 const BATCH_SIZE = 10
@@ -443,6 +443,29 @@ export default class ReportGenerator {
       stepProgess.commands.push(command)
     }
   }
+  private getFailedTestStepResult({
+    commands,
+    startTime,
+    endTime,
+    result
+  }: { commands: JsonCommand[], startTime: number, endTime: number, result: messages.TestStepResult }): JsonStepResult {
+    for (const command of commands) {
+      if (command.result.status === 'FAILED') {
+        return {
+          status: 'FAILED',
+          message: command.result.message,
+          startTime,
+          endTime,
+        } as const
+      }
+    }
+    return {
+      status: 'FAILED',
+      startTime,
+      endTime,
+      message: result.message,
+    }
+  }
   private onTestStepFinished(testStepFinished: messages.TestStepFinished) {
     const { testStepId, testStepResult, timestamp } = testStepFinished
     const testStep = this.testStepMap.get(testStepId)
@@ -494,13 +517,23 @@ export default class ReportGenerator {
     } catch (error) {
       console.log('Error reading data.json')
     }
-    stepProgess.result = {
-      status: testStepResult.status,
-      startTime: prevStepResult.startTime,
-      endTime: this.getTimeStamp(timestamp),
-      message: testStepResult.message,
-      // exception: testStepResult.exception,
+    if (testStepResult.status === 'FAILED') {
+      stepProgess.result = this.getFailedTestStepResult(
+        {
+          commands: stepProgess.commands,
+          startTime: prevStepResult.startTime,
+          endTime: this.getTimeStamp(timestamp),
+          result: testStepResult
+        }
+      )
+    } else {
+      stepProgess.result = {
+        status: testStepResult.status,
+        startTime: prevStepResult.startTime,
+        endTime: this.getTimeStamp(timestamp),
+      }
     }
+
     stepProgess.webLog = this.stepLogs
     stepProgess.networkData = this.stepNetworkLogs
     this.stepNetworkLogs = []
