@@ -40,13 +40,9 @@ jobs:
           node-version: 22.x
       - run: npm install
       - run: npm run test-coverage
-      - uses: coverallsapp/github-action@master
+      - uses: coverallsapp/github-action@main
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v3
-        with:
-          name: reports
-          path: reports
 
   audit-dependencies:
     runs-on: ubuntu-latest
