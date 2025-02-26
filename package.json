@@ -268,7 +268,7 @@
     "@types/express": "4.17.15",
     "@types/fs-extra": "9.0.13",
     "@types/glob": "8.1.0",
-    "@types/has-ansi": "5.0.0",
+    "@types/has-ansi": "5.0.2",
     "@types/lodash.merge": "4.6.9",
     "@types/lodash.mergewith": "4.6.9",
     "@types/luxon": "3.2.0",
