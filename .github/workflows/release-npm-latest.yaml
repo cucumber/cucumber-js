@@ -19,7 +19,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
       - run: npm install-test
-      - uses: cucumber/action-publish-npm@v1.1.0
+      - uses: cucumber/action-publish-npm@v1.1.1
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
           npm-tag: 'latest'
