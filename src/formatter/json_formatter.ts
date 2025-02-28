@@ -182,7 +182,11 @@ export default class JsonFormatter extends Formatter {
         uri,
       })
     })
+    try{
     this.log(JSON.stringify(features, null, 2))
+    }catch(error){
+      console.log("Unable to generate report ...")
+    }
   }
 
   getFeatureData({
