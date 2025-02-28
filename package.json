@@ -264,7 +264,7 @@
     "@sinonjs/fake-timers": "10.0.2",
     "@types/chai": "4.3.4",
     "@types/debug": "4.1.12",
-    "@types/dirty-chai": "2.0.2",
+    "@types/dirty-chai": "2.0.5",
     "@types/express": "4.17.15",
     "@types/fs-extra": "9.0.13",
     "@types/glob": "8.1.0",
