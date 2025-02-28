@@ -182,7 +182,27 @@ export default class JsonFormatter extends Formatter {
         uri,
       })
     })
-    this.log(JSON.stringify(features, null, 2))
+    try {
+      this.log(safeStringify(features, null, 2));
+    } catch (e) {
+      console.error("Error stringifying features:", e);
+      // You can also log partial or minimal data here for debugging
+    }
+  }
+
+  function safeStringify(obj: any, replacer: (key: string, value: any) => any = null, spaces: number = 2): string {
+    let cache: any[] = [];
+    const result = JSON.stringify(obj, (key: string, value: any) => {
+      if (typeof value === "object" && value !== null) {
+        if (cache.includes(value)) {
+          return; // Circular reference found, skip it
+        }
+        cache.push(value);
+      }
+      return value;
+    }, spaces);
+    cache = null; // Clear the cache to allow garbage collection
+    return result;
   }
 
   getFeatureData({
