@@ -272,7 +272,7 @@
     "@types/lodash.merge": "4.6.9",
     "@types/lodash.mergewith": "4.6.9",
     "@types/luxon": "3.2.0",
-    "@types/mocha": "10.0.1",
+    "@types/mocha": "10.0.10",
     "@types/mustache": "4.2.2",
     "@types/mz": "2.7.4",
     "@types/node": "20.8.3",
