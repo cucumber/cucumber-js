@@ -185,7 +185,7 @@ export default class JsonFormatter extends Formatter {
     try{
     this.log(JSON.stringify(features, null, 2))
     }catch(error){
-      console.log("Unable to generate report ...")
+      this.log("Unable to generate report ...")
     }
   }
 
