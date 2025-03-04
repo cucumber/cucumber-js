@@ -285,7 +285,7 @@
     "@typescript-eslint/eslint-plugin": "6.7.4",
     "@typescript-eslint/parser": "6.7.4",
     "chai": "4.3.7",
-    "chai-exclude": "2.1.0",
+    "chai-exclude": "2.1.1",
     "coffeescript": "2.7.0",
     "dependency-lint": "7.1.0",
     "dirty-chai": "2.0.1",
