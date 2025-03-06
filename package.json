@@ -278,7 +278,7 @@
     "@types/node": "20.8.3",
     "@types/progress": "2.0.7",
     "@types/semver": "7.5.0",
-    "@types/sinon-chai": "3.2.9",
+    "@types/sinon-chai": "3.2.12",
     "@types/sinonjs__fake-timers": "8.1.5",
     "@types/stream-buffers": "3.0.7",
     "@types/tmp": "0.2.6",
