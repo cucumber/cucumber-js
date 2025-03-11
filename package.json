@@ -289,7 +289,7 @@
     "coffeescript": "2.7.0",
     "dependency-lint": "7.1.0",
     "dirty-chai": "2.0.1",
-    "eslint": "8.51.0",
+    "eslint": "8.57.1",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-import": "2.31.0",
     "eslint-plugin-node": "11.1.0",
