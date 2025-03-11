@@ -9,7 +9,7 @@ parserOptions:
   project: './tsconfig.json'
 plugins:
   - import
-  - node
+  - n
   - unicorn
   - '@typescript-eslint'
 rules:
