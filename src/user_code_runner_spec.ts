@@ -85,7 +85,7 @@ describe('UserCodeRunner', () => {
           // Arrange
           const fn = function (callback: CallbackFn): void {
             setTimeout(() => {
-              callback('error') // eslint-disable-line node/no-callback-literal
+              callback('error') // eslint-disable-line n/no-callback-literal
             }, 25)
           }
 
