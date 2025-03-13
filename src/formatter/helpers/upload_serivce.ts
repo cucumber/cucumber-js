@@ -165,6 +165,20 @@ class RunUploadService {
         }
       )
 
+      await axiosClient.post(
+        this.runsApiBaseURL + '/cucumber-runs/update-application-memory',
+        {
+          testCaseId: `${runId}${testCaseReport.id}`,
+          projectId,
+        },
+        {
+          headers: {
+            Authorization: 'Bearer ' + this.accessToken,
+            'x-source': 'cucumber_js',
+          },
+        }
+      )
+
       try {
         await axiosClient.post(
           `${SERVICES_URI.STORAGE}/event`,
