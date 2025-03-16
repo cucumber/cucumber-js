@@ -174,7 +174,7 @@ export default class ReportGenerator {
     REPORT_SERVICE_TOKEN
   )
 
-  async handleMessage(envelope: EnvelopeWithMetaMessage) {
+  async handleMessage(envelope: EnvelopeWithMetaMessage): Promise<any> {
     if (envelope.meta && envelope.meta.runName) {
       this.runName = envelope.meta.runName
     }
@@ -231,8 +231,7 @@ export default class ReportGenerator {
       }
       case 'testCaseFinished': {
         const testCaseFinished = envelope[type]
-        await this.onTestCaseFinished(testCaseFinished)
-        break
+        return await this.onTestCaseFinished(testCaseFinished)
       }
       // case "hook": { break} // After Hook
       case 'testRunFinished': {
@@ -631,7 +630,7 @@ export default class ReportGenerator {
     this.initialAriaSnapshot = ''
     this.networkLog = []
     this.logs = []
-    await this.uploadTestCase(testProgress)
+    return await this.uploadTestCase(testProgress)
   }
   private async uploadTestCase(testCase: JsonTestProgress) {
     let runId = ''
@@ -660,13 +659,14 @@ export default class ReportGenerator {
           process.env.PROJECT_ID = projectId
         }
       }
-      await this.uploadService.uploadTestCase(
+      const data = await this.uploadService.uploadTestCase(
         testCase,
         runId,
         projectId,
         this.reportFolder
       )
       this.writeTestCaseReportToDisk(testCase)
+      return data
     } catch (e) {
       console.error('Error uploading test case:', e)
     } finally {
