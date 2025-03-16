@@ -200,6 +200,7 @@ class RunUploadService {
       return data
     } catch (e) {
       console.error(`failed to upload the test case: ${testCaseReport.id} ${e}`)
+      return null
     }
   }
   async uploadFile(filePath: string, preSignedUrl: string) {

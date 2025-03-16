@@ -641,6 +641,7 @@ export default class ReportGenerator {
     const anyRemArr = JSON.parse(process.env.UPLOADING_TEST_CASE) as string[]
     const randomID = Math.random().toString(36).substring(7)
     anyRemArr.push(randomID)
+    let data
     process.env.UPLOADING_TEST_CASE = JSON.stringify(anyRemArr)
     try {
       if (
@@ -659,14 +660,13 @@ export default class ReportGenerator {
           process.env.PROJECT_ID = projectId
         }
       }
-      const data = await this.uploadService.uploadTestCase(
+      data = await this.uploadService.uploadTestCase(
         testCase,
         runId,
         projectId,
         this.reportFolder
       )
       this.writeTestCaseReportToDisk(testCase)
-      return data
     } catch (e) {
       console.error('Error uploading test case:', e)
     } finally {
@@ -674,6 +674,7 @@ export default class ReportGenerator {
       arrRem.splice(arrRem.indexOf(randomID), 1)
       process.env.UPLOADING_TEST_CASE = JSON.stringify(arrRem)
     }
+    return data ? data : null
   }
   private writeTestCaseReportToDisk(testCase: JsonTestProgress) {
     try {
