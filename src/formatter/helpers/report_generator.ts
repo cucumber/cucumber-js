@@ -174,7 +174,7 @@ export default class ReportGenerator {
     REPORT_SERVICE_TOKEN
   )
 
-  async handleMessage(envelope: EnvelopeWithMetaMessage) {
+  async handleMessage(envelope: EnvelopeWithMetaMessage): Promise<any> {
     if (envelope.meta && envelope.meta.runName) {
       this.runName = envelope.meta.runName
     }
@@ -231,8 +231,7 @@ export default class ReportGenerator {
       }
       case 'testCaseFinished': {
         const testCaseFinished = envelope[type]
-        await this.onTestCaseFinished(testCaseFinished)
-        break
+        return await this.onTestCaseFinished(testCaseFinished)
       }
       // case "hook": { break} // After Hook
       case 'testRunFinished': {
@@ -631,7 +630,7 @@ export default class ReportGenerator {
     this.initialAriaSnapshot = ''
     this.networkLog = []
     this.logs = []
-    await this.uploadTestCase(testProgress)
+    return await this.uploadTestCase(testProgress)
   }
   private async uploadTestCase(testCase: JsonTestProgress) {
     let runId = ''
@@ -642,6 +641,7 @@ export default class ReportGenerator {
     const anyRemArr = JSON.parse(process.env.UPLOADING_TEST_CASE) as string[]
     const randomID = Math.random().toString(36).substring(7)
     anyRemArr.push(randomID)
+    let data
     process.env.UPLOADING_TEST_CASE = JSON.stringify(anyRemArr)
     try {
       if (
@@ -660,7 +660,7 @@ export default class ReportGenerator {
           process.env.PROJECT_ID = projectId
         }
       }
-      await this.uploadService.uploadTestCase(
+      data = await this.uploadService.uploadTestCase(
         testCase,
         runId,
         projectId,
@@ -674,6 +674,7 @@ export default class ReportGenerator {
       arrRem.splice(arrRem.indexOf(randomID), 1)
       process.env.UPLOADING_TEST_CASE = JSON.stringify(arrRem)
     }
+    return data ? data : null
   }
   private writeTestCaseReportToDisk(testCase: JsonTestProgress) {
     try {

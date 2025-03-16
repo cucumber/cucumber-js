@@ -18,6 +18,10 @@ import { getProjectByAccessKey } from './api'
 import SummaryFormatter from './summary_formatter'
 import { ActionEvents, SERVICES_URI } from './helpers/constants'
 import { axiosClient } from '../configuration/axios_client'
+import {
+  FinishTestCaseResponse,
+  RootCauseProps,
+} from './helpers/upload_serivce'
 //User token
 const TOKEN = process.env.TOKEN
 interface MetaMessage extends Meta {
@@ -34,10 +38,15 @@ export default class BVTAnalysisFormatter extends Formatter {
   private START: number
   private runName: string
   private summaryFormatter: SummaryFormatter
+  private rootCauseArray: {
+    rootCause: RootCauseProps
+    report: JsonTestProgress
+  }[] = []
 
   constructor(options: IFormatterOptions) {
     super(options)
     this.summaryFormatter = new SummaryFormatter(options)
+    this.rootCauseArray = []
     if (!TOKEN && process.env.BVT_FORMATTER === 'ANALYSIS') {
       throw new Error('TOKEN must be set')
     }
@@ -45,18 +54,21 @@ export default class BVTAnalysisFormatter extends Formatter {
     options.eventBroadcaster.on(
       'envelope',
       async (envelope: EnvelopeWithMetaMessage) => {
-        await this.reportGenerator.handleMessage(envelope)
+        const data = await this.reportGenerator.handleMessage(envelope)
         if (
           doesHaveValue(envelope.meta) &&
           doesHaveValue(envelope.meta.runName)
         ) {
           this.runName = envelope.meta.runName
         }
+        if (doesHaveValue(envelope.testCaseFinished)) {
+          const { rootCause, report } = data as FinishTestCaseResponse
+          this.rootCauseArray.push({ rootCause, report })
+        }
         if (doesHaveValue(envelope.testRunFinished)) {
-          const report = this.reportGenerator.getReport()
           this.START = Date.now()
           if (process.env.BVT_FORMATTER === 'ANALYSIS') {
-            await this.analyzeReport(report)
+            await this.analyzeReport()
           } else {
             // await this.uploadReport(report)
           }
@@ -115,12 +127,12 @@ export default class BVTAnalysisFormatter extends Formatter {
       }, 100) // check every 100ms
     })
   }
-  private async analyzeReport(report: JsonReport) {
+  private async analyzeReport() {
     if (
-      report.result.status === 'PASSED' ||
+      this.rootCauseArray.length === 0 ||
       process.env.NO_RETRAIN === 'false'
     ) {
-      if (report.result.status === 'PASSED') {
+      if (this.rootCauseArray.length === 0) {
         this.log('No test failed. No need to retrain\n')
       }
       if (process.env.NO_RETRAIN === 'false') {
@@ -136,65 +148,33 @@ export default class BVTAnalysisFormatter extends Formatter {
 
     //checking if the type of report.result is JsonResultFailed or not
     this.log('Some tests failed, starting the retraining...\n')
-    if (!('startTime' in report.result) || !('endTime' in report.result)) {
-      this.log('Unknown error occured,not retraining\n')
-      return
-    }
-    await this.processTestCases(report)
+    await this.processTestCases()
+
     if (this.reportGenerator.getReport().result.status === 'FAILED') {
       process.exit(1)
     }
     process.exit(0)
   }
-  private async processTestCases(report: JsonReport): Promise<JsonReport> {
-    const finalTestCases = []
-    for (const testCase of report.testCases) {
-      const modifiedTestCase = await this.processTestCase(testCase, report)
-
-      finalTestCases.push(modifiedTestCase)
-    }
-    const finalResult = finalTestCases.some(
-      (tc) => tc.result.status !== 'PASSED'
-    )
-      ? report.result
-      : ({
-          ...report.result,
-          status: 'PASSED',
-        } as JsonTestResult)
-    return {
-      result: finalResult,
-      testCases: finalTestCases,
-      env: report.env,
+  private async processTestCases() {
+    for (const { rootCause, report } of this.rootCauseArray) {
+      await this.processTestCase(rootCause, report)
     }
   }
   private async processTestCase(
-    testCase: JsonTestProgress,
-    report: JsonReport
-  ): Promise<JsonTestProgress> {
-    if (testCase.result.status === 'PASSED') {
-      return testCase
-    }
-    const failedTestSteps = testCase.steps
-      .map((step, i) =>
-        step.result.status === 'FAILED' || step.result.status === 'UNDEFINED'
-          ? i
-          : null
-      )
-      .filter((i) => i !== null)
-    const retrainStats = await this.retrain(failedTestSteps, testCase)
+    rootCause: RootCauseProps,
+    report: JsonTestProgress
+  ) {
+    const failedTestSteps = rootCause.failedStep
+    const retrainStats = await this.retrain(failedTestSteps, report)
 
     if (!retrainStats) {
-      return testCase
+      return
     }
+
     await this.uploader.modifyTestCase({
-      ...testCase,
+      ...report,
       retrainStats,
     })
-
-    return {
-      ...testCase,
-      retrainStats,
-    }
   }
 
   private async uploadFinalReport(finalReport: JsonReport) {
@@ -227,7 +207,7 @@ export default class BVTAnalysisFormatter extends Formatter {
     return success
   }
   private async retrain(
-    failedTestCases: number[],
+    failedTestCases: number,
     testCase: JsonTestProgress
   ): Promise<RetrainStats | null> {
     const data = await getProjectByAccessKey(TOKEN)
@@ -242,7 +222,7 @@ export default class BVTAnalysisFormatter extends Formatter {
   }
 
   private async call_cucumber_client(
-    stepsToRetrain: number[],
+    stepsToRetrain: number,
     testCase: JsonTestProgress
   ): Promise<RetrainStats | null> {
     return new Promise((resolve, reject) => {
@@ -261,7 +241,7 @@ export default class BVTAnalysisFormatter extends Formatter {
         path.join(process.cwd(), testCase.uri),
         `${testCase.scenarioName}`,
         'undefined',
-        `${stepsToRetrain.join(',')}`,
+        `${stepsToRetrain},`,
       ]
 
       if (process.env.BLINQ_ENV) {
