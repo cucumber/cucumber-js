@@ -54,16 +54,21 @@ export default class BVTAnalysisFormatter extends Formatter {
     options.eventBroadcaster.on(
       'envelope',
       async (envelope: EnvelopeWithMetaMessage) => {
-        const data = await this.reportGenerator.handleMessage(envelope)
+        if (doesHaveValue(envelope.testCaseFinished)) {
+          const { rootCause, report } = envelope as any
+
+          if (!rootCause.status) {
+            this.rootCauseArray.push({ rootCause, report })
+          }
+          return
+        }
+
+        await this.reportGenerator.handleMessage(envelope)
         if (
           doesHaveValue(envelope.meta) &&
           doesHaveValue(envelope.meta.runName)
         ) {
           this.runName = envelope.meta.runName
-        }
-        if (doesHaveValue(envelope.testCaseFinished)) {
-          const { rootCause, report } = data as FinishTestCaseResponse
-          this.rootCauseArray.push({ rootCause, report })
         }
         if (doesHaveValue(envelope.testRunFinished)) {
           this.START = Date.now()

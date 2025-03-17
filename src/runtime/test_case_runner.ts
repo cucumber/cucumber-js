@@ -15,6 +15,7 @@ import { IDefinition } from '../models/definition'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { IStopwatch } from './stopwatch'
 import StepDefinition from '../models/step_definition'
+import ReportGenerator from '../formatter/helpers/report_generator'
 
 export interface INewTestCaseRunnerOptions {
   eventBroadcaster: EventEmitter
@@ -47,6 +48,7 @@ export default class TestCaseRunner {
   private testStepResults: messages.TestStepResult[]
   private world: any
   private readonly worldParameters: any
+  private reportGenerator: ReportGenerator
 
   constructor({
     eventBroadcaster,
@@ -93,6 +95,7 @@ export default class TestCaseRunner {
     this.supportCodeLibrary = supportCodeLibrary
     this.worldParameters = worldParameters
     this.resetTestProgressData()
+    this.reportGenerator = new ReportGenerator()
   }
 
   resetTestProgressData(): void {
@@ -178,7 +181,8 @@ export default class TestCaseRunner {
         timestamp: this.stopwatch.timestamp(),
       },
     }
-    this.eventBroadcaster.emit('envelope', testStepFinished)
+    const data = await this.reportGenerator.handleMessage(testStepFinished)
+    this.eventBroadcaster.emit('envelope', data)
   }
 
   async run(): Promise<messages.TestStepResultStatus> {
