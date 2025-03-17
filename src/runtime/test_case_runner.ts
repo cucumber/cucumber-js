@@ -258,8 +258,9 @@ export default class TestCaseRunner {
         willBeRetried,
       },
     }
-    const data =
-      BVTAnalysisFormatter.reportGenerator.handleMessage(testCaseFinished)
+    const data = BVTAnalysisFormatter.reportGenerator
+      ? BVTAnalysisFormatter.reportGenerator.handleMessage(testCaseFinished)
+      : null
     this.eventBroadcaster.emit('envelope', testCaseFinished, data)
 
     return willBeRetried
