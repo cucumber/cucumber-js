@@ -16,6 +16,7 @@ import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { IStopwatch } from './stopwatch'
 import StepDefinition from '../models/step_definition'
 import ReportGenerator from '../formatter/helpers/report_generator'
+import BVTAnalysisFormatter from '../formatter/bvt_analysis_formatter'
 
 export interface INewTestCaseRunnerOptions {
   eventBroadcaster: EventEmitter
@@ -181,8 +182,7 @@ export default class TestCaseRunner {
         timestamp: this.stopwatch.timestamp(),
       },
     }
-    const data = await this.reportGenerator.handleMessage(testStepFinished)
-    this.eventBroadcaster.emit('envelope', testStepFinished, data)
+    this.eventBroadcaster.emit('envelope', testStepFinished)
   }
 
   async run(): Promise<messages.TestStepResultStatus> {
@@ -258,7 +258,9 @@ export default class TestCaseRunner {
         willBeRetried,
       },
     }
-    this.eventBroadcaster.emit('envelope', testCaseFinished)
+    const data =
+      BVTAnalysisFormatter.reportGenerator.handleMessage(testCaseFinished)
+    this.eventBroadcaster.emit('envelope', testCaseFinished, data)
 
     return willBeRetried
   }

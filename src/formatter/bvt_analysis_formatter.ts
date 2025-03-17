@@ -32,8 +32,8 @@ interface EnvelopeWithMetaMessage extends Envelope {
   meta: MetaMessage
 }
 export default class BVTAnalysisFormatter extends Formatter {
-  private reportGenerator = new ReportGenerator()
-  private uploader = new ReportUploader(this.reportGenerator)
+  static reportGenerator = new ReportGenerator()
+  private uploader = new ReportUploader(BVTAnalysisFormatter.reportGenerator)
   private exit = false
   private START: number
   private runName: string
@@ -55,7 +55,8 @@ export default class BVTAnalysisFormatter extends Formatter {
       'envelope',
       async (envelope: EnvelopeWithMetaMessage, data?: any) => {
         if (doesHaveValue(envelope.testCaseFinished) && data) {
-          const { rootCause, report } = data as FinishTestCaseResponse
+          const { rootCause, report } =
+            envelope.finishedGeneratingReport as FinishTestCaseResponse
 
           if (!rootCause.status) {
             this.rootCauseArray.push({ rootCause, report })
@@ -63,7 +64,7 @@ export default class BVTAnalysisFormatter extends Formatter {
           return
         }
 
-        await this.reportGenerator.handleMessage(envelope)
+        await BVTAnalysisFormatter.reportGenerator.handleMessage(envelope)
         if (
           doesHaveValue(envelope.meta) &&
           doesHaveValue(envelope.meta.runName)
@@ -123,7 +124,10 @@ export default class BVTAnalysisFormatter extends Formatter {
         if (this.exit && (!anyRem || anyRem.length === 0)) {
           // clearInterval(checkInterval)
           // resolve(null)
-          if (this.reportGenerator.getReport().result.status === 'FAILED') {
+          if (
+            BVTAnalysisFormatter.reportGenerator.getReport().result.status ===
+            'FAILED'
+          ) {
             process.exit(1)
           } else {
             process.exit(0)
@@ -155,7 +159,10 @@ export default class BVTAnalysisFormatter extends Formatter {
     this.log('Some tests failed, starting the retraining...\n')
     await this.processTestCases()
 
-    if (this.reportGenerator.getReport().result.status === 'FAILED') {
+    if (
+      BVTAnalysisFormatter.reportGenerator.getReport().result.status ===
+      'FAILED'
+    ) {
       process.exit(1)
     }
     process.exit(0)
@@ -199,7 +206,10 @@ export default class BVTAnalysisFormatter extends Formatter {
     } finally {
       try {
         writeFileSync(
-          path.join(this.reportGenerator.reportFolder, 'report.json'),
+          path.join(
+            BVTAnalysisFormatter.reportGenerator.reportFolder,
+            'report.json'
+          ),
           JSON.stringify(finalReport, null, 2),
           'utf-8'
         )
