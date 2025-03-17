@@ -174,8 +174,10 @@ export default class ReportGenerator {
     REPORT_SERVICE_TOKEN
   )
 
-  async handleMessage(envelope: EnvelopeWithMetaMessage): Promise<any> {
-    if (envelope.meta && envelope.meta.runName) {
+  async handleMessage(
+    envelope: EnvelopeWithMetaMessage | messages.Envelope
+  ): Promise<any> {
+    if (envelope.meta && 'runName' in envelope.meta) {
       this.runName = envelope.meta.runName
     }
     const type = Object.keys(envelope)[0] as keyof messages.Envelope

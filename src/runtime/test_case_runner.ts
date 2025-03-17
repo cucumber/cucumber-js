@@ -15,6 +15,8 @@ import { IDefinition } from '../models/definition'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import { IStopwatch } from './stopwatch'
 import StepDefinition from '../models/step_definition'
+import ReportGenerator from '../formatter/helpers/report_generator'
+import BVTAnalysisFormatter from '../formatter/bvt_analysis_formatter'
 
 export interface INewTestCaseRunnerOptions {
   eventBroadcaster: EventEmitter
@@ -47,6 +49,7 @@ export default class TestCaseRunner {
   private testStepResults: messages.TestStepResult[]
   private world: any
   private readonly worldParameters: any
+  private reportGenerator: ReportGenerator
 
   constructor({
     eventBroadcaster,
@@ -93,6 +96,7 @@ export default class TestCaseRunner {
     this.supportCodeLibrary = supportCodeLibrary
     this.worldParameters = worldParameters
     this.resetTestProgressData()
+    this.reportGenerator = new ReportGenerator()
   }
 
   resetTestProgressData(): void {
@@ -254,7 +258,10 @@ export default class TestCaseRunner {
         willBeRetried,
       },
     }
-    this.eventBroadcaster.emit('envelope', testCaseFinished)
+    const data = BVTAnalysisFormatter.reportGenerator
+      ? BVTAnalysisFormatter.reportGenerator.handleMessage(testCaseFinished)
+      : null
+    this.eventBroadcaster.emit('envelope', testCaseFinished, data)
 
     return willBeRetried
   }

@@ -32,6 +32,7 @@ interface EnvelopeWithMetaMessage extends Envelope {
   meta: MetaMessage
 }
 export default class BVTAnalysisFormatter extends Formatter {
+  static reportGenerator: ReportGenerator
   private reportGenerator = new ReportGenerator()
   private uploader = new ReportUploader(this.reportGenerator)
   private exit = false
@@ -46,6 +47,7 @@ export default class BVTAnalysisFormatter extends Formatter {
   constructor(options: IFormatterOptions) {
     super(options)
     this.summaryFormatter = new SummaryFormatter(options)
+    BVTAnalysisFormatter.reportGenerator = this.reportGenerator
     this.rootCauseArray = []
     if (!TOKEN && process.env.BVT_FORMATTER === 'ANALYSIS') {
       throw new Error('TOKEN must be set')
@@ -53,17 +55,22 @@ export default class BVTAnalysisFormatter extends Formatter {
     this.sendEvent(ActionEvents.cli_run_tests)
     options.eventBroadcaster.on(
       'envelope',
-      async (envelope: EnvelopeWithMetaMessage) => {
-        const data = await this.reportGenerator.handleMessage(envelope)
+      async (envelope: EnvelopeWithMetaMessage, data?: any) => {
+        if (doesHaveValue(envelope.testCaseFinished) && data) {
+          const { rootCause, report } = data as FinishTestCaseResponse
+
+          if (!rootCause.status) {
+            this.rootCauseArray.push({ rootCause, report })
+          }
+          return
+        }
+
+        await this.reportGenerator.handleMessage(envelope)
         if (
           doesHaveValue(envelope.meta) &&
           doesHaveValue(envelope.meta.runName)
         ) {
           this.runName = envelope.meta.runName
-        }
-        if (doesHaveValue(envelope.testCaseFinished)) {
-          const { rootCause, report } = data as FinishTestCaseResponse
-          this.rootCauseArray.push({ rootCause, report })
         }
         if (doesHaveValue(envelope.testRunFinished)) {
           this.START = Date.now()
