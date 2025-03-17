@@ -53,9 +53,9 @@ export default class BVTAnalysisFormatter extends Formatter {
     this.sendEvent(ActionEvents.cli_run_tests)
     options.eventBroadcaster.on(
       'envelope',
-      async (envelope: EnvelopeWithMetaMessage) => {
-        if (doesHaveValue(envelope.testCaseFinished)) {
-          const { rootCause, report } = envelope as any
+      async (envelope: EnvelopeWithMetaMessage, data?: any) => {
+        if (doesHaveValue(envelope.testCaseFinished) && data) {
+          const { rootCause, report } = data as FinishTestCaseResponse
 
           if (!rootCause.status) {
             this.rootCauseArray.push({ rootCause, report })

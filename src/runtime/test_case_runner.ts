@@ -182,7 +182,7 @@ export default class TestCaseRunner {
       },
     }
     const data = await this.reportGenerator.handleMessage(testStepFinished)
-    this.eventBroadcaster.emit('envelope', data)
+    this.eventBroadcaster.emit('envelope', testStepFinished, data)
   }
 
   async run(): Promise<messages.TestStepResultStatus> {
