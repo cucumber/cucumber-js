@@ -259,7 +259,9 @@ export default class TestCaseRunner {
       },
     }
     const data = BVTAnalysisFormatter.reportGenerator
-      ? BVTAnalysisFormatter.reportGenerator.handleMessage(testCaseFinished)
+      ? await BVTAnalysisFormatter.reportGenerator.handleMessage(
+          testCaseFinished
+        )
       : null
     this.eventBroadcaster.emit('envelope', testCaseFinished, data)
 
