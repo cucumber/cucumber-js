@@ -156,6 +156,7 @@ export default class BVTAnalysisFormatter extends Formatter {
     //checking if the type of report.result is JsonResultFailed or not
     this.log('Some tests failed, starting the retraining...\n')
     await this.processTestCases()
+    await this.rerun()
 
     if (this.reportGenerator.getReport().result.status === 'FAILED') {
       process.exit(1)
@@ -226,6 +227,30 @@ export default class BVTAnalysisFormatter extends Formatter {
       process.exit(1)
     }
     return await this.call_cucumber_client(failedTestCases, testCase)
+  }
+
+  private async rerun() {
+    await new Promise<void>((resolve) => {
+      const node_path = process.argv.shift()
+      const args = process.argv
+      const cucumberClient = spawn(node_path, args, {
+        env: {
+          ...process.env,
+        },
+      })
+
+      cucumberClient.stdout.on('data', (data) => {
+        console.log(data.toString())
+      })
+
+      cucumberClient.stderr.on('data', (data) => {
+        console.error(data.toString())
+      })
+
+      cucumberClient.on('close', () => {
+        resolve()
+      })
+    })
   }
 
   private async call_cucumber_client(
