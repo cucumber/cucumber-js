@@ -175,7 +175,8 @@ export default class ReportGenerator {
   )
 
   async handleMessage(
-    envelope: EnvelopeWithMetaMessage | messages.Envelope
+    envelope: EnvelopeWithMetaMessage | messages.Envelope,
+    reRunId?: string
   ): Promise<any> {
     if (envelope.meta && 'runName' in envelope.meta) {
       this.runName = envelope.meta.runName
@@ -233,7 +234,7 @@ export default class ReportGenerator {
       }
       case 'testCaseFinished': {
         const testCaseFinished = envelope[type]
-        return await this.onTestCaseFinished(testCaseFinished)
+        return await this.onTestCaseFinished(testCaseFinished, reRunId)
       }
       // case "hook": { break} // After Hook
       case 'testRunFinished': {
@@ -611,7 +612,8 @@ export default class ReportGenerator {
     } as const
   }
   private async onTestCaseFinished(
-    testCaseFinished: messages.TestCaseFinished
+    testCaseFinished: messages.TestCaseFinished,
+    reRunId?: string
   ) {
     const { testCaseStartedId, timestamp } = testCaseFinished
     const testProgress = this.testCaseReportMap.get(testCaseStartedId)
@@ -632,9 +634,9 @@ export default class ReportGenerator {
     this.initialAriaSnapshot = ''
     this.networkLog = []
     this.logs = []
-    return await this.uploadTestCase(testProgress)
+    return await this.uploadTestCase(testProgress, reRunId)
   }
-  private async uploadTestCase(testCase: JsonTestProgress) {
+  private async uploadTestCase(testCase: JsonTestProgress, rerunId?: string) {
     let runId = ''
     let projectId = ''
     if (!process.env.UPLOADING_TEST_CASE) {
@@ -666,7 +668,8 @@ export default class ReportGenerator {
         testCase,
         runId,
         projectId,
-        this.reportFolder
+        this.reportFolder,
+        rerunId
       )
       this.writeTestCaseReportToDisk(testCase)
     } catch (e) {
