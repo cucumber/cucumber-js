@@ -55,9 +55,8 @@ export default class BVTAnalysisFormatter extends Formatter {
     BVTAnalysisFormatter.reportGenerator = this.reportGenerator
     this.rootCauseArray = []
     this.failedStepsIndex = []
-    const isRerun = process.argv.find((arg) => arg.includes('rerun='))
-    BVTAnalysisFormatter.reRunFailedStepsIndex = isRerun
-      ? JSON.parse(isRerun.split('rerun=')[1])
+    BVTAnalysisFormatter.reRunFailedStepsIndex = process.env.RERUN
+      ? JSON.parse(process.env.RERUN)
       : null
 
     if (!TOKEN && process.env.BVT_FORMATTER === 'ANALYSIS') {
@@ -269,15 +268,12 @@ export default class BVTAnalysisFormatter extends Formatter {
     await new Promise<void>((resolve) => {
       const node_path = process.argv.shift()
       const args = process.argv
-      const cucumberClient = spawn(
-        node_path,
-        [...args, `rerun=${JSON.stringify(this.failedStepsIndex)}`],
-        {
-          env: {
-            ...process.env,
-          },
-        }
-      )
+      const cucumberClient = spawn(node_path, args, {
+        env: {
+          ...process.env,
+          RERUN: JSON.stringify(this.failedStepsIndex),
+        },
+      })
 
       cucumberClient.stdout.on('data', (data) => {
         console.log(data.toString())
