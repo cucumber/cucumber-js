@@ -33,15 +33,15 @@ interface EnvelopeWithMetaMessage extends Envelope {
 }
 export default class BVTAnalysisFormatter extends Formatter {
   static reportGenerator: ReportGenerator
+  static reRunFailedStepsIndex:
+    | { testCaseId: string; failedStepIndex: number }[]
+    | null
   private reportGenerator = new ReportGenerator()
   private uploader = new ReportUploader(this.reportGenerator)
   private exit = false
   private START: number
   private runName: string
   private failedStepsIndex: { testCaseId: string; failedStepIndex: number }[]
-  private reRunFailedStepsIndex:
-    | { testCaseId: string; failedStepIndex: number }[]
-    | null
   private hasStepFailed: boolean
   private summaryFormatter: SummaryFormatter
   private rootCauseArray: {
@@ -54,8 +54,9 @@ export default class BVTAnalysisFormatter extends Formatter {
     this.summaryFormatter = new SummaryFormatter(options)
     BVTAnalysisFormatter.reportGenerator = this.reportGenerator
     this.rootCauseArray = []
+    this.failedStepsIndex = []
     const isRerun = process.argv.find((arg) => arg.includes('rerun='))
-    this.reRunFailedStepsIndex = isRerun
+    BVTAnalysisFormatter.reRunFailedStepsIndex = isRerun
       ? JSON.parse(isRerun.split('rerun=')[1])
       : null
 
@@ -81,15 +82,7 @@ export default class BVTAnalysisFormatter extends Formatter {
           }
           return
         }
-
-        const rerunId = this.reRunFailedStepsIndex
-          ? this.reRunFailedStepsIndex[0].testCaseId
-          : null
-        await this.reportGenerator.handleMessage(envelope, rerunId)
-
-        if (this.reRunFailedStepsIndex) {
-          this.reRunFailedStepsIndex.shift()
-        }
+        await this.reportGenerator.handleMessage(envelope)
 
         if (
           doesHaveValue(envelope.meta) &&
@@ -203,8 +196,8 @@ export default class BVTAnalysisFormatter extends Formatter {
   ) {
     const failedTestSteps = rootCause.failedStep
 
-    if (this.reRunFailedStepsIndex) {
-      const previousRun = this.reRunFailedStepsIndex.find(
+    if (BVTAnalysisFormatter.reRunFailedStepsIndex) {
+      const previousRun = BVTAnalysisFormatter.reRunFailedStepsIndex.find(
         (failedStep) => failedStep.testCaseId === report.id
       )
 
