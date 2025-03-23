@@ -272,10 +272,6 @@ export default class TestCaseRunner {
 
     this.eventBroadcaster.emit('envelope', testCaseFinished, data)
 
-    if (BVTAnalysisFormatter.reRunFailedStepsIndex) {
-      BVTAnalysisFormatter.reRunFailedStepsIndex.shift()
-    }
-
     return willBeRetried
   }
 

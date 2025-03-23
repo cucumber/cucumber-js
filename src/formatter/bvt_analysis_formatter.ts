@@ -195,15 +195,17 @@ export default class BVTAnalysisFormatter extends Formatter {
   ) {
     const failedTestSteps = rootCause.failedStep
 
-    if (BVTAnalysisFormatter.reRunFailedStepsIndex) {
-      const previousRun = BVTAnalysisFormatter.reRunFailedStepsIndex.find(
-        (failedStep) => failedStep.testCaseId === report.id
-      )
-
+    if (
+      BVTAnalysisFormatter.reRunFailedStepsIndex &&
+      BVTAnalysisFormatter.reRunFailedStepsIndex.length > 0
+    ) {
+      const previousRun = BVTAnalysisFormatter.reRunFailedStepsIndex[0]
       if (previousRun.failedStepIndex === failedTestSteps) {
         console.log('Same step has failed again, skipping retraining')
+        BVTAnalysisFormatter.reRunFailedStepsIndex.shift()
         return
       }
+      BVTAnalysisFormatter.reRunFailedStepsIndex.shift()
     }
 
     const retrainStats = await this.retrain(failedTestSteps, report)
