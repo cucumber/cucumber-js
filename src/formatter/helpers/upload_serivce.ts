@@ -124,7 +124,8 @@ class RunUploadService {
     testCaseReport: JsonTestProgress,
     runId: string,
     projectId: string,
-    reportFolder: string
+    reportFolder: string,
+    rerunId?: string
   ) {
     const fileUris = []
     //iterate over all the files in the JsonCommand.screenshotId and insert them into the fileUris array
@@ -170,6 +171,7 @@ class RunUploadService {
           testProgressReport: testCaseReport,
           mode: process.env.MODE === 'cloud' ? 'cloud' : 'local',
           browser: process.env.BROWSER ? process.env.BROWSER : 'chromium',
+          rerunId,
         },
         {
           headers: {
