@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 permissions:
-    contents: write  
+  contents: write
 
 jobs:
   publish-npm:
@@ -16,17 +16,16 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '23'
           cache: 'npm'
           cache-dependency-path: package-lock.json
       - run: npm install-test
 
-
       - name: Fetch current version from npm with tag 'latest'
         id: npm_version
         run: |
-            version=$(npm show @dev-blinq/cucumber-js@latest version)
-            echo "version=$version" >> $GITHUB_ENV
+          version=$(npm show @dev-blinq/cucumber-js@latest version)
+          echo "version=$version" >> $GITHUB_ENV
 
       - name: Increment version
         id: increment-version
@@ -37,16 +36,14 @@ jobs:
           NEW_VERSION="${version_parts[0]}.${version_parts[1]}.${patch_version}"
 
           echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
-              
+
       - name: Update package.json with new npm version
         run: |
-              jq --arg new_version "${{ env.new_version }}" '.version = $new_version' "${{ github.workspace }}/package.json" > "${{ github.workspace }}/package.json.tmp" && mv "${{ github.workspace }}/package.json.tmp" "${{ github.workspace }}/package.json"
-
+          jq --arg new_version "${{ env.new_version }}" '.version = $new_version' "${{ github.workspace }}/package.json" > "${{ github.workspace }}/package.json.tmp" && mv "${{ github.workspace }}/package.json.tmp" "${{ github.workspace }}/package.json"
 
       - name: Update package-lock.json
         run: npm install --package-lock-only
-        working-directory: ${{ github.workspace }}      
-   
+        working-directory: ${{ github.workspace }}
 
       - uses: cucumber/action-publish-npm@v1.1.0
         with:
