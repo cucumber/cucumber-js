@@ -3,7 +3,7 @@ name: PR Tests
 on:
   pull_request:
     branches:
-      - dev  # Trigger the workflow when a PR is created targeting the `dev` branch
+      - dev # Trigger the workflow when a PR is created targeting the `dev` branch
 
 jobs:
   test:
@@ -18,7 +18,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Adjust to your required Node.js version
+          node-version: '16' # Adjust to your required Node.js version
 
       # Step 3: Install dependencies
       - name: Install dependencies
@@ -34,9 +34,9 @@ jobs:
 
     # Step 5: Block PR if tests fail (Exit code is non-zero)
   block-pr-if-failed:
-      runs-on: ubuntu-latest
-      needs: test  # This job runs after the 'test' job
-      if: ${{ failure() }}  # Only run this job if the 'test' job has failed
-      steps:
-        - name: Block PR if tests fail
-          run: exit 1  # This forces the PR to fail if the tests fail
+    runs-on: ubuntu-latest
+    needs: test # This job runs after the 'test' job
+    if: ${{ failure() }} # Only run this job if the 'test' job has failed
+    steps:
+      - name: Block PR if tests fail
+        run: exit 1 # This forces the PR to fail if the tests fail
