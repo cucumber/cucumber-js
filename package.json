@@ -60,6 +60,7 @@
     "@cucumber/messages": "22.0.0",
     "@cucumber/tag-expressions": "5.0.1",
     "@faker-js/faker": "^8.0.2",
+    "@types/escape-string-regexp": "^1.0.0",
     "@types/tunnel": "^0.0.7",
     "assertion-error-formatter": "^3.0.0",
     "axios": "^1.6.2",
@@ -69,6 +70,7 @@
     "commander": "^10.0.0",
     "debug": "^4.3.4",
     "error-stack-parser": "^2.1.4",
+    "escape-string-regexp": "^5.0.0",
     "figures": "^3.2.0",
     "glob": "^7.1.6",
     "has-ansi": "^4.0.1",
@@ -159,7 +161,6 @@
   "overrides": {
     "ansi-regex": "^5.0.1"
   },
-  
   "scripts": {
     "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.node.json && shx cp src/importer.js lib/ && shx cp src/wrapper.mjs lib/ && shx cp src/api/wrapper.mjs lib/api/",
     "cck-test": "mocha 'compatibility/**/*_spec.ts'",

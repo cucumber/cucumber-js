@@ -22,6 +22,8 @@ import {
   FinishTestCaseResponse,
   RootCauseProps,
 } from './helpers/upload_serivce'
+import escapeStringRegexp from 'escape-string-regexp'
+
 //User token
 const TOKEN = process.env.TOKEN
 interface MetaMessage extends Meta {
@@ -42,7 +44,6 @@ export default class BVTAnalysisFormatter extends Formatter {
   private START: number
   private runName: string
   private failedStepsIndex: { testCaseId: string; failedStepIndex: number }[]
-  private hasStepFailed: boolean
   private summaryFormatter: SummaryFormatter
   private rootCauseArray: {
     rootCause: RootCauseProps
@@ -174,11 +175,6 @@ export default class BVTAnalysisFormatter extends Formatter {
 
     this.log('Some tests failed, starting the retraining...\n')
     await this.processTestCases()
-
-    if (this.hasStepFailed) {
-      await this.rerun()
-    }
-
     if (this.reportGenerator.getReport().result.status === 'FAILED') {
       process.exit(1)
     }
@@ -214,12 +210,12 @@ export default class BVTAnalysisFormatter extends Formatter {
       return
     }
 
-    this.hasStepFailed = true
-
     await this.uploader.modifyTestCase({
       ...report,
       retrainStats,
     })
+
+    await this.rerun(report)
   }
 
   private async uploadFinalReport(finalReport: JsonReport) {
@@ -266,10 +262,27 @@ export default class BVTAnalysisFormatter extends Formatter {
     return await this.call_cucumber_client(failedTestCases, testCase)
   }
 
-  private async rerun() {
+  private async rerun(report: JsonTestProgress) {
     await new Promise<void>((resolve) => {
       const node_path = process.argv.shift()
-      const args = process.argv
+      const args = [
+        path.join(
+          process.cwd(),
+          'node_modules',
+          '@dev-blinq',
+          'cucumber-js',
+          'bin',
+          'cucumber.js'
+        ),
+        '--name',
+        `^${escapeStringRegexp(report.scenarioName)}$`,
+        '--exit',
+        '--format',
+        'bvt',
+        '--run-name',
+        `${report.scenarioName}@debug`,
+        path.join(process.cwd(), 'features', `${report.featureName}.feature`),
+      ]
       const cucumberClient = spawn(node_path, args, {
         env: {
           ...process.env,
