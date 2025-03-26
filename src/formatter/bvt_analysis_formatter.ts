@@ -22,7 +22,6 @@ import {
   FinishTestCaseResponse,
   RootCauseProps,
 } from './helpers/upload_serivce'
-import escapeStringRegexp from 'escape-string-regexp'
 
 //User token
 const TOKEN = process.env.TOKEN
@@ -275,7 +274,7 @@ export default class BVTAnalysisFormatter extends Formatter {
           'cucumber.js'
         ),
         '--name',
-        `^${escapeStringRegexp(report.scenarioName)}$`,
+        `^${report.scenarioName}$`,
         '--exit',
         '--format',
         'bvt',
