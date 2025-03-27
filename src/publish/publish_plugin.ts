@@ -37,6 +37,7 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
               touchResponse.status
             }`
           )
+          logger.debug(touchResponse)
         }
       }
     }
@@ -71,6 +72,7 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
                 new URL(uploadUrl).origin
               } with status ${uploadResponse.status}`
             )
+            logger.debug(uploadResponse)
           }
           resolve()
         })
