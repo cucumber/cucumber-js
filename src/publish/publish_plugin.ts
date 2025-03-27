@@ -32,7 +32,11 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
             sanitisePublishOutput(banner, environment.stderr) + '\n'
           )
         } else {
-          logger.error(`Failed to publish report to ${new URL(url).origin} with status ${touchResponse.status}`)
+          logger.error(
+            `Failed to publish report to ${new URL(url).origin} with status ${
+              touchResponse.status
+            }`
+          )
         }
       }
     }
@@ -62,7 +66,11 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
               sanitisePublishOutput(banner, environment.stderr) + '\n'
             )
           } else {
-            logger.error(`Failed to upload report to ${new URL(uploadUrl).origin} with status ${uploadResponse.status}`)
+            logger.error(
+              `Failed to upload report to ${
+                new URL(uploadUrl).origin
+              } with status ${uploadResponse.status}`
+            )
           }
           resolve()
         })
