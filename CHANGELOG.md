@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- Improve error handling in publish plugin ([#2526](https://github.com/cucumber/cucumber-js/pull/2526))
 
 ## [11.2.0] - 2025-01-09
 ### Added
