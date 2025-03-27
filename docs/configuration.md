@@ -115,7 +115,7 @@ If your features are somewhere else, you can override this by proving your own [
 - In a configuration file `{ paths: ['somewhere-else/**/*.feature'] }`
 - On the CLI `cucumber-js 'somewhere-else/**/*.feature'` (note that the argument is quoted - this is to avoid your shell expanding the glob itself which might lead to different behaviour than what's documented here)
 
-This option is repeatable, so you can provide several values and they'll be combined.
+This option is repeatable, so you can provide several values and they'll be combined, whilst maintaining the order you provided them in.
 
 For more granular options to control _which scenarios_ from your features should be run, see [Filtering](./filtering.md).
 
