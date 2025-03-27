@@ -94,8 +94,20 @@ Feature: Publish reports
       ┌─────────────────────┐
       │ Error invalid token │
       └─────────────────────┘
+      """
 
-      Unexpected http status 401 from GET http://localhost:9987
+  @spawn
+  Scenario: results are not published due to a service error
+    Given report publishing is not working
+    When I run cucumber-js with arguments `--publish` and env ``
+    Then it passes
+    And the error output does not contain the text:
+      """
+      Not a useful error message
+      """
+    And the error output contains the text:
+      """
+      Failed to publish report to http://localhost:9987 with status 500
       """
 
   @spawn

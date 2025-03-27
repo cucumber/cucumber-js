@@ -27,12 +27,13 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
 
     if (!touchResponse.ok) {
       return () => {
-        environment.stderr.write(
-          sanitisePublishOutput(banner, environment.stderr) + '\n'
-        )
-        logger.error(
-          `Unexpected http status ${touchResponse.status} from GET ${url}`
-        )
+        if (touchResponse.status < 500) {
+          environment.stderr.write(
+            sanitisePublishOutput(banner, environment.stderr) + '\n'
+          )
+        } else {
+          logger.error(`Failed to publish report to ${new URL(url).origin} with status ${touchResponse.status}`)
+        }
       }
     }
 
