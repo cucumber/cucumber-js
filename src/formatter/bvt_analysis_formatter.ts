@@ -22,6 +22,8 @@ import {
   FinishTestCaseResponse,
   RootCauseProps,
 } from './helpers/upload_serivce'
+import { promisify } from 'util';
+import { exec } from 'child_process';
 
 //User token
 const TOKEN = process.env.TOKEN
@@ -418,4 +420,15 @@ export function logReportLink(runId: string, projectId: string) {
   }
   const reportLink = `${reportLinkBaseUrl}/${projectId}/run-report/${runId}`
   console.log(`Report link: ${reportLink}\n`)
+  try {
+    publishReportLinkToGuacServer(reportLink);
+  } catch (err) {
+  }
+}
+
+function publishReportLinkToGuacServer(reportLink: string) {
+  if (existsSync("/tmp/report_publish.sh")) {
+    const execAsync = promisify(exec);
+    execAsync("sh /tmp/report_publish.sh " + reportLink);
+  }
 }
