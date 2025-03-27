@@ -48,7 +48,7 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
       return new Promise<void>((resolve) => {
         tempFileStream.end(async () => {
           const stats = await stat(tempFilePath)
-          await fetch(uploadUrl, {
+          const uploadResponse = await fetch(uploadUrl, {
             method: 'PUT',
             headers: {
               'Content-Length': stats.size.toString(),
@@ -56,9 +56,13 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
             body: createReadStream(tempFilePath, { encoding: 'utf-8' }),
             duplex: 'half',
           })
-          environment.stderr.write(
-            sanitisePublishOutput(banner, environment.stderr) + '\n'
-          )
+          if (uploadResponse.ok) {
+            environment.stderr.write(
+              sanitisePublishOutput(banner, environment.stderr) + '\n'
+            )
+          } else {
+            logger.error(`Failed to upload report to ${new URL(uploadUrl).origin} with status ${uploadResponse.status}`)
+          }
           resolve()
         })
       })

@@ -86,7 +86,7 @@ Feature: Publish reports
       """
 
   @spawn
-  Scenario: when results are not published due to an error raised by the server, the banner is displayed
+  Scenario: results are not published due to a client error
     When I run cucumber-js with env `CUCUMBER_PUBLISH_TOKEN=keyboardcat`
     Then it passes
     And the error output contains the text:
@@ -96,4 +96,18 @@ Feature: Publish reports
       └─────────────────────┘
 
       Unexpected http status 401 from GET http://localhost:9987
+      """
+
+  @spawn
+  Scenario: results are not published due to an error on uploading
+    Given report uploads are not working
+    When I run cucumber-js with arguments `--publish` and env ``
+    Then it passes
+    And the error output does not contain the text:
+      """
+      View your Cucumber Report at:
+      """
+    And the error output contains the text:
+      """
+      Failed to upload report to http://localhost:9987 with status 500
       """
