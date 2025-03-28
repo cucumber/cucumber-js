@@ -644,7 +644,7 @@ export default class ReportGenerator {
       }
       const reportFilePath = path.join(this.reportFolder, `${endTime}_${testProgress.scenarioName}.json`)
       writeFileSync(reportFilePath, JSON.stringify(testProgress, null, 2))
-      return {}
+      return undefined
     } else {
       return await this.uploadTestCase(testProgress, reRunId)
     }
