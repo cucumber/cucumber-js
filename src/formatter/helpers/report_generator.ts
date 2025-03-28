@@ -2,6 +2,7 @@ import * as messages from '@cucumber/messages'
 import fs from 'fs'
 import path from 'path'
 import { RunUploadService } from './upload_serivce'
+import { writeFileSync } from 'fs-extra'
 // type JsonException = messages.Exception
 type JsonTimestamp = number //messages.Timestamp
 type JsonStepType = 'Unknown' | 'Context' | 'Action' | 'Outcome' | 'Conjunction'
@@ -10,10 +11,10 @@ const URL =
   process.env.NODE_ENV_BLINQ === 'dev'
     ? 'https://dev.api.blinq.io/api/runs'
     : process.env.NODE_ENV_BLINQ === 'local'
-    ? 'http://localhost:5001/api/runs'
-    : process.env.NODE_ENV_BLINQ === 'stage'
-    ? 'https://stage.api.blinq.io/api/runs'
-    : 'https://api.blinq.io/api/runs'
+      ? 'http://localhost:5001/api/runs'
+      : process.env.NODE_ENV_BLINQ === 'stage'
+        ? 'https://stage.api.blinq.io/api/runs'
+        : 'https://api.blinq.io/api/runs'
 
 const REPORT_SERVICE_URL = process.env.REPORT_SERVICE_URL ?? URL
 const BATCH_SIZE = 10
@@ -623,10 +624,11 @@ export default class ReportGenerator {
     }
     const steps = Object.values(testProgress.steps)
     const result = this.getTestCaseResult(steps)
+    const endTime = this.getTimeStamp(timestamp)
     testProgress.result = {
       ...result,
       startTime: prevResult.startTime,
-      endTime: this.getTimeStamp(timestamp),
+      endTime,
     }
     testProgress.webLog = this.logs
     testProgress.networkLog = this.networkLog
@@ -634,7 +636,18 @@ export default class ReportGenerator {
     this.initialAriaSnapshot = ''
     this.networkLog = []
     this.logs = []
-    return await this.uploadTestCase(testProgress, reRunId)
+
+    if (process.env.TESTCASE_REPORT_FOLDER_PATH) {
+      this.reportFolder = process.env.TESTCASE_REPORT_FOLDER_PATH
+      if (!fs.existsSync(this.reportFolder)) {
+        fs.mkdirSync(this.reportFolder)
+      }
+      const reportFilePath = path.join(this.reportFolder, `${endTime}_${testProgress.scenarioName}.json`)
+      writeFileSync(reportFilePath, JSON.stringify(testProgress, null, 2))
+      return {}
+    } else {
+      return await this.uploadTestCase(testProgress, reRunId)
+    }
   }
   private async uploadTestCase(testCase: JsonTestProgress, rerunId?: string) {
     let runId = ''
