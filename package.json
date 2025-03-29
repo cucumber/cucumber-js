@@ -303,7 +303,7 @@
     "prettier": "3.0.3",
     "reindent-template-literals": "1.1.0",
     "shx": "0.3.4",
-    "sinon": "15.0.1",
+    "sinon": "15.2.0",
     "sinon-chai": "3.7.0",
     "stream-to-string": "1.2.1",
     "tmp": "0.2.3",
