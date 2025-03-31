@@ -242,7 +242,7 @@
     "knuth-shuffle-seeded": "^1.0.6",
     "lodash.merge": "^4.6.2",
     "lodash.mergewith": "^4.6.2",
-    "luxon": "3.5.0",
+    "luxon": "3.6.1",
     "mime": "^3.0.0",
     "mkdirp": "^2.1.5",
     "mz": "^2.7.0",
