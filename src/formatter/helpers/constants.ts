@@ -23,14 +23,25 @@ export const STAGE = {
   STORAGE: 'https://stage.api.blinq.io/api/storage',
 }
 
+export const CUSTOM = {
+  SSO: `${process.env.NODE_ENV_BLINQ}/api/auth`,
+  WORKSPACE: `${process.env.NODE_ENV_BLINQ}/api/workspace`,
+  RUNS: `${process.env.NODE_ENV_BLINQ}/api/runs`,
+  STORAGE: `${process.env.NODE_ENV_BLINQ}/api/storage`,
+}
+
 export const SERVICES_URI =
   process.env.NODE_ENV_BLINQ === 'local'
     ? LOCAL // eslint-disable-line
     : process.env.NODE_ENV_BLINQ === 'dev'
     ? DEV // eslint-disable-line
     : process.env.NODE_ENV_BLINQ === 'stage'
-    ? STAGE
-    : PROD // eslint-disable-line
+    ? STAGE // eslint-disable-line
+    : process.env.NODE_ENV_BLINQ === 'prod'
+    ? PROD // eslint-disable-line
+    : !process.env.NODE_ENV_BLINQ
+    ? PROD // eslint-disable-line
+    : CUSTOM // eslint-disable-line
 
 export enum ActionEvents {
   record_scenario = 'record_scenario',
