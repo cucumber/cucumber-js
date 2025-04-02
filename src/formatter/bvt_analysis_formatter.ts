@@ -22,8 +22,8 @@ import {
   FinishTestCaseResponse,
   RootCauseProps,
 } from './helpers/upload_serivce'
-import { promisify } from 'util';
-import { exec } from 'child_process';
+import { promisify } from 'util'
+import { exec } from 'child_process'
 
 //User token
 const TOKEN = process.env.TOKEN
@@ -417,18 +417,23 @@ export function logReportLink(runId: string, projectId: string) {
     reportLinkBaseUrl = 'https://dev.app.blinq.io'
   } else if (process.env.NODE_ENV_BLINQ === 'stage') {
     reportLinkBaseUrl = 'https://stage.app.blinq.io'
+  } else if (process.env.NODE_ENV_BLINQ === 'prod') {
+    reportLinkBaseUrl = 'https://app.blinq.io'
+  } else if (!process.env.NODE_ENV_BLINQ) {
+    reportLinkBaseUrl = 'https://app.blinq.io'
+  } else {
+    reportLinkBaseUrl = process.env.NODE_ENV_BLINQ.replace('api', 'app')
   }
   const reportLink = `${reportLinkBaseUrl}/${projectId}/run-report/${runId}`
   console.log(`Report link: ${reportLink}\n`)
   try {
-    publishReportLinkToGuacServer(reportLink);
-  } catch (err) {
-  }
+    publishReportLinkToGuacServer(reportLink)
+  } catch (err) {}
 }
 
 function publishReportLinkToGuacServer(reportLink: string) {
-  if (existsSync("/tmp/report_publish.sh")) {
-    const execAsync = promisify(exec);
-    execAsync("sh /tmp/report_publish.sh " + reportLink);
+  if (existsSync('/tmp/report_publish.sh')) {
+    const execAsync = promisify(exec)
+    execAsync('sh /tmp/report_publish.sh ' + reportLink)
   }
 }
