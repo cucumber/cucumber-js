@@ -11,14 +11,14 @@ const URL =
   process.env.NODE_ENV_BLINQ === 'dev'
     ? 'https://dev.api.blinq.io/api/runs'
     : process.env.NODE_ENV_BLINQ === 'local'
-    ? 'http://localhost:5001/api/runs'
-    : process.env.NODE_ENV_BLINQ === 'stage'
-    ? 'https://stage.api.blinq.io/api/runs'
-    : process.env.NODE_ENV_BLINQ === 'prod'
-    ? 'https://api.blinq.io/api/runs'
-    : !process.env.NODE_ENV_BLINQ
-    ? 'https://api.blinq.io/api/runs'
-    : `${process.env.NODE_ENV_BLINQ}/api/runs`
+      ? 'http://localhost:5001/api/runs'
+      : process.env.NODE_ENV_BLINQ === 'stage'
+        ? 'https://stage.api.blinq.io/api/runs'
+        : process.env.NODE_ENV_BLINQ === 'prod'
+          ? 'https://api.blinq.io/api/runs'
+          : !process.env.NODE_ENV_BLINQ
+            ? 'https://api.blinq.io/api/runs'
+            : `${process.env.NODE_ENV_BLINQ}/api/runs`
 
 const REPORT_SERVICE_URL = process.env.REPORT_SERVICE_URL ?? URL
 const BATCH_SIZE = 10
@@ -107,6 +107,7 @@ export type JsonStep = {
   networkData: any[]
   data?: any
   ariaSnapshot: string
+  traceFilePath?: string
 }
 export type RetrainStats = {
   result: JsonTestResult
@@ -462,6 +463,9 @@ export default class ReportGenerator {
     if (mediaType === 'application/json') {
       const command: JsonCommand = JSON.parse(body)
       stepProgess.commands.push(command)
+    } else if (mediaType === 'application/json+trace') {
+      const data = JSON.parse(body)
+      stepProgess.traceFilePath = data.traceFilePath
     }
   }
   private getFailedTestStepResult({
