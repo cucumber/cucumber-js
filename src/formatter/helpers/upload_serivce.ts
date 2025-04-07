@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import FormData from 'form-data'
-import { createReadStream, existsSync } from 'fs'
+import { createReadStream, existsSync, write, writeFileSync } from 'fs'
 import fs from 'fs/promises'
 
 import { JsonReport, JsonTestProgress } from './report_generator'
@@ -29,7 +29,7 @@ export interface FinishTestCaseResponse {
 }
 
 class RunUploadService {
-  constructor(private runsApiBaseURL: string, private accessToken: string) {}
+  constructor(private runsApiBaseURL: string, private accessToken: string) { }
   async createRunDocument(name: string) {
     try {
       const runDocResult = await axiosClient.post(
@@ -137,7 +137,11 @@ class RunUploadService {
           )
         }
       }
+      if (step.traceFilePath) {
+        fileUris.push('trace' + '/' + step.traceFilePath)
+      }
     }
+    // console.log({ fileUris })
     const preSignedUrls = await this.getPreSignedUrls(fileUris, runId)
     //upload all the files in the fileUris array
     try {
@@ -163,6 +167,9 @@ class RunUploadService {
             })
         )
       }
+
+      // writeFileSync("report.json", JSON.stringify(testCaseReport, null, 2))
+
       const { data } = await axiosClient.post<FinishTestCaseResponse>(
         this.runsApiBaseURL + '/cucumber-runs/createNewTestCase',
         {
