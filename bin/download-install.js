@@ -20,6 +20,8 @@ const getSSoUrl = () => {
       return 'https://api.blinq.io/api/auth'
     case null:
       return 'https://api.blinq.io/api/auth'
+    case undefined:
+      return 'https://api.blinq.io/api/auth'
     default:
       return `${process.env.NODE_ENV_BLINQ}/api/auth`
   }
@@ -55,6 +57,8 @@ const getWorkSpaceUrl = () => {
     case 'prod':
       return 'https://api.blinq.io/api/workspace'
     case null:
+      return 'https://api.blinq.io/api/workspace'
+    case undefined:
       return 'https://api.blinq.io/api/workspace'
     default:
       return `${process.env.NODE_ENV_BLINQ}/api/workspace`
