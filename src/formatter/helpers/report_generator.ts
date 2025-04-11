@@ -571,6 +571,21 @@ export default class ReportGenerator {
     if (Object.keys(data).length > 0) {
       stepProgess.data = data
     }
+
+    // if (process.env.TESTCASE_REPORT_FOLDER_PATH) {
+    //   this.reportFolder = process.env.TESTCASE_REPORT_FOLDER_PATH
+    //   if (!fs.existsSync(this.reportFolder)) {
+    //     fs.mkdirSync(this.reportFolder)
+    //   }
+    //   const reportFilePath = path.join(
+    //     this.reportFolder,
+    //     `report.json`
+    //   )
+    //   writeFileSync(reportFilePath, JSON.stringify(this.report, null, 2))
+    //   return undefined
+    //   // } else {
+    //   // return await this.uploadTestCase(testProgress, reRunId)
+    // }
   }
   getLogFileContent() {
     let projectPath = process.cwd()
@@ -706,21 +721,26 @@ export default class ReportGenerator {
     return data ? data : null
   }
   private writeTestCaseReportToDisk(testCase: JsonTestProgress) {
+    const reportFolder = this.reportFolder ?? process.env.TESTCASE_REPORT_FOLDER_PATH
+    if (!reportFolder) {
+      console.error('Report folder is not defined')
+      return
+    }
     try {
       let i = 0
-      while (fs.existsSync(path.join(this.reportFolder, `${i}`))) {
+      while (fs.existsSync(path.join(reportFolder, `${i}`))) {
         i++
       }
-      fs.mkdirSync(path.join(this.reportFolder, `${i}`))
+      fs.mkdirSync(path.join(reportFolder, `${i}`))
       //exclude network log from the saved report
       const networkLog = testCase.networkLog
       delete testCase.networkLog
       fs.writeFileSync(
-        path.join(this.reportFolder, `${i}`, `report.json`),
+        path.join(reportFolder, `${i}`, `report.json`),
         JSON.stringify(testCase, null, 2)
       )
       fs.writeFileSync(
-        path.join(this.reportFolder, `${i}`, `network.json`),
+        path.join(reportFolder, `${i}`, `network.json`),
         JSON.stringify(networkLog, null, 2)
       )
     } catch (error) {
