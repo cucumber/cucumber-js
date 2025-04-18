@@ -558,7 +558,7 @@ export default class ReportGenerator {
       Object.keys(parameters).map((key) => {
         if (parameters[key].startsWith("{{") && parameters[key].endsWith("}}")) {
           const path = parameters[key].slice(2, -2).split(".");
-          let value = objectPath.get(data, path);
+          let value = String(objectPath.get(data, path));
           if (value) {
             if (value.startsWith("secret:")) {
               value = "secret:****";
