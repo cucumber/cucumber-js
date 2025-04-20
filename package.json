@@ -300,7 +300,7 @@
     "mocha": "^11.0.1",
     "mustache": "4.2.0",
     "nyc": "15.1.0",
-    "prettier": "3.0.3",
+    "prettier": "3.5.3",
     "reindent-template-literals": "1.1.0",
     "shx": "0.3.4",
     "sinon": "15.2.0",
