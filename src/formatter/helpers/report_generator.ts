@@ -108,6 +108,7 @@ export type JsonStep = {
   data?: any;
   ariaSnapshot: string;
   traceFilePath?: string;
+  brunoData?: any;
 };
 export type RetrainStats = {
   result: JsonTestResult;
@@ -452,6 +453,15 @@ export default class ReportGenerator {
     } else if (mediaType === "application/json+trace") {
       const data = JSON.parse(body);
       stepProgess.traceFilePath = data.traceFilePath;
+    }
+
+    if (mediaType === "application/json+bruno") {
+      try {
+        const data = JSON.parse(body);
+        stepProgess.brunoData = data;
+      } catch (error) {
+        console.error("Error parsing bruno data:", error);
+      }
     }
   }
   private getFailedTestStepResult({
