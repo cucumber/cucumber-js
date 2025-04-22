@@ -140,6 +140,7 @@ class RunUploadService {
                   if (success) {
                     return;
                   }
+                }
                 const success = await this.uploadFile(
                   path.join(reportFolder, fileUri),
                   preSignedUrls[fileUri]
