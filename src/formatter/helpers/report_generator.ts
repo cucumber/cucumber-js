@@ -562,6 +562,30 @@ export default class ReportGenerator {
     this.stepLogs = [];
     if (Object.keys(data).length > 0) {
       stepProgess.data = data;
+      const id = testStepFinished.testCaseStartedId;
+      const parameters = this.testCaseReportMap.get(id).parameters;
+      const _parameters: typeof parameters = {};
+      Object.keys(parameters).map((key) => {
+        if (parameters[key].startsWith("{{") && parameters[key].endsWith("}}")) {
+          const path = parameters[key].slice(2, -2).split(".");
+          let value = String(objectPath.get(data, path));
+          if (value) {
+            if (value.startsWith("secret:")) {
+              value = "secret:****";
+            } else if (value.startsWith("totp:")) {
+              value = "totp:****";
+            } else if (value.startsWith("mask:")) {
+              value = "mask:****";
+            }
+            _parameters[key] = value;
+          }
+        } else {
+          _parameters[key] = parameters[key];
+        }
+      });
+      this.report.testCases.find((testCase) => {
+        return testCase.id === id;
+      }).parameters = _parameters;
     }
 
     // if (process.env.TESTCASE_REPORT_FOLDER_PATH) {
