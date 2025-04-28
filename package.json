@@ -270,7 +270,7 @@
     "@types/has-ansi": "5.0.2",
     "@types/lodash.merge": "4.6.9",
     "@types/lodash.mergewith": "4.6.9",
-    "@types/luxon": "3.4.2",
+    "@types/luxon": "3.6.2",
     "@types/mocha": "10.0.10",
     "@types/mustache": "4.2.5",
     "@types/mz": "2.7.8",
