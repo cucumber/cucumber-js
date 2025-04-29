@@ -161,8 +161,8 @@ class RunUploadService {
           runId,
           projectId,
           testProgressReport: testCaseReport,
-          mode: process.env.MODE === "cloud" ? "cloud" : "local",
           browser: process.env.BROWSER ? process.env.BROWSER : "chromium",
+          mode: process.env.MODE === "cloud" ? "remote" : "local",
           rerunId,
         },
         {
