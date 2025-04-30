@@ -22,8 +22,9 @@ import {
   FinishTestCaseResponse,
   RootCauseProps,
 } from './helpers/upload_serivce'
-import { promisify } from 'util'
-import { exec } from 'child_process'
+import { promisify } from 'util';
+import { exec } from 'child_process';
+import { isCloudRecorder } from './helpers/isCloudRecorder'
 
 //User token
 const TOKEN = process.env.TOKEN
@@ -427,13 +428,15 @@ export function logReportLink(runId: string, projectId: string) {
   const reportLink = `${reportLinkBaseUrl}/${projectId}/run-report/${runId}`
   console.log(`Report link: ${reportLink}\n`)
   try {
-    publishReportLinkToGuacServer(reportLink)
-  } catch (err) {}
+    publishReportLinkToGuacServer(reportLink);
+  } catch (err) {
+    // Error with events, ignoring
+  }
 }
 
 function publishReportLinkToGuacServer(reportLink: string) {
-  if (existsSync('/tmp/report_publish.sh')) {
-    const execAsync = promisify(exec)
-    execAsync('sh /tmp/report_publish.sh ' + reportLink)
+  if (isCloudRecorder) {
+    const execAsync = promisify(exec);
+    execAsync("sh /tmp/report_publish.sh " + reportLink);
   }
 }
