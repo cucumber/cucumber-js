@@ -35,6 +35,7 @@ interface MetaMessage extends Meta {
 interface EnvelopeWithMetaMessage extends Envelope {
   meta: MetaMessage
 }
+export let globalReportLink = '';
 export default class BVTAnalysisFormatter extends Formatter {
   static reportGenerator: ReportGenerator
   static reRunFailedStepsIndex:
@@ -426,12 +427,13 @@ export function logReportLink(runId: string, projectId: string) {
     reportLinkBaseUrl = process.env.NODE_ENV_BLINQ.replace('api', 'app')
   }
   const reportLink = `${reportLinkBaseUrl}/${projectId}/run-report/${runId}`
-  console.log(`Report link: ${reportLink}\n`)
+  globalReportLink = reportLink;
   try {
     publishReportLinkToGuacServer(reportLink);
   } catch (err) {
     // Error with events, ignoring
   }
+  return reportLink;
 }
 
 function publishReportLinkToGuacServer(reportLink: string) {
