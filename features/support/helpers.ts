@@ -4,7 +4,6 @@ import { normalizeSummaryDuration } from '../../test/formatter_helpers'
 
 export function normalizeText(text: string): string {
   const normalized = figures(text)
-    .replace(/\033\[[0-9;]*m/g, '')
     .replace(/\r\n|\r/g, '\n')
     .trim()
     .replace(/[ \t]+\n/g, '\n')

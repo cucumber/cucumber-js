@@ -251,7 +251,7 @@
     "semver": "7.7.1",
     "string-argv": "0.3.1",
     "supports-color": "^8.1.1",
-    "type-fest": "^4.8.3",
+    "type-fest": "^4.41.0",
     "util-arity": "^1.1.0",
     "yaml": "^2.2.2",
     "yup": "1.6.1"
@@ -309,9 +309,8 @@
     "tmp": "0.2.3",
     "ts-node": "10.9.2",
     "tsd": "0.32.0",
-    "typedoc": "^0.26.11",
-    "typedoc-plugin-extras": "^3.1.0",
-    "typescript": "^4.9.5"
+    "typedoc": "^0.28.0",
+    "typescript": "^5.8.3"
   },
   "overrides": {
     "ansi-regex": "^5.0.1"

@@ -10,7 +10,7 @@ function pickleWithTags(tagNames: string[]): messages.Pickle {
     steps: [],
     language: null,
     astNodeIds: [],
-    tags: tagNames.map((tagName) => ({ name: tagName, astNodeId: null })),
+    tags: tagNames.map((tagName) => ({ name: tagName, astNodeId: '123' })),
   }
 }
 

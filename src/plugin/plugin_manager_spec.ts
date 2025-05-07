@@ -165,7 +165,8 @@ describe('PluginManager', () => {
         {
           type: 'plugin',
           // bail, nothing to be done
-          coordinator: ({ on }) => on('pickles:filter', () => undefined),
+          coordinator: ({ on }) =>
+            on('pickles:filter', (): undefined => undefined),
         },
         {}
       )
