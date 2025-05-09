@@ -289,7 +289,7 @@
     "dependency-lint": "7.1.0",
     "dirty-chai": "2.0.1",
     "eslint": "8.57.1",
-    "eslint-config-prettier": "10.1.2",
+    "eslint-config-prettier": "10.1.5",
     "eslint-plugin-import": "2.31.0",
     "eslint-plugin-n": "17.17.0",
     "eslint-plugin-standard": "5.0.0",
