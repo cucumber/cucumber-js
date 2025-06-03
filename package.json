@@ -257,7 +257,7 @@
     "yup": "1.6.1"
   },
   "devDependencies": {
-    "@cucumber/compatibility-kit": "17.0.1",
+    "@cucumber/compatibility-kit": "18.0.3",
     "@cucumber/query": "13.2.0",
     "@microsoft/api-extractor": "7.52.7",
     "@sinonjs/fake-timers": "14.0.0",
