@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Allow comments inside descriptions ([cucumber/gherkin#334](https://github.com/cucumber/gherkin/pull/334))
+
+### Changed
+- Redesigned HTML formatter header ([cucumber/react-components#381](https://github.com/cucumber/react-components/pull/381))
 
 ## [11.3.0] - 2025-05-14
 ### Changed
