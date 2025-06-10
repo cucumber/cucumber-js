@@ -10,6 +10,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ## [Unreleased]
 ### Added
 - Allow comments inside descriptions ([cucumber/gherkin#334](https://github.com/cucumber/gherkin/pull/334))
+- Add original `error` to `After` and `AfterStep` hook parameters ([#2572](https://github.com/cucumber/cucumber-js/pull/2572))
 
 ### Changed
 - Redesigned HTML formatter header ([cucumber/react-components#381](https://github.com/cucumber/react-components/pull/381))
