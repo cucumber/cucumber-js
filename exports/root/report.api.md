@@ -4,8 +4,6 @@
 
 ```ts
 
-/// <reference types="node" />
-
 import { EventEmitter } from 'node:events';
 import { Expression } from '@cucumber/cucumber-expressions';
 import { GeneratedExpression } from '@cucumber/cucumber-expressions';
@@ -29,25 +27,25 @@ import { TestStepResultStatus } from '@cucumber/messages';
 import { Writable } from 'node:stream';
 
 // @public (undocumented)
-export const After: (<WorldType = IWorld_2<any>>(code: TestCaseHookFunction_2<WorldType>) => void) & (<WorldType_1 = IWorld_2<any>>(tags: string, code: TestCaseHookFunction_2<WorldType_1>) => void) & (<WorldType_2 = IWorld_2<any>>(options: IDefineTestCaseHookOptions_2, code: TestCaseHookFunction_2<WorldType_2>) => void);
+export const After: (<WorldType = IWorld_2<any>>(code: TestCaseHookFunction_2<WorldType>) => void) & (<WorldType = IWorld_2<any>>(tags: string, code: TestCaseHookFunction_2<WorldType>) => void) & (<WorldType = IWorld_2<any>>(options: IDefineTestCaseHookOptions_2, code: TestCaseHookFunction_2<WorldType>) => void);
 
 // @public (undocumented)
 export const AfterAll: ((code: TestRunHookFunction_2) => void) & ((options: IDefineTestRunHookOptions_2, code: TestRunHookFunction_2) => void);
 
 // @public (undocumented)
-export const AfterStep: (<WorldType = IWorld_2<any>>(code: TestStepHookFunction_2<WorldType>) => void) & (<WorldType_1 = IWorld_2<any>>(tags: string, code: TestStepHookFunction_2<WorldType_1>) => void) & (<WorldType_2 = IWorld_2<any>>(options: IDefineTestStepHookOptions_2, code: TestStepHookFunction_2<WorldType_2>) => void);
+export const AfterStep: (<WorldType = IWorld_2<any>>(code: TestStepHookFunction_2<WorldType>) => void) & (<WorldType = IWorld_2<any>>(tags: string, code: TestStepHookFunction_2<WorldType>) => void) & (<WorldType = IWorld_2<any>>(options: IDefineTestStepHookOptions_2, code: TestStepHookFunction_2<WorldType>) => void);
 
 // @public (undocumented)
 function atMostOnePicklePerTag(tagNames: string[]): ParallelAssignmentValidator;
 
 // @public (undocumented)
-export const Before: (<WorldType = IWorld_2<any>>(code: TestCaseHookFunction_2<WorldType>) => void) & (<WorldType_1 = IWorld_2<any>>(tags: string, code: TestCaseHookFunction_2<WorldType_1>) => void) & (<WorldType_2 = IWorld_2<any>>(options: IDefineTestCaseHookOptions_2, code: TestCaseHookFunction_2<WorldType_2>) => void);
+export const Before: (<WorldType = IWorld_2<any>>(code: TestCaseHookFunction_2<WorldType>) => void) & (<WorldType = IWorld_2<any>>(tags: string, code: TestCaseHookFunction_2<WorldType>) => void) & (<WorldType = IWorld_2<any>>(options: IDefineTestCaseHookOptions_2, code: TestCaseHookFunction_2<WorldType>) => void);
 
 // @public (undocumented)
 export const BeforeAll: ((code: TestRunHookFunction_2) => void) & ((options: IDefineTestRunHookOptions_2, code: TestRunHookFunction_2) => void);
 
 // @public (undocumented)
-export const BeforeStep: (<WorldType = IWorld_2<any>>(code: TestStepHookFunction_2<WorldType>) => void) & (<WorldType_1 = IWorld_2<any>>(tags: string, code: TestStepHookFunction_2<WorldType_1>) => void) & (<WorldType_2 = IWorld_2<any>>(options: IDefineTestStepHookOptions_2, code: TestStepHookFunction_2<WorldType_2>) => void);
+export const BeforeStep: (<WorldType = IWorld_2<any>>(code: TestStepHookFunction_2<WorldType>) => void) & (<WorldType = IWorld_2<any>>(tags: string, code: TestStepHookFunction_2<WorldType>) => void) & (<WorldType = IWorld_2<any>>(options: IDefineTestStepHookOptions_2, code: TestStepHookFunction_2<WorldType>) => void);
 
 // @public @deprecated (undocumented)
 export const Cli: typeof Cli_2;
@@ -139,7 +137,7 @@ export const FormatterBuilder: {
     build(FormatterConstructor: string | typeof Formatter, options: IBuildOptions): Promise<Formatter>;
     getConstructorByType(type: string, cwd: string): Promise<typeof Formatter>;
     getStepDefinitionSnippetBuilder({ cwd, snippetInterface, snippetSyntax, supportCodeLibrary, }: IGetStepDefinitionSnippetBuilderOptions): Promise<StepDefinitionSnippetBuilder>;
-    loadCustomClass(type: 'formatter' | 'syntax', descriptor: string, cwd: string): Promise<any>;
+    loadCustomClass(type: "formatter" | "syntax", descriptor: string, cwd: string): Promise<any>;
     loadFile(urlOrName: URL | string): Promise<any>;
     resolveConstructor(ImportedCode: any): any;
 };
@@ -271,6 +269,8 @@ function isWarning(result: messages.TestStepResult, willBeRetried?: boolean): bo
 // @public (undocumented)
 export interface ITestCaseHookParameter {
     // (undocumented)
+    error?: any;
+    // (undocumented)
     gherkinDocument: messages.GherkinDocument;
     // (undocumented)
     pickle: messages.Pickle;
@@ -284,6 +284,8 @@ export interface ITestCaseHookParameter {
 
 // @public (undocumented)
 export interface ITestStepHookParameter {
+    // (undocumented)
+    error?: any;
     // (undocumented)
     gherkinDocument: messages.GherkinDocument;
     // (undocumented)

@@ -4,8 +4,6 @@
 
 ```ts
 
-/// <reference types="node" />
-
 import { Envelope } from '@cucumber/messages';
 import { JsonObject } from 'type-fest';
 import { Writable } from 'node:stream';

@@ -186,6 +186,42 @@ describe('TestCaseRunner', () => {
         )
         expect(result).to.eql(messages.TestStepResultStatus.FAILED)
       })
+
+      it('should provide the error to AfterStep and After hooks', async () => {
+        // Arrange
+        const error = new Error('fail')
+        const afterStepStub = sinon.stub()
+        const afterStub = sinon.stub()
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, AfterStep, After }) => {
+            Given('a step', function () {
+              throw error
+            })
+            AfterStep(afterStepStub)
+            After(afterStub)
+          }
+        )
+        const {
+          gherkinDocument,
+          pickles: [pickle],
+        } = await parse({
+          data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
+          uri: 'a.feature',
+        })
+
+        // Act
+        await testRunner({
+          gherkinDocument,
+          pickle,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(afterStepStub).to.have.been.calledOnce()
+        expect(afterStepStub.lastCall.firstArg.error).to.eq(error)
+        expect(afterStub).to.have.been.calledOnce()
+        expect(afterStub.lastCall.firstArg.error).to.eq(error)
+      })
     })
 
     describe('with an ambiguous step', () => {
@@ -522,6 +558,7 @@ describe('TestCaseRunner', () => {
           testCaseStartedId: envelopes[1].testStepStarted.testCaseStartedId,
           testStepId: envelopes[1].testStepStarted.testStepId,
           result: undefined,
+          error: undefined,
         })
         expect(afterStep).to.have.been.calledOnceWith({
           gherkinDocument,
@@ -530,6 +567,7 @@ describe('TestCaseRunner', () => {
           testCaseStartedId: envelopes[2].testStepFinished.testCaseStartedId,
           testStepId: envelopes[2].testStepFinished.testStepId,
           result: envelopes[2].testStepFinished.testStepResult,
+          error: undefined,
         })
       })
     })
