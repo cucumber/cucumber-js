@@ -7,11 +7,11 @@ import World from '../../src/support_code_library_builder/world'
 export function getBaseSupportCodeLibrary(): SupportCodeLibrary {
   return buildSupportCodeLibrary(__dirname, ({ Given }) => {
     Given('a failing step', function () {
-      throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+      throw 'error'
     })
 
-    Given('an ambiguous step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-    Given(/an? ambiguous step/, function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+    Given('an ambiguous step', function () {})
+    Given(/an? ambiguous step/, function () {})
 
     Given('a pending step', function () {
       return 'pending'
@@ -23,10 +23,10 @@ export function getBaseSupportCodeLibrary(): SupportCodeLibrary {
         return
       }
       willPass = true
-      throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+      throw 'error'
     })
 
-    Given('a passing step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+    Given('a passing step', function () {})
 
     Given('a skipped step', function () {
       return 'skipped'
@@ -43,7 +43,7 @@ export function getBaseSupportCodeLibrary(): SupportCodeLibrary {
 
     Given('attachment step2', async function (this: World) {
       await this.attach('Other info')
-      throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+      throw 'error'
     })
   })
 }

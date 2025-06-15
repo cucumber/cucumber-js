@@ -151,7 +151,7 @@ describe('TestCaseRunner', () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
           Given('a step', function () {
-            throw 'fail' // eslint-disable-line @typescript-eslint/no-throw-literal
+            throw 'fail'
           })
         })
         const {
@@ -307,7 +307,7 @@ describe('TestCaseRunner', () => {
               return
             }
             willPass = true
-            throw 'Oh no!' // eslint-disable-line @typescript-eslint/no-throw-literal
+            throw 'Oh no!'
           })
         })
         const {
@@ -416,7 +416,7 @@ describe('TestCaseRunner', () => {
                 return
               }
               willPass = true
-              throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+              throw 'error'
             })
             After(hookStub)
           }
@@ -489,8 +489,8 @@ describe('TestCaseRunner', () => {
             Given('a step', function () {
               clock.tick(1)
             })
-            Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            After(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Before(function () {})
+            After(function () {})
           }
         )
         const {
@@ -527,8 +527,8 @@ describe('TestCaseRunner', () => {
             Given('a step', function () {
               clock.tick(1)
             })
-            BeforeStep(beforeStep) // eslint-disable-line @typescript-eslint/no-empty-function
-            AfterStep(afterStep) // eslint-disable-line @typescript-eslint/no-empty-function
+            BeforeStep(beforeStep)
+            AfterStep(afterStep)
           }
         )
         const {
