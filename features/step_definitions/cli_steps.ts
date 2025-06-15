@@ -76,7 +76,7 @@ When(
   }
 )
 
-Then('it passes', () => {}) // eslint-disable-line @typescript-eslint/no-empty-function
+Then('it passes', () => {})
 
 Then('it fails', function (this: World) {
   const actualCode: number = doesHaveValue(this.lastRun.error)

@@ -24,7 +24,7 @@ describe('UserCodeRunner', () => {
         it('returns the error', async function () {
           // Arrange
           const fn = function (): void {
-            throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+            throw 'error'
           }
 
           // Act
@@ -85,7 +85,7 @@ describe('UserCodeRunner', () => {
           // Arrange
           const fn = function (callback: CallbackFn): void {
             setTimeout(() => {
-              callback('error') // eslint-disable-line n/no-callback-literal
+              callback('error')
             }, 25)
           }
 
@@ -224,7 +224,7 @@ describe('UserCodeRunner', () => {
         it('returns a helpful error message', async function () {
           // Arrange
           const fn = async function (): Promise<void> {
-            return await Promise.reject() // eslint-disable-line prefer-promise-reject-errors
+            return await Promise.reject()
           }
 
           // Act

@@ -274,10 +274,10 @@ describe('SummaryFormatter', () => {
           },
         ]
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-          Given('a {param} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-          Given('another {param} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-          Given('a different {foo} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+          Given('a step', function () {})
+          Given('a {param} step', function () {})
+          Given('another {param} step', function () {})
+          Given('a different {foo} step', function () {})
         })
 
         // Act

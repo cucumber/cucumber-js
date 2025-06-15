@@ -96,7 +96,7 @@ async function loadFile(
       logger.debug(
         `Loading configuration file "${file}" as CommonJS based on extension`
       )
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       definitions = require(filePath)
       break
     case '.mjs':
@@ -112,7 +112,7 @@ async function loadFile(
           logger.debug(
             `Loading configuration file "${file}" as CommonJS based on absence of a parent package`
           )
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
           definitions = require(filePath)
         } else if (parentPackage.type === 'module') {
           logger.debug(
@@ -123,7 +123,7 @@ async function loadFile(
           logger.debug(
             `Loading configuration file "${file}" as CommonJS based on "${parentPackage.name}" package type`
           )
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
           definitions = require(filePath)
         }
       }
