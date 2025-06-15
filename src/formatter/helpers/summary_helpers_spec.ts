@@ -123,8 +123,8 @@ describe('SummaryHelpers', () => {
         ].join('\n')
         const supportCodeLibrary = buildSupportCodeLibrary(
           ({ Given, Before }) => {
-            Given('a passing step', () => {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            Before(() => {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Given('a passing step', () => {})
+            Before(() => {})
           }
         )
 
@@ -158,7 +158,7 @@ describe('SummaryHelpers', () => {
               return
             }
             willPass = true
-            throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+            throw 'error'
           })
         })
 

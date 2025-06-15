@@ -224,8 +224,8 @@ describe('assembleTestCases', () => {
             Given('a step', function () {
               clock.tick(1)
             })
-            Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            After(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Before(function () {})
+            After(function () {})
           }
         )
         const { gherkinDocument, pickles } = await parse({
@@ -279,8 +279,8 @@ describe('assembleTestCases', () => {
             Given('a step', function () {
               clock.tick(1)
             })
-            BeforeStep(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            AfterStep(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            BeforeStep(function () {})
+            AfterStep(function () {})
           }
         )
         const { gherkinDocument, pickles } = await parse({

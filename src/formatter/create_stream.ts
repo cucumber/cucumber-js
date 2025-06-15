@@ -15,8 +15,8 @@ export async function createStream(
 
   try {
     await mkdirp(directory)
-  } catch (error) {
-    logger.warn('Failed to ensure directory for formatter target exists')
+  } catch (e) {
+    logger.warn('Failed to ensure directory for formatter target exists', e)
   }
 
   const stream: Writable = fs.createWriteStream(null, {

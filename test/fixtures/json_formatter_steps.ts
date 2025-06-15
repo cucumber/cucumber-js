@@ -19,11 +19,11 @@ export function getJsonFormatterSupportCodeLibrary(
         return
       }
       willPass = true
-      throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+      throw 'error'
     })
 
     Given('a failing step', function () {
-      throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+      throw 'error'
     })
 
     Given(
@@ -47,14 +47,14 @@ export function getJsonFormatterSupportCodeLibrary(
       await this.attach('foo', 'text/plain')
     })
 
-    Given('a step {int}', function (_int: Number) {})
+    Given('a step {int}', function (_int: number) {})
   })
 }
 
 export function getJsonFormatterSupportCodeLibraryWithHooks(): SupportCodeLibrary {
   return buildSupportCodeLibrary(__dirname, ({ After, Before, Given }) => {
-    Given('a passing step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-    Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-    After(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+    Given('a passing step', function () {})
+    Before(function () {})
+    After(function () {})
   })
 }

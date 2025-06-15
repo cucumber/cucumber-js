@@ -22,6 +22,6 @@ export function getUsageSupportCodeLibrary(
       }
     })
 
-    Given('ghi', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+    Given('ghi', function () {})
   })
 }
