@@ -11,11 +11,14 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Added
 - Allow comments inside descriptions ([cucumber/gherkin#334](https://github.com/cucumber/gherkin/pull/334))
 - Add original `error` to `After` and `AfterStep` hook parameters ([#2572](https://github.com/cucumber/cucumber-js/pull/2572))
+- Add support for Node.js 24.x ([#2588](https://github.com/cucumber/cucumber-js/pull/2588))
 
 ### Changed
 - Redesigned HTML formatter header ([cucumber/react-components#381](https://github.com/cucumber/react-components/pull/381))
 
 ### Removed
+- BREAKING CHANGE: Remove support for Node.js 18.x ([#2588](https://github.com/cucumber/cucumber-js/pull/2588))
+- BREAKING CHANGE: Remove support for Node.js 23.x ([#2588](https://github.com/cucumber/cucumber-js/pull/2588))
 - BREAKING CHANGE: Remove `publishQuiet` option ([#2587](https://github.com/cucumber/cucumber-js/pull/2587))
 
 ## [11.3.0] - 2025-05-14
