@@ -24,8 +24,6 @@ export interface IConfiguration {
     parallel: number;
     paths: string[];
     publish: boolean;
-    // @deprecated (undocumented)
-    publishQuiet: boolean;
     require: string[];
     requireModule: string[];
     retry: number;

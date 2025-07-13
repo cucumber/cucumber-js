@@ -136,10 +136,6 @@ const ArgvParser = {
       )
       .option('--publish', 'Publish a report to https://reports.cucumber.io')
       .option(
-        '--publish-quiet',
-        "Don't print information banner about publishing reports"
-      )
-      .option(
         '-r, --require <GLOB|DIR|FILE>',
         'require files before executing features (repeatable)',
         ArgvParser.collect

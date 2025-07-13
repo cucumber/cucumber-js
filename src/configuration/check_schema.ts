@@ -24,7 +24,6 @@ const schema = yup.object().shape({
   paths: yup.array().of(yup.string()),
   parallel: yup.number().integer().min(0),
   publish: yup.boolean(),
-  publishQuiet: yup.boolean(),
   require: yup.array().of(yup.string()),
   requireModule: yup.array().of(yup.string()),
   retry: yup.number().integer().min(0),
