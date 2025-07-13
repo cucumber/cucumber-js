@@ -210,10 +210,10 @@
   },
   "types": "./lib/index.d.ts",
   "engines": {
-    "node": "18 || 20 || 22 || >=23"
+    "node": "20 || 22 || >=24"
   },
   "enginesTested": {
-    "node": "18 || 20 || 22 || 23"
+    "node": "20 || 22 || 24"
   },
   "dependencies": {
     "@cucumber/ci-environment": "10.0.1",
