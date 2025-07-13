@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [12.0.0] - 2025-07-13
 ### Added
 - Allow comments inside descriptions ([cucumber/gherkin#334](https://github.com/cucumber/gherkin/pull/334))
 - Add original `error` to `After` and `AfterStep` hook parameters ([#2572](https://github.com/cucumber/cucumber-js/pull/2572))
@@ -1679,7 +1681,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v11.3.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.0.0...HEAD
+[12.0.0]: https://github.com/cucumber/cucumber-js/compare/v11.3.0...v12.0.0
 [11.3.0]: https://github.com/cucumber/cucumber-js/compare/v11.2.0...v11.3.0
 [11.2.0]: https://github.com/cucumber/cucumber-js/compare/v11.1.1...v11.2.0
 [11.1.1]: https://github.com/cucumber/cucumber-js/compare/v11.1.0...v11.1.1
