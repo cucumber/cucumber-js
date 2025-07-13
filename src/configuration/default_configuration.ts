@@ -15,7 +15,6 @@ export const DEFAULT_CONFIGURATION: IConfiguration = {
   paths: [],
   parallel: 0,
   publish: false,
-  publishQuiet: false,
   require: [],
   requireModule: [],
   retry: 0,
