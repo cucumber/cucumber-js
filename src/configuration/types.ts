@@ -103,11 +103,6 @@ export interface IConfiguration {
    */
   publish: boolean
   /**
-   * @deprecated no longer needed
-   * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md}
-   */
-  publishQuiet: boolean
-  /**
    * Paths to where your support code is, for CommonJS
    * @default []
    * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/configuration.md#finding-your-code}

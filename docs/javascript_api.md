@@ -59,7 +59,6 @@ A simple, flat format. This is how configuration is expressed by users in config
   "paths": ["features/**/*.feature"],
   "parallel": 3,
   "publish": false,
-  "publishQuiet": false,
   "require": [],
   "requireModule": [],
   "retry": 2,

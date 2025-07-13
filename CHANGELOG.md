@@ -15,6 +15,9 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Changed
 - Redesigned HTML formatter header ([cucumber/react-components#381](https://github.com/cucumber/react-components/pull/381))
 
+### Removed
+- BREAKING CHANGE: Remove `publishQuiet` option ([#2587](https://github.com/cucumber/cucumber-js/pull/2587))
+
 ## [11.3.0] - 2025-05-14
 ### Changed
 - Improve error handling in publish plugin ([#2526](https://github.com/cucumber/cucumber-js/pull/2526))
