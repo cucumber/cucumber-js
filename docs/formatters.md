@@ -34,10 +34,15 @@ Many formatters, including the built-in ones, support some configuration via opt
 
 This option is repeatable, so you can use it multiple times and the objects will be merged with the later ones taking precedence.
 
-Some options offered by built-in formatters:
+Some common options supported by built-in formatters:
 
 - `colorsEnabled` - [see below](#colored-output)
 - `printAttachments` - if set to `false`, attachments won't be part of progress bars and summary reports
+
+Some formatters have options that are only applicable to them. These options will be under a key that matches the formatter name, like this:
+
+- In a configuration file `{ formatOptions: { pretty: { featuresAndRules : false } }`
+- On the CLI `cucumber-js --format-options '{"pretty":{"featuresAndRules":false}}'`
 
 ## Colored output
 
@@ -77,6 +82,9 @@ Similar to the Progress Formatter, but provides a real-time updating progress ba
 
 ### `pretty`
 
+ℹ️ Added in v12.1.0  
+ℹ️ Can be installed and referenced as `@cucumber/pretty-formatter` from v11.1.0
+
 Writes a rich report of the scenario and example execution as it happens.
 
 ![](./images/pretty.png)
@@ -85,8 +93,6 @@ Options specific to this formatter (under the `pretty` key):
 
 - `featuresAndRules` - whether to include headings for Features and Rules (defaults to `true`)
 - `theme` - control over the styling of various elements (see [documentation](https://github.com/cucumber/pretty-formatter/blob/main/javascript/README.md#themes))
-
-*Note: the Progress Bar Formatter will only work with a TTY terminal (and not, for example, a file stream).*
 
 ### `html`
 
