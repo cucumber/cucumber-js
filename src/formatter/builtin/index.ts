@@ -14,6 +14,7 @@ const builtin = {
   // new plugin-based formatters
   html: htmlFormatter,
   junit: '@cucumber/junit-xml-formatter',
+  pretty: '@cucumber/pretty-formatter',
   message: messageFormatter,
   // legacy class-based formatters
   json: JsonFormatter,
@@ -32,6 +33,8 @@ export const documentation = {
   // new plugin-based formatters
   html: 'Outputs a HTML report',
   junit: 'Produces a JUnit XML report',
+  pretty:
+    'Writes a rich report of the scenario and example execution as it happens',
   message: 'Emits Cucumber messages in newline-delimited JSON',
   // legacy class-based formatters
   json: JsonFormatter.documentation,

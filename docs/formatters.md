@@ -75,6 +75,17 @@ Similar to the Progress Formatter, but provides a real-time updating progress ba
 
 ![](./images/progress_bar_green.gif)
 
+### `pretty`
+
+Writes a rich report of the scenario and example execution as it happens.
+
+![](./images/pretty.png)
+
+Options specific to this formatter (under the `pretty` key):
+
+- `featuresAndRules` - whether to include headings for Features and Rules (defaults to `true`)
+- `theme` - control over the styling of various elements (see [documentation](https://github.com/cucumber/pretty-formatter/blob/main/javascript/README.md#themes))
+
 *Note: the Progress Bar Formatter will only work with a TTY terminal (and not, for example, a file stream).*
 
 ### `html`
@@ -120,7 +131,7 @@ Outputs details of the test run in the legacy JSON format.
 
 The JUnit formatter produces an XML-based report in the standard(ish) [JUnit format](https://github.com/junit-team/junit5/blob/43638eb6a870e0d6c49224053dfeb39dcf0ef33f/platform-tests/src/test/resources/jenkins-junit.xsd). This is most commonly useful for having your CI platform pick up your tests results and factor them into its reporting. Consult your CI platform's docs for where exactly you should output this report to and what the filename should be.
 
-Options specific to this formatter:
+Options specific to this formatter (under the `junit` key):
 
 - `suiteName` - value to go in the `name` attribute of the `testsuite` element in the output (defaults to `cucumber-js`)
 

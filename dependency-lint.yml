@@ -23,6 +23,7 @@ ignoreErrors:
   unused:
     - '@cucumber/compatibility-kit' # files dynamically loaded in cck test, not required
     - '@cucumber/junit-xml-formatter' # formatter dynamically imported at runtime
+    - '@cucumber/pretty-formatter' # formatter dynamically imported at runtime
     - '@eslint/compat' # used by eslint
     - '@eslint/eslintrc' # used by eslint
     - '@eslint/js' # used by eslint
