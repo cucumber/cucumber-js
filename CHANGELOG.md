@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Include updated pretty formatter ([#2592](https://github.com/cucumber/cucumber-js/pull/2592))
 
 ## [12.0.0] - 2025-07-13
 ### Added

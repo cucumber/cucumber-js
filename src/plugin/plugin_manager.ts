@@ -35,6 +35,7 @@ export class PluginManager {
   async initFormatter<OptionsType>(
     plugin: FormatterPlugin<OptionsType>,
     options: OptionsType,
+    stream: NodeJS.WritableStream,
     write: (buffer: string | Uint8Array) => void,
     directory?: string
   ) {
@@ -44,6 +45,7 @@ export class PluginManager {
         ? ((options as any)[plugin.optionsKey] ?? ({} as OptionsType))
         : options,
       logger: this.environment.logger,
+      stream,
       write,
       directory,
     })
