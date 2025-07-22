@@ -100,11 +100,13 @@ async function loadFile(
       definitions = require(filePath)
       break
     case '.mjs':
-      logger.debug(
-        `Loading configuration file "${file}" as ESM based on extension`
-      )
-      const importedModule = await import(pathToFileURL(filePath).toString())
-      definitions = importedModule.default || importedModule
+      {
+        logger.debug(
+          `Loading configuration file "${file}" as ESM based on extension`
+        )
+        const importedModule = await import(pathToFileURL(filePath).toString())
+        definitions = importedModule.default || importedModule
+      }
       break
     case '.js':
       {
@@ -119,7 +121,9 @@ async function loadFile(
           logger.debug(
             `Loading configuration file "${file}" as ESM based on "${parentPackage.name}" package type`
           )
-          const importedModuleJs = await import(pathToFileURL(filePath).toString())
+          const importedModuleJs = await import(
+            pathToFileURL(filePath).toString()
+          )
           definitions = importedModuleJs.default || importedModuleJs
         } else {
           logger.debug(
