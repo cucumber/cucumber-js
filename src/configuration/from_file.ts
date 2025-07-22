@@ -103,7 +103,8 @@ async function loadFile(
       logger.debug(
         `Loading configuration file "${file}" as ESM based on extension`
       )
-      definitions = await import(pathToFileURL(filePath).toString())
+      const importedModule = await import(pathToFileURL(filePath).toString())
+      definitions = importedModule.default || importedModule
       break
     case '.js':
       {
@@ -118,7 +119,8 @@ async function loadFile(
           logger.debug(
             `Loading configuration file "${file}" as ESM based on "${parentPackage.name}" package type`
           )
-          definitions = await import(pathToFileURL(filePath).toString())
+          const importedModuleJs = await import(pathToFileURL(filePath).toString())
+          definitions = importedModuleJs.default || importedModuleJs
         } else {
           logger.debug(
             `Loading configuration file "${file}" as CommonJS based on "${parentPackage.name}" package type`

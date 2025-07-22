@@ -125,3 +125,57 @@ Feature: ES modules support
       """
         Error: Cucumber expected a CommonJS module
       """
+
+  @esm
+  Scenario: ES module configuration file with export default should load step definitions
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        Scenario: one
+          Given a step that should be found
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      import {Given} from '@cucumber/cucumber'
+
+      Given(/^a step that should be found$/, function() {});
+      """
+    And a file named "cucumber.js" with:
+      """
+      export default {
+        default: {
+          import: ['features/**/*.js'],
+          format: ['progress']
+        }
+      }
+      """
+    When I run cucumber-js
+    Then it runs 1 scenarios
+    And it passes
+
+  @esm
+  Scenario: ES module configuration file should properly extract default export from mjs
+    Given a file named "features/a.feature" with:
+      """
+      Feature:
+        Scenario: one
+          Given a step that should also be found
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      import {Given} from '@cucumber/cucumber'
+
+      Given(/^a step that should also be found$/, function() {});
+      """
+    And a file named "cucumber.mjs" with:
+      """
+      export default {
+        default: {
+          import: ['features/**/*.js'],
+          format: ['progress']
+        }
+      }
+      """
+    When I run cucumber-js with `--config cucumber.mjs`
+    Then it runs 1 scenarios
+    And it passes
