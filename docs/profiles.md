@@ -67,6 +67,34 @@ Now, if we just run `cucumber-js` with no arguments, it will pick up our profile
 cucumber-js -p ci
 ```
 
+## ESM (ES Modules) Example
+
+When using ES modules, you should use a default export for your default profile and named exports for additional profiles:
+
+```javascript
+// cucumber.js (ESM)
+const common = {
+  requireModule: ['ts-node/register'],
+  require: ['support/**/*.ts'],
+  worldParameters: {
+    appUrl: process.env.MY_APP_URL || 'http://localhost:3000/'
+  }
+}
+
+// Default profile (default export)
+export default {
+  ...common,
+  format: ['progress-bar', 'html:cucumber-report.html'],
+}
+
+// Additional profiles (named exports)
+export const ci = {
+  ...common,
+  format: ['html:cucumber-report.html'],
+  publish: true
+}
+```
+
 ## Defining profiles dynamically
 
 If you need to define your profiles dynamically (including asynchronously), you can use the `default` profile key/export to provide an async function that resolves to your profiles. This can be particularly useful in an ESM context where the profiles are static exports. Here's an example:
