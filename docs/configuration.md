@@ -71,6 +71,12 @@ module.exports = {
 
 (If you're wondering why the configuration sits within a "default" property, that's to allow for [Profiles](./profiles.md).)
 
+### Type checking
+
+If you want to type check your configuration, we export two types that can help with that:
+- `IProfiles` represents the dictionary of profile names to configuration objects exported for CommonJS
+- `IConfiguration` represents a single configuration object exported with named exports for ESM (`Partial<IConfiguration>` will be more useful in practise)
+
 ## Options
 
 These options can be used in a configuration file (see [above](#files)) or on the [CLI](./cli.md), or both.
