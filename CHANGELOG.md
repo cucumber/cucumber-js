@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Export configuration types ([#2598](https://github.com/cucumber/cucumber-js/pull/2598))
 
 ## [12.1.0] - 2025-07-19
 ### Added
