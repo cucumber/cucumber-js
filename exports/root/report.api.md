@@ -203,6 +203,31 @@ declare namespace GherkinDocumentParser {
 // @public (undocumented)
 export const Given: IDefineStep_2;
 
+// @public
+export interface IConfiguration {
+    backtrace: boolean;
+    dryRun: boolean;
+    failFast: boolean;
+    forceExit: boolean;
+    format: Array<string | [string, string?]>;
+    formatOptions: JsonObject;
+    import: string[];
+    language: string;
+    loader: string[];
+    name: string[];
+    order: IPickleOrder;
+    parallel: number;
+    paths: string[];
+    publish: boolean;
+    require: string[];
+    requireModule: string[];
+    retry: number;
+    retryTagFilter: string;
+    strict: boolean;
+    tags: string;
+    worldParameters: JsonObject;
+}
+
 // @public (undocumented)
 export interface IContext<ParametersType = any> {
     // (undocumented)
@@ -256,6 +281,9 @@ interface IGetStepKeywordRequest {
     // (undocumented)
     pickleStep: messages.PickleStep;
 }
+
+// @public
+export type IProfiles = Record<string, Partial<IConfiguration>>;
 
 // @public (undocumented)
 function isFailure(result: messages.TestStepResult, willBeRetried?: boolean): boolean;

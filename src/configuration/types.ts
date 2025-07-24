@@ -146,3 +146,9 @@ export interface IConfiguration {
    */
   worldParameters: JsonObject
 }
+
+/**
+ * Collection of named configuration profiles
+ * @public
+ */
+export type IProfiles = Record<string, Partial<IConfiguration>>
