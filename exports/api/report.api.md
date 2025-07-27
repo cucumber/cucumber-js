@@ -28,6 +28,7 @@ export interface IConfiguration {
     requireModule: string[];
     retry: number;
     retryTagFilter: string;
+    shard: string;
     strict: boolean;
     tags: string;
     worldParameters: JsonObject;
@@ -146,6 +147,7 @@ export interface ISourcesCoordinates {
     names: string[];
     order: IPickleOrder;
     paths: string[];
+    shard: string;
     tagExpression: string;
 }
 

@@ -51,6 +51,7 @@ describe('loadSources', () => {
         paths: [],
         names: [],
         tagExpression: '',
+        shard: '',
       },
       environment
     )
@@ -112,6 +113,7 @@ describe('loadSources', () => {
         paths: ['features/test.feature:8'],
         names: [],
         tagExpression: '',
+        shard: '',
       },
       environment
     )
@@ -127,6 +129,7 @@ describe('loadSources', () => {
         paths: [],
         names: ['two'],
         tagExpression: '',
+        shard: '',
       },
       environment
     )
@@ -142,6 +145,7 @@ describe('loadSources', () => {
         paths: [],
         names: [],
         tagExpression: '@tag2',
+        shard: '',
       },
       environment
     )
@@ -157,6 +161,7 @@ describe('loadSources', () => {
         paths: ['@rerun.txt'],
         names: [],
         tagExpression: '',
+        shard: '',
       },
       environment
     )

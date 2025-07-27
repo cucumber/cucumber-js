@@ -37,6 +37,7 @@ describe('Cucumber Compatibility Kit', () => {
           names: [],
           tagExpression: '',
           order: 'defined',
+          shard: '',
         },
         support: {
           requireModules: ['ts-node/register'],

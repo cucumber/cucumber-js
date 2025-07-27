@@ -1,6 +1,7 @@
 import { PluginManager } from '../plugin'
 import publishPlugin from '../publish'
 import filterPlugin from '../filter'
+import shardingPlugin from '../sharding'
 import { UsableEnvironment } from '../environment'
 import { IRunConfiguration, ISourcesCoordinates } from './types'
 
@@ -35,6 +36,11 @@ export async function initializeForRunCucumber(
   await pluginManager.initCoordinator(
     'runCucumber',
     filterPlugin,
+    configuration.sources
+  )
+  await pluginManager.initCoordinator(
+    'runCucumber',
+    shardingPlugin,
     configuration.sources
   )
   return pluginManager

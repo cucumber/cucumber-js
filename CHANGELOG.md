@@ -10,6 +10,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ## [Unreleased]
 ### Added
 - Export configuration types ([#2598](https://github.com/cucumber/cucumber-js/pull/2598))
+- Add support for execution sharding ([#2303](https://github.com/cucumber/cucumber-js/pull/2303))
 
 ## [12.1.0] - 2025-07-19
 ### Added

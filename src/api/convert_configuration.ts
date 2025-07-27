@@ -19,6 +19,7 @@ export async function convertConfiguration(
       names: flatConfiguration.name,
       tagExpression: flatConfiguration.tags,
       order: flatConfiguration.order,
+      shard: flatConfiguration.shard,
     },
     support: {
       requireModules: flatConfiguration.requireModule,

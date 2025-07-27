@@ -124,6 +124,10 @@ const ArgvParser = {
         'run scenarios in the specified order. Type should be `defined` or `random`'
       )
       .option(
+        '--shard <INDEX/TOTAL>',
+        'run shard INDEX of TOTAL shards. The index starts at 1'
+      )
+      .option(
         '-p, --profile <NAME>',
         'specify the profile to use (repeatable)',
         ArgvParser.collect,
