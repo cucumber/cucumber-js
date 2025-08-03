@@ -288,7 +288,7 @@
     "@typescript-eslint/eslint-plugin": "^8.34.0",
     "@typescript-eslint/parser": "^8.34.0",
     "chai": "4.5.0",
-    "chai-exclude": "2.1.1",
+    "chai-exclude": "3.0.1",
     "coffeescript": "2.7.0",
     "dependency-lint": "7.1.0",
     "dirty-chai": "2.0.1",
