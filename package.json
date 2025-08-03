@@ -233,7 +233,7 @@
     "commander": "^10.0.0",
     "debug": "^4.3.4",
     "error-stack-parser": "^2.1.4",
-    "figures": "^3.2.0",
+    "figures": "^6.0.0",
     "glob": "^11.0.0",
     "has-ansi": "^4.0.1",
     "indent-string": "^4.0.0",
