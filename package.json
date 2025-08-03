@@ -239,7 +239,7 @@
     "has-ansi": "^4.0.1",
     "indent-string": "^4.0.0",
     "is-installed-globally": "^0.4.0",
-    "is-stream": "^2.0.0",
+    "is-stream": "^4.0.0",
     "knuth-shuffle-seeded": "^1.0.6",
     "lodash.merge": "^4.6.2",
     "lodash.mergewith": "^4.6.2",
