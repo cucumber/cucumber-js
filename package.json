@@ -235,7 +235,7 @@
     "error-stack-parser": "^2.1.4",
     "figures": "^3.2.0",
     "glob": "^11.0.0",
-    "has-ansi": "^4.0.1",
+    "has-ansi": "^6.0.0",
     "indent-string": "^4.0.0",
     "is-installed-globally": "^0.4.0",
     "is-stream": "^2.0.0",
