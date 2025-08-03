@@ -227,7 +227,7 @@
     "@cucumber/messages": "27.2.0",
     "@cucumber/tag-expressions": "6.2.0",
     "assertion-error-formatter": "^3.0.0",
-    "capital-case": "^1.0.4",
+    "capital-case": "^2.0.0",
     "chalk": "^4.1.2",
     "cli-table3": "0.6.5",
     "commander": "^10.0.0",
