@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { PassThrough, pipeline, Writable } from 'node:stream'
-import util from 'node:util'
+import { PassThrough, Writable } from 'node:stream'
+import { pipeline } from 'node:stream/promises'
 import { describe, it } from 'mocha'
 import { config, expect, use } from 'chai'
 import chaiExclude from 'chai-exclude'
@@ -12,7 +12,6 @@ import { Envelope } from '@cucumber/messages'
 import { ignorableKeys } from '../features/support/formatter_output_helpers'
 import { runCucumber, IRunConfiguration } from '../src/api'
 
-const asyncPipeline = util.promisify(pipeline)
 const PROJECT_PATH = path.join(__dirname, '..')
 const CCK_FEATURES_PATH = 'node_modules/@cucumber/compatibility-kit/features'
 const CCK_IMPLEMENTATIONS_PATH = 'compatibility/features'
@@ -75,7 +74,7 @@ describe('Cucumber Compatibility Kit', () => {
       stderr.end()
 
       const expectedMessages: messages.Envelope[] = []
-      await asyncPipeline(
+      await pipeline(
         fs.createReadStream(path.join(directory, suite + '.ndjson'), {
           encoding: 'utf-8',
         }),
