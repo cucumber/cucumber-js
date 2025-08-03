@@ -244,7 +244,7 @@
     "lodash.merge": "^4.6.2",
     "lodash.mergewith": "^4.6.2",
     "luxon": "3.7.1",
-    "mime": "^3.0.0",
+    "mime": "^4.0.0",
     "mkdirp": "^2.1.5",
     "mz": "^2.7.0",
     "progress": "^2.0.3",
