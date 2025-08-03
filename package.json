@@ -270,7 +270,7 @@
     "@types/dirty-chai": "2.0.5",
     "@types/express": "5.0.3",
     "@types/fs-extra": "9.0.13",
-    "@types/glob": "8.1.0",
+    "@types/glob": "9.0.0",
     "@types/has-ansi": "5.0.2",
     "@types/lodash.merge": "4.6.9",
     "@types/lodash.mergewith": "4.6.9",
