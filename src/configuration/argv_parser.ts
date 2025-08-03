@@ -67,6 +67,7 @@ const ArgvParser = {
     const program = new Command('cucumber-js')
 
     program
+      .allowExcessArguments(true)
       .storeOptionsAsProperties(false)
       .usage('[options] [<GLOB|DIR|FILE[:LINE]>...]')
       .version(version, '-v, --version')
