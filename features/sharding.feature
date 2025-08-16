@@ -1,7 +1,7 @@
 Feature: Running scenarios using sharding
   As a developer running features
-  I want an easy way to run specific scenarios by tag
-  So that I don't waste time running my whole test suite when I don't need to
+  I want a way to split my test execution across multiple independent processes
+  So that I save time in my build pipeline
 
   Background:
     Given a file named "features/a.feature" with:
