@@ -260,7 +260,7 @@
   "devDependencies": {
     "@cucumber/compatibility-kit": "^20.0.0",
     "@cucumber/pretty-formatter": "^2.0.0",
-    "@cucumber/query": "13.5.0",
+    "@cucumber/query": "13.6.0",
     "@eslint/compat": "^1.3.0",
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.29.0",
