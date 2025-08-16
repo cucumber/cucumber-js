@@ -86,7 +86,7 @@ export interface ISourcesCoordinates {
    * @remarks
    * Shards use 1-based numbering
    */
-  shard: string
+  shard?: string
 }
 
 /**

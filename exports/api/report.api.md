@@ -147,7 +147,7 @@ export interface ISourcesCoordinates {
     names: string[];
     order: IPickleOrder;
     paths: string[];
-    shard: string;
+    shard?: string;
     tagExpression: string;
 }
 
