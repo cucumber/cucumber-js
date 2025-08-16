@@ -10,6 +10,10 @@ import {
   IJsonStep,
 } from '../../src/formatter/json_formatter'
 
+function isObject(obj: unknown): obj is Record<string, unknown> {
+  return typeof obj === 'object' && obj !== null
+}
+
 // Converting windows stack trace to posix and removing cwd
 //    C:\\project\\path\\features\\support/code.js
 //      becomes
@@ -22,25 +26,33 @@ function normalizeExceptionAndUri(exception: string, cwd: string): string {
     .split('\n')[0]
 }
 
-function normalizeMessage(obj: any, cwd: string): void {
-  if (doesHaveValue(obj.uri)) {
-    obj.uri = normalizeExceptionAndUri(obj.uri, cwd)
-  }
-  if (doesHaveValue(obj.sourceReference?.uri)) {
-    obj.sourceReference.uri = normalizeExceptionAndUri(
-      obj.sourceReference.uri,
-      cwd
-    )
-  }
-  if (doesHaveValue(obj.testStepResult)) {
-    if (doesHaveValue(obj.testStepResult.duration)) {
-      obj.testStepResult.duration.nanos = 0
+function normalizeMessage(
+  obj: messages.Envelope[keyof messages.Envelope],
+  cwd: string
+): void {
+  if (isObject(obj)) {
+    if (typeof obj.uri === 'string') {
+      obj.uri = normalizeExceptionAndUri(obj.uri, cwd)
     }
-    if (doesHaveValue(obj.testStepResult.message)) {
-      obj.testStepResult.message = normalizeExceptionAndUri(
-        obj.testStepResult.message,
+    if (
+      isObject(obj.sourceReference) &&
+      typeof obj.sourceReference.uri === 'string'
+    ) {
+      obj.sourceReference.uri = normalizeExceptionAndUri(
+        obj.sourceReference.uri,
         cwd
       )
+    }
+    if (isObject(obj.testStepResult)) {
+      if (isObject(obj.testStepResult.duration)) {
+        obj.testStepResult.duration.nanos = 0
+      }
+      if (typeof obj.testStepResult.message === 'string') {
+        obj.testStepResult.message = normalizeExceptionAndUri(
+          obj.testStepResult.message,
+          cwd
+        )
+      }
     }
   }
 }
@@ -49,10 +61,11 @@ export function normalizeMessageOutput(
   envelopeObjects: messages.Envelope[],
   cwd: string
 ): messages.Envelope[] {
-  envelopeObjects.forEach((e: any) => {
-    for (const key in e) {
+  envelopeObjects.forEach((e: messages.Envelope) => {
+    const keys = Object.keys(e) as (keyof messages.Envelope)[]
+    keys.forEach((key) => {
       normalizeMessage(e[key], cwd)
-    }
+    })
   })
   return envelopeObjects
 }
