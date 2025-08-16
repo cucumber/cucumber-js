@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { PassThrough, pipeline, Writable } from 'node:stream'
-import util from 'node:util'
+import { PassThrough, Writable } from 'node:stream'
+import { pipeline } from 'node:stream/promises'
 import { describe, it } from 'mocha'
 import { config, expect, use } from 'chai'
 import chaiExclude from 'chai-exclude'
@@ -12,7 +12,6 @@ import { Envelope } from '@cucumber/messages'
 import { ignorableKeys } from '../features/support/formatter_output_helpers'
 import { runCucumber, IRunConfiguration } from '../src/api'
 
-const asyncPipeline = util.promisify(pipeline)
 const PROJECT_PATH = path.join(__dirname, '..')
 const CCK_FEATURES_PATH = 'node_modules/@cucumber/compatibility-kit/features'
 const CCK_IMPLEMENTATIONS_PATH = 'compatibility/features'
@@ -21,19 +20,22 @@ config.truncateThreshold = 100
 use(chaiExclude)
 
 describe('Cucumber Compatibility Kit', () => {
-  const ndjsonFiles = glob.sync(`${CCK_FEATURES_PATH}/**/*.ndjson`)
-  ndjsonFiles.forEach((fixturePath) => {
-    const match = /^.+[/\\](.+)(\.feature(?:\.md)?)\.ndjson$/.exec(fixturePath)
-    const suiteName = match[1]
-    const extension = match[2]
-    it(`passes the cck suite for '${suiteName}'`, async () => {
+  const directories = glob.sync(`${CCK_FEATURES_PATH}/*`, { nodir: false })
+
+  for (const directory of directories) {
+    const suite = path.basename(directory)
+
+    it(suite, async () => {
       const actualMessages: Envelope[] = []
       const stdout = new PassThrough()
       const stderr = new PassThrough()
       const runConfiguration: IRunConfiguration = {
         sources: {
           defaultDialect: 'en',
-          paths: [`${CCK_FEATURES_PATH}/${suiteName}/${suiteName}${extension}`],
+          paths: [
+            `${CCK_FEATURES_PATH}/${suite}/*.feature`,
+            `${CCK_FEATURES_PATH}/${suite}/*.feature.md`,
+          ],
           names: [],
           tagExpression: '',
           order: 'defined',
@@ -41,16 +43,14 @@ describe('Cucumber Compatibility Kit', () => {
         },
         support: {
           requireModules: ['ts-node/register'],
-          requirePaths: [
-            `${CCK_IMPLEMENTATIONS_PATH}/${suiteName}/${suiteName}.ts`,
-          ],
+          requirePaths: [`${CCK_IMPLEMENTATIONS_PATH}/${suite}/*.ts`],
         },
         runtime: {
           dryRun: false,
           failFast: false,
           filterStacktraces: true,
           parallel: 0,
-          retry: suiteName === 'retry' ? 2 : 0,
+          retry: suite === 'retry' ? 2 : 0,
           retryTagFilter: '',
           strict: true,
           worldParameters: {},
@@ -75,8 +75,10 @@ describe('Cucumber Compatibility Kit', () => {
       stderr.end()
 
       const expectedMessages: messages.Envelope[] = []
-      await asyncPipeline(
-        fs.createReadStream(fixturePath, { encoding: 'utf-8' }),
+      await pipeline(
+        fs.createReadStream(path.join(directory, suite + '.ndjson'), {
+          encoding: 'utf-8',
+        }),
         new messageStreams.NdjsonToMessageStream(),
         new Writable({
           objectMode: true,
@@ -91,5 +93,5 @@ describe('Cucumber Compatibility Kit', () => {
         .excludingEvery(ignorableKeys)
         .to.deep.eq(expectedMessages)
     })
-  })
+  }
 })

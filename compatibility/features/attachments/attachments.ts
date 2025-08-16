@@ -35,40 +35,6 @@ When(
   }
 )
 
-When('a JPEG image is attached', async function () {
-  await this.attach(
-    fs.createReadStream(
-      path.join(
-        process.cwd(),
-        'node_modules',
-        '@cucumber',
-        'compatibility-kit',
-        'features',
-        'attachments',
-        'cucumber.jpeg'
-      )
-    ),
-    'image/jpeg'
-  )
-})
-
-When('a PNG image is attached', async function () {
-  await this.attach(
-    fs.createReadStream(
-      path.join(
-        process.cwd(),
-        'node_modules',
-        '@cucumber',
-        'compatibility-kit',
-        'features',
-        'attachments',
-        'cucumber.png'
-      )
-    ),
-    'image/png'
-  )
-})
-
 When('a PDF document is attached and renamed', async function () {
   await this.attach(
     fs.createReadStream(

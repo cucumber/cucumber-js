@@ -53,7 +53,6 @@ Before('@esm', function (this: World) {
 })
 
 Before('@without-require-esm', function (this: World) {
-  // @ts-expect-error require_module flag not in @types/node yet
   if (process.features.require_module) {
     return 'skipped'
   }
