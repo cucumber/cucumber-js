@@ -66,3 +66,12 @@ Feature: Running scenarios using sharding
     When I run cucumber-js with `--shard 5/5`
     Then it passes
     And it runs 0 scenarios
+
+  Scenario: invalid shard option
+    When I run cucumber-js with `--shard whoops`
+    Then it fails
+    And the error output contains the text:
+    """
+    the shard option must be in the format <index>/<total> (e.g. 1/3)
+    """
+
