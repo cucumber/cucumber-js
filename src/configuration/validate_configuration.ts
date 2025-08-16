@@ -20,4 +20,9 @@ export function validateConfiguration(
       'a positive `retry` count must be specified when setting `retryTagFilter`'
     )
   }
+  if (configuration.shard && !/^\d+\/\d+$/.test(configuration.shard)) {
+    throw new Error(
+      'the shard option must be in the format <index>/<total> (e.g. 1/3)'
+    )
+  }
 }

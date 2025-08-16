@@ -223,6 +223,7 @@ export interface IConfiguration {
     requireModule: string[];
     retry: number;
     retryTagFilter: string;
+    shard: string;
     strict: boolean;
     tags: string;
     worldParameters: JsonObject;

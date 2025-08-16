@@ -19,6 +19,7 @@ export const DEFAULT_CONFIGURATION: IConfiguration = {
   requireModule: [],
   retry: 0,
   retryTagFilter: '',
+  shard: '',
   strict: true,
   tags: '',
   worldParameters: {},

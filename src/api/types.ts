@@ -80,6 +80,13 @@ export interface ISourcesCoordinates {
    * Run in the order defined, or in a random order
    */
   order: IPickleOrder
+  /**
+   * Shard tests and execute only the selected shard, format `<index>/<total>`
+   * @example 1/4
+   * @remarks
+   * Shards use 1-based numbering
+   */
+  shard?: string
 }
 
 /**

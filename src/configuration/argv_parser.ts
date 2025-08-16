@@ -119,7 +119,6 @@ const ArgvParser = {
         'only execute the scenarios with name matching the expression (repeatable)',
         ArgvParser.collect
       )
-
       .option(
         '--order <TYPE[:SEED]>',
         'run scenarios in the specified order. Type should be `defined` or `random`'
@@ -156,6 +155,10 @@ const ArgvParser = {
         `only retries the features or scenarios with tags matching the expression (repeatable).
         This option requires '--retry' to be specified.`,
         ArgvParser.mergeTags
+      )
+      .option(
+        '--shard <INDEX/TOTAL>',
+        'run shard INDEX of TOTAL shards. The index starts at 1'
       )
       .option('--strict', 'fail if there are pending steps')
       .option('--no-strict', 'succeed even if there are pending steps')
