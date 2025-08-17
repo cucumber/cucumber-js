@@ -255,7 +255,7 @@
     "type-fest": "^4.41.0",
     "util-arity": "^1.1.0",
     "yaml": "^2.2.2",
-    "yup": "1.6.1"
+    "yup": "1.7.0"
   },
   "devDependencies": {
     "@cucumber/compatibility-kit": "^20.0.0",
