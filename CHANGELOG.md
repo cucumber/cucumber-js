@@ -12,6 +12,9 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 - Export configuration types ([#2598](https://github.com/cucumber/cucumber-js/pull/2598))
 - Add support for execution sharding ([#2303](https://github.com/cucumber/cucumber-js/pull/2303)) by [@agologan](https://github.com/agologan)
 
+### Fixed
+- Revert pretty formatter to 1.x.x version ([#2629](https://github.com/cucumber/cucumber-js/pull/2629))
+
 ## [12.1.0] - 2025-07-19
 ### Added
 - Include updated pretty formatter ([#2592](https://github.com/cucumber/cucumber-js/pull/2592))
