@@ -89,11 +89,6 @@ Writes a rich report of the scenario and example execution as it happens.
 
 ![](./images/pretty.png)
 
-Options specific to this formatter (under the `pretty` key):
-
-- `featuresAndRules` - whether to include headings for Features and Rules (defaults to `true`)
-- `theme` - control over the styling of various elements (see [documentation](https://github.com/cucumber/pretty-formatter/blob/main/javascript/README.md#themes))
-
 ### `html`
 
 The HTML Formatter produces a rich interactive report bundled as a standalone HTML page:
