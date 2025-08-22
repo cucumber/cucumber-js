@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [12.2.0] - 2025-08-22
 ### Added
 - Export configuration types ([#2598](https://github.com/cucumber/cucumber-js/pull/2598))
 - Add support for execution sharding ([#2303](https://github.com/cucumber/cucumber-js/pull/2303)) by [@agologan](https://github.com/agologan)
@@ -1691,7 +1693,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.1.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.2.0...HEAD
+[12.2.0]: https://github.com/cucumber/cucumber-js/compare/v12.1.0...v12.2.0
 [12.1.0]: https://github.com/cucumber/cucumber-js/compare/v12.0.0...v12.1.0
 [12.0.0]: https://github.com/cucumber/cucumber-js/compare/v11.3.0...v12.0.0
 [11.3.0]: https://github.com/cucumber/cucumber-js/compare/v11.2.0...v11.3.0
