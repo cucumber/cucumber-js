@@ -22,6 +22,7 @@ export default class UsageFormatter extends Formatter {
     const usage = getUsage({
       stepDefinitions: this.supportCodeLibrary.stepDefinitions,
       eventDataCollector: this.eventDataCollector,
+      order: this.usageOrder,
     })
     if (usage.length === 0) {
       this.log('No step definitions')
