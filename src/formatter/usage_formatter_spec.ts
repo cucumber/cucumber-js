@@ -101,7 +101,7 @@ describe('UsageFormatter', () => {
       })
 
       describe('not in dry run', () => {
-        it('outputs the step definition without durations', async () => {
+        it('outputs the step definition with durations', async () => {
           // Arrange
           const sources = [
             {
