@@ -65,7 +65,7 @@ export default class TestCaseRunner {
   }: INewTestCaseRunnerOptions) {
     this.workerId = workerId
     this.attachmentManager = new AttachmentManager(
-      ({ data, media, fileName }) => {
+      ({ data, media, fileName, timestamp }) => {
         if (doesNotHaveValue(this.currentTestStepId)) {
           throw new Error(
             'Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.'
@@ -79,6 +79,7 @@ export default class TestCaseRunner {
             fileName,
             testCaseStartedId: this.currentTestCaseStartedId,
             testStepId: this.currentTestStepId,
+            timestamp,
           },
         }
         this.eventBroadcaster.emit('envelope', attachment)

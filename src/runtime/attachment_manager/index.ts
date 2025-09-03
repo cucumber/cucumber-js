@@ -2,6 +2,8 @@ import { Readable } from 'node:stream'
 import isStream from 'is-stream'
 import * as messages from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
+import { Timestamp } from '@cucumber/messages'
+import { timestamp } from '../stopwatch'
 
 export interface IAttachmentMedia {
   encoding: messages.AttachmentContentEncoding
@@ -12,6 +14,7 @@ export interface IAttachment {
   data: string
   media: IAttachmentMedia
   fileName?: string
+  timestamp: Timestamp
 }
 
 export type IAttachFunction = (attachment: IAttachment) => void
@@ -158,6 +161,7 @@ export default class AttachmentManager {
       data,
       media,
       ...(fileName ? { fileName } : {}),
+      timestamp: timestamp(),
     })
   }
 }
