@@ -66,4 +66,10 @@ export default defineConfig([
       ],
     },
   },
+  {
+    files: ['compatibility/features/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off',
+    },
+  },
 ])
