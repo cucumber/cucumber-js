@@ -2,7 +2,7 @@ import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import { getEnvelopesAndEventDataCollector } from '../../../../test/formatter_helpers'
 import { buildSupportCodeLibrary } from '../../../../test/runtime_helpers'
-import { getUsage } from './'
+import { getUsage, UsageOrder } from './'
 
 describe('Usage Helpers', () => {
   describe('getUsage', () => {
@@ -23,6 +23,7 @@ describe('Usage Helpers', () => {
           const output = getUsage({
             eventDataCollector,
             stepDefinitions: supportCodeLibrary.stepDefinitions,
+            order: UsageOrder.EXECUTION_TIME,
           })
 
           // Assert
@@ -55,6 +56,7 @@ describe('Usage Helpers', () => {
           const output = getUsage({
             eventDataCollector,
             stepDefinitions: supportCodeLibrary.stepDefinitions,
+            order: UsageOrder.EXECUTION_TIME,
           })
 
           // Assert

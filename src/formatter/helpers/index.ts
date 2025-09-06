@@ -7,5 +7,5 @@ export { KeywordType, getStepKeywordType } from './keyword_type'
 export { formatIssue, isWarning, isFailure, isIssue } from './issue_helpers'
 export { formatLocation } from './location_helpers'
 export { formatSummary } from './summary_helpers'
-export { getUsage } from './usage_helpers'
+export { getUsage, UsageOrder } from './usage_helpers'
 export { GherkinDocumentParser, PickleParser }

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
 import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import timeMethods from '../time'
-import { getUsageSupportCodeLibrary } from '../../test/fixtures/usage_steps'
+import { getBasicUsageSupportCodeLibrary } from '../../test/fixtures/usage/usage_steps'
 import { testFormatter } from '../../test/formatter_helpers'
 
 describe('UsageJsonFormatter', () => {
@@ -24,7 +24,7 @@ describe('UsageJsonFormatter', () => {
         uri: 'a.feature',
       },
     ]
-    const supportCodeLibrary = getUsageSupportCodeLibrary(clock)
+    const supportCodeLibrary = getBasicUsageSupportCodeLibrary(clock)
 
     // Act
     const output = await testFormatter({
@@ -38,7 +38,7 @@ describe('UsageJsonFormatter', () => {
     expect(parsedOutput).to.eql([
       {
         code: parsedOutput[0].code,
-        line: 16,
+        line: 18,
         matches: [
           {
             duration: {
@@ -60,7 +60,7 @@ describe('UsageJsonFormatter', () => {
       },
       {
         code: parsedOutput[1].code,
-        line: 11,
+        line: 13,
         matches: [
           {
             duration: {
@@ -82,7 +82,7 @@ describe('UsageJsonFormatter', () => {
       },
       {
         code: parsedOutput[2].code,
-        line: 25,
+        line: 27,
         matches: [],
         pattern: 'ghi',
         patternType: 'CucumberExpression',
