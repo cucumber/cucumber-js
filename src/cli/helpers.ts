@@ -125,7 +125,7 @@ function emitStepDefinitions(
       stepDefinition: {
         id: stepDefinition.id,
         pattern: {
-          source: stepDefinition.pattern.toString(),
+          source: extractPatternSource(stepDefinition.pattern),
           type:
             typeof stepDefinition.pattern === 'string'
               ? messages.StepDefinitionPatternType.CUCUMBER_EXPRESSION
@@ -136,6 +136,13 @@ function emitStepDefinitions(
     }
     eventBroadcaster.emit('envelope', envelope)
   })
+}
+
+function extractPatternSource(pattern: string | RegExp) {
+  if (pattern instanceof RegExp) {
+    return pattern.flags ? pattern.toString() : pattern.source;
+  }
+  return pattern;
 }
 
 function emitTestCaseHooks(
