@@ -172,7 +172,7 @@ describe('helpers', () => {
           stepDefinition: {
             id: '0',
             pattern: {
-              source: '/I have (\\d+) cukes in my belly/',
+              source: 'I have (\\d+) cukes in my belly',
               type: messages.StepDefinitionPatternType.REGULAR_EXPRESSION,
             },
             sourceReference: {

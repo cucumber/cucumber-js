@@ -79,6 +79,7 @@ export default class TestCaseRunner {
             fileName,
             testCaseStartedId: this.currentTestCaseStartedId,
             testStepId: this.currentTestStepId,
+            timestamp: timestamp(),
           },
         }
         this.eventBroadcaster.emit('envelope', attachment)
