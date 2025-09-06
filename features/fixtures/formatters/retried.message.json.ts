@@ -73,7 +73,7 @@ module.exports = [
     stepDefinition: {
       id: '0',
       pattern: {
-        source: '/^a step$/',
+        source: '^a step$',
         type: 'REGULAR_EXPRESSION',
       },
       sourceReference: {
