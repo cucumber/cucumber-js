@@ -51,7 +51,7 @@ describe('Cucumber Compatibility Kit', () => {
           ],
           names: [],
           tagExpression: '',
-          order: 'defined',
+          order: suite === 'multiple-features-reversed' ? 'reverse' : 'defined',
           shard: '',
         },
         support: {

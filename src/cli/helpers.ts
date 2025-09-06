@@ -20,6 +20,9 @@ export function orderPickles<T = string>(
   switch (type) {
     case 'defined':
       break
+    case 'reverse':
+      pickleIds.reverse()
+      break
     case 'random':
       if (seed === '') {
         const newSeed = Math.floor(Math.random() * 1000 * 1000).toString()
