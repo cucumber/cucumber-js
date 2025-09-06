@@ -10,6 +10,11 @@ For compiling TypeScript on the fly, you should install [ts-node](https://github
 npm install --save-dev ts-node
 ```
 
+> For an easier setup, one could use [tsx](https://github.com/privatenumber/tsx), and its `tsx/cjs` for commonjs transpilation or `tsx/esm` for esm transpilation. `tsx` bypasses typechecking and hence is not only faster, but also does not require a `tsconfig.json` to be setup.
+> An example test script where step definitions are written in typescript would look like so:
+> 
+> `"test": "cucumber-js --require-module tsx/cjs --require 'features/**/*.ts'"`
+
 ## Module format
 
 The first thing you need to establish is the JavaScript module format you are compiling to. It'll be either of:
