@@ -30,7 +30,7 @@ export enum UsageOrder {
 export interface IGetUsageRequest {
   eventDataCollector: EventDataCollector
   stepDefinitions: StepDefinition[]
-  order: UsageOrder
+  order?: UsageOrder
 }
 
 function buildEmptyMapping(
@@ -143,7 +143,7 @@ function buildResult(
 export function getUsage({
   stepDefinitions,
   eventDataCollector,
-  order,
+  order = UsageOrder.EXECUTION_TIME,
 }: IGetUsageRequest): IUsage[] {
   const mapping = buildMapping({ stepDefinitions, eventDataCollector })
   return buildResult(mapping, order)
