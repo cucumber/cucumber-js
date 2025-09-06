@@ -143,9 +143,9 @@ function emitStepDefinitions(
 
 function extractPatternSource(pattern: string | RegExp) {
   if (pattern instanceof RegExp) {
-    return pattern.flags ? pattern.toString() : pattern.source;
+    return pattern.flags ? pattern.toString() : pattern.source
   }
-  return pattern;
+  return pattern
 }
 
 function emitTestCaseHooks(
