@@ -280,7 +280,7 @@
     "@types/mz": "2.7.9",
     "@types/node": "20.19.13",
     "@types/progress": "2.0.7",
-    "@types/semver": "7.7.0",
+    "@types/semver": "7.7.1",
     "@types/sinon-chai": "3.2.12",
     "@types/sinonjs__fake-timers": "8.1.5",
     "@types/stream-buffers": "3.0.7",
