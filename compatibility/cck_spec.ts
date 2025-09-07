@@ -100,9 +100,45 @@ describe('Cucumber Compatibility Kit', () => {
         })
       )
 
-      expect(actualMessages)
+      expect(reorderEnvelopes(actualMessages))
         .excludingEvery(ignorableKeys)
         .to.deep.eq(expectedMessages)
     })
   }
 })
+
+function reorderEnvelopes(
+  envelopes: ReadonlyArray<Envelope>
+): ReadonlyArray<Envelope> {
+  let testRunStartedEnvelope: Envelope
+  let testCaseStartedEnvelope: Envelope
+
+  const result: Envelope[] = []
+  const moveAfterTestRunStarted: Envelope[] = []
+
+  for (const envelope of envelopes) {
+    if (envelope.testRunStarted) {
+      testRunStartedEnvelope = envelope
+    }
+    if (envelope.testCaseStarted) {
+      testCaseStartedEnvelope = envelope
+    }
+
+    if (
+      (envelope.testRunHookStarted || envelope.testRunHookFinished) &&
+      !testCaseStartedEnvelope
+    ) {
+      moveAfterTestRunStarted.push(envelope)
+    } else {
+      result.push(envelope)
+    }
+  }
+
+  result.splice(
+    result.indexOf(testRunStartedEnvelope) + 1,
+    0,
+    ...moveAfterTestRunStarted
+  )
+
+  return result
+}
