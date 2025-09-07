@@ -1,5 +1,6 @@
 import { EventEmitter } from 'node:events'
 import {
+  Envelope,
   IdGenerator,
   TestStepResult,
   TestStepResultStatus,
@@ -14,7 +15,7 @@ import { retriesForPickle, shouldCauseFailure } from './helpers'
 import TestCaseRunner from './test_case_runner'
 import { runInTestRunScope } from './scope'
 import { formatError } from './format_error'
-import { create } from './stopwatch'
+import { create, timestamp } from './stopwatch'
 import { RuntimeOptions } from './types'
 
 export interface RunHookResult {
@@ -34,53 +35,72 @@ export class Worker {
   private async runTestRunHook(
     hookDefinition: TestRunHookDefinition
   ): Promise<RunHookResult> {
-    const stopwatch = create().start()
+    const testRunHookStartedId = this.newId()
+    this.eventBroadcaster.emit('envelope', {
+      testRunHookStarted: {
+        testRunStartedId: 'TODO',
+        id: testRunHookStartedId,
+        hookId: hookDefinition.id,
+        timestamp: timestamp(),
+      },
+    } satisfies Envelope)
 
+    let result: TestStepResult
+    let error: any
     if (this.options.dryRun) {
-      const duration = stopwatch.stop().duration()
-      return {
-        result: {
-          duration,
-          status: TestStepResultStatus.SKIPPED,
+      result = {
+        duration: {
+          seconds: 0,
+          nanos: 0,
         },
+        status: TestStepResultStatus.SKIPPED,
+      }
+    } else {
+      const stopwatch = create().start()
+      const context = { parameters: this.options.worldParameters }
+      const { error: rawError } = await runInTestRunScope({ context }, () =>
+        UserCodeRunner.run({
+          argsArray: [],
+          fn: hookDefinition.code,
+          thisArg: context,
+          timeoutInMilliseconds: valueOrDefault(
+            hookDefinition.options.timeout,
+            this.supportCodeLibrary.defaultTimeout
+          ),
+        })
+      )
+      const duration = stopwatch.stop().duration()
+
+      if (doesHaveValue(rawError)) {
+        result = {
+          duration,
+          status: TestStepResultStatus.FAILED,
+          ...formatError(rawError, this.options.filterStacktraces),
+        }
+        error = this.wrapTestRunHookError(
+          'a BeforeAll',
+          formatLocation(hookDefinition),
+          rawError
+        )
+      } else {
+        result = {
+          duration,
+          status: TestStepResultStatus.PASSED,
+        }
       }
     }
 
-    const context = { parameters: this.options.worldParameters }
-    const { error } = await runInTestRunScope({ context }, () =>
-      UserCodeRunner.run({
-        argsArray: [],
-        fn: hookDefinition.code,
-        thisArg: context,
-        timeoutInMilliseconds: valueOrDefault(
-          hookDefinition.options.timeout,
-          this.supportCodeLibrary.defaultTimeout
-        ),
-      })
-    )
-
-    const duration = stopwatch.stop().duration()
-    let status: TestStepResultStatus
-    let details = {}
-
-    if (doesHaveValue(error)) {
-      status = TestStepResultStatus.FAILED
-      details = formatError(error, this.options.filterStacktraces)
-    } else {
-      status = TestStepResultStatus.PASSED
-    }
+    this.eventBroadcaster.emit('envelope', {
+      testRunHookFinished: {
+        testRunHookStartedId,
+        result,
+        timestamp: timestamp(),
+      },
+    } satisfies Envelope)
 
     return {
-      result: {
-        duration,
-        status,
-        ...details,
-      },
-      error: this.wrapTestRunHookError(
-        'a BeforeAll',
-        formatLocation(hookDefinition),
-        error
-      ),
+      result,
+      error,
     }
   }
 
