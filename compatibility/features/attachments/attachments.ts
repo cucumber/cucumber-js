@@ -1,8 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { Before, When } from '../../../src'
-
-Before(() => undefined)
+import { When } from '../../../src'
 
 When(
   'the string {string} is attached as {string}',
@@ -37,40 +35,6 @@ When(
   }
 )
 
-When('a JPEG image is attached', async function () {
-  await this.attach(
-    fs.createReadStream(
-      path.join(
-        process.cwd(),
-        'node_modules',
-        '@cucumber',
-        'compatibility-kit',
-        'features',
-        'attachments',
-        'cucumber.jpeg'
-      )
-    ),
-    'image/jpeg'
-  )
-})
-
-When('a PNG image is attached', async function () {
-  await this.attach(
-    fs.createReadStream(
-      path.join(
-        process.cwd(),
-        'node_modules',
-        '@cucumber',
-        'compatibility-kit',
-        'features',
-        'attachments',
-        'cucumber.png'
-      )
-    ),
-    'image/png'
-  )
-})
-
 When('a PDF document is attached and renamed', async function () {
   await this.attach(
     fs.createReadStream(
@@ -89,4 +53,8 @@ When('a PDF document is attached and renamed', async function () {
       fileName: 'renamed.pdf',
     }
   )
+})
+
+When('a link to {string} is attached', async function (uri: string) {
+  this.link(uri)
 })

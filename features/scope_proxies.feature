@@ -5,7 +5,7 @@ Feature: Scope proxies
       """
       Feature: some feature
         Scenario: some scenario
-          Given a step
+          Given somebody called Lucy
       """
     And a file named "features/support/world.js" with:
       """
@@ -28,11 +28,28 @@ Feature: Scope proxies
   Scenario: world and context can be used from appropriate scopes
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
-      const {BeforeAll,Given,BeforeStep,Before,world,context} = require('@cucumber/cucumber')
+      const {defineParameterType,BeforeAll,Given,BeforeStep,Before,world,context} = require('@cucumber/cucumber')
       const assert = require('node:assert/strict')
 
+      class Person {
+        #name;
+
+        constructor(name) {
+          this.#name = name
+        }
+      }
+
+      defineParameterType({
+        name: 'person',
+        regexp: /\w+/,
+        transformer: name => {
+          assert(world.isWorld())
+          return new Person(name);
+        }
+      })
+
       BeforeAll(() => assert.equal(context.parameters.a, 1))
-      Given('a step', () => assert(world.isWorld()))
+      Given('somebody called {person}', (person) => assert(world.isWorld()))
       BeforeStep(() => assert(world.isWorld()))
       Before(() => assert(world.isWorld()))
       """

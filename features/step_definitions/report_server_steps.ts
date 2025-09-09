@@ -14,6 +14,14 @@ Given(
   }
 )
 
+Given('report publishing is not working', async function (this: World) {
+  this.reportServer.failOnTouch = true
+})
+
+Given('report uploads are not working', async function (this: World) {
+  this.reportServer.failOnUpload = true
+})
+
 Then(
   'the server should receive the following message types:',
   async function (this: World, expectedMessageTypesTable: DataTable) {

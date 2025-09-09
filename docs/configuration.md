@@ -71,6 +71,12 @@ module.exports = {
 
 (If you're wondering why the configuration sits within a "default" property, that's to allow for [Profiles](./profiles.md).)
 
+### Type checking
+
+If you want to type check your configuration, we export two types that can help with that:
+- `IProfiles` represents the dictionary of profile names to configuration objects exported for CommonJS
+- `IConfiguration` represents a single configuration object exported with named exports for ESM (`Partial<IConfiguration>` will be more useful in practise)
+
 ## Options
 
 These options can be used in a configuration file (see [above](#files)) or on the [CLI](./cli.md), or both.
@@ -113,9 +119,9 @@ features/**/*.{feature,feature.md}
 If your features are somewhere else, you can override this by proving your own [glob](https://github.com/isaacs/node-glob) or directory:
 
 - In a configuration file `{ paths: ['somewhere-else/**/*.feature'] }`
-- On the CLI `cucumber-js somewhere-else/**/*.feature`
+- On the CLI `cucumber-js 'somewhere-else/**/*.feature'` (note that the argument is quoted - this is to avoid your shell expanding the glob itself which might lead to different behaviour than what's documented here)
 
-This option is repeatable, so you can provide several values and they'll be combined.
+This option is repeatable, so you can provide several values and they'll be combined, whilst maintaining the order you provided them in.
 
 For more granular options to control _which scenarios_ from your features should be run, see [Filtering](./filtering.md).
 

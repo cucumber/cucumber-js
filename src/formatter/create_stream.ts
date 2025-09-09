@@ -2,7 +2,7 @@ import path from 'node:path'
 import { Writable } from 'node:stream'
 import { mkdirp } from 'mkdirp'
 import fs from 'mz/fs'
-import { ILogger } from '../logger'
+import { ILogger } from '../environment'
 
 export async function createStream(
   target: string,
@@ -15,8 +15,8 @@ export async function createStream(
 
   try {
     await mkdirp(directory)
-  } catch (error) {
-    logger.warn('Failed to ensure directory for formatter target exists')
+  } catch (e) {
+    logger.warn('Failed to ensure directory for formatter target exists', e)
   }
 
   const stream: Writable = fs.createWriteStream(null, {

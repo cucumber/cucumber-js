@@ -1,55 +1,47 @@
 import { PluginManager } from '../plugin'
 import publishPlugin from '../publish'
-import { ILogger } from '../logger'
 import filterPlugin from '../filter'
-import {
-  IRunConfiguration,
-  IRunEnvironment,
-  ISourcesCoordinates,
-} from './types'
+import shardingPlugin from '../sharding'
+import { UsableEnvironment } from '../environment'
+import { IRunConfiguration, ISourcesCoordinates } from './types'
 
 export async function initializeForLoadSources(
-  logger: ILogger,
   coordinates: ISourcesCoordinates,
-  environment: Required<IRunEnvironment>
+  environment: UsableEnvironment
 ): Promise<PluginManager> {
   // eventually we'll load plugin packages here
-  const pluginManager = new PluginManager()
-  await pluginManager.initCoordinator(
-    'loadSources',
-    filterPlugin,
-    coordinates,
-    logger,
-    environment
-  )
+  const pluginManager = new PluginManager(environment)
+  await pluginManager.initCoordinator('loadSources', filterPlugin, coordinates)
   return pluginManager
 }
 
-export async function initializeForLoadSupport(): Promise<PluginManager> {
+export async function initializeForLoadSupport(
+  environment: UsableEnvironment
+): Promise<PluginManager> {
   // eventually we'll load plugin packages here
-  return new PluginManager()
+  return new PluginManager(environment)
 }
 
 export async function initializeForRunCucumber(
-  logger: ILogger,
   configuration: IRunConfiguration,
-  environment: Required<IRunEnvironment>
+  environment: UsableEnvironment
 ): Promise<PluginManager> {
   // eventually we'll load plugin packages here
-  const pluginManager = new PluginManager()
+  const pluginManager = new PluginManager(environment)
   await pluginManager.initCoordinator(
     'runCucumber',
     publishPlugin,
-    configuration.formats.publish,
-    logger,
-    environment
+    configuration.formats.publish
   )
   await pluginManager.initCoordinator(
     'runCucumber',
     filterPlugin,
-    configuration.sources,
-    logger,
-    environment
+    configuration.sources
+  )
+  await pluginManager.initCoordinator(
+    'runCucumber',
+    shardingPlugin,
+    configuration.sources
   )
   return pluginManager
 }

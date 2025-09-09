@@ -9,6 +9,45 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ## [Unreleased]
 
+## [12.2.0] - 2025-08-22
+### Added
+- Export configuration types ([#2598](https://github.com/cucumber/cucumber-js/pull/2598))
+- Add support for execution sharding ([#2303](https://github.com/cucumber/cucumber-js/pull/2303)) by [@agologan](https://github.com/agologan)
+
+### Fixed
+- Revert pretty formatter to 1.x.x version ([#2629](https://github.com/cucumber/cucumber-js/pull/2629))
+
+## [12.1.0] - 2025-07-19
+### Added
+- Include updated pretty formatter ([#2592](https://github.com/cucumber/cucumber-js/pull/2592))
+
+## [12.0.0] - 2025-07-13
+### Added
+- Allow comments inside descriptions ([cucumber/gherkin#334](https://github.com/cucumber/gherkin/pull/334))
+- Add original `error` to `After` and `AfterStep` hook parameters ([#2572](https://github.com/cucumber/cucumber-js/pull/2572))
+- Add support for Node.js 24.x ([#2588](https://github.com/cucumber/cucumber-js/pull/2588))
+
+### Changed
+- Redesigned HTML formatter header ([cucumber/react-components#381](https://github.com/cucumber/react-components/pull/381))
+
+### Removed
+- BREAKING CHANGE: Remove support for Node.js 18.x ([#2588](https://github.com/cucumber/cucumber-js/pull/2588))
+- BREAKING CHANGE: Remove support for Node.js 23.x ([#2588](https://github.com/cucumber/cucumber-js/pull/2588))
+- BREAKING CHANGE: Remove `publishQuiet` option ([#2587](https://github.com/cucumber/cucumber-js/pull/2587))
+
+## [11.3.0] - 2025-05-14
+### Changed
+- Improve error handling in publish plugin ([#2526](https://github.com/cucumber/cucumber-js/pull/2526))
+
+## [11.2.0] - 2025-01-09
+### Added
+- `junit` formatter now includes `timestamp` attribute ([junit-xml-formatter#45](https://github.com/cucumber/junit-xml-formatter/pull/45))
+- `Hook` message now includes `type` ([#2463](https://github.com/cucumber/cucumber-js/pull/2463))
+- `TestRunStarted` message now includes `id`; `TestCase` and `TestRunFinished` messages reference it in `testRunStartedId` ([#2463](https://github.com/cucumber/cucumber-js/pull/2463))
+
+### Fixed
+- Enable world proxy in parameter transformers ([#2465](https://github.com/cucumber/cucumber-js/pull/2465))
+
 ## [11.1.1] - 2024-12-11
 ### Fixed
 - Correctly report error in publish plugin ([#2454](https://github.com/cucumber/cucumber-js/pull/2454))
@@ -1654,7 +1693,12 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v11.1.1...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.2.0...HEAD
+[12.2.0]: https://github.com/cucumber/cucumber-js/compare/v12.1.0...v12.2.0
+[12.1.0]: https://github.com/cucumber/cucumber-js/compare/v12.0.0...v12.1.0
+[12.0.0]: https://github.com/cucumber/cucumber-js/compare/v11.3.0...v12.0.0
+[11.3.0]: https://github.com/cucumber/cucumber-js/compare/v11.2.0...v11.3.0
+[11.2.0]: https://github.com/cucumber/cucumber-js/compare/v11.1.1...v11.2.0
 [11.1.1]: https://github.com/cucumber/cucumber-js/compare/v11.1.0...v11.1.1
 [11.1.0]: https://github.com/cucumber/cucumber-js/compare/v11.0.1...v11.1.0
 [11.0.1]: https://github.com/cucumber/cucumber-js/compare/v11.0.0...v11.0.1

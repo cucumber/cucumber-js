@@ -98,15 +98,15 @@ export interface IConfiguration {
    */
   parallel: number
   /**
+   * Shard tests and execute only the selected shard, format `<index>/<total>`
+   * @default ""
+   */
+  shard: string
+  /**
    * Publish a report of your test run to https://reports.cucumber.io/
    * @default false
    */
   publish: boolean
-  /**
-   * @deprecated no longer needed
-   * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md}
-   */
-  publishQuiet: boolean
   /**
    * Paths to where your support code is, for CommonJS
    * @default []
@@ -151,3 +151,9 @@ export interface IConfiguration {
    */
   worldParameters: JsonObject
 }
+
+/**
+ * Collection of named configuration profiles
+ * @public
+ */
+export type IProfiles = Record<string, Partial<IConfiguration>>

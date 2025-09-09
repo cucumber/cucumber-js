@@ -4,7 +4,7 @@ import {
   splitFormatDescriptor,
 } from '../configuration'
 import { IPublishConfig } from '../publish'
-import { ILogger } from '../logger'
+import { ILogger } from '../environment'
 import { IRunConfiguration } from './types'
 
 export async function convertConfiguration(
@@ -19,6 +19,7 @@ export async function convertConfiguration(
       names: flatConfiguration.name,
       tagExpression: flatConfiguration.tags,
       order: flatConfiguration.order,
+      shard: flatConfiguration.shard,
     },
     support: {
       requireModules: flatConfiguration.requireModule,

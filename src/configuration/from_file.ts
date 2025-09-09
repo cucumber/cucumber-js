@@ -3,7 +3,7 @@ import path from 'node:path'
 import { promisify } from 'node:util'
 import { pathToFileURL } from 'node:url'
 import YAML from 'yaml'
-import { ILogger } from '../logger'
+import { ILogger } from '../environment'
 import { IConfiguration } from './types'
 import { mergeConfigurations } from './merge_configurations'
 import { parseConfiguration } from './parse_configuration'
@@ -93,25 +93,37 @@ async function loadFile(
       )
       break
     case '.cjs':
-    case '.js':
-    case '.mjs': {
       logger.debug(
-        `Loading configuration file "${file}" as JavaScript based on extension`
+        `Loading configuration file "${file}" as CommonJS based on extension`
       )
-      const ambiguous = await import(pathToFileURL(filePath).toString())
-      if ('module.exports' in ambiguous) {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      definitions = require(filePath)
+      break
+    case '.mjs':
+      logger.debug(
+        `Loading configuration file "${file}" as ESM based on extension`
+      )
+      definitions = await import(pathToFileURL(filePath).toString())
+      break
+    case '.js':
+      {
         logger.debug(
-          `Treating configuration file "${file}" as CommonJS based on heuristics`
+          `Loading configuration file "${file}" as JavaScript based on extension`
         )
-        definitions = ambiguous['module.exports']
-      } else {
-        logger.debug(
-          `Treating configuration file "${file}" as ESM based on heuristics`
-        )
-        definitions = ambiguous
+        const ambiguous = await import(pathToFileURL(filePath).toString())
+        if ('module.exports' in ambiguous) {
+          logger.debug(
+            `Treating configuration file "${file}" as CommonJS based on heuristics`
+          )
+          definitions = ambiguous['module.exports']
+        } else {
+          logger.debug(
+            `Treating configuration file "${file}" as ESM based on heuristics`
+          )
+          definitions = ambiguous
+        }
       }
       break
-    }
     default:
       throw new Error(`Unsupported configuration file extension "${extension}"`)
   }

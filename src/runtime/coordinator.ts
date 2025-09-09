@@ -16,23 +16,28 @@ export class Coordinator implements Runtime {
   ) {}
 
   async run(): Promise<boolean> {
+    const testRunStartedId = this.newId()
+
     this.eventBroadcaster.emit('envelope', {
       testRunStarted: {
+        id: testRunStartedId,
         timestamp: timestamp(),
       },
     } satisfies Envelope)
 
-    const assembledTestCases = await assembleTestCases({
-      eventBroadcaster: this.eventBroadcaster,
-      newId: this.newId,
-      sourcedPickles: this.sourcedPickles,
-      supportCodeLibrary: this.supportCodeLibrary,
-    })
+    const assembledTestCases = await assembleTestCases(
+      testRunStartedId,
+      this.eventBroadcaster,
+      this.newId,
+      this.sourcedPickles,
+      this.supportCodeLibrary
+    )
 
     const success = await this.adapter.run(assembledTestCases)
 
     this.eventBroadcaster.emit('envelope', {
       testRunFinished: {
+        testRunStartedId,
         timestamp: timestamp(),
         success,
       },

@@ -1,4 +1,3 @@
-import { Writable } from 'node:stream'
 import { JsonObject } from 'type-fest'
 import { IPublishConfig } from '../publish'
 import { IConfiguration } from '../configuration'
@@ -81,6 +80,13 @@ export interface ISourcesCoordinates {
    * Run in the order defined, or in a random order
    */
   order: IPickleOrder
+  /**
+   * Shard tests and execute only the selected shard, format `<index>/<total>`
+   * @example 1/4
+   * @remarks
+   * Shards use 1-based numbering
+   */
+  shard?: string
 }
 
 /**
@@ -293,39 +299,6 @@ export interface IRunOptions {
   support: ISupportCodeCoordinatesOrLibrary
   runtime: IRunOptionsRuntime
   formats: IRunOptionsFormats
-}
-
-/**
- * Contextual data about the project environment
- * @public
- */
-export interface IRunEnvironment {
-  /**
-   * Working directory for the project
-   * @default process.cwd()
-   */
-  cwd?: string
-  /**
-   * Writable stream where the test run's main formatter output is written
-   * @default process.stdout
-   */
-  stdout?: Writable
-  /**
-   * Writable stream where the test run's warning/error output is written
-   * @default process.stderr
-   */
-  stderr?: Writable
-  /**
-   * Environment variables
-   * @default process.env
-   */
-  env?: NodeJS.ProcessEnv
-  /**
-   * Whether debug logging should be emitted to {@link IRunEnvironment.stderr}
-   * @default false
-   * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/debugging.md}
-   */
-  debug?: boolean
 }
 
 /**

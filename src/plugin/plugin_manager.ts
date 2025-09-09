@@ -1,5 +1,4 @@
-import { IRunEnvironment } from '../api'
-import { ILogger } from '../logger'
+import { UsableEnvironment } from '../environment'
 import {
   CoordinatorPluginEventHandler,
   InternalPlugin,
@@ -24,6 +23,8 @@ export class PluginManager {
   }
   private cleanupFns: PluginCleanup[] = []
 
+  constructor(private readonly environment: UsableEnvironment) {}
+
   private async register<K extends CoordinatorPluginEventKey>(
     event: K,
     handler: CoordinatorPluginEventHandler<K>
@@ -34,16 +35,17 @@ export class PluginManager {
   async initFormatter<OptionsType>(
     plugin: FormatterPlugin<OptionsType>,
     options: OptionsType,
-    logger: ILogger,
+    stream: NodeJS.WritableStream,
     write: (buffer: string | Uint8Array) => void,
     directory?: string
   ) {
     const cleanupFn = await plugin.formatter({
       on: (key, handler) => this.register(key, handler),
       options: plugin.optionsKey
-        ? (options as any)[plugin.optionsKey] ?? ({} as OptionsType)
+        ? ((options as any)[plugin.optionsKey] ?? ({} as OptionsType))
         : options,
-      logger,
+      logger: this.environment.logger,
+      stream,
       write,
       directory,
     })
@@ -55,16 +57,18 @@ export class PluginManager {
   async initCoordinator<OptionsType>(
     operation: Operation,
     plugin: InternalPlugin<OptionsType>,
-    options: OptionsType,
-    logger: ILogger,
-    environment: Required<IRunEnvironment>
+    options: OptionsType
   ) {
     const cleanupFn = await plugin.coordinator({
       operation,
       on: this.register.bind(this),
       options,
-      logger,
-      environment,
+      logger: this.environment.logger,
+      environment: {
+        cwd: this.environment.cwd,
+        stderr: this.environment.stderr,
+        env: { ...this.environment.env },
+      },
     })
     if (typeof cleanupFn === 'function') {
       this.cleanupFns.push(cleanupFn)

@@ -1,10 +1,13 @@
 import { Writable } from 'node:stream'
 import { stripVTControlCharacters } from 'node:util'
+import { mkdtemp, stat } from 'node:fs/promises'
+import path from 'node:path'
+import { tmpdir } from 'node:os'
+import { createReadStream, createWriteStream } from 'node:fs'
 import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
 import { InternalPlugin } from '../plugin'
 import { IPublishConfig } from './types'
-import HttpStream from './http_stream'
 
 const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://messages.cucumber.io/api/reports'
 
@@ -19,24 +22,62 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
     if (token !== undefined) {
       headers.Authorization = `Bearer ${token}`
     }
-    const stream = new HttpStream(url, 'GET', headers)
-    const readerStream = new Writable({
-      objectMode: true,
-      write: function (responseBody: string, encoding, writeCallback) {
-        environment.stderr.write(
-          sanitisePublishOutput(responseBody, environment.stderr) + '\n'
-        )
-        writeCallback()
-      },
+    const touchResponse = await fetch(url, { headers })
+    const banner = await touchResponse.text()
+
+    if (!touchResponse.ok) {
+      return () => {
+        if (touchResponse.status < 500) {
+          environment.stderr.write(
+            sanitisePublishOutput(banner, environment.stderr) + '\n'
+          )
+        } else {
+          logger.error(
+            `Failed to publish report to ${new URL(url).origin} with status ${
+              touchResponse.status
+            }`
+          )
+          logger.debug(touchResponse)
+        }
+      }
+    }
+
+    const uploadUrl = touchResponse.headers.get('Location')
+    const tempDir = await mkdtemp(path.join(tmpdir(), `cucumber-js-publish-`))
+    const tempFilePath = path.join(tempDir, 'envelopes.ndjson')
+    const tempFileStream = createWriteStream(tempFilePath, {
+      encoding: 'utf-8',
     })
-    stream.pipe(readerStream)
-    stream.on('error', (error: Error) => logger.error(error.message))
-    on('message', (value) => stream.write(JSON.stringify(value) + '\n'))
-    return () =>
-      new Promise<void>((resolve) => {
-        stream.on('finish', () => resolve())
-        stream.end()
+    on('message', (value) => tempFileStream.write(JSON.stringify(value) + '\n'))
+
+    return () => {
+      return new Promise<void>((resolve) => {
+        tempFileStream.end(async () => {
+          const stats = await stat(tempFilePath)
+          const uploadResponse = await fetch(uploadUrl, {
+            method: 'PUT',
+            headers: {
+              'Content-Length': stats.size.toString(),
+            },
+            body: createReadStream(tempFilePath, { encoding: 'utf-8' }),
+            duplex: 'half',
+          })
+          if (uploadResponse.ok) {
+            environment.stderr.write(
+              sanitisePublishOutput(banner, environment.stderr) + '\n'
+            )
+          } else {
+            logger.error(
+              `Failed to upload report to ${
+                new URL(uploadUrl).origin
+              } with status ${uploadResponse.status}`
+            )
+            logger.debug(uploadResponse)
+          }
+          resolve()
+        })
       })
+    }
   },
 }
 

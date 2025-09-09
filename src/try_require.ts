@@ -6,7 +6,7 @@
  */
 export default function tryRequire(path: string) {
   try {
-    return require(path)
+    return require(path) // eslint-disable-line @typescript-eslint/no-require-imports
   } catch (error) {
     if (error.code === 'ERR_REQUIRE_ESM') {
       throw Error(

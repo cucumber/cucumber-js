@@ -14,11 +14,18 @@ export default class FakeReportServer {
   private readonly server: Server
   public receivedBodies = Buffer.alloc(0)
   public receivedHeaders: http.IncomingHttpHeaders = {}
+  public failOnTouch = false
+  public failOnUpload = false
 
   constructor(private readonly port: number) {
     const app = express()
 
     app.put('/s3', (req, res) => {
+      if (this.failOnUpload) {
+        res.status(500).end()
+        return
+      }
+
       this.receivedHeaders = { ...this.receivedHeaders, ...req.headers }
 
       const captureBodyStream = new Writable({
@@ -39,6 +46,11 @@ export default class FakeReportServer {
     })
 
     app.get('/api/reports', (req, res) => {
+      if (this.failOnTouch) {
+        res.status(500).end('Not a useful error message')
+        return
+      }
+
       this.receivedHeaders = { ...this.receivedHeaders, ...req.headers }
       const token = extractAuthorizationToken(req.headers.authorization)
       if (token && !isValidUUID(token)) {

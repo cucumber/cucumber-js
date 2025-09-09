@@ -31,12 +31,17 @@ async function testAssembleTestCases({
   const envelopes: Envelope[] = []
   const eventBroadcaster = new EventEmitter()
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
-  const result = await assembleTestCases({
+  const newId = IdGenerator.incrementing()
+  const result = await assembleTestCases(
+    newId(),
     eventBroadcaster,
-    newId: IdGenerator.incrementing(),
-    sourcedPickles: pickles.map((pickle) => ({ gherkinDocument, pickle })),
-    supportCodeLibrary,
-  })
+    newId,
+    pickles.map((pickle) => ({
+      gherkinDocument,
+      pickle,
+    })),
+    supportCodeLibrary
+  )
   return { envelopes, result }
 }
 
@@ -78,11 +83,12 @@ describe('assembleTestCases', () => {
       })
 
       const testCase0: TestCase = {
-        id: '0',
+        testRunStartedId: '0',
+        id: '1',
         pickleId: pickles[0].id,
         testSteps: [
           {
-            id: '1',
+            id: '2',
             pickleStepId: pickles[0].steps[0].id,
             stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
             stepMatchArgumentsLists: [
@@ -95,11 +101,12 @@ describe('assembleTestCases', () => {
       }
 
       const testCase1: TestCase = {
-        id: '2',
+        testRunStartedId: '0',
+        id: '3',
         pickleId: pickles[1].id,
         testSteps: [
           {
-            id: '3',
+            id: '4',
             pickleStepId: pickles[1].steps[0].id,
             stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
             stepMatchArgumentsLists: [
@@ -217,8 +224,8 @@ describe('assembleTestCases', () => {
             Given('a step', function () {
               clock.tick(1)
             })
-            Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            After(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Before(function () {})
+            After(function () {})
           }
         )
         const { gherkinDocument, pickles } = await parse({
@@ -236,15 +243,16 @@ describe('assembleTestCases', () => {
         // Assert
         expect(envelopes[0]).to.eql({
           testCase: {
-            id: '0',
+            testRunStartedId: '0',
+            id: '1',
             pickleId: pickles[0].id,
             testSteps: [
               {
-                id: '1',
+                id: '2',
                 hookId: supportCodeLibrary.beforeTestCaseHookDefinitions[0].id,
               },
               {
-                id: '2',
+                id: '3',
                 pickleStepId: pickles[0].steps[0].id,
                 stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
                 stepMatchArgumentsLists: [
@@ -254,7 +262,7 @@ describe('assembleTestCases', () => {
                 ],
               },
               {
-                id: '3',
+                id: '4',
                 hookId: supportCodeLibrary.afterTestCaseHookDefinitions[0].id,
               },
             ],
@@ -271,8 +279,8 @@ describe('assembleTestCases', () => {
             Given('a step', function () {
               clock.tick(1)
             })
-            BeforeStep(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            AfterStep(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            BeforeStep(function () {})
+            AfterStep(function () {})
           }
         )
         const { gherkinDocument, pickles } = await parse({
@@ -290,11 +298,12 @@ describe('assembleTestCases', () => {
         // Assert
         expect(envelopes[0]).to.eql({
           testCase: {
-            id: '0',
+            testRunStartedId: '0',
+            id: '1',
             pickleId: pickles[0].id,
             testSteps: [
               {
-                id: '1',
+                id: '2',
                 pickleStepId: pickles[0].steps[0].id,
                 stepDefinitionIds: [supportCodeLibrary.stepDefinitions[0].id],
                 stepMatchArgumentsLists: [

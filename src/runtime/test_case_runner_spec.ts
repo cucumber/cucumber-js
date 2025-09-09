@@ -29,17 +29,18 @@ async function testRunner(options: {
   const eventBroadcaster = new EventEmitter()
   const newId = IdGenerator.incrementing()
   const testCase = (
-    await assembleTestCases({
+    await assembleTestCases(
+      newId(),
       eventBroadcaster,
       newId,
-      sourcedPickles: [
+      [
         {
           gherkinDocument: options.gherkinDocument,
           pickle: options.pickle,
         },
       ],
-      supportCodeLibrary: options.supportCodeLibrary,
-    })
+      options.supportCodeLibrary
+    )
   )[0].testCase
 
   // listen for envelopers _after_ we've assembled test cases
@@ -112,29 +113,29 @@ describe('TestCaseRunner', () => {
           {
             testCaseStarted: {
               attempt: 0,
-              id: '2',
-              testCaseId: '0',
+              id: '3',
+              testCaseId: '1',
               timestamp: predictableTimestamp(0),
             },
           },
           {
             testStepStarted: {
-              testCaseStartedId: '2',
-              testStepId: '1',
+              testCaseStartedId: '3',
+              testStepId: '2',
               timestamp: predictableTimestamp(0),
             },
           },
           {
             testStepFinished: {
-              testCaseStartedId: '2',
+              testCaseStartedId: '3',
               testStepResult: passedTestResult,
-              testStepId: '1',
+              testStepId: '2',
               timestamp: predictableTimestamp(1),
             },
           },
           {
             testCaseFinished: {
-              testCaseStartedId: '2',
+              testCaseStartedId: '3',
               timestamp: predictableTimestamp(1),
               willBeRetried: false,
             },
@@ -150,7 +151,7 @@ describe('TestCaseRunner', () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
           Given('a step', function () {
-            throw 'fail' // eslint-disable-line @typescript-eslint/no-throw-literal
+            throw 'fail'
           })
         })
         const {
@@ -184,6 +185,42 @@ describe('TestCaseRunner', () => {
           failingTestResult
         )
         expect(result).to.eql(messages.TestStepResultStatus.FAILED)
+      })
+
+      it('should provide the error to AfterStep and After hooks', async () => {
+        // Arrange
+        const error = new Error('fail')
+        const afterStepStub = sinon.stub()
+        const afterStub = sinon.stub()
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, AfterStep, After }) => {
+            Given('a step', function () {
+              throw error
+            })
+            AfterStep(afterStepStub)
+            After(afterStub)
+          }
+        )
+        const {
+          gherkinDocument,
+          pickles: [pickle],
+        } = await parse({
+          data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
+          uri: 'a.feature',
+        })
+
+        // Act
+        await testRunner({
+          gherkinDocument,
+          pickle,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(afterStepStub).to.have.been.calledOnce()
+        expect(afterStepStub.lastCall.firstArg.error).to.eq(error)
+        expect(afterStub).to.have.been.calledOnce()
+        expect(afterStub.lastCall.firstArg.error).to.eq(error)
       })
     })
 
@@ -270,7 +307,7 @@ describe('TestCaseRunner', () => {
               return
             }
             willPass = true
-            throw 'Oh no!' // eslint-disable-line @typescript-eslint/no-throw-literal
+            throw 'Oh no!'
           })
         })
         const {
@@ -294,21 +331,21 @@ describe('TestCaseRunner', () => {
           {
             testCaseStarted: {
               attempt: 0,
-              id: '2',
-              testCaseId: '0',
+              id: '3',
+              testCaseId: '1',
               timestamp: predictableTimestamp(0),
             },
           },
           {
             testStepStarted: {
-              testCaseStartedId: '2',
-              testStepId: '1',
+              testCaseStartedId: '3',
+              testStepId: '2',
               timestamp: predictableTimestamp(0),
             },
           },
           {
             testStepFinished: {
-              testCaseStartedId: '2',
+              testCaseStartedId: '3',
               testStepResult: {
                 duration: messages.TimeConversion.millisecondsToDuration(1),
                 message: 'Oh no!',
@@ -319,13 +356,13 @@ describe('TestCaseRunner', () => {
                 },
                 status: messages.TestStepResultStatus.FAILED,
               },
-              testStepId: '1',
+              testStepId: '2',
               timestamp: predictableTimestamp(1),
             },
           },
           {
             testCaseFinished: {
-              testCaseStartedId: '2',
+              testCaseStartedId: '3',
               timestamp: predictableTimestamp(1),
               willBeRetried: true,
             },
@@ -333,32 +370,32 @@ describe('TestCaseRunner', () => {
           {
             testCaseStarted: {
               attempt: 1,
-              id: '3',
-              testCaseId: '0',
+              id: '4',
+              testCaseId: '1',
               timestamp: predictableTimestamp(1),
             },
           },
           {
             testStepStarted: {
-              testCaseStartedId: '3',
-              testStepId: '1',
+              testCaseStartedId: '4',
+              testStepId: '2',
               timestamp: predictableTimestamp(1),
             },
           },
           {
             testStepFinished: {
-              testCaseStartedId: '3',
+              testCaseStartedId: '4',
               testStepResult: {
                 duration: messages.TimeConversion.millisecondsToDuration(1),
                 status: messages.TestStepResultStatus.PASSED,
               },
-              testStepId: '1',
+              testStepId: '2',
               timestamp: predictableTimestamp(2),
             },
           },
           {
             testCaseFinished: {
-              testCaseStartedId: '3',
+              testCaseStartedId: '4',
               timestamp: predictableTimestamp(2),
               willBeRetried: false,
             },
@@ -379,7 +416,7 @@ describe('TestCaseRunner', () => {
                 return
               }
               willPass = true
-              throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+              throw 'error'
             })
             After(hookStub)
           }
@@ -452,8 +489,8 @@ describe('TestCaseRunner', () => {
             Given('a step', function () {
               clock.tick(1)
             })
-            Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            After(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Before(function () {})
+            After(function () {})
           }
         )
         const {
@@ -490,8 +527,8 @@ describe('TestCaseRunner', () => {
             Given('a step', function () {
               clock.tick(1)
             })
-            BeforeStep(beforeStep) // eslint-disable-line @typescript-eslint/no-empty-function
-            AfterStep(afterStep) // eslint-disable-line @typescript-eslint/no-empty-function
+            BeforeStep(beforeStep)
+            AfterStep(afterStep)
           }
         )
         const {
@@ -521,6 +558,7 @@ describe('TestCaseRunner', () => {
           testCaseStartedId: envelopes[1].testStepStarted.testCaseStartedId,
           testStepId: envelopes[1].testStepStarted.testStepId,
           result: undefined,
+          error: undefined,
         })
         expect(afterStep).to.have.been.calledOnceWith({
           gherkinDocument,
@@ -529,6 +567,7 @@ describe('TestCaseRunner', () => {
           testCaseStartedId: envelopes[2].testStepFinished.testCaseStartedId,
           testStepId: envelopes[2].testStepFinished.testStepId,
           result: envelopes[2].testStepFinished.testStepResult,
+          error: undefined,
         })
       })
     })
@@ -561,8 +600,8 @@ describe('TestCaseRunner', () => {
         testCaseStarted: {
           workerId: 'foo',
           attempt: 0,
-          id: '2',
-          testCaseId: '0',
+          id: '3',
+          testCaseId: '1',
           timestamp: predictableTimestamp(0),
         },
       })

@@ -36,6 +36,7 @@ describe('convertConfiguration', () => {
         order: 'defined',
         paths: [],
         tagExpression: '',
+        shard: '',
       },
       support: {
         requireModules: [],

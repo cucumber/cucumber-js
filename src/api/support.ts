@@ -4,7 +4,7 @@ import { IdGenerator } from '@cucumber/messages'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
 import tryRequire from '../try_require'
-import { ILogger } from '../logger'
+import { ILogger } from '../environment'
 
 export async function getSupportCodeLibrary({
   logger,

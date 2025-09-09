@@ -178,8 +178,8 @@ describe('ProgressBarFormatter', () => {
         ]
         const supportCodeLibrary = buildSupportCodeLibrary(
           ({ Before, Given }) => {
-            Given('a step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Given('a step', function () {})
+            Before(function () {})
           }
         )
 
@@ -206,8 +206,8 @@ describe('ProgressBarFormatter', () => {
         ]
         const supportCodeLibrary = buildSupportCodeLibrary(
           ({ Before, Given }) => {
-            Given('a step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Given('a step', function () {})
+            Before(function () {})
           }
         )
 
@@ -466,10 +466,10 @@ describe('ProgressBarFormatter', () => {
         },
       ]
       const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-        Given('a step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-        Given('a {param} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-        Given('another {param} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-        Given('a different {foo} step', function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+        Given('a step', function () {})
+        Given('a {param} step', function () {})
+        Given('another {param} step', function () {})
+        Given('a different {foo} step', function () {})
       })
 
       // Act

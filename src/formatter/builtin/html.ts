@@ -3,7 +3,6 @@ import { finished } from 'node:stream'
 import { writeFile } from 'node:fs'
 import path from 'node:path'
 import { CucumberHtmlStream } from '@cucumber/html-formatter'
-import resolvePkg from 'resolve-pkg'
 import mimeTypes from 'mime'
 import {
   Attachment,
@@ -26,12 +25,7 @@ export default {
       )
     }
     const newId = IdGenerator.uuid()
-    const htmlStream = new CucumberHtmlStream(
-      resolvePkg('@cucumber/html-formatter', { cwd: __dirname }) +
-        '/dist/main.css',
-      resolvePkg('@cucumber/html-formatter', { cwd: __dirname }) +
-        '/dist/main.js'
-    )
+    const htmlStream = new CucumberHtmlStream()
     const writeOperations: Promise<void>[] = []
     on('message', (message) => {
       if (message.attachment && options.externalAttachments) {

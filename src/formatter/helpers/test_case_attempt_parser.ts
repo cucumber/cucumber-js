@@ -69,8 +69,8 @@ function parseStep({
     keyword: doesHaveValue(testStep.pickleStepId)
       ? keyword
       : isBeforeHook
-      ? 'Before'
-      : 'After',
+        ? 'Before'
+        : 'After',
     result: testStepResult,
   }
   if (doesHaveValue(testStep.hookId)) {

@@ -14,7 +14,7 @@ import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import StepDefinition from '../models/step_definition'
 import { IWorldOptions } from '../support_code_library_builder/world'
 import { timestamp } from './stopwatch'
-import StepRunner from './step_runner'
+import StepRunner, { RunStepResult } from './step_runner'
 import AttachmentManager from './attachment_manager'
 import { getAmbiguousStepException } from './helpers'
 
@@ -79,6 +79,7 @@ export default class TestCaseRunner {
             fileName,
             testCaseStartedId: this.currentTestCaseStartedId,
             testStepId: this.currentTestStepId,
+            timestamp: timestamp(),
           },
         }
         this.eventBroadcaster.emit('envelope', attachment)
@@ -136,7 +137,7 @@ export default class TestCaseRunner {
     step: messages.PickleStep,
     stepDefinition: IDefinition,
     hookParameter?: ITestCaseHookParameter
-  ): Promise<messages.TestStepResult> {
+  ): Promise<RunStepResult> {
     return await StepRunner.run({
       defaultTimeout: this.supportCodeLibrary.defaultTimeout,
       filterStackTraces: this.filterStackTraces,
@@ -220,6 +221,7 @@ export default class TestCaseRunner {
     this.eventBroadcaster.emit('envelope', testCaseStarted)
     // used to determine whether a hook is a Before or After
     let didWeRunStepsYet = false
+    let error = false
     for (const testStep of this.testCase.testSteps) {
       await this.aroundTestStep(testStep.id, async () => {
         if (doesHaveValue(testStep.hookId)) {
@@ -230,6 +232,7 @@ export default class TestCaseRunner {
           }
           if (didWeRunStepsYet) {
             hookParameter.result = this.getWorstStepResult()
+            hookParameter.error = error
             hookParameter.willBeRetried =
               this.getWorstStepResult().status ===
                 messages.TestStepResultStatus.FAILED && moreAttemptsRemaining
@@ -245,7 +248,8 @@ export default class TestCaseRunner {
           )
           const testStepResult = await this.runStep(pickleStep, testStep)
           didWeRunStepsYet = true
-          return testStepResult
+          error = testStepResult.error
+          return testStepResult.result
         }
       })
     }
@@ -276,13 +280,18 @@ export default class TestCaseRunner {
         duration: messages.TimeConversion.millisecondsToDuration(0),
       }
     }
-    return await this.invokeStep(null, hookDefinition, hookParameter)
+    const { result } = await this.invokeStep(
+      null,
+      hookDefinition,
+      hookParameter
+    )
+    return result
   }
 
   async runStepHooks(
     stepHooks: TestStepHookDefinition[],
     pickleStep: messages.PickleStep,
-    stepResult?: messages.TestStepResult
+    stepResult?: RunStepResult
   ): Promise<messages.TestStepResult[]> {
     const stepHooksResult = []
     const hookParameter: ITestStepHookParameter = {
@@ -291,12 +300,16 @@ export default class TestCaseRunner {
       pickleStep,
       testCaseStartedId: this.currentTestCaseStartedId,
       testStepId: this.currentTestStepId,
-      result: stepResult,
+      result: stepResult?.result,
+      error: stepResult?.error,
     }
     for (const stepHookDefinition of stepHooks) {
-      stepHooksResult.push(
-        await this.invokeStep(null, stepHookDefinition, hookParameter)
+      const { result } = await this.invokeStep(
+        null,
+        stepHookDefinition,
+        hookParameter
       )
+      stepHooksResult.push(result)
     }
     return stepHooksResult
   }
@@ -304,7 +317,7 @@ export default class TestCaseRunner {
   async runStep(
     pickleStep: messages.PickleStep,
     testStep: messages.TestStep
-  ): Promise<messages.TestStepResult> {
+  ): Promise<RunStepResult> {
     const stepDefinitions = testStep.stepDefinitionIds.map(
       (stepDefinitionId) => {
         return findStepDefinition(stepDefinitionId, this.supportCodeLibrary)
@@ -312,23 +325,30 @@ export default class TestCaseRunner {
     )
     if (stepDefinitions.length === 0) {
       return {
-        status: messages.TestStepResultStatus.UNDEFINED,
-        duration: messages.TimeConversion.millisecondsToDuration(0),
+        result: {
+          status: messages.TestStepResultStatus.UNDEFINED,
+          duration: messages.TimeConversion.millisecondsToDuration(0),
+        },
       }
     } else if (stepDefinitions.length > 1) {
       return {
-        message: getAmbiguousStepException(stepDefinitions),
-        status: messages.TestStepResultStatus.AMBIGUOUS,
-        duration: messages.TimeConversion.millisecondsToDuration(0),
+        result: {
+          message: getAmbiguousStepException(stepDefinitions),
+          status: messages.TestStepResultStatus.AMBIGUOUS,
+          duration: messages.TimeConversion.millisecondsToDuration(0),
+        },
       }
     } else if (this.isSkippingSteps()) {
       return {
-        status: messages.TestStepResultStatus.SKIPPED,
-        duration: messages.TimeConversion.millisecondsToDuration(0),
+        result: {
+          status: messages.TestStepResultStatus.SKIPPED,
+          duration: messages.TimeConversion.millisecondsToDuration(0),
+        },
       }
     }
 
     let stepResult
+    let error
     let stepResults = await this.runStepHooks(
       this.getBeforeStepHookDefinitions(),
       pickleStep
@@ -338,7 +358,8 @@ export default class TestCaseRunner {
       messages.TestStepResultStatus.FAILED
     ) {
       stepResult = await this.invokeStep(pickleStep, stepDefinitions[0])
-      stepResults.push(stepResult)
+      stepResults.push(stepResult.result)
+      error = stepResult.error
     }
     const afterStepHookResults = await this.runStepHooks(
       this.getAfterStepHookDefinitions(),
@@ -356,7 +377,10 @@ export default class TestCaseRunner {
       )
     }
     finalStepResult.duration = finalDuration
-    return finalStepResult
+    return {
+      result: finalStepResult,
+      error,
+    }
   }
 }
 

@@ -4,8 +4,6 @@
 
 ```ts
 
-/// <reference types="node" />
-
 import { Envelope } from '@cucumber/messages';
 import { JsonObject } from 'type-fest';
 import { Writable } from 'node:stream';
@@ -26,12 +24,11 @@ export interface IConfiguration {
     parallel: number;
     paths: string[];
     publish: boolean;
-    // @deprecated (undocumented)
-    publishQuiet: boolean;
     require: string[];
     requireModule: string[];
     retry: number;
     retryTagFilter: string;
+    shard: string;
     strict: boolean;
     tags: string;
     worldParameters: JsonObject;
@@ -59,7 +56,7 @@ export interface ILoadSupportOptions {
 }
 
 // @public
-export type IPickleOrder = 'defined' | 'random' | `random:${string}`;
+export type IPickleOrder = 'defined' | 'reverse' | 'random' | `random:${string}`;
 
 // @public
 export interface IPlannedPickle {
@@ -101,7 +98,7 @@ export interface IRunConfiguration {
 export interface IRunEnvironment {
     cwd?: string;
     debug?: boolean;
-    env?: NodeJS.ProcessEnv;
+    env?: Record<string, string | undefined>;
     stderr?: Writable;
     stdout?: Writable;
 }
@@ -150,6 +147,7 @@ export interface ISourcesCoordinates {
     names: string[];
     order: IPickleOrder;
     paths: string[];
+    shard?: string;
     tagExpression: string;
 }
 

@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import { reindent } from 'reindent-template-literals'
-import * as messages from '@cucumber/messages'
+import { GherkinDocument } from '@cucumber/messages'
 import {
   IParsedSourceWithEnvelopes,
   parse,
@@ -12,8 +12,6 @@ import {
   getGherkinScenarioMap,
   getGherkinStepMap,
 } from './gherkin_document_parser'
-
-import IGherkinDocument = messages.GherkinDocument
 
 describe('GherkinDocumentParser', () => {
   describe('getGherkinStepMap', () => {
@@ -308,7 +306,7 @@ describe('GherkinDocumentParser', () => {
   })
 })
 
-async function parseGherkinDocument(data: string): Promise<IGherkinDocument> {
+async function parseGherkinDocument(data: string): Promise<GherkinDocument> {
   const parsed: IParsedSourceWithEnvelopes = await parse({
     data,
     uri: 'features/a.feature',
@@ -316,7 +314,7 @@ async function parseGherkinDocument(data: string): Promise<IGherkinDocument> {
   return parsed.gherkinDocument
 }
 
-async function withBackgroundAndScenario(): Promise<IGherkinDocument> {
+async function withBackgroundAndScenario(): Promise<GherkinDocument> {
   return await parseGherkinDocument(
     reindent(`
       Feature: a feature
@@ -329,7 +327,7 @@ async function withBackgroundAndScenario(): Promise<IGherkinDocument> {
   )
 }
 
-async function withBackgroundAndScenarioOutline(): Promise<IGherkinDocument> {
+async function withBackgroundAndScenarioOutline(): Promise<GherkinDocument> {
   return await parseGherkinDocument(
     reindent(`
       Feature: a feature
@@ -346,7 +344,7 @@ async function withBackgroundAndScenarioOutline(): Promise<IGherkinDocument> {
   )
 }
 
-async function withBackgroundAndRuleWithExamples(): Promise<IGherkinDocument> {
+async function withBackgroundAndRuleWithExamples(): Promise<GherkinDocument> {
   return await parseGherkinDocument(
     reindent(`
       Feature: a feature
@@ -365,7 +363,7 @@ async function withBackgroundAndRuleWithExamples(): Promise<IGherkinDocument> {
   )
 }
 
-async function withBackgroundAndRuleWithBackgroundAndExamples(): Promise<IGherkinDocument> {
+async function withBackgroundAndRuleWithBackgroundAndExamples(): Promise<GherkinDocument> {
   return await parseGherkinDocument(
     reindent(`
       Feature: a feature
