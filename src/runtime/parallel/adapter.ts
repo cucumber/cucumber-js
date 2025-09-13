@@ -123,6 +123,10 @@ export class ChildProcessAdapter implements RuntimeAdapter {
           ),
         afterTestCaseHookDefinitionIds:
           this.supportCodeLibrary.afterTestCaseHookDefinitions.map((h) => h.id),
+        beforeTestRunHookDefinitionIds:
+          this.supportCodeLibrary.beforeTestRunHookDefinitions.map((h) => h.id),
+        afterTestRunHookDefinitionIds:
+          this.supportCodeLibrary.afterTestRunHookDefinitions.map((h) => h.id),
       },
       options: this.options,
     } satisfies InitializeCommand)

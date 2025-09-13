@@ -80,6 +80,8 @@ describe('supportCodeLibraryBuilder', () => {
           stepDefinitionIds: ['one', 'two'],
           beforeTestCaseHookDefinitionIds: [],
           afterTestCaseHookDefinitionIds: [],
+          beforeTestRunHookDefinitionIds: [],
+          afterTestRunHookDefinitionIds: [],
         })
 
         // Assert
@@ -179,6 +181,8 @@ describe('supportCodeLibraryBuilder', () => {
           stepDefinitionIds: [],
           beforeTestCaseHookDefinitionIds: [],
           afterTestCaseHookDefinitionIds: ['one', 'two'],
+          beforeTestRunHookDefinitionIds: [],
+          afterTestRunHookDefinitionIds: [],
         })
 
         // Assert
@@ -290,6 +294,8 @@ describe('supportCodeLibraryBuilder', () => {
           stepDefinitionIds: [],
           beforeTestCaseHookDefinitionIds: ['one', 'two'],
           afterTestCaseHookDefinitionIds: [],
+          beforeTestRunHookDefinitionIds: [],
+          afterTestRunHookDefinitionIds: [],
         })
 
         // Assert
@@ -544,6 +550,166 @@ describe('supportCodeLibraryBuilder', () => {
         expect(options.beforeTestStepHookDefinitions).to.have.lengthOf(2)
         expect(options.beforeTestStepHookDefinitions[0].code).to.eql(hook1)
         expect(options.beforeTestStepHookDefinitions[1].code).to.eql(hook2)
+      })
+    })
+  })
+
+  describe('AfterAll', () => {
+    describe('function only', () => {
+      it('adds a test run hook definition', function () {
+        // Arrange
+        const hook = function (): void {}
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.AfterAll(hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.afterTestRunHookDefinitions).to.have.lengthOf(1)
+        const testRunHookDefinition = options.afterTestRunHookDefinitions[0]
+        expect(testRunHookDefinition.code).to.eql(hook)
+      })
+
+      it('uses the canonical ids provided in order', function () {
+        // Arrange
+        const hook = function (): void {}
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.AfterAll(hook)
+        supportCodeLibraryBuilder.methods.AfterAll(hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize({
+          stepDefinitionIds: [],
+          beforeTestCaseHookDefinitionIds: [],
+          afterTestCaseHookDefinitionIds: [],
+          beforeTestRunHookDefinitionIds: [],
+          afterTestRunHookDefinitionIds: ['one', 'two'],
+        })
+
+        // Assert
+        expect(options.afterTestRunHookDefinitions).to.have.lengthOf(2)
+        expect(
+          options.afterTestRunHookDefinitions.map((definition) => definition.id)
+        ).to.deep.eq(['one', 'two'])
+      })
+    })
+
+    describe('options and function', () => {
+      it('adds a test run hook definition', function () {
+        // Arrange
+        const hook = function (): void {}
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.AfterAll({ timeout: 1000 }, hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.afterTestRunHookDefinitions).to.have.lengthOf(1)
+        const testRunHookDefinition = options.afterTestRunHookDefinitions[0]
+        expect(testRunHookDefinition.code).to.eql(hook)
+        expect(testRunHookDefinition.options.timeout).to.eql(1000)
+      })
+    })
+
+    describe('multiple', () => {
+      it('adds the test run hook definitions in the order of definition', function () {
+        // Arrange
+        const hook1 = function hook1(): void {}
+        const hook2 = function hook2(): void {}
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.AfterAll(hook1)
+        supportCodeLibraryBuilder.methods.AfterAll(hook2)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.afterTestRunHookDefinitions).to.have.lengthOf(2)
+        expect(options.afterTestRunHookDefinitions[0].code).to.eql(hook1)
+        expect(options.afterTestRunHookDefinitions[1].code).to.eql(hook2)
+      })
+    })
+  })
+
+  describe('BeforeAll', () => {
+    describe('function only', () => {
+      it('adds a test run hook definition', function () {
+        // Arrange
+        const hook = function (): void {}
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.BeforeAll(hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.beforeTestRunHookDefinitions).to.have.lengthOf(1)
+        const testRunHookDefinition = options.beforeTestRunHookDefinitions[0]
+        expect(testRunHookDefinition.code).to.eql(hook)
+      })
+
+      it('uses the canonical ids provided in order', function () {
+        // Arrange
+        const hook = function (): void {}
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.BeforeAll(hook)
+        supportCodeLibraryBuilder.methods.BeforeAll(hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize({
+          stepDefinitionIds: [],
+          beforeTestCaseHookDefinitionIds: [],
+          afterTestCaseHookDefinitionIds: [],
+          beforeTestRunHookDefinitionIds: ['one', 'two'],
+          afterTestRunHookDefinitionIds: [],
+        })
+
+        // Assert
+        expect(options.beforeTestRunHookDefinitions).to.have.lengthOf(2)
+        expect(
+          options.beforeTestRunHookDefinitions.map(
+            (definition) => definition.id
+          )
+        ).to.deep.eq(['one', 'two'])
+      })
+    })
+
+    describe('options and function', () => {
+      it('adds a test run hook definition', function () {
+        // Arrange
+        const hook = function (): void {}
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.BeforeAll({ timeout: 1000 }, hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.beforeTestRunHookDefinitions).to.have.lengthOf(1)
+        const testRunHookDefinition = options.beforeTestRunHookDefinitions[0]
+        expect(testRunHookDefinition.code).to.eql(hook)
+        expect(testRunHookDefinition.options.timeout).to.eql(1000)
+      })
+    })
+
+    describe('multiple', () => {
+      it('adds the test run hook definitions in the order of definition', function () {
+        // Arrange
+        const hook1 = function hook1(): void {}
+        const hook2 = function hook2(): void {}
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.BeforeAll(hook1)
+        supportCodeLibraryBuilder.methods.BeforeAll(hook2)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.beforeTestRunHookDefinitions).to.have.lengthOf(2)
+        expect(options.beforeTestRunHookDefinitions[0].code).to.eql(hook1)
+        expect(options.beforeTestRunHookDefinitions[1].code).to.eql(hook2)
       })
     })
   })
