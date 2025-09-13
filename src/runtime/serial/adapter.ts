@@ -11,12 +11,14 @@ export class InProcessAdapter implements RuntimeAdapter {
   private failing: boolean = false
 
   constructor(
+    testRunStartedId: string,
     eventBroadcaster: EventEmitter,
     newId: IdGenerator.NewId,
     options: RuntimeOptions,
     supportCodeLibrary: SupportCodeLibrary
   ) {
     this.worker = new Worker(
+      testRunStartedId,
       undefined,
       eventBroadcaster,
       newId,

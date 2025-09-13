@@ -42,6 +42,7 @@ export class ChildProcessAdapter implements RuntimeAdapter {
   private readonly workers: Record<string, ManagedWorker> = {}
 
   constructor(
+    private readonly testRunStartedId: string,
     private readonly environment: IRunEnvironment,
     private readonly logger: ILogger,
     private readonly eventBroadcaster: EventEmitter,
@@ -112,6 +113,7 @@ export class ChildProcessAdapter implements RuntimeAdapter {
     })
     worker.process.send({
       type: 'INITIALIZE',
+      testRunStartedId: this.testRunStartedId,
       supportCodeCoordinates: this.supportCodeLibrary.originalCoordinates,
       supportCodeIds: {
         stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map(

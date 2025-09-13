@@ -25,6 +25,7 @@ export interface RunHookResult {
 
 export class Worker {
   constructor(
+    private readonly testRunStartedId: string | undefined,
     private readonly workerId: string | undefined,
     private readonly eventBroadcaster: EventEmitter,
     private readonly newId: IdGenerator.NewId,
@@ -38,7 +39,7 @@ export class Worker {
     const testRunHookStartedId = this.newId()
     this.eventBroadcaster.emit('envelope', {
       testRunHookStarted: {
-        testRunStartedId: 'TODO',
+        testRunStartedId: this.testRunStartedId,
         id: testRunHookStartedId,
         hookId: hookDefinition.id,
         timestamp: timestamp(),
