@@ -25,7 +25,7 @@ export interface RunHookResult {
 
 export class Worker {
   constructor(
-    private readonly testRunStartedId: string | undefined,
+    private readonly testRunStartedId: string,
     private readonly workerId: string | undefined,
     private readonly eventBroadcaster: EventEmitter,
     private readonly newId: IdGenerator.NewId,
