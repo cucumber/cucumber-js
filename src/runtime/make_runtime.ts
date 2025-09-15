@@ -27,9 +27,11 @@ export async function makeRuntime({
   supportCodeLibrary: SupportCodeLibrary
   options: IRunOptionsRuntime
 }): Promise<Runtime> {
+  const testRunStartedId = newId()
   const adapter: RuntimeAdapter =
     options.parallel > 0
       ? new ChildProcessAdapter(
+          testRunStartedId,
           environment,
           logger,
           eventBroadcaster,
@@ -37,12 +39,14 @@ export async function makeRuntime({
           supportCodeLibrary
         )
       : new InProcessAdapter(
+          testRunStartedId,
           eventBroadcaster,
           newId,
           options,
           supportCodeLibrary
         )
   return new Coordinator(
+    testRunStartedId,
     eventBroadcaster,
     newId,
     sourcedPickles,

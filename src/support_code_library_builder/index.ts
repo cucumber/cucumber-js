@@ -343,16 +343,17 @@ export class SupportCodeLibraryBuilder {
   }
 
   buildTestRunHookDefinitions(
-    configs: ITestRunHookDefinitionConfig[]
+    configs: ITestRunHookDefinitionConfig[],
+    canonicalIds?: string[]
   ): TestRunHookDefinition[] {
-    return configs.map(({ code, line, options, uri }) => {
+    return configs.map(({ code, line, options, uri }, index) => {
       const wrappedCode = this.wrapCode({
         code,
         wrapperOptions: options.wrapperOptions,
       })
       return new TestRunHookDefinition({
         code: wrappedCode,
-        id: this.newId(),
+        id: canonicalIds ? canonicalIds[index] : this.newId(),
         line,
         options,
         unwrappedCode: code,
@@ -427,7 +428,8 @@ export class SupportCodeLibraryBuilder {
         canonicalIds?.afterTestCaseHookDefinitionIds
       ),
       afterTestRunHookDefinitions: this.buildTestRunHookDefinitions(
-        this.afterTestRunHookDefinitionConfigs
+        this.afterTestRunHookDefinitionConfigs,
+        canonicalIds?.afterTestRunHookDefinitionIds
       ),
       afterTestStepHookDefinitions: this.buildTestStepHookDefinitions(
         this.afterTestStepHookDefinitionConfigs
@@ -437,7 +439,8 @@ export class SupportCodeLibraryBuilder {
         canonicalIds?.beforeTestCaseHookDefinitionIds
       ),
       beforeTestRunHookDefinitions: this.buildTestRunHookDefinitions(
-        this.beforeTestRunHookDefinitionConfigs
+        this.beforeTestRunHookDefinitionConfigs,
+        canonicalIds?.beforeTestRunHookDefinitionIds
       ),
       beforeTestStepHookDefinitions: this.buildTestStepHookDefinitions(
         this.beforeTestStepHookDefinitionConfigs

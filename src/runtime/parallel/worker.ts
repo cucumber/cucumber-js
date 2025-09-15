@@ -54,6 +54,7 @@ export class ChildProcessWorker {
   }
 
   async initialize({
+    testRunStartedId,
     supportCodeCoordinates,
     supportCodeIds,
     options,
@@ -75,6 +76,7 @@ export class ChildProcessWorker {
 
     this.options = options
     this.worker = new Worker(
+      testRunStartedId,
       this.id,
       this.eventBroadcaster,
       this.newId,

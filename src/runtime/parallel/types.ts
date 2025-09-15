@@ -13,6 +13,7 @@ export type CoordinatorToWorkerCommand =
 
 export interface InitializeCommand {
   type: 'INITIALIZE'
+  testRunStartedId: string
   supportCodeCoordinates: ISupportCodeCoordinates
   supportCodeIds: CanonicalSupportCodeIds
   options: RuntimeOptions

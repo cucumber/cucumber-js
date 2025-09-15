@@ -17,8 +17,6 @@ const CCK_FEATURES_PATH = 'node_modules/@cucumber/compatibility-kit/features'
 const CCK_IMPLEMENTATIONS_PATH = 'compatibility/features'
 
 const UNSUPPORTED = [
-  // we don't support global hooks messages yet
-  'global-hooks',
   'global-hooks-attachments',
   'global-hooks-beforeall-error',
   'global-hooks-afterall-error',
@@ -102,9 +100,45 @@ describe('Cucumber Compatibility Kit', () => {
         })
       )
 
-      expect(actualMessages)
+      expect(reorderEnvelopes(actualMessages))
         .excludingEvery(ignorableKeys)
         .to.deep.eq(expectedMessages)
     })
   }
 })
+
+function reorderEnvelopes(
+  envelopes: ReadonlyArray<Envelope>
+): ReadonlyArray<Envelope> {
+  let testRunStartedEnvelope: Envelope
+  let testCaseStartedEnvelope: Envelope
+
+  const result: Envelope[] = []
+  const moveAfterTestRunStarted: Envelope[] = []
+
+  for (const envelope of envelopes) {
+    if (envelope.testRunStarted) {
+      testRunStartedEnvelope = envelope
+    }
+    if (envelope.testCaseStarted) {
+      testCaseStartedEnvelope = envelope
+    }
+
+    if (
+      (envelope.testRunHookStarted || envelope.testRunHookFinished) &&
+      !testCaseStartedEnvelope
+    ) {
+      moveAfterTestRunStarted.push(envelope)
+    } else {
+      result.push(envelope)
+    }
+  }
+
+  result.splice(
+    result.indexOf(testRunStartedEnvelope) + 1,
+    0,
+    ...moveAfterTestRunStarted
+  )
+
+  return result
+}
