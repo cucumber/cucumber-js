@@ -40,6 +40,7 @@ export class Worker {
     this.eventBroadcaster.emit('envelope', {
       testRunHookStarted: {
         testRunStartedId: this.testRunStartedId,
+        workerId: this.workerId,
         id: testRunHookStartedId,
         hookId: hookDefinition.id,
         timestamp: timestamp(),
