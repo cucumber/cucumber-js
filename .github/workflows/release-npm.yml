@@ -1,10 +1,12 @@
-name: Release NPM (latest)
+name: Release NPM
 
 on:
   push:
-    branches:
-      - 'release/*'
-      - '!release/*-rc*'
+    branches: [release/*]
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   publish-npm:
@@ -15,11 +17,9 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
-          node-version: '22'
+          node-version: '24.x'
           cache: 'npm'
           cache-dependency-path: package-lock.json
-      - run: npm install-test
-      - uses: cucumber/action-publish-npm@v1.1.1
-        with:
-          npm-token: ${{ secrets.NPM_TOKEN }}
-          npm-tag: 'latest'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm install-ci-test
+      - run: npm publish
