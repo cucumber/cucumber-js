@@ -67,6 +67,7 @@ export interface IDefineTestStepHookOptions {
 }
 
 export interface IDefineTestRunHookOptions {
+  name?: string
   timeout?: number
 }
 

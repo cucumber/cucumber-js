@@ -50,3 +50,9 @@ Before(async function () {
 After(async function () {
   return 'skipped'
 })
+
+// should allow named hooks
+BeforeAll({ name: 'before test run' }, function () {})
+AfterAll({ name: 'after test run' }, function () {})
+Before({ name: 'before test case' }, function () {})
+After({ name: 'after test case' }, function () {})
