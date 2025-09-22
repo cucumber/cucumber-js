@@ -287,7 +287,9 @@ describe('helpers', () => {
             unwrappedCode: noopFunction,
             id: '1',
             line: 7,
-            options: {},
+            options: {
+              name: 'special cleanup thing',
+            },
             uri: 'features/support/run-hooks.js',
           }),
           new TestRunHookDefinition({
@@ -306,6 +308,7 @@ describe('helpers', () => {
           hook: {
             id: '0',
             type: HookType.BEFORE_TEST_RUN,
+            name: undefined,
             sourceReference: {
               uri: 'features/support/run-hooks.js',
               location: {
@@ -318,6 +321,7 @@ describe('helpers', () => {
           hook: {
             id: '1',
             type: HookType.AFTER_TEST_RUN,
+            name: 'special cleanup thing',
             sourceReference: {
               uri: 'features/support/run-hooks.js',
               location: {
@@ -330,6 +334,7 @@ describe('helpers', () => {
           hook: {
             id: '2',
             type: HookType.AFTER_TEST_RUN,
+            name: undefined,
             sourceReference: {
               uri: 'features/support/run-hooks.js',
               location: {

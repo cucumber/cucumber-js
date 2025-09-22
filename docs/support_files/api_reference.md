@@ -54,6 +54,7 @@ Multiple `After` hooks are executed in the **reverse** order that they are defin
 Defines a hook which is run after all scenarios have completed.
 
 * `options`: An object with the following keys:
+  * `name`: An optional name for this hook
   * `timeout`: A hook-specific timeout, to override the default timeout.
 * `fn`: A function, defined as follows:
   * When using the asynchronous callback interface, have one argument for the callback function.

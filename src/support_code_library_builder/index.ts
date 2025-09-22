@@ -7,7 +7,9 @@ import {
 } from '@cucumber/cucumber-expressions'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
-import TestRunHookDefinition from '../models/test_run_hook_definition'
+import TestRunHookDefinition, {
+  ITestRunHookDefinitionOptions,
+} from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { formatLocation } from '../formatter/helpers'
 import { doesHaveValue } from '../value_checker'
@@ -355,7 +357,7 @@ export class SupportCodeLibraryBuilder {
         code: wrappedCode,
         id: canonicalIds ? canonicalIds[index] : this.newId(),
         line,
-        options,
+        options: options as ITestRunHookDefinitionOptions,
         unwrappedCode: code,
         uri,
       })

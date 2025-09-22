@@ -195,6 +195,7 @@ function emitTestRunHooks(
         hook: {
           id: hook.id,
           type,
+          name: hook.name,
           sourceReference: makeSourceReference(hook),
         },
       } satisfies Envelope)
