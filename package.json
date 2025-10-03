@@ -226,7 +226,7 @@
     "@cucumber/html-formatter": "21.15.1",
     "@cucumber/junit-xml-formatter": "0.9.0",
     "@cucumber/message-streams": "4.0.1",
-    "@cucumber/messages": "29.0.1",
+    "@cucumber/messages": "30.0.0",
     "@cucumber/pretty-formatter": "1.0.1",
     "@cucumber/tag-expressions": "6.2.0",
     "assertion-error-formatter": "^3.0.0",
