@@ -71,7 +71,7 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
               'Content-Encoding': 'gzip',
               'Content-Length': contentLength,
             },
-            body: createReadStream(tempFilePath, { encoding: 'utf-8' }),
+            body: createReadStream(tempFilePath),
             duplex: 'half',
           })
           if (uploadResponse.ok) {
