@@ -72,7 +72,7 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
                 new URL(uploadUrl).origin
               } with status ${uploadResponse.status}`
             )
-            logger.debug(uploadResponse)
+            logger.debug(await uploadResponse.text())
           }
           resolve()
         })
