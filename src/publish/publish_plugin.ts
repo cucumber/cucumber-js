@@ -1,6 +1,7 @@
-import { Writable } from 'node:stream'
+import { Writable, pipeline } from 'node:stream'
+import { promisify } from 'node:util'
 import { stripVTControlCharacters } from 'node:util'
-import { mkdtemp } from 'node:fs/promises'
+import { mkdtemp, stat } from 'node:fs/promises'
 import path from 'node:path'
 import { tmpdir } from 'node:os'
 import { createReadStream, createWriteStream } from 'node:fs'
@@ -9,6 +10,8 @@ import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
 import { InternalPlugin } from '../plugin'
 import { IPublishConfig } from './types'
+
+const pipelineAsync = promisify(pipeline)
 
 const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://messages.cucumber.io/api/reports'
 
@@ -54,13 +57,21 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
     return () => {
       return new Promise<void>((resolve) => {
         tempFileStream.end(async () => {
+          const gzippedFilePath = `${tempFilePath}.gz`
+          await pipelineAsync(
+            createReadStream(tempFilePath),
+            createGzip(),
+            createWriteStream(gzippedFilePath)
+          )
+          const stats = await stat(gzippedFilePath)
           const uploadResponse = await fetch(uploadUrl, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/jsonl',
               'Content-Encoding': 'gzip',
+              'Content-Length': stats.size.toString(),
             },
-            body: createReadStream(tempFilePath).pipe(createGzip()),
+            body: createReadStream(gzippedFilePath),
             duplex: 'half',
           })
           if (uploadResponse.ok) {
