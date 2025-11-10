@@ -120,8 +120,6 @@ export class Formatter {
     protected stream: Writable;
     // (undocumented)
     protected supportCodeLibrary: SupportCodeLibrary;
-    // (undocumented)
-    protected usageOrder: UsageOrder;
 }
 
 // @public (undocumented)
@@ -147,7 +145,6 @@ declare namespace formatterHelpers {
         formatLocation,
         formatSummary,
         getUsage,
-        UsageOrder,
         GherkinDocumentParser,
         PickleParser
     }
@@ -182,7 +179,7 @@ function getStepKeyword({ pickleStep, gherkinStepMap, }: IGetStepKeywordRequest)
 function getStepKeywordType({ keyword, language, previousKeywordType, }: IGetStepKeywordTypeOptions): KeywordType;
 
 // @public (undocumented)
-function getUsage({ stepDefinitions, eventDataCollector, order, }: IGetUsageRequest): IUsage[];
+function getUsage({ stepDefinitions, eventDataCollector, }: IGetUsageRequest): IUsage[];
 
 declare namespace GherkinDocumentParser {
     export {
@@ -507,14 +504,6 @@ export class UsageJsonFormatter extends Formatter {
     logUsage(): void;
     // (undocumented)
     replacer(key: string, value: any): any;
-}
-
-// @public (undocumented)
-enum UsageOrder {
-    // (undocumented)
-    EXECUTION_TIME = "EXECUTION_TIME",
-    // (undocumented)
-    LOCATION = "LOCATION"
 }
 
 // @public (undocumented)
