@@ -1,5 +1,5 @@
-import { Writable, pipeline } from 'node:stream'
-import { promisify } from 'node:util'
+import { Writable } from 'node:stream'
+import { pipeline } from 'node:stream/promises'
 import { stripVTControlCharacters } from 'node:util'
 import { mkdtemp, stat } from 'node:fs/promises'
 import path from 'node:path'
@@ -10,8 +10,6 @@ import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
 import { InternalPlugin } from '../plugin'
 import { IPublishConfig } from './types'
-
-const pipelineAsync = promisify(pipeline)
 
 const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://messages.cucumber.io/api/reports'
 
@@ -48,22 +46,19 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
 
     const uploadUrl = touchResponse.headers.get('Location')
     const tempDir = await mkdtemp(path.join(tmpdir(), `cucumber-js-publish-`))
-    const tempFilePath = path.join(tempDir, 'envelopes.ndjson')
-    const tempFileStream = createWriteStream(tempFilePath, {
-      encoding: 'utf-8',
-    })
-    on('message', (value) => tempFileStream.write(JSON.stringify(value) + '\n'))
+    const tempFilePath = path.join(tempDir, 'envelopes.jsonl.gz')
+    const writeStream = createGzip()
+    const finishedWriting = pipeline(
+      writeStream,
+      createWriteStream(tempFilePath)
+    )
+    on('message', (value) => writeStream.write(JSON.stringify(value) + '\n'))
 
     return () => {
       return new Promise<void>((resolve) => {
-        tempFileStream.end(async () => {
-          const gzippedFilePath = `${tempFilePath}.gz`
-          await pipelineAsync(
-            createReadStream(tempFilePath),
-            createGzip(),
-            createWriteStream(gzippedFilePath)
-          )
-          const stats = await stat(gzippedFilePath)
+        writeStream.end(async () => {
+          await finishedWriting
+          const stats = await stat(tempFilePath)
           const uploadResponse = await fetch(uploadUrl, {
             method: 'PUT',
             headers: {
@@ -71,7 +66,7 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
               'Content-Encoding': 'gzip',
               'Content-Length': stats.size.toString(),
             },
-            body: createReadStream(gzippedFilePath),
+            body: createReadStream(tempFilePath),
             duplex: 'half',
           })
           if (uploadResponse.ok) {
