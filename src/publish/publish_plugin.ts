@@ -59,12 +59,14 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
         writeStream.end(async () => {
           await finishedWriting
           const stats = await stat(tempFilePath)
+          const contentLength = stats.size.toString()
+          logger.debug('Uploading envelopes to Cucumber Reports with content length:', contentLength)
           const uploadResponse = await fetch(uploadUrl, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/jsonl',
               'Content-Encoding': 'gzip',
-              'Content-Length': stats.size.toString(),
+              'Content-Length': contentLength,
             },
             body: createReadStream(tempFilePath),
             duplex: 'half',
