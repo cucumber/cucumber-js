@@ -283,7 +283,7 @@
     "@types/semver": "7.7.1",
     "@types/sinon-chai": "3.2.12",
     "@types/sinonjs__fake-timers": "15.0.1",
-    "@types/stream-buffers": "3.0.7",
+    "@types/stream-buffers": "3.0.8",
     "@types/tmp": "0.2.6",
     "@typescript-eslint/eslint-plugin": "^8.34.0",
     "@typescript-eslint/parser": "^8.34.0",
