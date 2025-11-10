@@ -7,45 +7,35 @@
 import { EventEmitter } from 'node:events';
 import { Expression } from '@cucumber/cucumber-expressions';
 import { GeneratedExpression } from '@cucumber/cucumber-expressions';
-import { IDefineStep as IDefineStep_2 } from './support_code_library_builder/types';
-import { IDefineTestCaseHookOptions as IDefineTestCaseHookOptions_2 } from './support_code_library_builder/types';
-import { IDefineTestRunHookOptions as IDefineTestRunHookOptions_2 } from './support_code_library_builder/types';
-import { IDefineTestStepHookOptions as IDefineTestStepHookOptions_2 } from './support_code_library_builder/types';
 import { IdGenerator } from '@cucumber/messages';
-import { IParameterTypeDefinition as IParameterTypeDefinition_2 } from './support_code_library_builder/types';
-import { IWorld as IWorld_2 } from './support_code_library_builder/world';
 import { JsonObject } from 'type-fest';
 import * as messages from '@cucumber/messages';
-import { ParallelAssignmentValidator as ParallelAssignmentValidator_2 } from './support_code_library_builder/types';
 import { ParameterType } from '@cucumber/cucumber-expressions';
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions';
 import { Readable } from 'node:stream';
-import { TestCaseHookFunction as TestCaseHookFunction_2 } from './support_code_library_builder/types';
-import { TestRunHookFunction as TestRunHookFunction_2 } from './support_code_library_builder/types';
-import { TestStepHookFunction as TestStepHookFunction_2 } from './support_code_library_builder/types';
 import { TestStepResultStatus } from '@cucumber/messages';
 import { Writable } from 'node:stream';
 
 // @public (undocumented)
-export const After: (<WorldType = IWorld_2<any>>(code: TestCaseHookFunction_2<WorldType>) => void) & (<WorldType = IWorld_2<any>>(tags: string, code: TestCaseHookFunction_2<WorldType>) => void) & (<WorldType = IWorld_2<any>>(options: IDefineTestCaseHookOptions_2, code: TestCaseHookFunction_2<WorldType>) => void);
+export const After: (<WorldType = IWorld<any>>(code: TestCaseHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(tags: string, code: TestCaseHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(options: IDefineTestCaseHookOptions, code: TestCaseHookFunction<WorldType>) => void);
 
 // @public (undocumented)
-export const AfterAll: ((code: TestRunHookFunction_2) => void) & ((options: IDefineTestRunHookOptions_2, code: TestRunHookFunction_2) => void);
+export const AfterAll: ((code: TestRunHookFunction) => void) & ((options: IDefineTestRunHookOptions, code: TestRunHookFunction) => void);
 
 // @public (undocumented)
-export const AfterStep: (<WorldType = IWorld_2<any>>(code: TestStepHookFunction_2<WorldType>) => void) & (<WorldType = IWorld_2<any>>(tags: string, code: TestStepHookFunction_2<WorldType>) => void) & (<WorldType = IWorld_2<any>>(options: IDefineTestStepHookOptions_2, code: TestStepHookFunction_2<WorldType>) => void);
+export const AfterStep: (<WorldType = IWorld<any>>(code: TestStepHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(tags: string, code: TestStepHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(options: IDefineTestStepHookOptions, code: TestStepHookFunction<WorldType>) => void);
 
 // @public (undocumented)
 function atMostOnePicklePerTag(tagNames: string[]): ParallelAssignmentValidator;
 
 // @public (undocumented)
-export const Before: (<WorldType = IWorld_2<any>>(code: TestCaseHookFunction_2<WorldType>) => void) & (<WorldType = IWorld_2<any>>(tags: string, code: TestCaseHookFunction_2<WorldType>) => void) & (<WorldType = IWorld_2<any>>(options: IDefineTestCaseHookOptions_2, code: TestCaseHookFunction_2<WorldType>) => void);
+export const Before: (<WorldType = IWorld<any>>(code: TestCaseHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(tags: string, code: TestCaseHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(options: IDefineTestCaseHookOptions, code: TestCaseHookFunction<WorldType>) => void);
 
 // @public (undocumented)
-export const BeforeAll: ((code: TestRunHookFunction_2) => void) & ((options: IDefineTestRunHookOptions_2, code: TestRunHookFunction_2) => void);
+export const BeforeAll: ((code: TestRunHookFunction) => void) & ((options: IDefineTestRunHookOptions, code: TestRunHookFunction) => void);
 
 // @public (undocumented)
-export const BeforeStep: (<WorldType = IWorld_2<any>>(code: TestStepHookFunction_2<WorldType>) => void) & (<WorldType = IWorld_2<any>>(tags: string, code: TestStepHookFunction_2<WorldType>) => void) & (<WorldType = IWorld_2<any>>(options: IDefineTestStepHookOptions_2, code: TestStepHookFunction_2<WorldType>) => void);
+export const BeforeStep: (<WorldType = IWorld<any>>(code: TestStepHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(tags: string, code: TestStepHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(options: IDefineTestStepHookOptions, code: TestStepHookFunction<WorldType>) => void);
 
 // @public @deprecated (undocumented)
 export const Cli: typeof Cli_2;
@@ -70,10 +60,10 @@ export class DataTable {
 }
 
 // @public (undocumented)
-export const defineParameterType: (options: IParameterTypeDefinition_2<any>) => void;
+export const defineParameterType: (options: IParameterTypeDefinition<any>) => void;
 
 // @public (undocumented)
-export const defineStep: IDefineStep_2;
+export const defineStep: IDefineStep;
 
 // @public (undocumented)
 class EventDataCollector {
@@ -204,7 +194,7 @@ declare namespace GherkinDocumentParser {
 }
 
 // @public (undocumented)
-export const Given: IDefineStep_2;
+export const Given: IDefineStep;
 
 // @public
 export interface IConfiguration {
@@ -452,7 +442,7 @@ export const setDefaultTimeout: (milliseconds: number) => void;
 export const setDefinitionFunctionWrapper: (fn: Function) => void;
 
 // @public (undocumented)
-export const setParallelCanAssign: (fn: ParallelAssignmentValidator_2) => void;
+export const setParallelCanAssign: (fn: ParallelAssignmentValidator) => void;
 
 // @public (undocumented)
 export const setWorldConstructor: (fn: any) => void;
@@ -497,7 +487,7 @@ export class TestCaseHookDefinition extends Definition implements IDefinition {
 }
 
 // @public (undocumented)
-export const Then: IDefineStep_2;
+export const Then: IDefineStep;
 
 // @public (undocumented)
 export class UsageFormatter extends Formatter {
@@ -531,7 +521,7 @@ enum UsageOrder {
 export const version: string;
 
 // @public (undocumented)
-export const When: IDefineStep_2;
+export const When: IDefineStep;
 
 // @public (undocumented)
 export class World<ParametersType = any> implements IWorld<ParametersType> {
