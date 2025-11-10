@@ -60,7 +60,10 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
           await finishedWriting
           const stats = await stat(tempFilePath)
           const contentLength = stats.size.toString()
-          logger.debug('Uploading envelopes to Cucumber Reports with content length:', contentLength)
+          logger.debug(
+            'Uploading envelopes to Cucumber Reports with content length:',
+            contentLength
+          )
           const uploadResponse = await fetch(uploadUrl, {
             method: 'PUT',
             headers: {
