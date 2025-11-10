@@ -220,7 +220,7 @@
   "dependencies": {
     "@cucumber/ci-environment": "12.0.0",
     "@cucumber/cucumber-expressions": "18.0.1",
-    "@cucumber/gherkin": "36.0.0",
+    "@cucumber/gherkin": "36.1.0",
     "@cucumber/gherkin-streams": "6.0.0",
     "@cucumber/gherkin-utils": "10.0.0",
     "@cucumber/html-formatter": "22.0.0",
