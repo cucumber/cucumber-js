@@ -21,7 +21,6 @@ export default class UsageJsonFormatter extends Formatter {
     const usage = getUsage({
       stepDefinitions: this.supportCodeLibrary.stepDefinitions,
       eventDataCollector: this.eventDataCollector,
-      order: this.usageOrder,
     })
     this.log(JSON.stringify(usage, this.replacer, 2))
   }

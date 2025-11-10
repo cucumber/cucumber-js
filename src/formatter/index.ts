@@ -4,7 +4,7 @@ import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
 import { FormatterPlugin } from '../plugin'
 import { IColorFns } from './get_color_fns'
-import { EventDataCollector, UsageOrder } from './helpers'
+import { EventDataCollector } from './helpers'
 import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 
@@ -16,9 +16,6 @@ export interface FormatOptions {
   colorsEnabled?: boolean
   html?: {
     externalAttachments?: boolean
-  }
-  usage?: {
-    order?: UsageOrder
   }
   rerun?: FormatRerunOptions
   snippetInterface?: SnippetInterface
@@ -54,7 +51,6 @@ export default class Formatter {
   protected stream: Writable
   protected supportCodeLibrary: SupportCodeLibrary
   protected printAttachments: boolean
-  protected usageOrder: UsageOrder
   private readonly cleanup: IFormatterCleanupFn
   static readonly documentation: string
 
@@ -70,10 +66,6 @@ export default class Formatter {
     this.printAttachments = valueOrDefault(
       options.parsedArgvOptions.printAttachments,
       true
-    )
-    this.usageOrder = valueOrDefault(
-      options.parsedArgvOptions.usage?.order,
-      UsageOrder.EXECUTION_TIME
     )
   }
 
