@@ -1,9 +1,10 @@
 import { Writable } from 'node:stream'
 import { stripVTControlCharacters } from 'node:util'
-import { mkdtemp, stat } from 'node:fs/promises'
+import { mkdtemp } from 'node:fs/promises'
 import path from 'node:path'
 import { tmpdir } from 'node:os'
 import { createReadStream, createWriteStream } from 'node:fs'
+import { createGzip } from 'node:zlib'
 import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
 import { InternalPlugin } from '../plugin'
@@ -53,13 +54,13 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
     return () => {
       return new Promise<void>((resolve) => {
         tempFileStream.end(async () => {
-          const stats = await stat(tempFilePath)
           const uploadResponse = await fetch(uploadUrl, {
             method: 'PUT',
             headers: {
-              'Content-Length': stats.size.toString(),
+              'Content-Type': 'application/jsonl',
+              'Content-Encoding': 'gzip',
             },
-            body: createReadStream(tempFilePath, { encoding: 'utf-8' }),
+            body: createReadStream(tempFilePath).pipe(createGzip()),
             duplex: 'half',
           })
           if (uploadResponse.ok) {
