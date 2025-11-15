@@ -11,6 +11,9 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Added
 - Support named BeforeAll/AfterAll hooks ([#2661](https://github.com/cucumber/cucumber-js/pull/2661))
 
+### Changed
+- Render a more test case-centric HTML report ([react-components/#396](https://github.com/cucumber/react-components/pull/396))
+
 ## [12.2.0] - 2025-08-22
 ### Added
 - Export configuration types ([#2598](https://github.com/cucumber/cucumber-js/pull/2598))
