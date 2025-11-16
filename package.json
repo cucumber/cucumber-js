@@ -259,7 +259,7 @@
     "yup": "1.7.1"
   },
   "devDependencies": {
-    "@cucumber/compatibility-kit": "^22.0.0",
+    "@cucumber/compatibility-kit": "^24.0.0",
     "@cucumber/query": "14.6.0",
     "@eslint/compat": "^2.0.0",
     "@eslint/eslintrc": "^3.3.1",
