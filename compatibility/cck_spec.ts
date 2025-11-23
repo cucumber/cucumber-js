@@ -17,9 +17,18 @@ const CCK_FEATURES_PATH = 'node_modules/@cucumber/compatibility-kit/features'
 const CCK_IMPLEMENTATIONS_PATH = 'compatibility/features'
 
 const UNSUPPORTED = [
+  // we aren't fully compliant yet for global hooks
   'global-hooks-attachments',
   'global-hooks-beforeall-error',
   'global-hooks-afterall-error',
+  // not a test sample
+  'test-run-exception',
+  // suggestions not implemented yet
+  'examples-tables-undefined',
+  'hooks-undefined',
+  'retry-undefined',
+  'undefined',
+  'unknown-parameter-type',
 ]
 
 config.truncateThreshold = 100
