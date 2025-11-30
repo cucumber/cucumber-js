@@ -219,13 +219,13 @@
   "dependencies": {
     "@cucumber/ci-environment": "12.0.0",
     "@cucumber/cucumber-expressions": "18.0.1",
-    "@cucumber/gherkin": "36.1.0",
+    "@cucumber/gherkin": "37.0.0",
     "@cucumber/gherkin-streams": "6.0.0",
     "@cucumber/gherkin-utils": "10.0.0",
     "@cucumber/html-formatter": "22.1.0",
     "@cucumber/junit-xml-formatter": "0.9.0",
     "@cucumber/message-streams": "4.0.1",
-    "@cucumber/messages": "30.1.0",
+    "@cucumber/messages": "31.0.0",
     "@cucumber/pretty-formatter": "1.0.1",
     "@cucumber/tag-expressions": "8.1.0",
     "assertion-error-formatter": "^3.0.0",
@@ -259,7 +259,7 @@
     "yup": "1.7.1"
   },
   "devDependencies": {
-    "@cucumber/compatibility-kit": "^25.0.0",
+    "@cucumber/compatibility-kit": "^26.0.0",
     "@cucumber/query": "14.6.0",
     "@eslint/compat": "^2.0.0",
     "@eslint/eslintrc": "^3.3.1",

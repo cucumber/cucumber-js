@@ -55,6 +55,10 @@ module.exports = [
     pickle: {
       id: '3',
       uri: 'features/a.feature',
+      location: {
+        line: 2,
+        column: 3,
+      },
       name: 'a scenario',
       language: 'en',
       steps: [
