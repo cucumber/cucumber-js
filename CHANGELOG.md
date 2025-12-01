@@ -9,6 +9,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ## [Unreleased]
 ### Added
+- Add support for Node.js 25.x ([#2704](https://github.com/cucumber/cucumber-js/pull/2704))
 - Support named BeforeAll/AfterAll hooks ([#2661](https://github.com/cucumber/cucumber-js/pull/2661))
 - Emit messages for suggestions ([#2703](https://github.com/cucumber/cucumber-js/pull/2703))
 
