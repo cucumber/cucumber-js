@@ -214,7 +214,7 @@
     "node": "20 || 22 || >=24"
   },
   "enginesTested": {
-    "node": "20 || 22 || 24"
+    "node": "20 || 22 || 24 || 25"
   },
   "dependencies": {
     "@cucumber/ci-environment": "12.0.0",
