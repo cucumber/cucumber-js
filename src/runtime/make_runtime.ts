@@ -1,11 +1,12 @@
 import { EventEmitter } from 'node:events'
 import { IdGenerator } from '@cucumber/messages'
 import { IRunOptionsRuntime } from '../api'
-import { ILogger } from '../environment'
+import { ILogger, IRunEnvironment } from '../environment'
 import { SourcedPickle } from '../assemble'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
-import { IRunEnvironment } from '../environment'
-import { Runtime, RuntimeAdapter } from './types'
+import FormatterBuilder from '../formatter/builder'
+import { FormatOptions } from '../formatter'
+import { Runtime } from './types'
 import { ChildProcessAdapter } from './parallel/adapter'
 import { InProcessAdapter } from './serial/adapter'
 import { Coordinator } from './coordinator'
@@ -18,6 +19,7 @@ export async function makeRuntime({
   newId,
   supportCodeLibrary,
   options,
+  snippetOptions,
 }: {
   environment: IRunEnvironment
   logger: ILogger
@@ -26,25 +28,19 @@ export async function makeRuntime({
   sourcedPickles: ReadonlyArray<SourcedPickle>
   supportCodeLibrary: SupportCodeLibrary
   options: IRunOptionsRuntime
+  snippetOptions: Pick<FormatOptions, 'snippetInterface' | 'snippetSyntax'>
 }): Promise<Runtime> {
   const testRunStartedId = newId()
-  const adapter: RuntimeAdapter =
-    options.parallel > 0
-      ? new ChildProcessAdapter(
-          testRunStartedId,
-          environment,
-          logger,
-          eventBroadcaster,
-          options,
-          supportCodeLibrary
-        )
-      : new InProcessAdapter(
-          testRunStartedId,
-          eventBroadcaster,
-          newId,
-          options,
-          supportCodeLibrary
-        )
+  const adapter = await makeAdapter(
+    options,
+    snippetOptions,
+    testRunStartedId,
+    environment,
+    logger,
+    eventBroadcaster,
+    supportCodeLibrary,
+    newId
+  )
   return new Coordinator(
     testRunStartedId,
     eventBroadcaster,
@@ -52,5 +48,44 @@ export async function makeRuntime({
     sourcedPickles,
     supportCodeLibrary,
     adapter
+  )
+}
+
+async function makeAdapter(
+  options: IRunOptionsRuntime,
+  snippetOptions: Pick<FormatOptions, 'snippetInterface' | 'snippetSyntax'>,
+  testRunStartedId: string,
+  environment: IRunEnvironment,
+  logger: ILogger,
+  eventBroadcaster: EventEmitter,
+  supportCodeLibrary: SupportCodeLibrary,
+  newId: () => string
+) {
+  if (options.parallel > 0) {
+    return new ChildProcessAdapter(
+      testRunStartedId,
+      environment,
+      logger,
+      eventBroadcaster,
+      options,
+      snippetOptions,
+      supportCodeLibrary
+    )
+  }
+  const snippetBuilder = await FormatterBuilder.getStepDefinitionSnippetBuilder(
+    {
+      cwd: environment.cwd,
+      snippetInterface: snippetOptions.snippetInterface,
+      snippetSyntax: snippetOptions.snippetSyntax,
+      supportCodeLibrary,
+    }
+  )
+  return new InProcessAdapter(
+    testRunStartedId,
+    eventBroadcaster,
+    newId,
+    options,
+    supportCodeLibrary,
+    snippetBuilder
   )
 }

@@ -11,6 +11,7 @@ import UserCodeRunner from '../user_code_runner'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { formatLocation } from '../formatter/helpers'
+import StepDefinitionSnippetBuilder from '../formatter/step_definition_snippet_builder'
 import { retriesForPickle, shouldCauseFailure } from './helpers'
 import TestCaseRunner from './test_case_runner'
 import { runInTestRunScope } from './scope'
@@ -30,7 +31,8 @@ export class Worker {
     private readonly eventBroadcaster: EventEmitter,
     private readonly newId: IdGenerator.NewId,
     private readonly options: RuntimeOptions,
-    private readonly supportCodeLibrary: SupportCodeLibrary
+    private readonly supportCodeLibrary: SupportCodeLibrary,
+    private readonly snippetBuilder: StepDefinitionSnippetBuilder
   ) {}
 
   private async runTestRunHook(
@@ -151,6 +153,7 @@ export class Worker {
       filterStackTraces: this.options.filterStacktraces,
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.options.worldParameters,
+      snippetBuilder: this.snippetBuilder,
     })
 
     const status = await testCaseRunner.run()

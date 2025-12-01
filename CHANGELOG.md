@@ -10,6 +10,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ## [Unreleased]
 ### Added
 - Support named BeforeAll/AfterAll hooks ([#2661](https://github.com/cucumber/cucumber-js/pull/2661))
+- Emit messages for suggestions ([#2703](https://github.com/cucumber/cucumber-js/pull/2703))
 
 ### Changed
 - Render a more test case-centric HTML report ([react-components/#396](https://github.com/cucumber/react-components/pull/396))

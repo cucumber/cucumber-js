@@ -23,12 +23,6 @@ const UNSUPPORTED = [
   'global-hooks-afterall-error',
   // not a test sample
   'test-run-exception',
-  // suggestions not implemented yet
-  'examples-tables-undefined',
-  'hooks-undefined',
-  'retry-undefined',
-  'undefined',
-  'unknown-parameter-type',
 ]
 
 config.truncateThreshold = 100

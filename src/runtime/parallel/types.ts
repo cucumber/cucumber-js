@@ -3,6 +3,7 @@ import { RuntimeOptions } from '../index'
 import { ISupportCodeCoordinates } from '../../api'
 import { AssembledTestCase } from '../../assemble'
 import { CanonicalSupportCodeIds } from '../../support_code_library_builder/types'
+import { FormatOptions } from '../../formatter'
 
 // Messages from Coordinator to Worker
 
@@ -17,6 +18,7 @@ export interface InitializeCommand {
   supportCodeCoordinates: ISupportCodeCoordinates
   supportCodeIds: CanonicalSupportCodeIds
   options: RuntimeOptions
+  snippetOptions: Pick<FormatOptions, 'snippetInterface' | 'snippetSyntax'>
 }
 
 export interface RunCommand {
