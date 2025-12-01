@@ -7,9 +7,7 @@ import {
 import StepDefinitionSnippetBuilder from '../formatter/step_definition_snippet_builder'
 import { KeywordType } from '../formatter/helpers'
 
-function mapPickleStepTypeToKeywordType(
-  type?: PickleStepType
-): KeywordType {
+function mapPickleStepTypeToKeywordType(type?: PickleStepType): KeywordType {
   switch (type) {
     case PickleStepType.CONTEXT:
       return KeywordType.Precondition

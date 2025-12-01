@@ -9,10 +9,11 @@ import { makeSuggestion } from './make_suggestion'
 describe('makeSuggestion', () => {
   it('generates multiple snippets for expressions with numeric parameters', async () => {
     const supportCodeLibrary = buildSupportCodeLibrary()
-    const snippetBuilder = await FormatterBuilder.getStepDefinitionSnippetBuilder({
-      cwd: process.cwd(),
-      supportCodeLibrary,
-    })
+    const snippetBuilder =
+      await FormatterBuilder.getStepDefinitionSnippetBuilder({
+        cwd: process.cwd(),
+        supportCodeLibrary,
+      })
     const newId = IdGenerator.incrementing()
     const pickleStep: messages.PickleStep = {
       id: '1',
