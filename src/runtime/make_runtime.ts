@@ -61,14 +61,6 @@ async function makeAdapter(
   supportCodeLibrary: SupportCodeLibrary,
   newId: () => string
 ) {
-  const snippetBuilder = await FormatterBuilder.getStepDefinitionSnippetBuilder(
-    {
-      cwd: environment.cwd,
-      snippetInterface: snippetOptions.snippetInterface,
-      snippetSyntax: snippetOptions.snippetSyntax,
-      supportCodeLibrary,
-    }
-  )
   if (options.parallel > 0) {
     return new ChildProcessAdapter(
       testRunStartedId,
@@ -80,7 +72,14 @@ async function makeAdapter(
       supportCodeLibrary
     )
   }
-
+  const snippetBuilder = await FormatterBuilder.getStepDefinitionSnippetBuilder(
+    {
+      cwd: environment.cwd,
+      snippetInterface: snippetOptions.snippetInterface,
+      snippetSyntax: snippetOptions.snippetSyntax,
+      supportCodeLibrary,
+    }
+  )
   return new InProcessAdapter(
     testRunStartedId,
     eventBroadcaster,
