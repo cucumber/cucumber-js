@@ -1,8 +1,4 @@
-import { Before, Given } from '../../../src'
-
-Before('@skip', function () {
-  return 'skipped'
-})
+import { Given } from '../../../src'
 
 Given('a step that does not skip', function () {
   // no-op

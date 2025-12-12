@@ -121,4 +121,7 @@ export const ignorableKeys = [
   // errors
   'message',
   'stackTrace',
+  // snippets
+  'language',
+  'code',
 ]

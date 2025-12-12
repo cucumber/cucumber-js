@@ -47,6 +47,23 @@ export default class StepDefinitionSnippetBuilder {
     })
   }
 
+  buildMultiple({ keywordType, pickleStep }: IBuildRequest): string[] {
+    const comment =
+      'Write code here that turns the phrase above into concrete actions'
+    const functionName = this.getFunctionName(keywordType)
+    const generatedExpressions =
+      this.cucumberExpressionGenerator.generateExpressions(pickleStep.text)
+    const stepParameterNames = this.getStepParameterNames(pickleStep)
+    return generatedExpressions.map((generatedExpression) => {
+      return this.snippetSyntax.build({
+        comment,
+        functionName,
+        generatedExpressions: [generatedExpression],
+        stepParameterNames,
+      })
+    })
+  }
+
   getFunctionName(keywordType: KeywordType): string {
     switch (keywordType) {
       case KeywordType.Event:

@@ -8,8 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [12.3.0] - 2025-12-01
 ### Added
+- Add support for Node.js 25.x ([#2704](https://github.com/cucumber/cucumber-js/pull/2704))
 - Support named BeforeAll/AfterAll hooks ([#2661](https://github.com/cucumber/cucumber-js/pull/2661))
+- Emit messages for test run hooks ([#2644](https://github.com/cucumber/cucumber-js/pull/2644))
+- Emit messages for suggestions ([#2703](https://github.com/cucumber/cucumber-js/pull/2703))
 
 ### Changed
 - Render a more test case-centric HTML report ([react-components/#396](https://github.com/cucumber/react-components/pull/396))
@@ -1699,7 +1704,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.2.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.3.0...HEAD
+[12.3.0]: https://github.com/cucumber/cucumber-js/compare/v12.2.0...v12.3.0
 [12.2.0]: https://github.com/cucumber/cucumber-js/compare/v12.1.0...v12.2.0
 [12.1.0]: https://github.com/cucumber/cucumber-js/compare/v12.0.0...v12.1.0
 [12.0.0]: https://github.com/cucumber/cucumber-js/compare/v11.3.0...v12.0.0

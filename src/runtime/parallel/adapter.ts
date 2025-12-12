@@ -6,6 +6,7 @@ import { AssembledTestCase } from '../../assemble'
 import { ILogger, IRunEnvironment } from '../../environment'
 import { RuntimeAdapter } from '../types'
 import { IRunOptionsRuntime } from '../../api'
+import { FormatOptions } from '../../formatter'
 import {
   FinalizeCommand,
   InitializeCommand,
@@ -47,6 +48,10 @@ export class ChildProcessAdapter implements RuntimeAdapter {
     private readonly logger: ILogger,
     private readonly eventBroadcaster: EventEmitter,
     private readonly options: IRunOptionsRuntime,
+    private readonly snippetOptions: Pick<
+      FormatOptions,
+      'snippetInterface' | 'snippetSyntax'
+    >,
     private readonly supportCodeLibrary: SupportCodeLibrary
   ) {}
 
@@ -131,6 +136,7 @@ export class ChildProcessAdapter implements RuntimeAdapter {
           this.supportCodeLibrary.afterTestRunHookDefinitions.map((h) => h.id),
       },
       options: this.options,
+      snippetOptions: this.snippetOptions,
     } satisfies InitializeCommand)
   }
 

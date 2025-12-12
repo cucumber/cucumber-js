@@ -94,6 +94,7 @@ export async function testFormatter({
       ...buildOptions(runtimeOptions),
       parallel: 0,
     },
+    snippetOptions: {},
   })
   await runtime.run()
 
@@ -155,6 +156,7 @@ export async function getEnvelopesAndEventDataCollector({
       ...buildOptions(runtimeOptions),
       parallel: 0,
     },
+    snippetOptions: {},
   })
   await runtime.run()
 

@@ -23,15 +23,3 @@ Given('a step that passes the third time', function () {
 Given('a step that always fails', function () {
   throw new Error('Exception in step')
 })
-
-Given('an ambiguous step', function () {
-  // first one
-})
-
-Given('an ambiguous step', function () {
-  // second one
-})
-
-Given('a pending step', function () {
-  return 'pending'
-})

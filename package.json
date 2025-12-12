@@ -8,7 +8,7 @@
     "gherkin",
     "tests"
   ],
-  "version": "12.2.0",
+  "version": "12.3.0",
   "funding": "https://opencollective.com/cucumber",
   "homepage": "https://github.com/cucumber/cucumber-js",
   "author": "Julien Biezemans <jb@jbpros.com>",
@@ -214,20 +214,20 @@
     "node": "20 || 22 || >=24"
   },
   "enginesTested": {
-    "node": "20 || 22 || 24"
+    "node": "20 || 22 || 24 || 25"
   },
   "dependencies": {
     "@cucumber/ci-environment": "12.0.0",
     "@cucumber/cucumber-expressions": "18.0.1",
-    "@cucumber/gherkin": "36.1.0",
+    "@cucumber/gherkin": "37.0.0",
     "@cucumber/gherkin-streams": "6.0.0",
     "@cucumber/gherkin-utils": "10.0.0",
-    "@cucumber/html-formatter": "22.1.0",
+    "@cucumber/html-formatter": "22.2.0",
     "@cucumber/junit-xml-formatter": "0.9.0",
     "@cucumber/message-streams": "4.0.1",
-    "@cucumber/messages": "30.1.0",
+    "@cucumber/messages": "31.0.0",
     "@cucumber/pretty-formatter": "1.0.1",
-    "@cucumber/tag-expressions": "8.0.0",
+    "@cucumber/tag-expressions": "8.1.0",
     "assertion-error-formatter": "^3.0.0",
     "capital-case": "^1.0.4",
     "chalk": "^4.1.2",
@@ -236,7 +236,7 @@
     "debug": "^4.3.4",
     "error-stack-parser": "^2.1.4",
     "figures": "^3.2.0",
-    "glob": "^11.0.0",
+    "glob": "^13.0.0",
     "has-ansi": "^4.0.1",
     "indent-string": "^4.0.0",
     "is-installed-globally": "^0.4.0",
@@ -259,12 +259,12 @@
     "yup": "1.7.1"
   },
   "devDependencies": {
-    "@cucumber/compatibility-kit": "^22.0.0",
-    "@cucumber/query": "14.6.0",
+    "@cucumber/compatibility-kit": "^26.0.0",
+    "@cucumber/query": "14.7.0",
     "@eslint/compat": "^2.0.0",
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.29.0",
-    "@microsoft/api-extractor": "7.55.0",
+    "@microsoft/api-extractor": "7.55.2",
     "@sinonjs/fake-timers": "15.0.0",
     "@types/chai": "4.3.20",
     "@types/debug": "4.1.12",

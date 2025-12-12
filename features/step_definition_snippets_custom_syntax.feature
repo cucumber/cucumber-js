@@ -8,7 +8,18 @@ Feature: step definition snippets custom syntax
       """
       Feature: a feature
         Scenario: a scenario
+          Given a step
+
+        Scenario: another scenario
           Given an undefined step
+      """
+    And a file named "features/steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+
+      Given('a step', function() {
+        // noop
+      })
       """
     And a file named "coffeescript_syntax.js" with:
       """
@@ -61,3 +72,13 @@ Feature: step definition snippets custom syntax
       | promise     | ->                           | 'pending'              |
       | async-await | ->                           | 'pending'              |
       | synchronous | ->                           | 'pending'              |
+
+  Scenario: Custom snippet syntax works in parallel runtime
+    When I run cucumber-js with `--parallel 2 --format-options '{"snippetInterface": "async-await", "snippetSyntax": "./coffeescript_syntax.js"}'`
+    Then it fails
+    And the output contains the text:
+      """
+      @Given 'an undefined step', ->
+        # Write code here that turns the phrase above into concrete actions
+        'pending'
+      """

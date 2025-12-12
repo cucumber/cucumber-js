@@ -7,6 +7,7 @@ import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import tryRequire from '../../try_require'
 import { Worker } from '../worker'
 import { RuntimeOptions } from '../index'
+import FormatterBuilder from '../../formatter/builder'
 import {
   WorkerToCoordinatorEvent,
   CoordinatorToWorkerCommand,
@@ -58,6 +59,7 @@ export class ChildProcessWorker {
     supportCodeCoordinates,
     supportCodeIds,
     options,
+    snippetOptions,
   }: InitializeCommand): Promise<void> {
     supportCodeLibraryBuilder.reset(
       this.cwd,
@@ -75,13 +77,23 @@ export class ChildProcessWorker {
     this.supportCodeLibrary = supportCodeLibraryBuilder.finalize(supportCodeIds)
 
     this.options = options
+
+    const snippetBuilder =
+      await FormatterBuilder.getStepDefinitionSnippetBuilder({
+        cwd: this.cwd,
+        snippetInterface: snippetOptions.snippetInterface,
+        snippetSyntax: snippetOptions.snippetSyntax,
+        supportCodeLibrary: this.supportCodeLibrary,
+      })
+
     this.worker = new Worker(
       testRunStartedId,
       this.id,
       this.eventBroadcaster,
       this.newId,
       this.options,
-      this.supportCodeLibrary
+      this.supportCodeLibrary,
+      snippetBuilder
     )
     await this.worker.runBeforeAllHooks()
     this.sendMessage({ type: 'READY' })
