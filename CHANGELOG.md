@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- Compress report content with gzip before publishing ([#2687](https://github.com/cucumber/cucumber-js/pull/2687))
 
 ## [12.3.0] - 2025-12-01
 ### Added
