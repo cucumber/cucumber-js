@@ -220,6 +220,16 @@ p1:
       expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
     })
 
+    it('should work with .mts', async () => {
+      const { logger, cwd } = await setup(
+        'cucumber.mts',
+        `export default {}; export const p1 = {paths: ['other/path/*.feature']}`
+      )
+
+      const result = await fromFile(logger, cwd, 'cucumber.mts', ['p1'])
+      expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
+    })
+
     it('should throw for an unsupported format', async () => {
       const { logger, cwd } = await setup('cucumber.foo', `{}`)
       try {

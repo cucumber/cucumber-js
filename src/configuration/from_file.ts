@@ -105,6 +105,12 @@ async function loadFile(
       )
       definitions = await import(pathToFileURL(filePath).toString())
       break
+    case '.mts':
+      logger.debug(
+        `Loading configuration file "${file}" as ESM TypeScript based on extension`
+      )
+      definitions = await import(pathToFileURL(filePath).toString())
+      break
     case '.js':
       {
         const parentPackage = await readPackageJson(filePath)
