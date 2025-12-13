@@ -91,58 +91,8 @@ async function loadFile(
 ): Promise<Record<string, any>> {
   const filePath: string = path.join(cwd, file)
   const extension = path.extname(filePath)
-<<<<<<< HEAD
-  let definitions
-  switch (extension) {
-    case '.json':
-      definitions = JSON.parse(
-        await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
-      )
-      break
-    case '.yaml':
-    case '.yml':
-      definitions = YAML.parse(
-        await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
-      )
-      break
-    case '.cjs':
-      logger.debug(
-        `Loading configuration file "${file}" as CommonJS based on extension`
-      )
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      definitions = require(filePath)
-      break
-    case '.mjs':
-      logger.debug(
-        `Loading configuration file "${file}" as ESM based on extension`
-      )
-      definitions = await import(pathToFileURL(filePath).toString())
-      break
-    case '.js':
-      {
-        logger.debug(
-          `Loading configuration file "${file}" as JavaScript based on extension`
-        )
-        const ambiguous = await import(pathToFileURL(filePath).toString())
-        if ('module.exports' in ambiguous) {
-          logger.debug(
-            `Treating configuration file "${file}" as CommonJS based on heuristics`
-          )
-          definitions = ambiguous['module.exports']
-        } else {
-          logger.debug(
-            `Treating configuration file "${file}" as ESM based on heuristics`
-          )
-          definitions = ambiguous
-        }
-      }
-      break
-    default:
-      throw new Error(`Unsupported configuration file extension "${extension}"`)
-=======
   if (!SUPPORTED_EXTENSIONS.includes(extension)) {
     throw new Error(`Unsupported configuration file extension "${extension}"`)
->>>>>>> main
   }
   let definitions
   try {
@@ -186,27 +136,23 @@ async function loadFile(
         definitions = await import(pathToFileURL(filePath).toString())
         break
       case '.js':
-        {
-          const parentPackage = await readPackageJson(filePath)
-          if (!parentPackage) {
-            logger.debug(
-              `Loading configuration file "${file}" as CommonJS based on absence of a parent package`
-            )
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
-            definitions = require(filePath)
-          } else if (parentPackage.type === 'module') {
-            logger.debug(
-              `Loading configuration file "${file}" as ESM based on "${parentPackage.name}" package type`
-            )
-            definitions = await import(pathToFileURL(filePath).toString())
-          } else {
-            logger.debug(
-              `Loading configuration file "${file}" as CommonJS based on "${parentPackage.name}" package type`
-            )
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
-            definitions = require(filePath)
-          }
+      {
+        logger.debug(
+          `Loading configuration file "${file}" as JavaScript based on extension`
+        )
+        const ambiguous = await import(pathToFileURL(filePath).toString())
+        if ('module.exports' in ambiguous) {
+          logger.debug(
+            `Treating configuration file "${file}" as CommonJS based on heuristics`
+          )
+          definitions = ambiguous['module.exports']
+        } else {
+          logger.debug(
+            `Treating configuration file "${file}" as ESM based on heuristics`
+          )
+          definitions = ambiguous
         }
+      }
         break
     }
   } catch (error) {
