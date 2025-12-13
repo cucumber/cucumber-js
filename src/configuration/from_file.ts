@@ -99,6 +99,13 @@ async function loadFile(
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       definitions = require(filePath)
       break
+    case '.cts':
+      logger.debug(
+        `Loading configuration file "${file}" as TypeScript based on extension`
+      )
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      definitions = require(filePath)
+      break
     case '.mjs':
       logger.debug(
         `Loading configuration file "${file}" as ESM based on extension`
@@ -106,8 +113,9 @@ async function loadFile(
       definitions = await import(pathToFileURL(filePath).toString())
       break
     case '.mts':
+    case '.ts':
       logger.debug(
-        `Loading configuration file "${file}" as ESM TypeScript based on extension`
+        `Loading configuration file "${file}" as TypeScript based on extension`
       )
       definitions = await import(pathToFileURL(filePath).toString())
       break

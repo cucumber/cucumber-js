@@ -3,6 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import tmp, { DirOptions } from 'tmp'
 import { expect } from 'chai'
+import semver from 'semver'
 import { FakeLogger } from '../../test/fake_logger'
 import { fromFile } from './from_file'
 
@@ -220,16 +221,6 @@ p1:
       expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
     })
 
-    it('should work with .mts', async () => {
-      const { logger, cwd } = await setup(
-        'cucumber.mts',
-        `export default {}; export const p1 = {paths: ['other/path/*.feature']}`
-      )
-
-      const result = await fromFile(logger, cwd, 'cucumber.mts', ['p1'])
-      expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
-    })
-
     it('should throw for an unsupported format', async () => {
       const { logger, cwd } = await setup('cucumber.foo', `{}`)
       try {
@@ -240,6 +231,50 @@ p1:
           'Unsupported configuration file extension ".foo"'
         )
       }
+    })
+
+    describe('typescript', function () {
+      if (!semver.satisfies(process.version, '>=22.0.0')) {
+        return
+      }
+
+      it('should work with .mts', async () => {
+        const { logger, cwd } = await setup(
+          'cucumber.mts',
+          `import type { IConfiguration } from '@cucumber/cucumber'
+
+export default {}
+
+export const p1 = {paths: ['other/path/*.feature']}`
+        )
+
+        const result = await fromFile(logger, cwd, 'cucumber.mts', ['p1'])
+        expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
+      })
+
+      it('should work with .ts', async () => {
+        const { logger, cwd } = await setup(
+          'cucumber.ts',
+          `import type { IConfiguration } from '@cucumber/cucumber'
+
+export default {}
+
+export const p1 = {paths: ['other/path/*.feature']}`
+        )
+
+        const result = await fromFile(logger, cwd, 'cucumber.ts', ['p1'])
+        expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
+      })
+
+      it('should work with .cts', async () => {
+        const { logger, cwd } = await setup(
+          'cucumber.cts',
+          `module.exports = { default: {}, p1: { paths: ['other/path/*.feature'] } }`
+        )
+
+        const result = await fromFile(logger, cwd, 'cucumber.cts', ['p1'])
+        expect(result).to.deep.eq({ paths: ['other/path/*.feature'] })
+      })
     })
   })
 })
