@@ -233,6 +233,18 @@ p1:
       }
     })
 
+    it('should throw when a supported format fails to load or parse', async () => {
+      const { logger, cwd } = await setup('cucumber.js', `nope!`)
+      try {
+        await fromFile(logger, cwd, 'cucumber.js', ['p1'])
+        expect.fail('should have thrown')
+      } catch (error) {
+        expect(error.message).to.eq(
+          'Configuration file "cucumber.js" failed to load/parse'
+        )
+      }
+    })
+
     describe('typescript', function () {
       if (!semver.satisfies(process.version, '>=22.0.0')) {
         return
