@@ -136,23 +136,23 @@ async function loadFile(
         definitions = await import(pathToFileURL(filePath).toString())
         break
       case '.js':
-      {
-        logger.debug(
-          `Loading configuration file "${file}" as JavaScript based on extension`
-        )
-        const ambiguous = await import(pathToFileURL(filePath).toString())
-        if ('module.exports' in ambiguous) {
+        {
           logger.debug(
-            `Treating configuration file "${file}" as CommonJS based on heuristics`
+            `Loading configuration file "${file}" as JavaScript based on extension`
           )
-          definitions = ambiguous['module.exports']
-        } else {
-          logger.debug(
-            `Treating configuration file "${file}" as ESM based on heuristics`
-          )
-          definitions = ambiguous
+          const ambiguous = await import(pathToFileURL(filePath).toString())
+          if ('module.exports' in ambiguous) {
+            logger.debug(
+              `Treating configuration file "${file}" as CommonJS based on heuristics`
+            )
+            definitions = ambiguous['module.exports']
+          } else {
+            logger.debug(
+              `Treating configuration file "${file}" as ESM based on heuristics`
+            )
+            definitions = ambiguous
+          }
         }
-      }
         break
     }
   } catch (error) {
