@@ -8,6 +8,7 @@ import { Runtime } from './index'
 
 export class Coordinator implements Runtime {
   constructor(
+    private testRunStartedId: string,
     private eventBroadcaster: EventEmitter,
     private newId: IdGenerator.NewId,
     private sourcedPickles: ReadonlyArray<SourcedPickle>,
@@ -16,17 +17,15 @@ export class Coordinator implements Runtime {
   ) {}
 
   async run(): Promise<boolean> {
-    const testRunStartedId = this.newId()
-
     this.eventBroadcaster.emit('envelope', {
       testRunStarted: {
-        id: testRunStartedId,
+        id: this.testRunStartedId,
         timestamp: timestamp(),
       },
     } satisfies Envelope)
 
     const assembledTestCases = await assembleTestCases(
-      testRunStartedId,
+      this.testRunStartedId,
       this.eventBroadcaster,
       this.newId,
       this.sourcedPickles,
@@ -37,7 +36,7 @@ export class Coordinator implements Runtime {
 
     this.eventBroadcaster.emit('envelope', {
       testRunFinished: {
-        testRunStartedId,
+        testRunStartedId: this.testRunStartedId,
         timestamp: timestamp(),
         success,
       },

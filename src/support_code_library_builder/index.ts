@@ -7,7 +7,9 @@ import {
 } from '@cucumber/cucumber-expressions'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestStepHookDefinition from '../models/test_step_hook_definition'
-import TestRunHookDefinition from '../models/test_run_hook_definition'
+import TestRunHookDefinition, {
+  ITestRunHookDefinitionOptions,
+} from '../models/test_run_hook_definition'
 import StepDefinition from '../models/step_definition'
 import { formatLocation } from '../formatter/helpers'
 import { doesHaveValue } from '../value_checker'
@@ -343,18 +345,19 @@ export class SupportCodeLibraryBuilder {
   }
 
   buildTestRunHookDefinitions(
-    configs: ITestRunHookDefinitionConfig[]
+    configs: ITestRunHookDefinitionConfig[],
+    canonicalIds?: string[]
   ): TestRunHookDefinition[] {
-    return configs.map(({ code, line, options, uri }) => {
+    return configs.map(({ code, line, options, uri }, index) => {
       const wrappedCode = this.wrapCode({
         code,
         wrapperOptions: options.wrapperOptions,
       })
       return new TestRunHookDefinition({
         code: wrappedCode,
-        id: this.newId(),
+        id: canonicalIds ? canonicalIds[index] : this.newId(),
         line,
-        options,
+        options: options as ITestRunHookDefinitionOptions,
         unwrappedCode: code,
         uri,
       })
@@ -427,7 +430,8 @@ export class SupportCodeLibraryBuilder {
         canonicalIds?.afterTestCaseHookDefinitionIds
       ),
       afterTestRunHookDefinitions: this.buildTestRunHookDefinitions(
-        this.afterTestRunHookDefinitionConfigs
+        this.afterTestRunHookDefinitionConfigs,
+        canonicalIds?.afterTestRunHookDefinitionIds
       ),
       afterTestStepHookDefinitions: this.buildTestStepHookDefinitions(
         this.afterTestStepHookDefinitionConfigs
@@ -437,7 +441,8 @@ export class SupportCodeLibraryBuilder {
         canonicalIds?.beforeTestCaseHookDefinitionIds
       ),
       beforeTestRunHookDefinitions: this.buildTestRunHookDefinitions(
-        this.beforeTestRunHookDefinitionConfigs
+        this.beforeTestRunHookDefinitionConfigs,
+        canonicalIds?.beforeTestRunHookDefinitionIds
       ),
       beforeTestStepHookDefinitions: this.buildTestStepHookDefinitions(
         this.beforeTestStepHookDefinitionConfigs

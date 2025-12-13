@@ -6,6 +6,7 @@ import { AssembledTestCase } from '../../assemble'
 import { ILogger, IRunEnvironment } from '../../environment'
 import { RuntimeAdapter } from '../types'
 import { IRunOptionsRuntime } from '../../api'
+import { FormatOptions } from '../../formatter'
 import {
   FinalizeCommand,
   InitializeCommand,
@@ -42,10 +43,15 @@ export class ChildProcessAdapter implements RuntimeAdapter {
   private readonly workers: Record<string, ManagedWorker> = {}
 
   constructor(
+    private readonly testRunStartedId: string,
     private readonly environment: IRunEnvironment,
     private readonly logger: ILogger,
     private readonly eventBroadcaster: EventEmitter,
     private readonly options: IRunOptionsRuntime,
+    private readonly snippetOptions: Pick<
+      FormatOptions,
+      'snippetInterface' | 'snippetSyntax'
+    >,
     private readonly supportCodeLibrary: SupportCodeLibrary
   ) {}
 
@@ -112,6 +118,7 @@ export class ChildProcessAdapter implements RuntimeAdapter {
     })
     worker.process.send({
       type: 'INITIALIZE',
+      testRunStartedId: this.testRunStartedId,
       supportCodeCoordinates: this.supportCodeLibrary.originalCoordinates,
       supportCodeIds: {
         stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map(
@@ -123,8 +130,13 @@ export class ChildProcessAdapter implements RuntimeAdapter {
           ),
         afterTestCaseHookDefinitionIds:
           this.supportCodeLibrary.afterTestCaseHookDefinitions.map((h) => h.id),
+        beforeTestRunHookDefinitionIds:
+          this.supportCodeLibrary.beforeTestRunHookDefinitions.map((h) => h.id),
+        afterTestRunHookDefinitionIds:
+          this.supportCodeLibrary.afterTestRunHookDefinitions.map((h) => h.id),
       },
       options: this.options,
+      snippetOptions: this.snippetOptions,
     } satisfies InitializeCommand)
   }
 

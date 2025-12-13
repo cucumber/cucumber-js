@@ -70,6 +70,10 @@ module.exports = [
     pickle: {
       id: '5',
       uri: 'features/a.feature',
+      location: {
+        line: 3,
+        column: 5,
+      },
       name: 'an example',
       language: 'en',
       steps: [

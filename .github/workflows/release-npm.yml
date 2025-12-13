@@ -1,0 +1,25 @@
+name: Release NPM
+
+on:
+  push:
+    branches: [release/*]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish-npm:
+    name: Publish NPM module
+    runs-on: ubuntu-latest
+    environment: Release
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24.x'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm install-ci-test
+      - run: npm publish

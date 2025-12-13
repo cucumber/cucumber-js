@@ -111,6 +111,7 @@ export const ignorableKeys = [
   'pickleStepId',
   'stepDefinitionIds',
   'testRunStartedId',
+  'testRunHookStartedId',
   'testCaseId',
   'testCaseStartedId',
   'testStepId',
@@ -120,4 +121,7 @@ export const ignorableKeys = [
   // errors
   'message',
   'stackTrace',
+  // snippets
+  'language',
+  'code',
 ]

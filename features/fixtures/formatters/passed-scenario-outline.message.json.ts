@@ -133,6 +133,10 @@ module.exports = [
     pickle: {
       id: '2fa3374f-76c1-4832-8504-71e3aa172ee4',
       uri: 'features/a.feature',
+      location: {
+        line: 6,
+        column: 5,
+      },
       name: 'a scenario',
       language: 'en',
       steps: [
@@ -157,6 +161,10 @@ module.exports = [
     pickle: {
       id: '69085b29-2f23-4cae-b8a4-e7908ce8de3d',
       uri: 'features/a.feature',
+      location: {
+        line: 7,
+        column: 5,
+      },
       name: 'a scenario',
       language: 'en',
       steps: [
@@ -181,6 +189,10 @@ module.exports = [
     pickle: {
       id: '064a7d6f-1b7b-430d-93a7-736bb1ab5f77',
       uri: 'features/a.feature',
+      location: {
+        line: 8,
+        column: 5,
+      },
       name: 'a scenario',
       language: 'en',
       steps: [

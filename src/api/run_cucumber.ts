@@ -153,6 +153,7 @@ Running from: ${__dirname}
     newId,
     supportCodeLibrary,
     options: options.runtime,
+    snippetOptions: options.formats.options,
   })
   const success = await runtime.run()
   await pluginManager.cleanup()
