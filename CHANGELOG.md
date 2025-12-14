@@ -9,6 +9,13 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ## [Unreleased]
 
+## [12.4.0] - 2025-12-13
+### Added
+- Allow loading config files in TypeScript format ([#2709](https://github.com/cucumber/cucumber-js/pull/2709))
+
+### Changed
+- Compress report content with gzip before publishing ([#2687](https://github.com/cucumber/cucumber-js/pull/2687))
+
 ## [12.3.0] - 2025-12-01
 ### Added
 - Add support for Node.js 25.x ([#2704](https://github.com/cucumber/cucumber-js/pull/2704))
@@ -1703,7 +1710,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.3.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.4.0...HEAD
+[12.4.0]: https://github.com/cucumber/cucumber-js/compare/v12.3.0...v12.4.0
 [12.3.0]: https://github.com/cucumber/cucumber-js/compare/v12.2.0...v12.3.0
 [12.2.0]: https://github.com/cucumber/cucumber-js/compare/v12.1.0...v12.2.0
 [12.1.0]: https://github.com/cucumber/cucumber-js/compare/v12.0.0...v12.1.0

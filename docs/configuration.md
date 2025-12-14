@@ -71,11 +71,18 @@ module.exports = {
 
 (If you're wondering why the configuration sits within a "default" property, that's to allow for [Profiles](./profiles.md).)
 
-### Type checking
+### TypeScript
 
-If you want to type check your configuration, we export two types that can help with that:
-- `IProfiles` represents the dictionary of profile names to configuration objects exported for CommonJS
-- `IConfiguration` represents a single configuration object exported with named exports for ESM (`Partial<IConfiguration>` will be more useful in practise)
+You can also write your configuration file in TypeScript, with a `.ts`, `.mts` or `.cts` extension. These files are loaded with [Node.js built-in TypeScript support](https://nodejs.org/api/typescript.html), which has several caveats and limitations, mostly that your `tsconfig.json` won't be honoured and that you need to be explicit about type imports. Here's an example:
+
+```typescript
+import type { IConfiguration } from '@cucumber/cucumber'
+
+export default {
+  parallel: 2,
+  format: ['html:cucumber-report.html']
+} satisfies Partial<IConfiguration>
+```
 
 ## Options
 
