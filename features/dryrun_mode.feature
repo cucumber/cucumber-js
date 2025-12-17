@@ -72,7 +72,7 @@ Feature: Dryrun mode
     When I run cucumber-js with `--dry-run`
     Then it passes
 
-  @spawn
+  @parallel @spawn
   Scenario: hooks should not execute in dry run, parallel runtime
     Given a file named "features/step_definitions/cucumber_steps.js" with:
     """

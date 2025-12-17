@@ -100,6 +100,7 @@ Feature: Retry flaky tests
     And scenario "Flaky" attempt 1 step "Given a flaky step" has status "passed"
     And it passes
 
+  @parallel
   Scenario: retrying a flaky test will eventually make it pass (parallel)
     Given a file named "features/a.feature" with:
       """
