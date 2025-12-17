@@ -9,7 +9,6 @@ export default {
     on('message', (envelope) => {
       query.update(envelope)
       if (envelope.testRunFinished) {
-        // @ts-expect-error local linking
         new SummaryPrinter(query, stream, write).printSummary()
       }
     })
