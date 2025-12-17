@@ -226,7 +226,8 @@
     "@cucumber/junit-xml-formatter": "0.9.0",
     "@cucumber/message-streams": "4.0.1",
     "@cucumber/messages": "31.0.0",
-    "@cucumber/pretty-formatter": "1.0.1",
+    "@cucumber/pretty-formatter": "2.4.1",
+    "@cucumber/query": "14.7.0",
     "@cucumber/tag-expressions": "8.1.0",
     "assertion-error-formatter": "^3.0.0",
     "capital-case": "^1.0.4",
@@ -260,7 +261,6 @@
   },
   "devDependencies": {
     "@cucumber/compatibility-kit": "^26.0.0",
-    "@cucumber/query": "14.7.0",
     "@eslint/compat": "^2.0.0",
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.29.0",
