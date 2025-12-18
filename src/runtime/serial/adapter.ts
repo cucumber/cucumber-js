@@ -33,14 +33,37 @@ export class InProcessAdapter implements RuntimeAdapter {
   async run(
     assembledTestCases: ReadonlyArray<AssembledTestCase>
   ): Promise<boolean> {
-    await this.worker.runBeforeAllHooks()
+    await this.runBeforeAllHooks()
+    await this.runTestCases(assembledTestCases)
+    await this.runAfterAllHooks()
+    return !this.failing
+  }
+
+  private async runBeforeAllHooks() {
+    const success = await this.worker.runBeforeAllHooks()
+    if (!success) {
+      this.failing = true
+    }
+  }
+
+  private async runTestCases(
+    assembledTestCases: ReadonlyArray<AssembledTestCase>
+  ) {
+    if (this.failing) {
+      return
+    }
     for (const item of assembledTestCases) {
       const success = await this.worker.runTestCase(item, this.failing)
       if (!success) {
         this.failing = true
       }
     }
-    await this.worker.runAfterAllHooks()
-    return !this.failing
+  }
+
+  private async runAfterAllHooks() {
+    const success = await this.worker.runAfterAllHooks()
+    if (!success) {
+      this.failing = true
+    }
   }
 }

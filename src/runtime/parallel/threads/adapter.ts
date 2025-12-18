@@ -152,6 +152,9 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
   private async runTestCases(
     assembledTestCases: ReadonlyArray<AssembledTestCase>
   ) {
+    if (this.failing) {
+      return
+    }
     this.todo.push(...assembledTestCases)
     this.allocateTestCases()
     for await (const started of setInterval(100, performance.now())) {
