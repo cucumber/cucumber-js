@@ -15,7 +15,10 @@ export class TestCaseQueue {
     this.items.push(...newItems)
   }
 
-  shift(runningPickles: Array<Pickle>, force = false): AssembledTestCase | undefined {
+  shift(
+    runningPickles: Array<Pickle>,
+    force = false
+  ): AssembledTestCase | undefined {
     for (const item of this.items) {
       if (force || this.canAssign(item.pickle, runningPickles)) {
         this.items.splice(this.items.indexOf(item), 1)

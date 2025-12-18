@@ -28,7 +28,10 @@ export type RunAfterAllHooksCommand = {
   type: 'AFTERALL_HOOKS'
 }
 
-export type WorkerCommand = RunBeforeAllHooksCommand | RunTestCaseCommand | RunAfterAllHooksCommand
+export type WorkerCommand =
+  | RunBeforeAllHooksCommand
+  | RunTestCaseCommand
+  | RunAfterAllHooksCommand
 
 export type ReadyEvent = {
   type: 'READY'

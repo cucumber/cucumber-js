@@ -40,10 +40,14 @@ export class Coordinator implements Runtime {
         this.sourcedPickles,
         this.supportCodeLibrary
       )
-      successByPhase.testCases = await this.adapter.runTestCases(assembledTestCases)
+      successByPhase.testCases =
+        await this.adapter.runTestCases(assembledTestCases)
     }
     successByPhase.afterAllHooks = await this.adapter.runAfterAllHooks()
-    const success = successByPhase.beforeAllHooks && successByPhase.testCases && successByPhase.afterAllHooks
+    const success =
+      successByPhase.beforeAllHooks &&
+      successByPhase.testCases &&
+      successByPhase.afterAllHooks
 
     await this.adapter.teardown()
 
