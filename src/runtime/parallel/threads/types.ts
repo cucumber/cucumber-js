@@ -14,13 +14,21 @@ export type WorkerData = {
   snippetOptions: Pick<FormatOptions, 'snippetInterface' | 'snippetSyntax'>
 }
 
+export type RunBeforeAllHooksCommand = {
+  type: 'BEFOREALL_HOOKS'
+}
+
 export type RunTestCaseCommand = {
   type: 'TEST_CASE'
   assembledTestCase: AssembledTestCase
   failing: boolean
 }
 
-export type WorkerCommand = RunTestCaseCommand
+export type RunAfterAllHooksCommand = {
+  type: 'AFTERALL_HOOKS'
+}
+
+export type WorkerCommand = RunBeforeAllHooksCommand | RunTestCaseCommand | RunAfterAllHooksCommand
 
 export type ReadyEvent = {
   type: 'READY'

@@ -126,11 +126,27 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
     assembledTestCases: ReadonlyArray<AssembledTestCase>
   ): Promise<boolean> {
     await this.setupWorkers()
-    // TODO run BeforeAll hooks
+    await this.runBeforeAllHooks()
     await this.runTestCases(assembledTestCases)
-    // TODO run AfterAll hooks
+    await this.runAfterAllHooks()
     await this.teardownWorkers()
     return !this.failing
+  }
+
+  private async runBeforeAllHooks() {
+    for (const worker of this.workers) {
+      this.issueCommandToWorker(worker, {
+        type: 'BEFOREALL_HOOKS',
+      })
+    }
+    for await (const started of setInterval(100, performance.now())) {
+      if (this.running.size === 0) {
+        this.logger.debug(
+          `Ran BeforeAll hooks in ${performance.now() - started}`
+        )
+        break
+      }
+    }
   }
 
   private async runTestCases(
@@ -141,6 +157,22 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
     for await (const started of setInterval(100, performance.now())) {
       if (this.todo.length === 0 && this.running.size === 0) {
         this.logger.debug(`Ran test cases in ${performance.now() - started}`)
+        break
+      }
+    }
+  }
+
+  private async runAfterAllHooks() {
+    for (const worker of this.workers) {
+      this.issueCommandToWorker(worker, {
+        type: 'AFTERALL_HOOKS',
+      })
+    }
+    for await (const started of setInterval(100, performance.now())) {
+      if (this.running.size === 0) {
+        this.logger.debug(
+          `Ran AfterAll hooks in ${performance.now() - started}`
+        )
         break
       }
     }

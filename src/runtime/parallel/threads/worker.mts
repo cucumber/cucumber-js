@@ -2,7 +2,7 @@ import { parentPort, workerData } from 'node:worker_threads'
 import { EventEmitter } from 'node:events'
 import { register } from 'node:module'
 import { pathToFileURL } from 'node:url'
-import { Envelope, IdGenerator } from '@cucumber/messages'
+import { Envelope, IdGenerator, TestStepResultStatus } from '@cucumber/messages'
 import { Worker } from '../../worker.js'
 import supportCodeLibraryBuilder from '../../../support_code_library_builder/index.js'
 import tryRequire from '../../../try_require.js'
@@ -60,15 +60,35 @@ const worker = new Worker(
 
 parentPort.on('message', (command: WorkerCommand) => {
   switch (command.type) {
+    case 'BEFOREALL_HOOKS':
+      worker.runBeforeAllHooks().then((results) => {
+        parentPort.postMessage({
+          type: 'FINISHED',
+          success: !results.some(
+            (result) => result.result.status === TestStepResultStatus.FAILED
+          ),
+        } satisfies WorkerEvent)
+      })
+      break
     case 'TEST_CASE':
       worker
         .runTestCase(command.assembledTestCase, command.failing)
         .then((success) => {
           parentPort.postMessage({
             type: 'FINISHED',
-            success
+            success,
           } satisfies WorkerEvent)
         })
+      break
+    case 'AFTERALL_HOOKS':
+      worker.runAfterAllHooks().then((results) => {
+        parentPort.postMessage({
+          type: 'FINISHED',
+          success: !results.some(
+            (result) => result.result.status === TestStepResultStatus.FAILED
+          ),
+        } satisfies WorkerEvent)
+      })
       break
   }
 })
