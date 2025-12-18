@@ -20,7 +20,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
   private failing: boolean = false
   private readonly todo: Array<AssembledTestCase> = []
   private readonly workers: Set<ManagedWorker> = new Set()
-  private readonly running: Map<ManagedWorker, AssembledTestCase> = new Map()
+  private readonly running: Map<ManagedWorker, WorkerCommand> = new Map()
 
   constructor(
     private readonly testRunStartedId: string,
@@ -75,18 +75,18 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
           snippetOptions: this.snippetOptions,
         } satisfies WorkerData,
       })
-      const managedWorker = {
+      const worker = {
         id,
         workerThread,
         ready: false,
       }
-      this.workers.add(managedWorker)
+      this.workers.add(worker)
       workerThread.on('message', (event: WorkerEvent) => {
-        this.handleEvent(managedWorker, event)
+        this.handleEventFromWorker(worker, event)
       })
     }
     for await (const started of setInterval(100, performance.now())) {
-      if ([...this.workers.values()].every((mw) => mw.ready)) {
+      if ([...this.workers].every((mw) => mw.ready)) {
         this.logger.debug(`Prepared workers in ${performance.now() - started}`)
         break
       }
@@ -94,21 +94,26 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
   }
 
   private async teardownWorkers() {
-    for (const managedWorker of this.workers.values()) {
-      await managedWorker.workerThread.terminate()
+    for (const worker of this.workers.values()) {
+      await worker.workerThread.terminate()
     }
   }
 
-  private handleEvent(managedWorker: ManagedWorker, event: WorkerEvent) {
+  private issueCommandToWorker(worker: ManagedWorker, command: WorkerCommand) {
+    this.running.set(worker, command)
+    worker.workerThread.postMessage(command)
+  }
+
+  private handleEventFromWorker(worker: ManagedWorker, event: WorkerEvent) {
     switch (event.type) {
       case 'READY':
-        managedWorker.ready = true
+        worker.ready = true
         break
       case 'ENVELOPE':
         this.eventBroadcaster.emit('envelope', event.envelope)
         break
       case 'FINISHED':
-        this.running.delete(managedWorker)
+        this.running.delete(worker)
         if (!event.success) {
           this.failing = true
         }
@@ -149,12 +154,11 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
       if (!this.running.has(managedWorker)) {
         const assembledTestCase = this.todo.shift()
         if (assembledTestCase) {
-          this.running.set(managedWorker, assembledTestCase)
-          managedWorker.workerThread.postMessage({
+          this.issueCommandToWorker(managedWorker, {
             type: 'TEST_CASE',
             assembledTestCase,
             failing: this.failing,
-          } satisfies WorkerCommand)
+          })
         }
       }
     }
