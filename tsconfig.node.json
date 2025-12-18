@@ -4,6 +4,6 @@
     "declaration": true,
     "outDir": "lib"
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.mts"],
   "exclude": ["**/*_spec.ts"]
 }
