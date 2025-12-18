@@ -10,6 +10,7 @@ import { IRunOptionsRuntime } from '../../api'
 import { FormatOptions } from '../../formatter'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { WorkerCommand, WorkerData, WorkerEvent } from './types'
+import { TestCaseQueue } from './queue'
 
 type ManagedWorker = {
   id: string
@@ -20,7 +21,7 @@ type ManagedWorker = {
 export class WorkerThreadsAdapter implements RuntimeAdapter {
   private failing = false
   private idleInterventions = 0
-  private readonly todo: Array<AssembledTestCase> = []
+  private readonly queue: TestCaseQueue
   private readonly workers: Set<ManagedWorker> = new Set()
   private readonly running: Map<ManagedWorker, WorkerCommand> = new Map()
 
@@ -35,7 +36,9 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
       'snippetInterface' | 'snippetSyntax'
     >,
     private readonly supportCodeLibrary: SupportCodeLibrary
-  ) {}
+  ) {
+    this.queue = new TestCaseQueue(this.supportCodeLibrary.parallelCanAssign)
+  }
 
   private get firstWorker(): ManagedWorker {
     return [...this.workers][0]
@@ -131,10 +134,10 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
 
   async runTestCases(assembledTestCases: ReadonlyArray<AssembledTestCase>) {
     this.failing = false
-    this.todo.push(...assembledTestCases)
+    this.queue.push(...assembledTestCases)
     this.allocateTestCases()
     for await (const started of setInterval(100, performance.now())) {
-      if (this.todo.length === 0 && this.running.size === 0) {
+      if (this.queue.size === 0 && this.running.size === 0) {
         this.logger.debug(`Ran test cases in ${performance.now() - started}`)
         break
       }
@@ -189,7 +192,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
   }
 
   private allocateTestCases() {
-    if (this.todo.length === 0) {
+    if (this.queue.size === 0) {
       return
     }
     for (const worker of this.workers) {
@@ -204,22 +207,13 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
   }
 
   private allocateTestCaseToWorker(worker: ManagedWorker, force = false) {
-    for (const assembledTestCase of this.todo) {
-      if (
-        force ||
-        this.supportCodeLibrary.parallelCanAssign(
-          assembledTestCase.pickle,
-          this.runningPickles
-        )
-      ) {
-        this.issueCommandToWorker(worker, {
-          type: 'TEST_CASE',
-          assembledTestCase,
-          failing: this.failing,
-        })
-        this.todo.splice(this.todo.indexOf(assembledTestCase), 1)
-        break
-      }
+    const assembledTestCase = this.queue.shift(this.runningPickles, force)
+    if (assembledTestCase) {
+      this.issueCommandToWorker(worker, {
+        type: 'TEST_CASE',
+        assembledTestCase,
+        failing: this.failing,
+      })
     }
   }
 }
