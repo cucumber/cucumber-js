@@ -16,5 +16,11 @@ export interface Runtime {
 }
 
 export interface RuntimeAdapter {
-  run(assembledTestCases: ReadonlyArray<AssembledTestCase>): Promise<boolean>
+  setup(): Promise<void>
+  runBeforeAllHooks(): Promise<boolean>
+  runTestCases(
+    assembledTestCases: ReadonlyArray<AssembledTestCase>
+  ): Promise<boolean>
+  runAfterAllHooks(): Promise<boolean>
+  teardown(): Promise<void>
 }

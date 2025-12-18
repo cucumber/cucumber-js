@@ -9,7 +9,6 @@ import StepDefinitionSnippetBuilder from '../../formatter/step_definition_snippe
 
 export class InProcessAdapter implements RuntimeAdapter {
   private readonly worker: Worker
-  private failing: boolean = false
 
   constructor(
     testRunStartedId: string,
@@ -30,40 +29,29 @@ export class InProcessAdapter implements RuntimeAdapter {
     )
   }
 
-  async run(
-    assembledTestCases: ReadonlyArray<AssembledTestCase>
-  ): Promise<boolean> {
-    await this.runBeforeAllHooks()
-    await this.runTestCases(assembledTestCases)
-    await this.runAfterAllHooks()
-    return !this.failing
+  async setup() {
+    // no-op for serial runtime
   }
 
-  private async runBeforeAllHooks() {
-    const success = await this.worker.runBeforeAllHooks()
-    if (!success) {
-      this.failing = true
-    }
+  async teardown() {
+    // no-op for serial runtime
   }
 
-  private async runTestCases(
-    assembledTestCases: ReadonlyArray<AssembledTestCase>
-  ) {
-    if (this.failing) {
-      return
-    }
+  async runBeforeAllHooks() {
+    return await this.worker.runBeforeAllHooks()
+  }
+
+  async runTestCases(assembledTestCases: ReadonlyArray<AssembledTestCase>) {
+    let failing = false
     for (const item of assembledTestCases) {
-      const success = await this.worker.runTestCase(item, this.failing)
-      if (!success) {
-        this.failing = true
+      if (!(await this.worker.runTestCase(item, failing))) {
+        failing = true
       }
     }
+    return !failing
   }
 
-  private async runAfterAllHooks() {
-    const success = await this.worker.runAfterAllHooks()
-    if (!success) {
-      this.failing = true
-    }
+  async runAfterAllHooks() {
+    return await this.worker.runAfterAllHooks()
   }
 }

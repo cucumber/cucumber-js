@@ -9,7 +9,7 @@ import { FormatOptions } from '../formatter'
 import { Runtime } from './types'
 import { InProcessAdapter } from './serial/adapter'
 import { Coordinator } from './coordinator'
-import { WorkerThreadsAdapter } from './parallel/threads/adapter'
+import { WorkerThreadsAdapter } from './parallel/adapter'
 
 export async function makeRuntime({
   environment,
