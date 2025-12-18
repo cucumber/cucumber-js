@@ -63,9 +63,10 @@ parentPort.on('message', (command: WorkerCommand) => {
     case 'TEST_CASE':
       worker
         .runTestCase(command.assembledTestCase, command.failing)
-        .then(() => {
+        .then((success) => {
           parentPort.postMessage({
             type: 'FINISHED',
+            success
           } satisfies WorkerEvent)
         })
       break

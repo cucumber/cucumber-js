@@ -33,6 +33,7 @@ export type MessageEvent = {
 
 export type FinishedEvent = {
   type: 'FINISHED'
+  success: boolean
 }
 
 export type WorkerEvent = ReadyEvent | MessageEvent | FinishedEvent

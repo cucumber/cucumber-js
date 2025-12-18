@@ -109,6 +109,9 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
         break
       case 'FINISHED':
         this.running.delete(managedWorker)
+        if (!event.success) {
+          this.failing = true
+        }
         this.allocateTestCases()
         break
     }
@@ -122,7 +125,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
     await this.runTestCases(assembledTestCases)
     // TODO run AfterAll hooks
     await this.teardownWorkers()
-    return true
+    return !this.failing
   }
 
   private async runTestCases(
