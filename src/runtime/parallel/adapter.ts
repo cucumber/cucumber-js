@@ -2,6 +2,7 @@ import { EventEmitter } from 'node:events'
 import { Worker } from 'node:worker_threads'
 import path from 'node:path'
 import { setInterval } from 'node:timers/promises'
+import { Pickle } from '@cucumber/messages'
 import { RuntimeAdapter } from '../types'
 import { AssembledTestCase } from '../../assemble'
 import { ILogger, IRunEnvironment } from '../../environment'
@@ -17,7 +18,8 @@ type ManagedWorker = {
 }
 
 export class WorkerThreadsAdapter implements RuntimeAdapter {
-  private failing: boolean = false
+  private failing = false
+  private idleInterventions = 0
   private readonly todo: Array<AssembledTestCase> = []
   private readonly workers: Set<ManagedWorker> = new Set()
   private readonly running: Map<ManagedWorker, WorkerCommand> = new Map()
@@ -34,6 +36,16 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
     >,
     private readonly supportCodeLibrary: SupportCodeLibrary
   ) {}
+
+  private get firstWorker(): ManagedWorker {
+    return [...this.workers][0]
+  }
+
+  private get runningPickles(): Array<Pickle> {
+    return [...this.running.values()]
+      .filter((command) => command.type === 'TEST_CASE')
+      .map((command) => command.assembledTestCase.pickle)
+  }
 
   async setup() {
     const total = this.options.parallel
@@ -117,9 +129,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
     return !this.failing
   }
 
-  async runTestCases(
-    assembledTestCases: ReadonlyArray<AssembledTestCase>
-  ) {
+  async runTestCases(assembledTestCases: ReadonlyArray<AssembledTestCase>) {
     this.failing = false
     this.todo.push(...assembledTestCases)
     this.allocateTestCases()
@@ -128,6 +138,11 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
         this.logger.debug(`Ran test cases in ${performance.now() - started}`)
         break
       }
+    }
+    if (this.idleInterventions > 0) {
+      this.logger.warn(
+        `WARNING: All workers went idle ${this.idleInterventions} time(s). Consider revising handler passed to setParallelCanAssign.`
+      )
     }
     return !this.failing
   }
@@ -177,16 +192,33 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
     if (this.todo.length === 0) {
       return
     }
-    for (const managedWorker of this.workers) {
-      if (!this.running.has(managedWorker)) {
-        const assembledTestCase = this.todo.shift()
-        if (assembledTestCase) {
-          this.issueCommandToWorker(managedWorker, {
-            type: 'TEST_CASE',
-            assembledTestCase,
-            failing: this.failing,
-          })
-        }
+    for (const worker of this.workers) {
+      if (!this.running.has(worker)) {
+        this.allocateTestCaseToWorker(worker)
+      }
+    }
+    if (this.running.size === 0) {
+      this.idleInterventions++
+      this.allocateTestCaseToWorker(this.firstWorker, true)
+    }
+  }
+
+  private allocateTestCaseToWorker(worker: ManagedWorker, force = false) {
+    for (const assembledTestCase of this.todo) {
+      if (
+        force ||
+        this.supportCodeLibrary.parallelCanAssign(
+          assembledTestCase.pickle,
+          this.runningPickles
+        )
+      ) {
+        this.issueCommandToWorker(worker, {
+          type: 'TEST_CASE',
+          assembledTestCase,
+          failing: this.failing,
+        })
+        this.todo.splice(this.todo.indexOf(assembledTestCase), 1)
+        break
       }
     }
   }
