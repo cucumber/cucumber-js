@@ -10,7 +10,6 @@ import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import UserCodeRunner from '../user_code_runner'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
-import { formatLocation } from '../formatter/helpers'
 import StepDefinitionSnippetBuilder from '../formatter/step_definition_snippet_builder'
 import { retriesForPickle, shouldCauseFailure } from './helpers'
 import TestCaseRunner from './test_case_runner'
@@ -18,11 +17,6 @@ import { runInTestRunScope } from './scope'
 import { formatError } from './format_error'
 import { create, timestamp } from './stopwatch'
 import { RuntimeOptions } from './types'
-
-export interface RunHookResult {
-  result: TestStepResult
-  error?: any
-}
 
 export class Worker {
   constructor(
@@ -37,7 +31,7 @@ export class Worker {
 
   private async runTestRunHook(
     hookDefinition: TestRunHookDefinition
-  ): Promise<RunHookResult> {
+  ): Promise<boolean> {
     const testRunHookStartedId = this.newId()
     this.eventBroadcaster.emit('envelope', {
       testRunHookStarted: {
@@ -50,7 +44,6 @@ export class Worker {
     } satisfies Envelope)
 
     let result: TestStepResult
-    let error: any
     if (this.options.dryRun) {
       result = {
         duration: {
@@ -62,7 +55,7 @@ export class Worker {
     } else {
       const stopwatch = create().start()
       const context = { parameters: this.options.worldParameters }
-      const { error: rawError } = await runInTestRunScope({ context }, () =>
+      const { error } = await runInTestRunScope({ context }, () =>
         UserCodeRunner.run({
           argsArray: [],
           fn: hookDefinition.code,
@@ -75,17 +68,12 @@ export class Worker {
       )
       const duration = stopwatch.stop().duration()
 
-      if (doesHaveValue(rawError)) {
+      if (doesHaveValue(error)) {
         result = {
           duration,
           status: TestStepResultStatus.FAILED,
-          ...formatError(rawError, this.options.filterStacktraces),
+          ...formatError(error, this.options.filterStacktraces),
         }
-        error = this.wrapTestRunHookError(
-          'a BeforeAll',
-          formatLocation(hookDefinition),
-          rawError
-        )
       } else {
         result = {
           duration,
@@ -102,39 +90,18 @@ export class Worker {
       },
     } satisfies Envelope)
 
-    return {
-      result,
-      error,
-    }
+    return result.status !== TestStepResultStatus.FAILED
   }
 
-  private wrapTestRunHookError(
-    name: string,
-    location: string,
-    error: any
-  ): any | undefined {
-    if (!doesHaveValue(error)) {
-      return undefined
-    }
-    let message = `${name} hook errored`
-    if (this.workerId) {
-      message += ` on worker ${this.workerId}`
-    }
-    message += `, process exiting: ${location}`
-    return new Error(message, { cause: error })
-  }
-
-  async runBeforeAllHooks(): Promise<RunHookResult[]> {
-    const results: RunHookResult[] = []
+  async runBeforeAllHooks(): Promise<boolean> {
+    let success = true
     for (const hookDefinition of this.supportCodeLibrary
       .beforeTestRunHookDefinitions) {
-      const result = await this.runTestRunHook(hookDefinition)
-      results.push(result)
-      if (doesHaveValue(result.error)) {
-        throw result.error
+      if (!(await this.runTestRunHook(hookDefinition))) {
+        success = false
       }
     }
-    return results
+    return success
   }
 
   async runTestCase(
@@ -161,18 +128,16 @@ export class Worker {
     return !shouldCauseFailure(status, this.options)
   }
 
-  async runAfterAllHooks(): Promise<RunHookResult[]> {
-    const results: RunHookResult[] = []
+  async runAfterAllHooks(): Promise<boolean> {
+    let success = true
     const reversed = [
       ...this.supportCodeLibrary.afterTestRunHookDefinitions,
     ].reverse()
     for (const hookDefinition of reversed) {
-      const result = await this.runTestRunHook(hookDefinition)
-      results.push(result)
-      if (doesHaveValue(result.error)) {
-        throw result.error
+      if (!(await this.runTestRunHook(hookDefinition))) {
+        success = false
       }
     }
-    return results
+    return success
   }
 }
