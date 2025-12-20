@@ -265,7 +265,7 @@
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.29.0",
     "@microsoft/api-extractor": "7.55.2",
-    "@sinonjs/fake-timers": "15.0.0",
+    "@sinonjs/fake-timers": "15.1.0",
     "@types/chai": "4.3.20",
     "@types/debug": "4.1.12",
     "@types/dirty-chai": "2.0.5",
