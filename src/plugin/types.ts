@@ -67,6 +67,25 @@ export interface InternalPlugin<OptionsType = any> {
   coordinator: CoordinatorPluginFunction<OptionsType>
 }
 
+/**
+ * A user-authored plugin that extends Cucumber's behavior.
+ *
+ * Uses the same events and mechanisms as internal plugins, but receives its `options` from the `pluginOptions`
+ * configuration provided by the user.
+ */
+export interface CustomPlugin<OptionsType = any> {
+  type: 'plugin'
+  coordinator: CoordinatorPluginFunction<OptionsType>
+  optionsKey?: string
+}
+
+/**
+ * A plugin that extends Cucumber's behavior, either internal or user-authored.
+ */
+export type BehaviourPlugin<OptionsType = any> =
+  | InternalPlugin<OptionsType>
+  | CustomPlugin<OptionsType>
+
 export interface FormatterPluginContext<OptionsType> {
   on: (key: 'message', handler: (value: Envelope) => void) => void
   options: OptionsType

@@ -1,7 +1,7 @@
 import { UsableEnvironment } from '../environment'
 import {
   CoordinatorPluginEventHandler,
-  InternalPlugin,
+  BehaviourPlugin,
   PluginCleanup,
   CoordinatorPluginEventValues,
   CoordinatorPluginEventKey,
@@ -56,13 +56,16 @@ export class PluginManager {
 
   async initCoordinator<OptionsType>(
     operation: Operation,
-    plugin: InternalPlugin<OptionsType>,
+    plugin: BehaviourPlugin<OptionsType>,
     options: OptionsType
   ) {
     const cleanupFn = await plugin.coordinator({
       operation,
       on: this.register.bind(this),
-      options,
+      options:
+        'optionsKey' in plugin && plugin.optionsKey
+          ? ((options as any)[plugin.optionsKey] ?? ({} as OptionsType))
+          : options,
       logger: this.environment.logger,
       environment: {
         cwd: this.environment.cwd,
