@@ -38,6 +38,10 @@ export async function convertConfiguration(
       worldParameters: flatConfiguration.worldParameters,
     },
     formats: convertFormats(logger, flatConfiguration, env),
+    plugins: {
+      specifiers: flatConfiguration.plugins,
+      options: flatConfiguration.pluginOptions,
+    },
   }
 }
 
