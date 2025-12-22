@@ -10,6 +10,19 @@
 export { IConfiguration } from '../configuration'
 export { IRunEnvironment, ILogger } from '../environment'
 export { IPickleOrder } from '../filter'
+export {
+  CoordinatorEventKey,
+  CoordinatorEventValues,
+  CoordinatorEventHandler,
+  CoordinatorTransformKey,
+  CoordinatorTransformValues,
+  CoordinatorTransformer,
+  CoordinatorContext,
+  CoordinatorEnvironment,
+  Plugin,
+  PluginCleanup,
+  PluginOperation,
+} from '../plugin'
 export { IPublishConfig } from '../publish'
 export * from './load_configuration'
 export * from './load_sources'

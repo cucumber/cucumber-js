@@ -8,12 +8,11 @@ import { createReadStream, createWriteStream } from 'node:fs'
 import { createGzip } from 'node:zlib'
 import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
-import { InternalPlugin } from '../plugin'
-import { IPublishConfig } from './types'
+import { Plugin } from '../plugin'
 
 const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://messages.cucumber.io/api/reports'
 
-export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
+export const publishPlugin: Plugin = {
   type: 'plugin',
   coordinator: async ({ on, logger, options, environment }) => {
     if (!options) {

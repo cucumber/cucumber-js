@@ -1,92 +1,74 @@
+import { Writable } from 'node:stream'
 import { Envelope } from '@cucumber/messages'
-import { ArrayValues, Promisable } from 'type-fest'
-import { IRunEnvironment } from '../environment'
 import { ILogger } from '../environment'
 import { IFilterablePickle } from '../filter'
 import { IResolvedPaths } from '../paths'
-import { coordinatorTransformKeys, coordinatorVoidKeys } from './events'
 
-export type Operation = 'loadSources' | 'loadSupport' | 'runCucumber'
+export type PluginOperation = 'loadSources' | 'loadSupport' | 'runCucumber'
 
-export type CoordinatorPluginEnvironment = Required<
-  Pick<IRunEnvironment, 'cwd' | 'stderr' | 'env'>
->
+export type CoordinatorEnvironment = {
+  /**
+   * Working directory for the project
+   */
+  cwd: string
+  /**
+   * Writable stream where the test run's warning/error output is written
+   * and plugins can write to directly if required
+   */
+  stderr: Writable
+  /**
+   * Environment variables
+   */
+  env: Record<string, string | undefined>
+}
 
-export type CoordinatorPluginVoidEventKey = ArrayValues<
-  typeof coordinatorVoidKeys
->
-export type CoordinatorPluginTransformEventKey = ArrayValues<
-  typeof coordinatorTransformKeys
->
-export type CoordinatorPluginEventKey =
-  | CoordinatorPluginVoidEventKey
-  | CoordinatorPluginTransformEventKey
+export type CoordinatorEventKey = 'message' | 'paths:resolve'
+export type CoordinatorTransformKey = 'pickles:filter' | 'pickles:order'
 
-export type CoordinatorPluginEventValues = {
-  // void
+export type CoordinatorEventValues = {
   message: Readonly<Envelope>
   'paths:resolve': Readonly<IResolvedPaths>
-  // transform
+}
+
+export type CoordinatorTransformValues = {
   'pickles:filter': Readonly<Array<IFilterablePickle>>
   'pickles:order': Readonly<Array<IFilterablePickle>>
 }
 
-export type CoordinatorPluginEventHandler<K extends CoordinatorPluginEventKey> =
-  (
-    value: CoordinatorPluginEventValues[K]
-  ) => K extends CoordinatorPluginTransformEventKey
-    ? Promisable<CoordinatorPluginEventValues[K]>
-    : void
+export type CoordinatorEventHandler<K extends CoordinatorEventKey> = (
+  value: CoordinatorEventValues[K]
+) => void
 
-export interface CoordinatorPluginContext<OptionsType> {
-  operation: Operation
-  on: <EventKey extends CoordinatorPluginEventKey>(
+export type CoordinatorTransformer<K extends CoordinatorTransformKey> = (
+  value: CoordinatorTransformValues[K]
+) => PromiseLike<CoordinatorTransformValues[K]> | CoordinatorTransformValues[K]
+
+export type CoordinatorContext<OptionsType> = {
+  operation: PluginOperation
+  on: <EventKey extends CoordinatorEventKey>(
     event: EventKey,
-    handler: CoordinatorPluginEventHandler<EventKey>
+    handler: CoordinatorEventHandler<EventKey>
+  ) => void
+  transform: <EventKey extends CoordinatorTransformKey>(
+    event: EventKey,
+    handler: CoordinatorTransformer<EventKey>
   ) => void
   options: OptionsType
   logger: ILogger
-  environment: CoordinatorPluginEnvironment
+  environment: CoordinatorEnvironment
 }
 
-export type CoordinatorPluginFunction<OptionsType> = (
-  context: CoordinatorPluginContext<OptionsType>
-) => Promisable<PluginCleanup | void>
+export type PluginCleanup = () => PromiseLike<void> | void
 
-export type PluginCleanup = () => Promisable<void>
-
-/**
- * A plugin to implement Cucumber built-in functionality.
- *
- * Uses the same events and mechanisms as user-authored plugins, but is free to require configuration and context from
- * inside of Cucumber as its `options`, whereas user-authored plugins will be limited to `pluginOptions` from the
- * project configuration.
- */
-export interface InternalPlugin<OptionsType = any> {
+export type Plugin<OptionsType = any> = {
   type: 'plugin'
-  coordinator: CoordinatorPluginFunction<OptionsType>
-}
-
-/**
- * A user-authored plugin that extends Cucumber's behavior.
- *
- * Uses the same events and mechanisms as internal plugins, but receives its `options` from the `pluginOptions`
- * configuration provided by the user.
- */
-export interface CustomPlugin<OptionsType = any> {
-  type: 'plugin'
-  coordinator: CoordinatorPluginFunction<OptionsType>
+  coordinator: (
+    context: CoordinatorContext<OptionsType>
+  ) => PromiseLike<PluginCleanup | void> | PluginCleanup | void
   optionsKey?: string
 }
 
-/**
- * A plugin that extends Cucumber's behavior, either internal or user-authored.
- */
-export type BehaviourPlugin<OptionsType = any> =
-  | InternalPlugin<OptionsType>
-  | CustomPlugin<OptionsType>
-
-export interface FormatterPluginContext<OptionsType> {
+export type FormatterPluginContext<OptionsType> = {
   on: (key: 'message', handler: (value: Envelope) => void) => void
   options: OptionsType
   logger: ILogger
@@ -97,9 +79,9 @@ export interface FormatterPluginContext<OptionsType> {
 
 export type FormatterPluginFunction<OptionsType> = (
   context: FormatterPluginContext<OptionsType>
-) => Promisable<PluginCleanup | void>
+) => PromiseLike<PluginCleanup | void> | PluginCleanup | void
 
-export interface FormatterPlugin<OptionsType = any> {
+export type FormatterPlugin<OptionsType = any> = {
   type: 'formatter'
   formatter: FormatterPluginFunction<OptionsType>
   optionsKey?: string

@@ -1,23 +1,31 @@
 import { UsableEnvironment } from '../environment'
 import {
-  CoordinatorPluginEventHandler,
-  BehaviourPlugin,
+  CoordinatorEventHandler,
+  Plugin,
   PluginCleanup,
-  CoordinatorPluginEventValues,
-  CoordinatorPluginEventKey,
-  CoordinatorPluginTransformEventKey,
-  Operation,
+  CoordinatorTransformKey,
+  PluginOperation,
   FormatterPlugin,
+  CoordinatorEventKey,
+  CoordinatorTransformer,
+  CoordinatorEventValues,
+  CoordinatorTransformValues,
 } from './types'
 
 type HandlerRegistry = {
-  [K in CoordinatorPluginEventKey]: Array<CoordinatorPluginEventHandler<K>>
+  [K in CoordinatorEventKey]: Array<CoordinatorEventHandler<K>>
+}
+
+type TransformerRegistry = {
+  [K in CoordinatorTransformKey]: Array<CoordinatorTransformer<K>>
 }
 
 export class PluginManager {
   private handlers: HandlerRegistry = {
     message: [],
     'paths:resolve': [],
+  }
+  private transformers: TransformerRegistry = {
     'pickles:filter': [],
     'pickles:order': [],
   }
@@ -25,11 +33,18 @@ export class PluginManager {
 
   constructor(private readonly environment: UsableEnvironment) {}
 
-  private async register<K extends CoordinatorPluginEventKey>(
+  private async registerHandler<K extends CoordinatorEventKey>(
     event: K,
-    handler: CoordinatorPluginEventHandler<K>
+    handler: CoordinatorEventHandler<K>
   ) {
     this.handlers[event]?.push(handler)
+  }
+
+  private async registerTransformer<K extends CoordinatorTransformKey>(
+    event: K,
+    handler: CoordinatorTransformer<K>
+  ) {
+    this.transformers[event]?.push(handler)
   }
 
   async initFormatter<OptionsType>(
@@ -40,7 +55,7 @@ export class PluginManager {
     directory?: string
   ) {
     const cleanupFn = await plugin.formatter({
-      on: (key, handler) => this.register(key, handler),
+      on: (key, handler) => this.registerHandler(key, handler),
       options: plugin.optionsKey
         ? ((options as any)[plugin.optionsKey] ?? ({} as OptionsType))
         : options,
@@ -55,13 +70,14 @@ export class PluginManager {
   }
 
   async initCoordinator<OptionsType>(
-    operation: Operation,
-    plugin: BehaviourPlugin<OptionsType>,
+    operation: PluginOperation,
+    plugin: Plugin<OptionsType>,
     options: OptionsType
   ) {
     const cleanupFn = await plugin.coordinator({
       operation,
-      on: this.register.bind(this),
+      on: this.registerHandler.bind(this),
+      transform: this.registerTransformer.bind(this),
       options:
         'optionsKey' in plugin && plugin.optionsKey
           ? ((options as any)[plugin.optionsKey] ?? ({} as OptionsType))
@@ -78,19 +94,19 @@ export class PluginManager {
     }
   }
 
-  emit<K extends CoordinatorPluginEventKey>(
+  emit<K extends CoordinatorEventKey>(
     event: K,
-    value: CoordinatorPluginEventValues[K]
+    value: CoordinatorEventValues[K]
   ): void {
     this.handlers[event].forEach((handler) => handler(value))
   }
 
-  async transform<K extends CoordinatorPluginTransformEventKey>(
+  async transform<K extends CoordinatorTransformKey>(
     event: K,
-    value: CoordinatorPluginEventValues[K]
-  ): Promise<CoordinatorPluginEventValues[K]> {
+    value: CoordinatorTransformValues[K]
+  ): Promise<CoordinatorTransformValues[K]> {
     let transformed = value
-    for (const handler of this.handlers[event]) {
+    for (const handler of this.transformers[event]) {
       const returned = await handler(transformed)
       if (typeof returned !== 'undefined') {
         transformed = returned

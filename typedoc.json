@@ -1,10 +1,14 @@
 {
   "entryPoints": ["src/index.ts", "src/api/index.ts"],
   "favicon": "./docs/images/logo.svg",
+  "groupReferencesByType": true,
   "navigationLinks": {
     "GitHub": "https://github.com/cucumber/cucumber-js"
   },
   "out": "./_site",
   "readme": "none",
+  "sort": [
+    "alphabetical"
+  ],
   "tsconfig": "tsconfig.node.json"
 }
