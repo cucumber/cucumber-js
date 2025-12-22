@@ -8,7 +8,7 @@
  */
 
 export { IConfiguration } from '../configuration'
-export { IRunEnvironment } from '../environment'
+export { IRunEnvironment, ILogger } from '../environment'
 export { IPickleOrder } from '../filter'
 export { IPublishConfig } from '../publish'
 export * from './load_configuration'

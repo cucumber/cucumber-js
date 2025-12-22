@@ -28,7 +28,7 @@ Feature: Plugins
         coordinator({ on, logger }) {
           on('message', (message) => {
             if (message.testRunFinished) {
-              logger.error('Plugin tracked end of test run')
+              logger.info('Plugin tracked end of test run')
             }
           })
         }
