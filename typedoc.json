@@ -7,8 +7,6 @@
   },
   "out": "./_site",
   "readme": "none",
-  "sort": [
-    "alphabetical"
-  ],
+  "sort": ["alphabetical"],
   "tsconfig": "tsconfig.node.json"
 }

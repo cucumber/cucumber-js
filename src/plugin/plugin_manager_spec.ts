@@ -128,9 +128,9 @@ describe('PluginManager', () => {
         'runCucumber',
         {
           type: 'plugin',
-          coordinator: ({ on }) => {
+          coordinator: ({ transform }) => {
             // removes last item
-            on('pickles:filter', async (pickles) =>
+            transform('pickles:filter', async (pickles) =>
               pickles.slice(0, pickles.length - 1)
             )
           },
@@ -141,9 +141,9 @@ describe('PluginManager', () => {
         'runCucumber',
         {
           type: 'plugin',
-          coordinator: ({ on }) => {
+          coordinator: ({ transform }) => {
             // removes pickle 3 if present
-            on('pickles:filter', (pickles) =>
+            transform('pickles:filter', (pickles) =>
               pickles.filter(({ pickle }) => pickle.id !== 'pickle-3')
             )
           },
@@ -165,8 +165,8 @@ describe('PluginManager', () => {
         {
           type: 'plugin',
           // bail, nothing to be done
-          coordinator: ({ on }) =>
-            on('pickles:filter', (): undefined => undefined),
+          coordinator: ({ transform }) =>
+            transform('pickles:filter', (): undefined => undefined),
         },
         {}
       )
