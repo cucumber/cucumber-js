@@ -91,15 +91,16 @@ export async function initializeForRunCucumber(
     configuration.sources
   )
 
-  // Load and initialize custom plugins
-  for (const specifier of configuration.plugins.specifiers) {
-    const plugin = await loadPlugin(specifier, environment.cwd)
-    await pluginManager.initCoordinator(
-      'runCucumber',
-      plugin,
-      configuration.plugins.options,
-      specifier
-    )
+  if (configuration.plugins) {
+    for (const specifier of configuration.plugins.specifiers) {
+      const plugin = await loadPlugin(specifier, environment.cwd)
+      await pluginManager.initCoordinator(
+        'runCucumber',
+        plugin,
+        configuration.plugins.options,
+        specifier
+      )
+    }
   }
 
   return pluginManager

@@ -75,10 +75,6 @@ describe('Cucumber Compatibility Kit', () => {
           options: {},
           publish: false,
         },
-        plugins: {
-          specifiers: [],
-          options: {},
-        },
       }
       await runCucumber(
         runConfiguration,

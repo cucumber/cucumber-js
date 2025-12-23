@@ -167,7 +167,7 @@ export interface IRunConfiguration {
     // (undocumented)
     formats: IRunOptionsFormats;
     // (undocumented)
-    plugins: IRunOptionsPlugins;
+    plugins?: IRunOptionsPlugins;
     // (undocumented)
     runtime: IRunOptionsRuntime;
     // (undocumented)
@@ -190,7 +190,7 @@ export interface IRunOptions {
     // (undocumented)
     formats: IRunOptionsFormats;
     // (undocumented)
-    plugins: IRunOptionsPlugins;
+    plugins?: IRunOptionsPlugins;
     // (undocumented)
     runtime: IRunOptionsRuntime;
     // (undocumented)

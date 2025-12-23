@@ -283,7 +283,7 @@ export interface IRunConfiguration {
   support: Partial<ISupportCodeCoordinates>
   runtime: IRunOptionsRuntime
   formats: IRunOptionsFormats
-  plugins: IRunOptionsPlugins
+  plugins?: IRunOptionsPlugins
 }
 
 /**
@@ -324,7 +324,7 @@ export interface IRunOptions {
   support: ISupportCodeCoordinatesOrLibrary
   runtime: IRunOptionsRuntime
   formats: IRunOptionsFormats
-  plugins: IRunOptionsPlugins
+  plugins?: IRunOptionsPlugins
 }
 
 /**
