@@ -8,10 +8,10 @@ Cucumber's functionality can be extended with plugins.
 
 You can specify one or more plugins via the `plugin` configuration option:
 
-- In a configuration file `{ plugin: ['@some-org/some-plugin', '@some-org/other-plugin'] }`
-- On the CLI `cucumber-js --plugin @some-org/some-plugin --plugin @some-org/other-plugin"`
+- In a configuration file `{ plugin: ['@my-org/some-plugin', '@my-org/other-plugin'] }`
+- On the CLI `cucumber-js --plugin @my-org/some-plugin --plugin @my-org/other-plugin"`
 
-The above examples make sense if you're using a plugin installed from a package registry like npm. If you have a custom plugin (see below) local to your project, the specifier might be something like `./my-plugin.js`. 
+The above examples make sense if you're using a plugin installed from a package registry like npm. If you have a custom plugin (see below) that's local to your project, the specifier might be something like `./my-plugin.js`. 
 
 You can also specify options as JSON, if a plugin needs them:
 
@@ -45,6 +45,8 @@ export default {
   }
 }
 ```
+
+(That example is an ES Module, but CommonJS works just as well.)
 
 ### Lifecycle
 
@@ -83,7 +85,7 @@ A plugin function accepts a single argument which provides the context for your 
 
 You can register passive event handlers for these things that happen in Cucumber:
 
-- `message` - Cucumber emits a message for all significant events over the course of a test run. These are most commonly consumed by [Formatters](./formatters.md), but have other uses too.
+- `message` - emitted for each [Cucumber Message](https://github.com/cucumber/messages) during the process. These are most commonly consumed by [Formatters](./formatters.md), but have other uses too.
 - `paths:resolve` - emitted when Cucumber has resolved the paths on the file system from which it will load feature files and support code.
 
 Here's an example emitting a log when the test run finishes:
@@ -123,20 +125,54 @@ export default {
     logger
   }) => {
     transform('pickles:filter', pickles => {
-      return pickles.filter(({piockle}) => !pickle.name.includes('widgets'))
+      return pickles.filter(({pickle}) => !pickle.name.includes('widgets'))
     })
   }
 }
 ```
 
+### Options
+
+Users provide a single `pluginOptions` object to Cucumber via their configuration. If you want to target a specific key within this object, you can do that with the `optionsKey` prop on your plugin object, and Cucumber will only give you that block:
+
+```js
+export default {
+  type: 'plugin',
+  coordinator: ({ options, on, logger }) => {
+    on('message', (message) => {
+      if (message.testRunFinished) {
+        logger.info(options.bar) // yields `2` if the options are `{foo: {bar: 2}}`
+      }
+    })
+  },
+  optionsKey: 'foo'
+}
+```
+
 ### Logging
 
-The `logger` in your context object can be used to direct user-facing messages to `stderr`. Please use it sparingly - users do not appreciate a lot of noise in their terminal. If it's something that would be used for diagnostics or troubleshooting, consider using the `debug` method, so it's [opt-in for users](./debugging.md).
+The `logger` in your context object can be used to direct user-facing messages to `stderr`. Use it sparingly - users don't enjoy a lot of noise in their terminal. If it's for diagnostics or troubleshooting, consider using the `debug` method, so it's [opt-in for users](./debugging.md).
 
 ### Error handling
 
 If your plugin throws an error during its initialisation, cleanup, event handlers or transforms, Cucumber will wrap it with some contextual metadata but otherwise allow it to bubble and cause the test run to fail and exit with a non-zero code. If something your plugin does could yield an error that doesn't constitute a total failure, you should catch and handle it inside of your plugin.
 
+### TypeScript
 
+If you're using TypeScript, you can get full type checking and completion, including for event handlers, transforms and options, using the `Plugin` type:
 
+```ts
+import type { Plugin } from '@cucumber/cucumber/api'
 
+type MyPluginOptions = {
+  foo: {
+    bar: number
+  }
+}
+
+export default myPlugin: Plugin<MyOptions> = {
+  type: 'plugin',
+  coordinator: (context) => {...},
+  optionsKey: 'foo'
+}
+```
