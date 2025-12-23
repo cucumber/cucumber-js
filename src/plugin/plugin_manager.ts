@@ -1,15 +1,15 @@
 import { UsableEnvironment } from '../environment'
 import {
   CoordinatorEventHandler,
+  CoordinatorEventKey,
+  CoordinatorEventValues,
+  CoordinatorTransformer,
+  CoordinatorTransformKey,
+  CoordinatorTransformValues,
+  FormatterPlugin,
   Plugin,
   PluginCleanup,
-  CoordinatorTransformKey,
   PluginOperation,
-  FormatterPlugin,
-  CoordinatorEventKey,
-  CoordinatorTransformer,
-  CoordinatorEventValues,
-  CoordinatorTransformValues,
 } from './types'
 
 type SourcedEventHandler<K extends CoordinatorEventKey> = {
@@ -23,7 +23,7 @@ type SourcedTransformer<K extends CoordinatorTransformKey> = {
 }
 
 type SourcedCleanup = {
-  cleanup: PluginCleanup
+  cleanupFn: PluginCleanup
   specifier?: string
 }
 
@@ -36,11 +36,11 @@ type TransformerRegistry = {
 }
 
 export class PluginManager {
-  private handlers: HandlerRegistry = {
+  private readonly handlers: HandlerRegistry = {
     message: [],
     'paths:resolve': [],
   }
-  private transformers: TransformerRegistry = {
+  private readonly transformers: TransformerRegistry = {
     'pickles:filter': [],
     'pickles:order': [],
   }
@@ -98,7 +98,7 @@ export class PluginManager {
     })
     if (typeof cleanupFn === 'function') {
       this.cleanupFns.push({
-        cleanup: cleanupFn,
+        cleanupFn: cleanupFn,
         specifier,
       })
     }
@@ -131,22 +131,16 @@ export class PluginManager {
         env: { ...this.environment.env },
       },
     }
-    try {
-      const cleanupFn = await plugin.coordinator(context)
-      if (typeof cleanupFn === 'function') {
-        this.cleanupFns.push({
-          cleanup: cleanupFn,
-          specifier,
-        })
-      }
-    } catch (error) {
-      if (specifier) {
-        throw new Error(`Plugin "${specifier}" errored when trying to init`, {
-          cause: error,
-        })
-      } else {
-        throw error
-      }
+    const cleanupFn = await wrapErrorAsync(
+      async () => await plugin.coordinator(context),
+      specifier,
+      `Plugin "${specifier}" errored when trying to init`
+    )
+    if (typeof cleanupFn === 'function') {
+      this.cleanupFns.push({
+        cleanupFn: cleanupFn,
+        specifier,
+      })
     }
   }
 
@@ -155,20 +149,11 @@ export class PluginManager {
     value: CoordinatorEventValues[K]
   ): void {
     this.handlers[event].forEach(({ handler, specifier }) => {
-      try {
-        handler(value)
-      } catch (error) {
-        if (specifier) {
-          throw new Error(
-            `Plugin "${specifier}" errored when trying to handle a "${event}" event`,
-            {
-              cause: error,
-            }
-          )
-        } else {
-          throw error
-        }
-      }
+      wrapError(
+        () => handler(value),
+        specifier,
+        `Plugin "${specifier}" errored when trying to handle a "${event}" event`
+      )
     })
   }
 
@@ -178,43 +163,51 @@ export class PluginManager {
   ): Promise<CoordinatorTransformValues[K]> {
     let transformed = value
     for (const { transformer, specifier } of this.transformers[event]) {
-      try {
-        const returned = await transformer(transformed)
-        if (typeof returned !== 'undefined') {
-          transformed = returned
-        }
-      } catch (error) {
-        if (specifier) {
-          throw new Error(
-            `Plugin "${specifier}" errored when trying to do a "${event}" transform`,
-            {
-              cause: error,
-            }
-          )
-        } else {
-          throw error
-        }
+      const returned = await wrapErrorAsync(
+        async () => await transformer(transformed),
+        specifier,
+        `Plugin "${specifier}" errored when trying to do a "${event}" transform`
+      )
+      if (typeof returned !== 'undefined') {
+        transformed = returned
       }
     }
     return transformed
   }
 
   async cleanup(): Promise<void> {
-    for (const { cleanup, specifier } of this.cleanupFns) {
-      try {
-        await cleanup()
-      } catch (error) {
-        if (specifier) {
-          throw new Error(
-            `Plugin "${specifier}" errored when trying to cleanup`,
-            {
-              cause: error,
-            }
-          )
-        } else {
-          throw error
-        }
-      }
+    for (const { cleanupFn, specifier } of this.cleanupFns) {
+      await wrapErrorAsync(
+        async () => await cleanupFn(),
+        specifier,
+        `Plugin "${specifier}" errored when trying to cleanup`
+      )
     }
+  }
+}
+
+function wrapError<T>(fn: () => T, specifier: string, message: string): T {
+  try {
+    return fn()
+  } catch (error) {
+    if (specifier) {
+      throw new Error(message, { cause: error })
+    }
+    throw error
+  }
+}
+
+async function wrapErrorAsync<T>(
+  fn: () => Promise<T>,
+  specifier: string,
+  message: string
+): Promise<T> {
+  try {
+    return await fn()
+  } catch (error) {
+    if (specifier) {
+      throw new Error(message, { cause: error })
+    }
+    throw error
   }
 }
