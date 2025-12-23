@@ -125,3 +125,26 @@ Feature: Plugins
       """
       whoops
       """
+
+  Scenario Outline: Custom plugin can use any Node.js module format
+    Given a file named "my_plugin<extension>" with:
+      """
+      <syntax> {
+        type: 'plugin',
+        coordinator() {
+          // no-op
+        }
+      }
+      """
+    When I run cucumber-js with `--plugin ./my_plugin<extension>`
+    Then it passes
+
+    Examples: ESM
+      | syntax         | extension |
+      | export default | .mjs      |
+
+    Examples: CommonJS
+      | syntax            | extension |
+      | module.exports =  | .cjs      |
+      | exports.default = | .cjs      |
+
