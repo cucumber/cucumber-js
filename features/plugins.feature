@@ -35,3 +35,24 @@ Feature: Plugins
       """
       Plugin tracked end of test run with bar count of 3
       """
+
+  Scenario: Custom plugin error causes Cucumber to fail and is reported to user
+    Given a file named "my_plugin.mjs" with:
+      """
+      export default {
+        type: 'plugin',
+        coordinator() {
+          throw new Error('whoops')
+        }
+      }
+      """
+    When I run cucumber-js with `--plugin ./my_plugin.mjs`
+    Then it fails
+    And the error output contains the text:
+      """
+      Plugin "./my_plugin.mjs" errored when trying to init
+      """
+    And the error output contains the text:
+      """
+      whoops
+      """

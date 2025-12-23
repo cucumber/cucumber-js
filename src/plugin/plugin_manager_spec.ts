@@ -66,6 +66,52 @@ describe('PluginManager', () => {
     expect(cleanup2).to.have.been.calledOnce
   })
 
+  it('wraps errors from coordinator function with explanatory message', async () => {
+    const pluginManager = new PluginManager(usableEnvironment)
+    const originalError = new Error('whoops')
+
+    try {
+      await pluginManager.initCoordinator(
+        'runCucumber',
+        {
+          type: 'plugin',
+          coordinator: () => {
+            throw originalError
+          },
+        },
+        {},
+        './my-plugin.mjs'
+      )
+      expect.fail('Expected error to be thrown')
+    } catch (error) {
+      expect(error.message).to.equal(
+        'Plugin "./my-plugin.mjs" errored when trying to init'
+      )
+    }
+  })
+
+  it('includes original error as cause when coordinator function errors', async () => {
+    const pluginManager = new PluginManager(usableEnvironment)
+    const originalError = new Error('whoops')
+
+    try {
+      await pluginManager.initCoordinator(
+        'runCucumber',
+        {
+          type: 'plugin',
+          coordinator: () => {
+            throw originalError
+          },
+        },
+        {},
+        './my-plugin.mjs'
+      )
+      expect.fail('Expected error to be thrown')
+    } catch (error) {
+      expect(error.cause).to.equal(originalError)
+    }
+  })
+
   describe('void events', () => {
     it(`emits void event to all handlers`, async () => {
       const pluginManager = new PluginManager(usableEnvironment)

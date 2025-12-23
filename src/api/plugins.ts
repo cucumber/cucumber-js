@@ -97,7 +97,8 @@ export async function initializeForRunCucumber(
     await pluginManager.initCoordinator(
       'runCucumber',
       plugin,
-      configuration.plugins.options
+      configuration.plugins.options,
+      specifier
     )
   }
 

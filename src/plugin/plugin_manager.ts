@@ -72,25 +72,36 @@ export class PluginManager {
   async initCoordinator<OptionsType>(
     operation: PluginOperation,
     plugin: Plugin<OptionsType>,
-    options: OptionsType
+    options: OptionsType,
+    specifier?: string
   ) {
-    const cleanupFn = await plugin.coordinator({
-      operation,
-      on: this.registerHandler.bind(this),
-      transform: this.registerTransformer.bind(this),
-      options:
-        'optionsKey' in plugin && plugin.optionsKey
-          ? ((options as any)[plugin.optionsKey] ?? ({} as OptionsType))
-          : options,
-      logger: this.environment.logger,
-      environment: {
-        cwd: this.environment.cwd,
-        stderr: this.environment.stderr,
-        env: { ...this.environment.env },
-      },
-    })
-    if (typeof cleanupFn === 'function') {
-      this.cleanupFns.push(cleanupFn)
+    try {
+      const cleanupFn = await plugin.coordinator({
+        operation,
+        on: this.registerHandler.bind(this),
+        transform: this.registerTransformer.bind(this),
+        options:
+          'optionsKey' in plugin && plugin.optionsKey
+            ? ((options as any)[plugin.optionsKey] ?? ({} as OptionsType))
+            : options,
+        logger: this.environment.logger,
+        environment: {
+          cwd: this.environment.cwd,
+          stderr: this.environment.stderr,
+          env: { ...this.environment.env },
+        },
+      })
+      if (typeof cleanupFn === 'function') {
+        this.cleanupFns.push(cleanupFn)
+      }
+    } catch (error) {
+      if (specifier) {
+        throw new Error(`Plugin "${specifier}" errored when trying to init`, {
+          cause: error,
+        })
+      } else {
+        throw error
+      }
     }
   }
 
