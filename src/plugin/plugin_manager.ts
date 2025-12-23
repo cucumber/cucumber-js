@@ -75,22 +75,23 @@ export class PluginManager {
     options: OptionsType,
     specifier?: string
   ) {
+    const context = {
+      operation,
+      on: this.registerHandler.bind(this),
+      transform: this.registerTransformer.bind(this),
+      options:
+        'optionsKey' in plugin && plugin.optionsKey
+          ? ((options as any)[plugin.optionsKey] ?? ({} as OptionsType))
+          : options,
+      logger: this.environment.logger,
+      environment: {
+        cwd: this.environment.cwd,
+        stderr: this.environment.stderr,
+        env: { ...this.environment.env },
+      },
+    }
     try {
-      const cleanupFn = await plugin.coordinator({
-        operation,
-        on: this.registerHandler.bind(this),
-        transform: this.registerTransformer.bind(this),
-        options:
-          'optionsKey' in plugin && plugin.optionsKey
-            ? ((options as any)[plugin.optionsKey] ?? ({} as OptionsType))
-            : options,
-        logger: this.environment.logger,
-        environment: {
-          cwd: this.environment.cwd,
-          stderr: this.environment.stderr,
-          env: { ...this.environment.env },
-        },
-      })
+      const cleanupFn = await plugin.coordinator(context)
       if (typeof cleanupFn === 'function') {
         this.cleanupFns.push(cleanupFn)
       }
