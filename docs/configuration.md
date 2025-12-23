@@ -111,6 +111,7 @@ These options can be used in a configuration file (see [above](#files)) or on th
 | `requireModule`   | `string[]` | Yes        | `--require-module`        | Names of transpilation modules to load, loaded via `require()` - see [Transpiling](./transpiling.md)               | []      |
 | `retry`           | `number`   | No         | `--retry`                 | Retry failing tests up to the given number of times - see [Retry](./retry.md)                                      | 0       |
 | `retryTagFilter`  | `string`   | Yes        | `--retry-tag-filter`      | Tag expression to filter which scenarios can be retried - see [Retry](./retry.md)                                  |         |
+| `shard`           | `string`   | No         | `--shard`                 | Run a subset of scenarios across multiple test runs - see [Sharding](./sharding.md)                                |         |
 | `strict`          | `boolean`  | No         | `--strict`, `--no-strict` | Fail the test run if there are pending steps                                                                       | true    |
 | `tags`            | `string`   | Yes        | `--tags`, `-t`            | Tag expression to filter which scenarios should be run - see [Filtering](./filtering.md#tags)                      |         |
 | `worldParameters` | `object`   | Yes        | `--world-parameters`      | Parameters to be passed to your World - see [World](./support_files/world.md)                                      | {}      |
