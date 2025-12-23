@@ -8,8 +8,9 @@
  */
 
 export { IConfiguration } from '../configuration'
-export { IRunEnvironment, ILogger } from '../environment'
-export { IPickleOrder } from '../filter'
+export { ILogger, IRunEnvironment } from '../environment'
+export { IFilterablePickle, IPickleOrder } from '../filter'
+export { IResolvedPaths } from '../paths'
 export {
   CoordinatorEventKey,
   CoordinatorEventValues,

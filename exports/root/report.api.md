@@ -208,6 +208,8 @@ export interface IConfiguration {
     order: IPickleOrder;
     parallel: number;
     paths: string[];
+    plugin: string[];
+    pluginOptions: JsonObject;
     publish: boolean;
     require: string[];
     requireModule: string[];

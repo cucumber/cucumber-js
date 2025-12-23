@@ -1,5 +1,11 @@
 import { Writable } from 'node:stream'
 
+/**
+ * A logger that can be used to direct messages to stderr or similar
+ * @public
+ * @remarks
+ * Matches the interface of Node.js Console, for the methods it has.
+ */
 export interface ILogger {
   debug: (message?: any, ...optionalParams: any[]) => void
   error: (message?: any, ...optionalParams: any[]) => void
