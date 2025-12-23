@@ -74,7 +74,6 @@ export async function initializeForRunCucumber(
 ): Promise<PluginManager> {
   const pluginManager = new PluginManager(environment)
 
-  // Initialize first-party plugins
   await pluginManager.initCoordinator(
     'runCucumber',
     publishPlugin,
