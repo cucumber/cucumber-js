@@ -85,7 +85,31 @@ describe('PluginManager', () => {
     }
   })
 
-  describe('void events', () => {
+  describe('event handlers', () => {
+    it('throws error when custom plugin tries to register handler for unknown event', async () => {
+      const pluginManager = new PluginManager(usableEnvironment)
+
+      try {
+        await pluginManager.initCoordinator(
+          'runCucumber',
+          {
+            type: 'plugin',
+            coordinator: ({ on }) => on('unknown' as any, () => {}),
+          },
+          {},
+          './my-plugin.mjs'
+        )
+        expect.fail('Expected error to be thrown')
+      } catch (error) {
+        expect(error.message).to.equal(
+          'Plugin "./my-plugin.mjs" errored when trying to init'
+        )
+        expect(error.cause.message).to.equal(
+          'Cannot register handler for unknown event "unknown"'
+        )
+      }
+    })
+
     it(`emits void event to all handlers`, async () => {
       const pluginManager = new PluginManager(usableEnvironment)
       const handler1 = sinon.fake()
@@ -180,7 +204,32 @@ describe('PluginManager', () => {
     })
   })
 
-  describe('transforms', () => {
+  describe('transformers', () => {
+    it('throws error when custom plugin tries to register transformer for unknown event', async () => {
+      const pluginManager = new PluginManager(usableEnvironment)
+
+      try {
+        await pluginManager.initCoordinator(
+          'runCucumber',
+          {
+            type: 'plugin',
+            coordinator: ({ transform }) =>
+              transform('unknown' as any, (x) => x),
+          },
+          {},
+          './my-plugin.mjs'
+        )
+        expect.fail('Expected error to be thrown')
+      } catch (error) {
+        expect(error.message).to.equal(
+          'Plugin "./my-plugin.mjs" errored when trying to init'
+        )
+        expect(error.cause.message).to.equal(
+          'Cannot register transformer for unknown event "unknown"'
+        )
+      }
+    })
+
     const filterablePickles = [
       {
         pickle: {

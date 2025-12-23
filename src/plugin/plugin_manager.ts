@@ -53,7 +53,10 @@ export class PluginManager {
     handler: CoordinatorEventHandler<K>,
     specifier?: string
   ) {
-    this.handlers[event]?.push({
+    if (!this.handlers[event]) {
+      throw new Error(`Cannot register handler for unknown event "${event}"`)
+    }
+    this.handlers[event].push({
       handler,
       specifier,
     })
@@ -64,7 +67,12 @@ export class PluginManager {
     transformer: CoordinatorTransformer<K>,
     specifier?: string
   ) {
-    this.transformers[event]?.push({
+    if (!this.transformers[event]) {
+      throw new Error(
+        `Cannot register transformer for unknown event "${event}"`
+      )
+    }
+    this.transformers[event].push({
       transformer,
       specifier,
     })
