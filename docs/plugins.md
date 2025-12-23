@@ -1,60 +1,141 @@
-🚨 This functionality is a work in progress and not yet available in a released version of Cucumber. If you have any
-feedback about how plugins are going to work, please jump into the comments
-on <https://github.com/cucumber/cucumber-js/discussions/2091> 🚨
-
-- - -
-
 # Plugins
 
-You can extend Cucumber's functionality by writing plugins. They allow you to:
+ℹ️ Added in v12.5.0
+
+Cucumber's functionality can be extended with plugins.
+
+## Using plugins
+
+You can specify one or more plugins via the `plugin` configuration option:
+
+- In a configuration file `{ plugin: ['@some-org/some-plugin', '@some-org/other-plugin'] }`
+- On the CLI `cucumber-js --plugin @some-org/some-plugin --plugin @some-org/other-plugin"`
+
+The above examples make sense if you're using a plugin installed from a package registry like npm. If you have a custom plugin (see below) local to your project, the specifier might be something like `./my-plugin.js`. 
+
+You can also specify options as JSON, if a plugin needs them:
+
+- In a configuration file `{ pluginOptions: { someOption: true } }`
+- On the CLI `cucumber-js --plugin-options '{"someOption":true}'`
+
+## Writing a plugin
+
+You can write your own plugins. They allow you to:
 
 - Listen to Cucumber's message stream
 - Hook into core behaviour and change things
 - Output extra information for the user
 
-The API is described below. Our own Publish functionality is [implemented as a plugin](../src/publish/publish_plugin.ts), which you might find useful as an example.
+The guide below should help you get a skeletal plugin up and running, and you can find full API and type documentation at:  
+<https://cucumber.github.io/cucumber-js/modules/api.html>
 
-## Writing a plugin
+Also, some of Cucumber's built-in functionality is implemented as plugins, which you might find useful for examples:
 
-A plugin in its simplest form is a function. It should be the default export of your plugin package. Here's the signature:
+- [Filtering](../src/filter/filter_plugin.ts)
+- [Publishing](../src/publish/publish_plugin.ts)
+- [Sharding](../src/sharding/sharding_plugin.ts)
+
+A plugin in its simplest form is an object identifying itself as a plugin, with a "coordinator" function to be run. It should be the default export of your plugin package or module. Here's a minimal plugin skeleton:
 
 ```js
-export default async({
-  on,
-  logger,
-  configuration,
-  environment
-}) => {
-  // do stuff here
+export default {
+  type: 'plugin',
+  coordinator: (context) => {
+    // do stuff here
+  }
 }
 ```
 
 ### Lifecycle
 
-Your plugin is initialised early in Cucumber's lifecycle, just after we have resolved the configuration. You can do async setup work in your plugin function - Cucumber will await the promise.
+Your plugin is initialised early in Cucumber's lifecycle, just after we have resolved the configuration. You can do async setup work in your plugin function.
 
-Your plugin is stopped after the test run finishes, just before Cucumber exits. If you need to do cleanup work, your plugin function can return a cleanup function - it will be executed (and awaited if it returns a promise) before Cucumber exits.
+Your plugin is stopped after the test run finishes, just before Cucumber exits. If you need to do cleanup work, your plugin function can return a cleanup function - it will be executed before Cucumber exits, and again can be async.
+
+Here's a rough example:
+
+```js
+export default {
+  type: 'plugin',
+  coordinator: async (context) => {
+    // this runs at the start
+    await doSomeAsyncSetup()
+    return async () => {
+      // this runs at the end
+      await doSomeAsyncTeardown()
+    }
+  }
+}
+```
+
+### Context
 
 A plugin function accepts a single argument which provides the context for your plugin. It has:
 
-- `on(event: string, handler: Function)` - function for registering handlers for events (see below for supported events) - you can call this as many times as you'd like
-- `logger` - a console instance that directs output to stderr (or other appropriate stream)
-- `configuration` - the final resolved configuration object being used for this execution of Cucumber
-- `environment` - details of the environment for this execution of Cucumber
+- `operation` - the Cucumber operation being run
+- `on(event: string, handler: Function)` - function for registering an [event handler](#events)
+- `transform(event: string, handler: Function)` - function for registering a [transform](#transforms)
+- `options` - options provided by the user in their configuration
+- `logger` - a minimal logger, directed to `stderr`
+- `environment` - attributes of the current environment
 
 ### Events
 
-These are the events for which you can register handlers:
+You can register passive event handlers for these things that happen in Cucumber:
 
-| Name      | Signature                     | Notes                                                                                                                                                                                                                                              |
-|-----------|-------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `message` | `(message: Envelope) => void` | Cucumber emits a message for all significant events over the course of a test run. These are most commonly consumed by formatters, but have other uses too. Note that you can do async work in this handler, but Cucumber won't await the promise. |
+- `message` - Cucumber emits a message for all significant events over the course of a test run. These are most commonly consumed by [Formatters](./formatters.md), but have other uses too.
+- `paths:resolve` - emitted when Cucumber has resolved the paths on the file system from which it will load feature files and support code.
 
+Here's an example emitting a log when the test run finishes:
 
+```js
+export default {
+  type: 'plugin',
+  coordinator: ({
+    on,
+    logger
+  }) => {
+    on('message', envelope => {
+      if (envelope.testRunFinished) {
+        logger.info('Test run finished!')
+      }
+    })
+  }
+}
+```
 
+### Transforms
 
+You can register transforms for some things that happen in Cucumber in order to modify or augment the built-in behaviour. Your transformer function can be async and should treat the input value as immutable, returning a new value that reflects your modifications.
 
+These are the operations for which you can register transforms:
 
+- `pickles:filter` - called when Cucumber has compiled Pickles for all found Scenarios, and now needs to determine which ones should be run as test cases. Return a new array after doing your filtering.
+- `pickles:order` - called after Cucumber has filtered Pickles, so it can sort them. This works the same as the one above.
+
+Here's an example filtering off some unwanted Pickles:
+
+```js
+export default {
+  type: 'plugin',
+  coordinator: ({
+    on,
+    logger
+  }) => {
+    transform('pickles:filter', pickles => {
+      return pickles.filter(({piockle}) => !pickle.name.includes('widgets'))
+    })
+  }
+}
+```
+
+### Logging
+
+The `logger` in your context object can be used to direct user-facing messages to `stderr`. Please use it sparingly - users do not appreciate a lot of noise in their terminal. If it's something that would be used for diagnostics or troubleshooting, consider using the `debug` method, so it's [opt-in for users](./debugging.md).
+
+### Error handling
+
+If your plugin throws an error during its initialisation, cleanup, event handlers or transforms, Cucumber will wrap it with some contextual metadata but otherwise allow it to bubble and cause the test run to fail and exit with a non-zero code. If something your plugin does could yield an error that doesn't constitute a total failure, you should catch and handle it inside of your plugin.
 
 
 

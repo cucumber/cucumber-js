@@ -106,6 +106,8 @@ These options can be used in a configuration file (see [above](#files)) or on th
 | `name`            | `string`   | No         | `--name`                  | Regular expressions of which scenario names should match one of to be run - see [Filtering](./filtering.md#names)  | []      |
 | `order`           | `string`   | No         | `--order`                 | Run in the order defined, or in a random order - see [Filtering and Ordering](./filtering.md#order)                | defined |
 | `parallel`        | `number`   | No         | `--parallel`              | Run tests in parallel with the given number of worker processes - see [Parallel](./parallel.md)                    | 0       |
+| `plugin`          | `string[]` | Yes        | `--plugin`                | Paths or package names of plugins to load - see [Plugins](./plugins.md)                                            | []      |
+| `pluginOptions`   | `object`   | Yes        | `--plugin-options`        | Options to be provided to plugins - see [Plugins](./plugins.md)                                                    | {}      |
 | `publish`         | `boolean`  | No         | `--publish`               | Publish a report of your test run to <https://reports.cucumber.io/>                                                | false   |
 | `require`         | `string[]` | Yes        | `--require`, `-r`         | Paths to where your support code is, for CommonJS - see [below](#finding-your-code)                                | []      |
 | `requireModule`   | `string[]` | Yes        | `--require-module`        | Names of transpilation modules to load, loaded via `require()` - see [Transpiling](./transpiling.md)               | []      |
