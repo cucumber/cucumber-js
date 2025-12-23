@@ -12,12 +12,27 @@ import {
   CoordinatorTransformValues,
 } from './types'
 
+type SourcedEventHandler<K extends CoordinatorEventKey> = {
+  handler: CoordinatorEventHandler<K>
+  specifier?: string
+}
+
+type SourcedTransformer<K extends CoordinatorTransformKey> = {
+  transformer: CoordinatorTransformer<K>
+  specifier?: string
+}
+
+type SourcedCleanup = {
+  cleanup: PluginCleanup
+  specifier?: string
+}
+
 type HandlerRegistry = {
-  [K in CoordinatorEventKey]: Array<CoordinatorEventHandler<K>>
+  [K in CoordinatorEventKey]: Array<SourcedEventHandler<K>>
 }
 
 type TransformerRegistry = {
-  [K in CoordinatorTransformKey]: Array<CoordinatorTransformer<K>>
+  [K in CoordinatorTransformKey]: Array<SourcedTransformer<K>>
 }
 
 export class PluginManager {
@@ -29,22 +44,30 @@ export class PluginManager {
     'pickles:filter': [],
     'pickles:order': [],
   }
-  private cleanupFns: PluginCleanup[] = []
+  private cleanupFns: SourcedCleanup[] = []
 
   constructor(private readonly environment: UsableEnvironment) {}
 
   private async registerHandler<K extends CoordinatorEventKey>(
     event: K,
-    handler: CoordinatorEventHandler<K>
+    handler: CoordinatorEventHandler<K>,
+    specifier?: string
   ) {
-    this.handlers[event]?.push(handler)
+    this.handlers[event]?.push({
+      handler,
+      specifier,
+    })
   }
 
   private async registerTransformer<K extends CoordinatorTransformKey>(
     event: K,
-    handler: CoordinatorTransformer<K>
+    transformer: CoordinatorTransformer<K>,
+    specifier?: string
   ) {
-    this.transformers[event]?.push(handler)
+    this.transformers[event]?.push({
+      transformer,
+      specifier,
+    })
   }
 
   async initFormatter<OptionsType>(
@@ -52,10 +75,11 @@ export class PluginManager {
     options: OptionsType,
     stream: NodeJS.WritableStream,
     write: (buffer: string | Uint8Array) => void,
-    directory?: string
+    directory?: string,
+    specifier?: string
   ) {
     const cleanupFn = await plugin.formatter({
-      on: (key, handler) => this.registerHandler(key, handler),
+      on: (key, handler) => this.registerHandler(key, handler, specifier),
       options: plugin.optionsKey
         ? ((options as any)[plugin.optionsKey] ?? ({} as OptionsType))
         : options,
@@ -65,7 +89,10 @@ export class PluginManager {
       directory,
     })
     if (typeof cleanupFn === 'function') {
-      this.cleanupFns.push(cleanupFn)
+      this.cleanupFns.push({
+        cleanup: cleanupFn,
+        specifier,
+      })
     }
   }
 
@@ -77,8 +104,14 @@ export class PluginManager {
   ) {
     const context = {
       operation,
-      on: this.registerHandler.bind(this),
-      transform: this.registerTransformer.bind(this),
+      on: <K extends CoordinatorEventKey>(
+        event: K,
+        handler: CoordinatorEventHandler<K>
+      ) => this.registerHandler(event, handler, specifier),
+      transform: <K extends CoordinatorTransformKey>(
+        event: K,
+        transformer: CoordinatorTransformer<K>
+      ) => this.registerTransformer(event, transformer, specifier),
       options:
         'optionsKey' in plugin && plugin.optionsKey
           ? ((options as any)[plugin.optionsKey] ?? ({} as OptionsType))
@@ -93,7 +126,10 @@ export class PluginManager {
     try {
       const cleanupFn = await plugin.coordinator(context)
       if (typeof cleanupFn === 'function') {
-        this.cleanupFns.push(cleanupFn)
+        this.cleanupFns.push({
+          cleanup: cleanupFn,
+          specifier,
+        })
       }
     } catch (error) {
       if (specifier) {
@@ -110,7 +146,22 @@ export class PluginManager {
     event: K,
     value: CoordinatorEventValues[K]
   ): void {
-    this.handlers[event].forEach((handler) => handler(value))
+    this.handlers[event].forEach(({ handler, specifier }) => {
+      try {
+        handler(value)
+      } catch (error) {
+        if (specifier) {
+          throw new Error(
+            `Plugin "${specifier}" errored when trying to handle a "${event}" event`,
+            {
+              cause: error,
+            }
+          )
+        } else {
+          throw error
+        }
+      }
+    })
   }
 
   async transform<K extends CoordinatorTransformKey>(
@@ -118,18 +169,44 @@ export class PluginManager {
     value: CoordinatorTransformValues[K]
   ): Promise<CoordinatorTransformValues[K]> {
     let transformed = value
-    for (const handler of this.transformers[event]) {
-      const returned = await handler(transformed)
-      if (typeof returned !== 'undefined') {
-        transformed = returned
+    for (const { transformer, specifier } of this.transformers[event]) {
+      try {
+        const returned = await transformer(transformed)
+        if (typeof returned !== 'undefined') {
+          transformed = returned
+        }
+      } catch (error) {
+        if (specifier) {
+          throw new Error(
+            `Plugin "${specifier}" errored when trying to do a "${event}" transform`,
+            {
+              cause: error,
+            }
+          )
+        } else {
+          throw error
+        }
       }
     }
     return transformed
   }
 
   async cleanup(): Promise<void> {
-    for (const cleanupFn of this.cleanupFns) {
-      await cleanupFn()
+    for (const { cleanup, specifier } of this.cleanupFns) {
+      try {
+        await cleanup()
+      } catch (error) {
+        if (specifier) {
+          throw new Error(
+            `Plugin "${specifier}" errored when trying to cleanup`,
+            {
+              cause: error,
+            }
+          )
+        } else {
+          throw error
+        }
+      }
     }
   }
 }
