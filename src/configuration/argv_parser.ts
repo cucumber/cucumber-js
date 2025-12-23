@@ -10,6 +10,8 @@ export interface IParsedArgvOptions {
   i18nKeywords?: string
   i18nLanguages?: boolean
   profile: string[]
+  plugin?: string[]
+  pluginOptions?: object
 }
 
 export interface IParsedArgv {
@@ -133,6 +135,16 @@ const ArgvParser = {
         '--parallel <NUMBER_OF_WORKERS>',
         'run in parallel with the given number of workers',
         (val) => ArgvParser.validateCountOption(val, '--parallel')
+      )
+      .option(
+        '--plugin <SPECIFIER>',
+        'load a plugin (repeatable)',
+        ArgvParser.collect
+      )
+      .option(
+        '--plugin-options <JSON>',
+        'provide options for plugins (repeatable)',
+        ArgvParser.mergeJson('--plugin-options')
       )
       .option('--publish', 'Publish a report to https://reports.cucumber.io')
       .option(

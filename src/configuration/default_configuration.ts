@@ -7,7 +7,7 @@ export const DEFAULT_CONFIGURATION: IConfiguration = {
   failFast: false,
   format: [],
   formatOptions: {},
-  plugins: [],
+  plugin: [],
   pluginOptions: {},
   import: [],
   language: 'en',

@@ -75,7 +75,7 @@ export interface IConfiguration {
    * @remarks
    * Each item is a module specifier for a plugin to be loaded.
    */
-  plugins: string[]
+  plugin: string[]
   /**
    * Options to be provided to plugins
    * @default \{\}

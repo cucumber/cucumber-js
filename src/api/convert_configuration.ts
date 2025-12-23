@@ -39,7 +39,7 @@ export async function convertConfiguration(
     },
     formats: convertFormats(logger, flatConfiguration, env),
     plugins: {
-      specifiers: flatConfiguration.plugins,
+      specifiers: flatConfiguration.plugin,
       options: flatConfiguration.pluginOptions,
     },
   }

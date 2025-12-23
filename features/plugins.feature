@@ -1,6 +1,6 @@
 Feature: Plugins
 
-  Scenario: minimal plugin
+  Background: An ordinary project
     Given a file named "features/a.feature" with:
       """
       Feature: some feature
@@ -13,30 +13,25 @@ Feature: Plugins
 
       Given('a passing step', function() {})
       """
-    And a file named "cucumber.json" with:
-      """
-      {
-        "default": {
-          "plugins": ["./my_plugin.mjs"]
-        }
-      }
-      """
-    And a file named "my_plugin.mjs" with:
+
+  Scenario: Custom plugin with options is successfully loaded and run
+    Given a file named "my_plugin.mjs" with:
       """
       export default {
         type: 'plugin',
-        coordinator({ on, logger }) {
+        coordinator({ options, on, logger }) {
           on('message', (message) => {
             if (message.testRunFinished) {
-              logger.info('Plugin tracked end of test run')
+              logger.info(`Plugin tracked end of test run with bar count of ${options.bar}`)
             }
           })
-        }
+        },
+        optionsKey: 'foo'
       }
       """
-    When I run cucumber-js
+    When I run cucumber-js with `--plugin ./my_plugin.mjs --plugin-options '{"foo":{"bar":3}}'`
     Then it passes
     And the error output contains the text:
       """
-      Plugin tracked end of test run
+      Plugin tracked end of test run with bar count of 3
       """
