@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Allow external plugins (see [documentation](./docs/plugins.md)) ([#2715](https://github.com/cucumber/cucumber-js/pull/2715))
 
 ## [12.4.0] - 2025-12-13
 ### Added
