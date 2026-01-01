@@ -37,6 +37,7 @@ Feature: ESM loaders support
     When I run cucumber-js with `--loader ts-node/esm --import features/steps.ts`
     Then it passes
 
+  @parallel
   Scenario: parallel runtime
     When I run cucumber-js with `--loader ts-node/esm --import features/steps.ts --parallel 1`
     Then it passes
