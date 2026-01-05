@@ -278,7 +278,8 @@ export default class JsonFormatter extends Formatter {
       )
       data.match = { location: formatLocation(stepDefinition) }
     }
-    const { message, status } = testStepResult
+    const message = testStepResult?.message
+    const status = testStepResult?.status ?? 'UNKNOWN'
     data.result = {
       status: messages.TestStepResultStatus[status].toLowerCase(),
     }
