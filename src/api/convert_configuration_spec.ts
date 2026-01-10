@@ -20,6 +20,10 @@ describe('convertConfiguration', () => {
         publish: false,
         stdout: 'progress',
       },
+      plugins: {
+        specifiers: [],
+        options: {},
+      },
       runtime: {
         dryRun: false,
         failFast: false,

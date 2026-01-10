@@ -25,4 +25,8 @@ export class ConsoleLogger implements ILogger {
   warn(message?: any, ...optionalParams: any[]): void {
     this.console.warn(message, ...optionalParams)
   }
+
+  info(message?: any, ...optionalParams: any[]): void {
+    this.console.info(message, ...optionalParams)
+  }
 }

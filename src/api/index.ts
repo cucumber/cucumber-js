@@ -8,8 +8,22 @@
  */
 
 export { IConfiguration } from '../configuration'
-export { IRunEnvironment } from '../environment'
-export { IPickleOrder } from '../filter'
+export { ILogger, IRunEnvironment } from '../environment'
+export { IFilterablePickle, IPickleOrder } from '../filter'
+export { IResolvedPaths } from '../paths'
+export {
+  CoordinatorEventKey,
+  CoordinatorEventValues,
+  CoordinatorEventHandler,
+  CoordinatorTransformKey,
+  CoordinatorTransformValues,
+  CoordinatorTransformer,
+  CoordinatorContext,
+  CoordinatorEnvironment,
+  Plugin,
+  PluginCleanup,
+  PluginOperation,
+} from '../plugin'
 export { IPublishConfig } from '../publish'
 export * from './load_configuration'
 export * from './load_sources'
