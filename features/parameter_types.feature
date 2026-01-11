@@ -132,7 +132,6 @@ Feature: Parameter types
     Then it fails
     And the output contains the text:
       """
-      Undefined parameter types:
-
-      - "param" e.g. `a {param} step`
+      These parameters are missing a parameter type definition:
+        1) 'param' in 'a {param} step'
       """
