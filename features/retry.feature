@@ -92,8 +92,8 @@ Feature: Retry flaky tests
          ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
              fail
 
-      1 scenario (1 passed)
-      1 step (1 passed)
+      1 scenarios (1 passed)
+      1 steps (1 passed)
       <duration-stat>
       """
     And scenario "Flaky" attempt 0 step "Given a flaky step" has status "failed"
@@ -132,8 +132,8 @@ Feature: Retry flaky tests
          ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
              fail
 
-      1 scenario (1 passed)
-      1 step (1 passed)
+      1 scenarios (1 passed)
+      1 steps (1 passed)
       <duration-stat>
       """
     And scenario "Flaky" attempt 0 step "Given a flaky step" has status "failed"

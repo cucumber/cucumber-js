@@ -31,8 +31,8 @@ Feature: Error formatting
             Fail
          - Given a passing step # features/step_definitions/cucumber_steps.js:3
 
-      1 scenario (1 failed)
-      1 step (1 skipped)
+      1 scenarios (1 failed)
+      1 steps (1 skipped)
       <duration-stat>
       """
 

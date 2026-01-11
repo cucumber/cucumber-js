@@ -115,8 +115,8 @@ Feature: custom formatter
                });
 
 
-      1 scenario (1 undefined)
-      1 step (1 undefined)
+      1 scenarios (1 undefined)
+      1 steps (1 undefined)
       <duration-stat>
       """
 

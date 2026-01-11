@@ -165,7 +165,7 @@ export async function getEnvelopesAndEventDataCollector({
 
 export function normalizeSummaryDuration(output: string): string {
   return output.replace(
-    /\d+m\d{2}\.\d{3}s \(executing steps: \d+m\d{2}\.\d{3}s\)/,
+    /\d+m \d+\.\d+s \(\d+m \d+\.\d+s executing your code\)/,
     '<duration-stat>'
   )
 }
