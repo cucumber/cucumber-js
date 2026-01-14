@@ -1,3 +1,4 @@
+@parallel
 Feature: Running scenarios in parallel
 
   Scenario: running in parallel can improve speed if there are async operations
