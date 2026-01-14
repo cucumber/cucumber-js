@@ -21,7 +21,6 @@ import StepDefinitionSnippetBuilder from '../formatter/step_definition_snippet_b
 import { timestamp } from './stopwatch'
 import StepRunner, { RunStepResult } from './step_runner'
 import AttachmentManager from './attachment_manager'
-import { getAmbiguousStepException } from './helpers'
 import { makeSuggestion } from './make_suggestion'
 
 export interface INewTestCaseRunnerOptions {
@@ -350,7 +349,6 @@ export default class TestCaseRunner {
     } else if (stepDefinitions.length > 1) {
       return {
         result: {
-          message: getAmbiguousStepException(stepDefinitions),
           status: messages.TestStepResultStatus.AMBIGUOUS,
           duration: messages.TimeConversion.millisecondsToDuration(0),
         },
