@@ -9,7 +9,7 @@ export default {
     on('message', (envelope) => {
       query.update(envelope)
       if (envelope.testRunFinished) {
-        new SummaryPrinter(query, stream, write).printSummary()
+        new SummaryPrinter(stream, write).printSummary()
       }
     })
   },
