@@ -98,7 +98,7 @@ export async function testFormatter({
   })
   await runtime.run()
 
-  return normalizeSummaryDuration(output)
+  return normalizeLegacySummaryDuration(output)
 }
 
 export async function getTestCaseAttempts({
@@ -161,6 +161,13 @@ export async function getEnvelopesAndEventDataCollector({
   await runtime.run()
 
   return { envelopes, eventDataCollector }
+}
+
+export function normalizeLegacySummaryDuration(output: string): string {
+  return output.replace(
+    /\d+m\d{2}\.\d{3}s \(executing steps: \d+m\d{2}\.\d{3}s\)/,
+    '<duration-stat>'
+  )
 }
 
 export function normalizeSummaryDuration(output: string): string {
