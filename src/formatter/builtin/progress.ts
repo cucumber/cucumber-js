@@ -6,6 +6,9 @@ export default {
   formatter: function ({ on, stream }) {
     const printer = new ProgressPrinter({
       stream,
+      options: {
+        summarise: true
+      }
     })
     on('message', (envelope) => printer.update(envelope))
   },

@@ -6,6 +6,9 @@ export default {
   formatter({ on, stream }) {
     const printer = new PrettyPrinter({
       stream,
+      options: {
+        summarise: true,
+      },
     })
     on('message', (envelope) => printer.update(envelope))
   },
