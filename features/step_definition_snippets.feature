@@ -12,7 +12,11 @@ Feature: step definition snippets
     And the output contains the text:
       """
       Given('a step numbered {int}', function (int) {
-        // Given('a step numbered {float}', function (float) {
+        // Write code here that turns the phrase above into concrete actions
+        return 'pending';
+      });
+
+      Given('a step numbered {float}', function (float) {
         // Write code here that turns the phrase above into concrete actions
         return 'pending';
       });

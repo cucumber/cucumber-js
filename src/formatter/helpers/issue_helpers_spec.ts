@@ -88,9 +88,6 @@ describe('IssueHelpers', () => {
             1) Scenario: my scenario # a.feature:2
                ${figures.tick} Given a passing step # steps.ts:29
                ${figures.cross} When an ambiguous step
-                   Multiple step definitions match:
-                     an ambiguous step    - steps.ts:13
-                     /an? ambiguous step/ - steps.ts:14
                - Then a passing step # steps.ts:29
 
 

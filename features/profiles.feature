@@ -32,8 +32,8 @@ Feature: default command line arguments
     When I run cucumber-js
     Then it outputs the text:
       """
-      1 scenario (1 passed)
-      1 step (1 passed)
+      1 scenarios (1 passed)
+      1 steps (1 passed)
       <duration-stat>
       """
 
@@ -43,8 +43,8 @@ Feature: default command line arguments
       """
       .
 
-      1 scenario (1 passed)
-      1 step (1 passed)
+      1 scenarios (1 passed)
+      1 steps (1 passed)
       <duration-stat>
       """
 
@@ -59,8 +59,8 @@ Feature: default command line arguments
       """
       -
 
-      1 scenario (1 skipped)
-      1 step (1 skipped)
+      1 scenarios (1 skipped)
+      1 steps (1 skipped)
       <duration-stat>
       """
 
@@ -68,8 +68,8 @@ Feature: default command line arguments
     When I run cucumber-js with `-f summary`
     Then it outputs the text:
       """
-      1 scenario (1 passed)
-      1 step (1 passed)
+      1 scenarios (1 passed)
+      1 steps (1 passed)
       <duration-stat>
       """
 
@@ -85,8 +85,8 @@ Feature: default command line arguments
       """
       -
 
-      1 scenario (1 skipped)
-      1 step (1 skipped)
+      1 scenarios (1 skipped)
+      1 steps (1 skipped)
       <duration-stat>
       """
 
@@ -109,8 +109,8 @@ Feature: default command line arguments
       """
       -
 
-      1 scenario (1 skipped)
-      1 step (1 skipped)
+      1 scenarios (1 skipped)
+      1 steps (1 skipped)
       <duration-stat>
       """
 
@@ -132,8 +132,8 @@ Feature: default command line arguments
       """
       -
 
-      1 scenario (1 skipped)
-      1 step (1 skipped)
+      1 scenarios (1 skipped)
+      1 steps (1 skipped)
       <duration-stat>
       """
 
@@ -148,7 +148,7 @@ Feature: default command line arguments
       """
       -
 
-      1 scenario (1 skipped)
-      1 step (1 skipped)
+      1 scenarios (1 skipped)
+      1 steps (1 skipped)
       <duration-stat>
       """

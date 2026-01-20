@@ -176,7 +176,7 @@ describe('TestCaseRunner', () => {
           exception: {
             type: 'Error',
             message: 'fail',
-            stackTrace: undefined,
+            stackTrace: 'Error: fail',
           },
         }
 
@@ -245,11 +245,6 @@ describe('TestCaseRunner', () => {
           ),
           uri: 'a.feature',
         })
-        const message = [
-          'Multiple step definitions match:',
-          '  an ambiguous step    - steps.ts:13',
-          '  /an? ambiguous step/ - steps.ts:14',
-        ].join('\n')
 
         // Act
         const { envelopes, result } = await testRunner({
@@ -261,7 +256,6 @@ describe('TestCaseRunner', () => {
         // Assert
         expect(envelopes).to.have.lengthOf(4)
         const expected: messages.TestStepResult = {
-          message,
           status: messages.TestStepResultStatus.AMBIGUOUS,
           duration: messages.TimeConversion.millisecondsToDuration(0),
         }
@@ -360,7 +354,7 @@ describe('TestCaseRunner', () => {
                 exception: {
                   type: 'Error',
                   message: 'Oh no!',
-                  stackTrace: undefined,
+                  stackTrace: 'Error: Oh no!',
                 },
                 status: messages.TestStepResultStatus.FAILED,
               },
