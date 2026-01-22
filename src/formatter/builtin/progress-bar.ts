@@ -9,6 +9,5 @@ export default {
       stream: stream as WriteStream,
     })
     on('message', (envelope) => printer.update(envelope))
-    return () => printer.cleanup()
   },
 } satisfies FormatterPlugin
