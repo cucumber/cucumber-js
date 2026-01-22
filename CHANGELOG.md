@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Deprecated
+- Deprecate colorsEnabled format option in favour of environment variables ([#2729](https://github.com/cucumber/cucumber-js/pull/2729))
 
 ## [12.5.0] - 2025-12-26
 ### Added

@@ -36,7 +36,7 @@ This option is repeatable, so you can use it multiple times and the objects will
 
 Some common options supported by built-in formatters:
 
-- `colorsEnabled` - [see below](#colored-output)
+- `colorsEnabled` - [see below](#colored-output) (deprecated)
 - `printAttachments` - if set to `false`, attachments won't be part of progress bars and summary reports
 
 Some formatters have options that are only applicable to them. These options will be under a key that matches the formatter name, like this:
@@ -46,11 +46,11 @@ Some formatters have options that are only applicable to them. These options wil
 
 ## Colored output
 
-Many formatters, including the built-in ones, emit some colored output. By default, Cucumber will automatically detect the colors support of the output stream and decide whether to emit colors accordingly. This check comes via the [supports-colors](https://github.com/chalk/supports-color) library and is pretty comprehensive, including awareness of commonly-used  operating systems and CI platforms that represent edge cases.
+Many formatters, including the built-in ones, emit some colored output. By default, Cucumber will automatically detect the colors support of the output stream and decide whether to emit colors accordingly. This check comes via the [supports-colors](https://github.com/chalk/supports-color) library and is pretty comprehensive, including awareness of commonly-used operating systems and CI platforms that represent edge cases.
 
-If you'd like to override the auto-detection behaviour, you can provide the `colorsEnabled` format option - either `true` to forcibly emit colors, or `false` to forcibly disable them.
+If you'd like to override the auto-detection behaviour, set the `FORCE_COLOR` environment variable to `1` to forcibly enable colors, or `0` to forcibly disable them. This is a cross-tool standard that will also influence other tools in your stack such as assertion libraries.
 
-It's worth noting that this option only influences output that Cucumber is in control of. Other tools in your stack such as assertion libraries might have their own way of handling colors. For this reason we'd recommend setting the `FORCE_COLOR` environment variable if you want to forcibly enable (by setting it to `1`) or disable (by setting it to `0`) colors, as a variety of tools (including Cucumber) will honour it.
+> ⚠️ The `colorsEnabled` format option is deprecated and will be removed in a future version. See [deprecations](./deprecations.md#colorsenabled-format-option) for details.
 
 ## Built-in formatters
 
