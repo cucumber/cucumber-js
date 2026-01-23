@@ -22,7 +22,7 @@ const CHARACTERS: Map<messages.TestStepResultStatus, string> = new Map([
   [messages.TestStepResultStatus.UNDEFINED, '?'],
 ])
 
-function getStepMessage(testStep: IParsedTestStep): string {
+function getStepMessage(testStep: IParsedTestStep): string | undefined {
   switch (testStep.result.status) {
     case messages.TestStepResultStatus.AMBIGUOUS:
     case messages.TestStepResultStatus.FAILED:
@@ -80,7 +80,7 @@ function formatStep({
     })
   }
   const message = getStepMessage(testStep)
-  if (message !== '') {
+  if (message) {
     text += `${indentString(colorFn(message), 4)}\n`
   }
   return text

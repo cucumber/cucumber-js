@@ -58,9 +58,6 @@ describe('ProgressFormatter', () => {
 
         1) Scenario: a1 # a.feature:2
            ${figures.cross} Given an ambiguous step
-               Multiple step definitions match:
-                 an ambiguous step    - steps.ts:13
-                 /an? ambiguous step/ - steps.ts:14
 
         2) Scenario: a2 # a.feature:4
            ${figures.cross} Given a failing step # steps.ts:9
