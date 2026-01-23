@@ -260,7 +260,7 @@
   },
   "devDependencies": {
     "@cucumber/compatibility-kit": "^26.0.0",
-    "@cucumber/query": "14.7.0",
+    "@cucumber/query": "15.0.1",
     "@eslint/compat": "^2.0.0",
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.29.0",
