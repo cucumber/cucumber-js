@@ -227,7 +227,7 @@
     "@cucumber/message-streams": "4.0.1",
     "@cucumber/messages": "31.2.0",
     "@cucumber/pretty-formatter": "1.0.1",
-    "@cucumber/tag-expressions": "8.1.0",
+    "@cucumber/tag-expressions": "9.0.0",
     "assertion-error-formatter": "^3.0.0",
     "capital-case": "^1.0.4",
     "chalk": "^4.1.2",
