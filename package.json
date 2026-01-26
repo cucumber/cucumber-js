@@ -217,7 +217,7 @@
     "node": "20 || 22 || 24 || 25"
   },
   "dependencies": {
-    "@cucumber/ci-environment": "12.0.0",
+    "@cucumber/ci-environment": "13.0.0",
     "@cucumber/cucumber-expressions": "18.1.0",
     "@cucumber/gherkin": "37.0.1",
     "@cucumber/gherkin-streams": "6.0.0",
