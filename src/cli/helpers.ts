@@ -81,11 +81,23 @@ const makeSourceReference = (source: ILineAndUri) => ({
   },
 })
 
-function emitParameterTypes(
+interface OrderedEnvelope {
+  order: number
+  envelope: messages.Envelope
+}
+
+function extractPatternSource(pattern: string | RegExp) {
+  if (pattern instanceof RegExp) {
+    return pattern.flags ? pattern.toString() : pattern.source
+  }
+  return pattern
+}
+
+function collectParameterTypeEnvelopes(
   supportCodeLibrary: SupportCodeLibrary,
-  eventBroadcaster: EventEmitter,
   newId: IdGenerator.NewId
-): void {
+): OrderedEnvelope[] {
+  const ordered: OrderedEnvelope[] = []
   for (const parameterType of supportCodeLibrary.parameterTypeRegistry
     .parameterTypes) {
     if (parameterType.builtin) {
@@ -93,18 +105,105 @@ function emitParameterTypes(
     }
     const source =
       supportCodeLibrary.parameterTypeRegistry.lookupSource(parameterType)
-    const envelope: messages.Envelope = {
-      parameterType: {
-        id: newId(),
-        name: parameterType.name,
-        preferForRegularExpressionMatch: parameterType.preferForRegexpMatch,
-        regularExpressions: parameterType.regexpStrings,
-        useForSnippets: parameterType.useForSnippets,
-        sourceReference: makeSourceReference(source),
+    ordered.push({
+      order: source.order,
+      envelope: {
+        parameterType: {
+          id: newId(),
+          name: parameterType.name,
+          preferForRegularExpressionMatch: parameterType.preferForRegexpMatch,
+          regularExpressions: parameterType.regexpStrings,
+          useForSnippets: parameterType.useForSnippets,
+          sourceReference: makeSourceReference(source),
+        },
       },
-    }
-    eventBroadcaster.emit('envelope', envelope)
+    })
   }
+  return ordered
+}
+
+function collectStepDefinitionEnvelopes(
+  supportCodeLibrary: SupportCodeLibrary
+): OrderedEnvelope[] {
+  return supportCodeLibrary.stepDefinitions.map((stepDefinition) => ({
+    order: stepDefinition.order,
+    envelope: {
+      stepDefinition: {
+        id: stepDefinition.id,
+        pattern: {
+          source: extractPatternSource(stepDefinition.pattern),
+          type:
+            typeof stepDefinition.pattern === 'string'
+              ? messages.StepDefinitionPatternType.CUCUMBER_EXPRESSION
+              : messages.StepDefinitionPatternType.REGULAR_EXPRESSION,
+        },
+        sourceReference: makeSourceReference(stepDefinition),
+      },
+    },
+  }))
+}
+
+function collectTestCaseHookEnvelopes(
+  supportCodeLibrary: SupportCodeLibrary
+): OrderedEnvelope[] {
+  const ordered: OrderedEnvelope[] = []
+  ;[
+    [
+      supportCodeLibrary.beforeTestCaseHookDefinitions,
+      HookType.BEFORE_TEST_CASE,
+    ] as const,
+    [
+      supportCodeLibrary.afterTestCaseHookDefinitions,
+      HookType.AFTER_TEST_CASE,
+    ] as const,
+  ].forEach(([hooks, type]) => {
+    hooks.forEach((hook) => {
+      ordered.push({
+        order: hook.order,
+        envelope: {
+          hook: {
+            id: hook.id,
+            type,
+            name: hook.name,
+            tagExpression: hook.tagExpression,
+            sourceReference: makeSourceReference(hook),
+          },
+        } satisfies Envelope,
+      })
+    })
+  })
+  return ordered
+}
+
+function collectTestRunHookEnvelopes(
+  supportCodeLibrary: SupportCodeLibrary
+): OrderedEnvelope[] {
+  const ordered: OrderedEnvelope[] = []
+  ;[
+    [
+      supportCodeLibrary.beforeTestRunHookDefinitions,
+      HookType.BEFORE_TEST_RUN,
+    ] as const,
+    [
+      supportCodeLibrary.afterTestRunHookDefinitions,
+      HookType.AFTER_TEST_RUN,
+    ] as const,
+  ].forEach(([hooks, type]) => {
+    hooks.forEach((hook) => {
+      ordered.push({
+        order: hook.order,
+        envelope: {
+          hook: {
+            id: hook.id,
+            type,
+            name: hook.name,
+            sourceReference: makeSourceReference(hook),
+          },
+        } satisfies Envelope,
+      })
+    })
+  })
+  return ordered
 }
 
 function emitUndefinedParameterTypes(
@@ -119,90 +218,6 @@ function emitUndefinedParameterTypes(
   }
 }
 
-function emitStepDefinitions(
-  supportCodeLibrary: SupportCodeLibrary,
-  eventBroadcaster: EventEmitter
-): void {
-  supportCodeLibrary.stepDefinitions.forEach((stepDefinition) => {
-    const envelope: messages.Envelope = {
-      stepDefinition: {
-        id: stepDefinition.id,
-        pattern: {
-          source: extractPatternSource(stepDefinition.pattern),
-          type:
-            typeof stepDefinition.pattern === 'string'
-              ? messages.StepDefinitionPatternType.CUCUMBER_EXPRESSION
-              : messages.StepDefinitionPatternType.REGULAR_EXPRESSION,
-        },
-        sourceReference: makeSourceReference(stepDefinition),
-      },
-    }
-    eventBroadcaster.emit('envelope', envelope)
-  })
-}
-
-function extractPatternSource(pattern: string | RegExp) {
-  if (pattern instanceof RegExp) {
-    return pattern.flags ? pattern.toString() : pattern.source
-  }
-  return pattern
-}
-
-function emitTestCaseHooks(
-  supportCodeLibrary: SupportCodeLibrary,
-  eventBroadcaster: EventEmitter
-): void {
-  ;[
-    [
-      supportCodeLibrary.beforeTestCaseHookDefinitions,
-      HookType.BEFORE_TEST_CASE,
-    ] as const,
-    [
-      supportCodeLibrary.afterTestCaseHookDefinitions,
-      HookType.AFTER_TEST_CASE,
-    ] as const,
-  ].forEach(([hooks, type]) => {
-    hooks.forEach((hook) => {
-      eventBroadcaster.emit('envelope', {
-        hook: {
-          id: hook.id,
-          type,
-          name: hook.name,
-          tagExpression: hook.tagExpression,
-          sourceReference: makeSourceReference(hook),
-        },
-      } satisfies Envelope)
-    })
-  })
-}
-
-function emitTestRunHooks(
-  supportCodeLibrary: SupportCodeLibrary,
-  eventBroadcaster: EventEmitter
-): void {
-  ;[
-    [
-      supportCodeLibrary.beforeTestRunHookDefinitions,
-      HookType.BEFORE_TEST_RUN,
-    ] as const,
-    [
-      supportCodeLibrary.afterTestRunHookDefinitions,
-      HookType.AFTER_TEST_RUN,
-    ] as const,
-  ].forEach(([hooks, type]) => {
-    hooks.forEach((hook) => {
-      eventBroadcaster.emit('envelope', {
-        hook: {
-          id: hook.id,
-          type,
-          name: hook.name,
-          sourceReference: makeSourceReference(hook),
-        },
-      } satisfies Envelope)
-    })
-  })
-}
-
 export function emitSupportCodeMessages({
   eventBroadcaster,
   supportCodeLibrary,
@@ -212,9 +227,17 @@ export function emitSupportCodeMessages({
   supportCodeLibrary: SupportCodeLibrary
   newId: IdGenerator.NewId
 }): void {
-  emitParameterTypes(supportCodeLibrary, eventBroadcaster, newId)
+  const orderedEnvelopes: OrderedEnvelope[] = [
+    ...collectParameterTypeEnvelopes(supportCodeLibrary, newId),
+    ...collectStepDefinitionEnvelopes(supportCodeLibrary),
+    ...collectTestCaseHookEnvelopes(supportCodeLibrary),
+    ...collectTestRunHookEnvelopes(supportCodeLibrary),
+  ]
+
+  orderedEnvelopes.sort((a, b) => a.order - b.order)
+  for (const { envelope } of orderedEnvelopes) {
+    eventBroadcaster.emit('envelope', envelope)
+  }
+
   emitUndefinedParameterTypes(supportCodeLibrary, eventBroadcaster)
-  emitStepDefinitions(supportCodeLibrary, eventBroadcaster)
-  emitTestCaseHooks(supportCodeLibrary, eventBroadcaster)
-  emitTestRunHooks(supportCodeLibrary, eventBroadcaster)
 }

@@ -66,6 +66,7 @@ describe('helpers', () => {
       expect(envelopes[0].meta.implementation.name).to.eq('cucumber-js')
     })
   })
+
   describe('emitSupportCodeMessages', () => {
     it('emits messages for parameter types', () => {
       const parameterTypeRegistry = new SourcedParameterTypeRegistry()
@@ -81,7 +82,8 @@ describe('helpers', () => {
         {
           line: 4,
           uri: 'features/support/parameter-types.js',
-        }
+        },
+        0
       )
 
       const envelopes = testEmitSupportCodeMessages({
@@ -117,6 +119,7 @@ describe('helpers', () => {
             id: '0',
             line: 9,
             options: {},
+            order: 0,
             uri: 'features/support/cukes.js',
             keyword: 'Given',
             pattern: 'I have {int} cukes in my belly',
@@ -147,6 +150,7 @@ describe('helpers', () => {
       ]
       expect(envelopes).to.deep.eq(expectedEnvelopes)
     })
+
     it('emits messages for step definitions using regular expressions', () => {
       const envelopes = testEmitSupportCodeMessages({
         stepDefinitions: [
@@ -156,6 +160,7 @@ describe('helpers', () => {
             id: '0',
             line: 9,
             options: {},
+            order: 0,
             uri: 'features/support/cukes.js',
             keyword: 'Given',
             pattern: /I have (\d+) cukes in my belly/,
@@ -186,6 +191,7 @@ describe('helpers', () => {
       ]
       expect(envelopes).to.deep.eq(expectedEnvelopes)
     })
+
     it('emits messages for test case level hooks', () => {
       const envelopes = testEmitSupportCodeMessages({
         beforeTestCaseHookDefinitions: [
@@ -198,6 +204,7 @@ describe('helpers', () => {
               name: 'before hook',
               tags: '@hooks-tho',
             },
+            order: 0,
             uri: 'features/support/hooks.js',
           }),
         ],
@@ -210,6 +217,7 @@ describe('helpers', () => {
             options: {
               name: 'after hook',
             },
+            order: 1,
             uri: 'features/support/hooks.js',
           }),
           new TestCaseHookDefinition({
@@ -218,6 +226,7 @@ describe('helpers', () => {
             id: '2',
             line: 11,
             options: {},
+            order: 2,
             uri: 'features/support/hooks.js',
           }),
         ],
@@ -269,6 +278,7 @@ describe('helpers', () => {
       ]
       expect(envelopes).to.deep.eq(expectedEnvelopes)
     })
+
     it('emits messages for test run level hooks', () => {
       const envelopes = testEmitSupportCodeMessages({
         beforeTestRunHookDefinitions: [
@@ -278,6 +288,7 @@ describe('helpers', () => {
             id: '0',
             line: 3,
             options: {},
+            order: 0,
             uri: 'features/support/run-hooks.js',
           }),
         ],
@@ -290,6 +301,7 @@ describe('helpers', () => {
             options: {
               name: 'special cleanup thing',
             },
+            order: 1,
             uri: 'features/support/run-hooks.js',
           }),
           new TestRunHookDefinition({
@@ -298,6 +310,7 @@ describe('helpers', () => {
             id: '2',
             line: 11,
             options: {},
+            order: 2,
             uri: 'features/support/run-hooks.js',
           }),
         ],
