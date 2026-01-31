@@ -1,6 +1,6 @@
 import { Plugin } from '../plugin'
 import PickleFilter from '../pickle_filter'
-import { orderPickles } from '../cli/helpers'
+import { orderPickles } from './order_pickles'
 
 export const filterPlugin: Plugin = {
   type: 'plugin',

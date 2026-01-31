@@ -1,49 +1,15 @@
 import { EventEmitter } from 'node:events'
 import os from 'node:os'
-import shuffle from 'knuth-shuffle-seeded'
 import * as messages from '@cucumber/messages'
 import { Envelope, HookType, IdGenerator } from '@cucumber/messages'
 import detectCiEnvironment from '@cucumber/ci-environment'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { version } from '../version'
-import { ILogger } from '../environment'
 import { ILineAndUri } from '../types'
-import { IPickleOrder } from '../filter'
 
-// Orders the pickleIds in place - morphs input
-export function orderPickles<T = string>(
-  pickleIds: T[],
-  order: IPickleOrder,
-  logger: ILogger
-): void {
-  const [type, seed] = splitOrder(order)
-  switch (type) {
-    case 'defined':
-      break
-    case 'reverse':
-      pickleIds.reverse()
-      break
-    case 'random':
-      if (seed === '') {
-        const newSeed = Math.floor(Math.random() * 1000 * 1000).toString()
-        logger.warn(`Random order using seed: ${newSeed}`)
-        shuffle(pickleIds, newSeed)
-      } else {
-        shuffle(pickleIds, seed)
-      }
-      break
-    default:
-      throw new Error(
-        'Unrecognized order type. Should be `defined` or `random`'
-      )
-  }
-}
-
-function splitOrder(order: string) {
-  if (!order.includes(':')) {
-    return [order, '']
-  }
-  return order.split(':')
+interface OrderedEnvelope {
+  order: number
+  envelope: messages.Envelope
 }
 
 export async function emitMetaMessage(
@@ -74,16 +40,13 @@ export async function emitMetaMessage(
   })
 }
 
-const makeSourceReference = (source: ILineAndUri) => ({
-  uri: source.uri,
-  location: {
-    line: source.line,
-  },
-})
-
-interface OrderedEnvelope {
-  order: number
-  envelope: messages.Envelope
+function makeSourceReference(source: ILineAndUri) {
+  return {
+    uri: source.uri,
+    location: {
+      line: source.line,
+    },
+  }
 }
 
 function extractPatternSource(pattern: string | RegExp) {
@@ -96,8 +59,8 @@ function extractPatternSource(pattern: string | RegExp) {
 function collectParameterTypeEnvelopes(
   supportCodeLibrary: SupportCodeLibrary,
   newId: IdGenerator.NewId
-): OrderedEnvelope[] {
-  const ordered: OrderedEnvelope[] = []
+): ReadonlyArray<OrderedEnvelope> {
+  const ordered: Array<OrderedEnvelope> = []
   for (const parameterType of supportCodeLibrary.parameterTypeRegistry
     .parameterTypes) {
     if (parameterType.builtin) {
@@ -124,7 +87,7 @@ function collectParameterTypeEnvelopes(
 
 function collectStepDefinitionEnvelopes(
   supportCodeLibrary: SupportCodeLibrary
-): OrderedEnvelope[] {
+): ReadonlyArray<OrderedEnvelope> {
   return supportCodeLibrary.stepDefinitions.map((stepDefinition) => ({
     order: stepDefinition.order,
     envelope: {
@@ -143,11 +106,10 @@ function collectStepDefinitionEnvelopes(
   }))
 }
 
-function collectTestCaseHookEnvelopes(
+function collectHookEnvelopes(
   supportCodeLibrary: SupportCodeLibrary
-): OrderedEnvelope[] {
-  const ordered: OrderedEnvelope[] = []
-  ;[
+): ReadonlyArray<OrderedEnvelope> {
+  const allHooks = [
     [
       supportCodeLibrary.beforeTestCaseHookDefinitions,
       HookType.BEFORE_TEST_CASE,
@@ -156,30 +118,6 @@ function collectTestCaseHookEnvelopes(
       supportCodeLibrary.afterTestCaseHookDefinitions,
       HookType.AFTER_TEST_CASE,
     ] as const,
-  ].forEach(([hooks, type]) => {
-    hooks.forEach((hook) => {
-      ordered.push({
-        order: hook.order,
-        envelope: {
-          hook: {
-            id: hook.id,
-            type,
-            name: hook.name,
-            tagExpression: hook.tagExpression,
-            sourceReference: makeSourceReference(hook),
-          },
-        } satisfies Envelope,
-      })
-    })
-  })
-  return ordered
-}
-
-function collectTestRunHookEnvelopes(
-  supportCodeLibrary: SupportCodeLibrary
-): OrderedEnvelope[] {
-  const ordered: OrderedEnvelope[] = []
-  ;[
     [
       supportCodeLibrary.beforeTestRunHookDefinitions,
       HookType.BEFORE_TEST_RUN,
@@ -188,7 +126,9 @@ function collectTestRunHookEnvelopes(
       supportCodeLibrary.afterTestRunHookDefinitions,
       HookType.AFTER_TEST_RUN,
     ] as const,
-  ].forEach(([hooks, type]) => {
+  ]
+  const ordered: Array<OrderedEnvelope> = []
+  allHooks.forEach(([hooks, type]) => {
     hooks.forEach((hook) => {
       ordered.push({
         order: hook.order,
@@ -197,6 +137,9 @@ function collectTestRunHookEnvelopes(
             id: hook.id,
             type,
             name: hook.name,
+            ...('tagExpression' in hook && {
+              tagExpression: hook.tagExpression,
+            }),
             sourceReference: makeSourceReference(hook),
           },
         } satisfies Envelope,
@@ -204,18 +147,6 @@ function collectTestRunHookEnvelopes(
     })
   })
   return ordered
-}
-
-function emitUndefinedParameterTypes(
-  supportCodeLibrary: SupportCodeLibrary,
-  eventBroadcaster: EventEmitter
-): void {
-  for (const undefinedParameterType of supportCodeLibrary.undefinedParameterTypes) {
-    const envelope: messages.Envelope = {
-      undefinedParameterType,
-    }
-    eventBroadcaster.emit('envelope', envelope)
-  }
 }
 
 export function emitSupportCodeMessages({
@@ -227,17 +158,18 @@ export function emitSupportCodeMessages({
   supportCodeLibrary: SupportCodeLibrary
   newId: IdGenerator.NewId
 }): void {
-  const orderedEnvelopes: OrderedEnvelope[] = [
+  const orderedEnvelopes = [
     ...collectParameterTypeEnvelopes(supportCodeLibrary, newId),
     ...collectStepDefinitionEnvelopes(supportCodeLibrary),
-    ...collectTestCaseHookEnvelopes(supportCodeLibrary),
-    ...collectTestRunHookEnvelopes(supportCodeLibrary),
+    ...collectHookEnvelopes(supportCodeLibrary),
   ]
+  orderedEnvelopes
+    .sort((a, b) => a.order - b.order)
+    .forEach(({ envelope }) => eventBroadcaster.emit('envelope', envelope))
 
-  orderedEnvelopes.sort((a, b) => a.order - b.order)
-  for (const { envelope } of orderedEnvelopes) {
-    eventBroadcaster.emit('envelope', envelope)
-  }
-
-  emitUndefinedParameterTypes(supportCodeLibrary, eventBroadcaster)
+  supportCodeLibrary.undefinedParameterTypes
+    .map((undefinedParameterType) => ({
+      undefinedParameterType,
+    }))
+    .forEach((envelope) => eventBroadcaster.emit('envelope', envelope))
 }

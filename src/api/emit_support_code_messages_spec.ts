@@ -13,7 +13,10 @@ import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { SourcedParameterTypeRegistry } from '../support_code_library_builder/sourced_parameter_type_registry'
-import { emitMetaMessage, emitSupportCodeMessages } from './helpers'
+import {
+  emitMetaMessage,
+  emitSupportCodeMessages,
+} from './emit_support_code_messages'
 
 const noopFunction = (): void => {
   // no code
@@ -54,7 +57,7 @@ function testEmitSupportCodeMessages(
   return envelopes
 }
 
-describe('helpers', () => {
+describe('emit_support_code_messages', () => {
   describe('emitMetaMessage', () => {
     it('emits a meta message', async () => {
       const envelopes: messages.Envelope[] = []
