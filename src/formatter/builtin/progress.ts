@@ -7,8 +7,8 @@ export default {
     const printer = new ProgressPrinter({
       stream,
       options: {
-        summarise: true
-      }
+        summarise: true,
+      },
     })
     on('message', (envelope) => printer.update(envelope))
   },
