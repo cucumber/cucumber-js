@@ -17,6 +17,8 @@ const CCK_FEATURES_PATH = 'node_modules/@cucumber/compatibility-kit/features'
 const CCK_IMPLEMENTATIONS_PATH = 'compatibility/features'
 
 const UNSUPPORTED = [
+  // not a test sample
+  'all-statuses',
   // we aren't fully compliant yet for global hooks
   'global-hooks-attachments',
   'global-hooks-beforeall-error',

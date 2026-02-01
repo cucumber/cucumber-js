@@ -13,6 +13,7 @@ describe('TestCaseHookDefinition', () => {
           code: undefined,
           id: '',
           line: 0,
+          order: 0,
           uri: '',
           options: {},
         })
@@ -33,6 +34,7 @@ describe('TestCaseHookDefinition', () => {
           code: undefined,
           id: '',
           line: 0,
+          order: 0,
           uri: '',
           options: { tags: '@tagA' },
         })
@@ -53,6 +55,7 @@ describe('TestCaseHookDefinition', () => {
           code: undefined,
           id: '',
           line: 0,
+          order: 0,
           uri: '',
           options: { tags: '@tagA' },
         })

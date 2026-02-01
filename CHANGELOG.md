@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [12.6.0] - 2026-01-22
 ### Deprecated
 - Deprecate colorsEnabled format option in favour of environment variables ([#2729](https://github.com/cucumber/cucumber-js/pull/2729))
 
@@ -1716,7 +1718,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.5.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.6.0...HEAD
+[12.6.0]: https://github.com/cucumber/cucumber-js/compare/v12.5.0...v12.6.0
 [12.5.0]: https://github.com/cucumber/cucumber-js/compare/v12.4.0...v12.5.0
 [12.4.0]: https://github.com/cucumber/cucumber-js/compare/v12.3.0...v12.4.0
 [12.3.0]: https://github.com/cucumber/cucumber-js/compare/v12.2.0...v12.3.0
