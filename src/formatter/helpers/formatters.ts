@@ -1,6 +1,5 @@
 import Formatter from '../.'
 import JsonFormatter from '../json_formatter'
-import ProgressBarFormatter from '../progress_bar_formatter'
 import ProgressFormatter from '../progress_formatter'
 import RerunFormatter from '../rerun_formatter'
 import SnippetsFormatter from '../snippets_formatter'
@@ -13,7 +12,6 @@ const Formatters = {
     return {
       json: JsonFormatter,
       progress: ProgressFormatter,
-      'progress-bar': ProgressBarFormatter,
       rerun: RerunFormatter,
       snippets: SnippetsFormatter,
       summary: SummaryFormatter,
