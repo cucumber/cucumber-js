@@ -81,21 +81,21 @@ class EventDataCollector {
     // (undocumented)
     storeAttachment(attachment: messages.Attachment): void;
     // (undocumented)
-    storeTestCaseResult({ testCaseStartedId, willBeRetried, }: messages.TestCaseFinished): void;
+    storeTestCaseResult(input: messages.TestCaseFinished): void;
     // (undocumented)
-    storeTestStepResult({ testCaseStartedId, testStepId, testStepResult, }: messages.TestStepFinished): void;
+    storeTestStepResult(input: messages.TestStepFinished): void;
     // (undocumented)
     readonly undefinedParameterTypes: messages.UndefinedParameterType[];
 }
 
 // @public (undocumented)
-function formatIssue({ colorFns, number, snippetBuilder, testCaseAttempt, supportCodeLibrary, printAttachments, }: IFormatIssueRequest): string;
+function formatIssue(input: IFormatIssueRequest): string;
 
 // @public (undocumented)
 function formatLocation(obj: ILineAndUri, cwd?: string): string;
 
 // @public (undocumented)
-function formatSummary({ colorFns, testCaseAttempts, testRunDuration, }: IFormatSummaryRequest): string;
+function formatSummary(input: IFormatSummaryRequest): string;
 
 // @public (undocumented)
 export class Formatter {
@@ -126,7 +126,7 @@ export class Formatter {
 export const FormatterBuilder: {
     build(FormatterConstructor: string | typeof Formatter, options: IBuildOptions): Promise<Formatter>;
     getConstructorByType(type: string, cwd: string): Promise<typeof Formatter>;
-    getStepDefinitionSnippetBuilder({ cwd, snippetInterface, snippetSyntax, supportCodeLibrary, }: IGetStepDefinitionSnippetBuilderOptions): Promise<StepDefinitionSnippetBuilder>;
+    getStepDefinitionSnippetBuilder(input: IGetStepDefinitionSnippetBuilderOptions): Promise<StepDefinitionSnippetBuilder>;
     loadCustomClass(type: "formatter" | "syntax", descriptor: string, cwd: string): Promise<any>;
     loadFile(urlOrName: URL | string): Promise<any>;
     resolveConstructor(ImportedCode: any): any;
@@ -164,22 +164,22 @@ function getGherkinScenarioMap(gherkinDocument: messages.GherkinDocument): Recor
 function getGherkinStepMap(gherkinDocument: messages.GherkinDocument): Record<string, messages.Step>;
 
 // @public (undocumented)
-function getPickleLocation({ gherkinDocument, pickle, }: IGetPickleLocationRequest): messages.Location;
+function getPickleLocation(input: IGetPickleLocationRequest): messages.Location;
 
 // @public (undocumented)
 function getPickleStepMap(pickle: messages.Pickle): Record<string, messages.PickleStep>;
 
 // @public (undocumented)
-function getScenarioDescription({ pickle, gherkinScenarioMap, }: IGetScenarioDescriptionRequest): string;
+function getScenarioDescription(input: IGetScenarioDescriptionRequest): string;
 
 // @public (undocumented)
-function getStepKeyword({ pickleStep, gherkinStepMap, }: IGetStepKeywordRequest): string;
+function getStepKeyword(input: IGetStepKeywordRequest): string;
 
 // @public (undocumented)
-function getStepKeywordType({ keyword, language, previousKeywordType, }: IGetStepKeywordTypeOptions): KeywordType;
+function getStepKeywordType(input: IGetStepKeywordTypeOptions): KeywordType;
 
 // @public (undocumented)
-function getUsage({ stepDefinitions, eventDataCollector, }: IGetUsageRequest): IUsage[];
+function getUsage(input: IGetUsageRequest): IUsage[];
 
 declare namespace GherkinDocumentParser {
     export {
@@ -361,19 +361,19 @@ export class JsonFormatter extends Formatter {
     // (undocumented)
     formatStepArgument(stepArgument: messages.PickleStepArgument, gherkinStep: messages.Step): any;
     // (undocumented)
-    getFeatureData({ feature, elements, uri, }: IBuildJsonFeatureOptions): IJsonFeature;
+    getFeatureData(input: IBuildJsonFeatureOptions): IJsonFeature;
     // (undocumented)
     getFeatureTags(feature: messages.Feature): IJsonTag[];
     // (undocumented)
-    getScenarioData({ feature, gherkinScenarioLocationMap, gherkinExampleRuleMap, gherkinScenarioMap, pickle, steps, }: IBuildJsonScenarioOptions): IJsonScenario;
+    getScenarioData(input: IBuildJsonScenarioOptions): IJsonScenario;
     // (undocumented)
-    getScenarioTags({ feature, pickle, gherkinScenarioMap, }: {
+    getScenarioTags(input: {
         feature: messages.Feature;
         pickle: messages.Pickle;
         gherkinScenarioMap: Record<string, messages.Scenario>;
     }): IJsonTag[];
     // (undocumented)
-    getStepData({ isBeforeHook, gherkinStepMap, pickleStepMap, testStep, testStepAttachments, testStepResult, }: IBuildJsonStepOptions): IJsonStep;
+    getStepData(input: IBuildJsonStepOptions): IJsonStep;
     // (undocumented)
     onTestRunFinished(): void;
 }
@@ -396,7 +396,7 @@ declare namespace parallelCanAssignHelpers {
 export { parallelCanAssignHelpers }
 
 // @public (undocumented)
-function parseTestCaseAttempt({ testCaseAttempt, snippetBuilder, supportCodeLibrary, }: IParseTestCaseAttemptRequest): IParsedTestCaseAttempt;
+function parseTestCaseAttempt(input: IParseTestCaseAttemptRequest): IParsedTestCaseAttempt;
 
 declare namespace PickleParser {
     export {
@@ -416,7 +416,7 @@ export class ProgressFormatter extends SummaryFormatter {
     // (undocumented)
     static readonly documentation: string;
     // (undocumented)
-    logProgress({ testStepResult: { status } }: TestStepFinished): void;
+    logProgress(input: TestStepFinished): void;
 }
 
 // @public (undocumented)
@@ -464,7 +464,7 @@ export class SummaryFormatter extends Formatter {
     // (undocumented)
     static readonly documentation: string;
     // (undocumented)
-    logIssues({ issues, title }: ILogIssuesRequest): void;
+    logIssues(input: ILogIssuesRequest): void;
     // (undocumented)
     logSummary(testRunDuration: messages.Duration): void;
 }
@@ -478,7 +478,7 @@ export class TestCaseHookDefinition extends Definition implements IDefinition {
     // (undocumented)
     appliesToTestCase(pickle: messages.Pickle): boolean;
     // (undocumented)
-    getInvocationParameters({ hookParameter, }: IGetInvocationDataRequest): Promise<IGetInvocationDataResponse>;
+    getInvocationParameters(input: IGetInvocationDataRequest): Promise<IGetInvocationDataResponse>;
     // (undocumented)
     readonly name: string;
     // (undocumented)
@@ -516,7 +516,7 @@ export const When: IDefineStep;
 
 // @public (undocumented)
 export class World<ParametersType = any> implements IWorld<ParametersType> {
-    constructor({ attach, log, link, parameters, }: IWorldOptions<ParametersType>);
+    constructor(input: IWorldOptions<ParametersType>);
     // (undocumented)
     readonly attach: ICreateAttachment;
     // (undocumented)
