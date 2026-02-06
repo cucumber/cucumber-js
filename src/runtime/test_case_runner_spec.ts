@@ -174,7 +174,7 @@ describe('TestCaseRunner', () => {
           status: messages.TestStepResultStatus.FAILED,
           message: 'fail',
           exception: {
-            type: 'Error',
+            type: 'String',
             message: 'fail',
             stackTrace: undefined,
           },
@@ -358,7 +358,7 @@ describe('TestCaseRunner', () => {
                 duration: messages.TimeConversion.millisecondsToDuration(1),
                 message: 'Oh no!',
                 exception: {
-                  type: 'Error',
+                  type: 'String',
                   message: 'Oh no!',
                   stackTrace: undefined,
                 },
