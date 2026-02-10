@@ -295,7 +295,7 @@
     "eslint": "^9.29.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-n": "^17.20.0",
-    "eslint-plugin-unicorn": "^62.0.0",
+    "eslint-plugin-unicorn": "^63.0.0",
     "express": "^5.0.0",
     "fs-extra": "10.1.0",
     "genversion": "3.2.0",
