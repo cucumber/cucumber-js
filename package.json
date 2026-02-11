@@ -291,7 +291,7 @@
     "chai-exclude": "2.1.1",
     "coffeescript": "2.7.0",
     "dependency-lint": "7.1.0",
-    "dirty-chai": "2.0.1",
+    "dirty-chai": "3.0.0",
     "eslint": "^9.29.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-n": "^17.20.0",
