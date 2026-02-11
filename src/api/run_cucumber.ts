@@ -149,7 +149,7 @@ Running from: ${__dirname}
   })
 
   const runtime = await makeRuntime({
-    environment,
+    environment: mergedEnvironment,
     logger,
     eventBroadcaster,
     sourcedPickles: filteredPickles,
