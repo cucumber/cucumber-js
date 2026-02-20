@@ -66,7 +66,6 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ## [11.3.0] - 2025-05-14
 ### Changed
 - Improve error handling in publish plugin ([#2526](https://github.com/cucumber/cucumber-js/pull/2526))
-- Improve type safety in features/support/formatter_output_helpers, removes explicit `any` ([#1648](https://github.com/cucumber/cucumber-js/pull/2106))
 
 ## [11.2.0] - 2025-01-09
 ### Added
