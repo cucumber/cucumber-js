@@ -320,7 +320,7 @@
   },
   "scripts": {
     "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.node.json && shx cp src/wrapper.mjs lib/ && shx cp src/api/wrapper.mjs lib/api/",
-    "cck-test": "mocha 'compatibility/**/*_spec.ts'",
+    "cck-test": "mocha \"compatibility/**/*_spec.ts\"",
     "exports-generate-docs": "typedoc",
     "exports-test": "api-extractor run --config exports/api/api-extractor.json --verbose && api-extractor run --config exports/root/api-extractor.json --verbose",
     "exports-update": "api-extractor run --config exports/api/api-extractor.json --verbose --local && api-extractor run --config exports/root/api-extractor.json --verbose --local",
@@ -341,10 +341,10 @@
     "prepublishOnly": "rm -rf lib && npm run build-local",
     "pretest-coverage": "npm run build-local",
     "pretypes-test": "npm run build-local",
-    "test-coverage": "nyc --silent mocha 'src/**/*_spec.ts' 'compatibility/**/*_spec.ts' && nyc --silent --no-clean node bin/cucumber.js --tags \"not @source-mapping\" && nyc report --reporter=lcov",
+    "test-coverage": "nyc --silent mocha \"src/**/*_spec.ts\" \"compatibility/**/*_spec.ts\" && nyc --silent --no-clean node bin/cucumber.js --tags \"not @source-mapping\" && nyc report --reporter=lcov",
     "test": "npm run lint && npm run exports-test && npm run types-test && npm run unit-test && npm run cck-test && npm run feature-test",
     "types-test": "tsd",
-    "unit-test": "mocha 'src/**/*_spec.ts'"
+    "unit-test": "mocha \"src/**/*_spec.ts\""
   },
   "bin": {
     "cucumber-js": "bin/cucumber.js"
