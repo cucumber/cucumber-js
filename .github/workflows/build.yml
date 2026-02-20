@@ -51,4 +51,4 @@ jobs:
       - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: 22.x
-      - run: npm audit --groups dependencies --audit-level high
+      - run: npm audit --production --audit-level high
