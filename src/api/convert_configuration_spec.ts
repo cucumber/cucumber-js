@@ -20,6 +20,10 @@ describe('convertConfiguration', () => {
         publish: false,
         stdout: 'progress',
       },
+      plugins: {
+        specifiers: [],
+        options: {},
+      },
       runtime: {
         dryRun: false,
         failFast: false,
@@ -36,6 +40,7 @@ describe('convertConfiguration', () => {
         order: 'defined',
         paths: [],
         tagExpression: '',
+        shard: '',
       },
       support: {
         requireModules: [],

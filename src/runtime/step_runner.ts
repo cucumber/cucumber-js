@@ -20,6 +20,11 @@ export interface IRunOptions {
   world: any
 }
 
+export interface RunStepResult {
+  result: messages.TestStepResult
+  error?: any
+}
+
 export async function run({
   defaultTimeout,
   filterStackTraces,
@@ -27,7 +32,7 @@ export async function run({
   step,
   stepDefinition,
   world,
-}: IRunOptions): Promise<messages.TestStepResult> {
+}: IRunOptions): Promise<RunStepResult> {
   const stopwatch = create().start()
   let error: any, result: any, invocationData: IGetInvocationDataResponse
 
@@ -83,9 +88,12 @@ export async function run({
   }
 
   return {
-    duration,
-    status,
-    ...details,
+    result: {
+      duration,
+      status,
+      ...details,
+    },
+    error,
   }
 }
 

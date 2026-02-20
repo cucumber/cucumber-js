@@ -64,6 +64,26 @@ export interface IConfiguration {
    */
   formatOptions: JsonObject
   /**
+   * Name/path of each plugin to use
+   *
+   * @example
+   * [
+   *   "\@cucumber/my-plugin",
+   *   "./custom-plugin.js"
+   * ]
+   * @default []
+   * @remarks
+   * Each item is a module specifier for a plugin to be loaded.
+   */
+  plugin: string[]
+  /**
+   * Options to be provided to plugins
+   * @default \{\}
+   * @remarks
+   * The value must be a JSON-serializable object.
+   */
+  pluginOptions: JsonObject
+  /**
    * Paths to where your support code is
    * @default []
    * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/configuration.md#finding-your-code}
@@ -98,15 +118,15 @@ export interface IConfiguration {
    */
   parallel: number
   /**
+   * Shard tests and execute only the selected shard, format `<index>/<total>`
+   * @default ""
+   */
+  shard: string
+  /**
    * Publish a report of your test run to https://reports.cucumber.io/
    * @default false
    */
   publish: boolean
-  /**
-   * @deprecated no longer needed
-   * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md}
-   */
-  publishQuiet: boolean
   /**
    * Paths to where your support code is, for CommonJS
    * @default []
@@ -151,3 +171,9 @@ export interface IConfiguration {
    */
   worldParameters: JsonObject
 }
+
+/**
+ * Collection of named configuration profiles
+ * @public
+ */
+export type IProfiles = Record<string, Partial<IConfiguration>>

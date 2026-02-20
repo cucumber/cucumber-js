@@ -22,14 +22,6 @@ The `Cli` class is used internally to represent an instance of the command-line 
 
 To adapt, pivot to the `runCucumber` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
 
-### publishQuiet
-
-Deprecated in `9.4.0`. Will be removed in `11.0.0` or later.
-
-The `publishQuiet` option (or `--publish-quiet` on the CLI) was used to hide the banner suggesting to use Cucumber Reports. The banner has since been removed, so the option now does nothing.
-
-To adapt, remove the option from your configuration files and CLI commands (especially the latter, since the CLI will fail on unrecognised options).
-
 ### Ambiguous colons in formats
 
 Deprecated in `9.6.0`. Will be removed in `11.0.0` or later.
@@ -40,6 +32,21 @@ User-specified formats where either the formatter name/path or the target path (
 |----------------------------------------------|--------------------------------------------------|
 | `html:file://hostname/formatter/report.html` | `"html":"file://hostname/formatter/report.html"` |
 | `file://C:\custom\formatter`                 | `"file://C:\custom\formatter"`                   |
+
+### `colorsEnabled` format option
+
+Deprecated in `12.6.0`, will be removed in `14.0.0` or later.
+
+The `colorsEnabled` format option allows you to forcibly enable or disable colored output from formatters. This is being removed in favour of using the `FORCE_COLOR` environment variable, which is a cross-tool standard that will also influence other tools in your stack such as assertion libraries.
+
+In `13.0.0`, the option's behaviour will change to set the `FORCE_COLOR` environment variable under the hood. In `14.0.0`, the option will be removed entirely.
+
+To adapt:
+
+| Before | After |
+|--------|-------|
+| `--format-options '{"colorsEnabled":true}'` | `FORCE_COLOR=1` |
+| `--format-options '{"colorsEnabled":false}'` | `FORCE_COLOR=0` |
 
 ## Previous deprecations
 

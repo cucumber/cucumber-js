@@ -4,50 +4,38 @@
 
 ```ts
 
-/// <reference types="node" />
-
 import { EventEmitter } from 'node:events';
 import { Expression } from '@cucumber/cucumber-expressions';
 import { GeneratedExpression } from '@cucumber/cucumber-expressions';
-import { IDefineStep as IDefineStep_2 } from './support_code_library_builder/types';
-import { IDefineTestCaseHookOptions as IDefineTestCaseHookOptions_2 } from './support_code_library_builder/types';
-import { IDefineTestRunHookOptions as IDefineTestRunHookOptions_2 } from './support_code_library_builder/types';
-import { IDefineTestStepHookOptions as IDefineTestStepHookOptions_2 } from './support_code_library_builder/types';
 import { IdGenerator } from '@cucumber/messages';
-import { IParameterTypeDefinition as IParameterTypeDefinition_2 } from './support_code_library_builder/types';
-import { IWorld as IWorld_2 } from './support_code_library_builder/world';
 import { JsonObject } from 'type-fest';
 import * as messages from '@cucumber/messages';
-import { ParallelAssignmentValidator as ParallelAssignmentValidator_2 } from './support_code_library_builder/types';
 import { ParameterType } from '@cucumber/cucumber-expressions';
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions';
 import { Readable } from 'node:stream';
-import { TestCaseHookFunction as TestCaseHookFunction_2 } from './support_code_library_builder/types';
-import { TestRunHookFunction as TestRunHookFunction_2 } from './support_code_library_builder/types';
-import { TestStepHookFunction as TestStepHookFunction_2 } from './support_code_library_builder/types';
 import { TestStepResultStatus } from '@cucumber/messages';
 import { Writable } from 'node:stream';
 
 // @public (undocumented)
-export const After: (<WorldType = IWorld_2<any>>(code: TestCaseHookFunction_2<WorldType>) => void) & (<WorldType_1 = IWorld_2<any>>(tags: string, code: TestCaseHookFunction_2<WorldType_1>) => void) & (<WorldType_2 = IWorld_2<any>>(options: IDefineTestCaseHookOptions_2, code: TestCaseHookFunction_2<WorldType_2>) => void);
+export const After: (<WorldType = IWorld<any>>(code: TestCaseHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(tags: string, code: TestCaseHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(options: IDefineTestCaseHookOptions, code: TestCaseHookFunction<WorldType>) => void);
 
 // @public (undocumented)
-export const AfterAll: ((code: TestRunHookFunction_2) => void) & ((options: IDefineTestRunHookOptions_2, code: TestRunHookFunction_2) => void);
+export const AfterAll: ((code: TestRunHookFunction) => void) & ((options: IDefineTestRunHookOptions, code: TestRunHookFunction) => void);
 
 // @public (undocumented)
-export const AfterStep: (<WorldType = IWorld_2<any>>(code: TestStepHookFunction_2<WorldType>) => void) & (<WorldType_1 = IWorld_2<any>>(tags: string, code: TestStepHookFunction_2<WorldType_1>) => void) & (<WorldType_2 = IWorld_2<any>>(options: IDefineTestStepHookOptions_2, code: TestStepHookFunction_2<WorldType_2>) => void);
+export const AfterStep: (<WorldType = IWorld<any>>(code: TestStepHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(tags: string, code: TestStepHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(options: IDefineTestStepHookOptions, code: TestStepHookFunction<WorldType>) => void);
 
 // @public (undocumented)
 function atMostOnePicklePerTag(tagNames: string[]): ParallelAssignmentValidator;
 
 // @public (undocumented)
-export const Before: (<WorldType = IWorld_2<any>>(code: TestCaseHookFunction_2<WorldType>) => void) & (<WorldType_1 = IWorld_2<any>>(tags: string, code: TestCaseHookFunction_2<WorldType_1>) => void) & (<WorldType_2 = IWorld_2<any>>(options: IDefineTestCaseHookOptions_2, code: TestCaseHookFunction_2<WorldType_2>) => void);
+export const Before: (<WorldType = IWorld<any>>(code: TestCaseHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(tags: string, code: TestCaseHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(options: IDefineTestCaseHookOptions, code: TestCaseHookFunction<WorldType>) => void);
 
 // @public (undocumented)
-export const BeforeAll: ((code: TestRunHookFunction_2) => void) & ((options: IDefineTestRunHookOptions_2, code: TestRunHookFunction_2) => void);
+export const BeforeAll: ((code: TestRunHookFunction) => void) & ((options: IDefineTestRunHookOptions, code: TestRunHookFunction) => void);
 
 // @public (undocumented)
-export const BeforeStep: (<WorldType = IWorld_2<any>>(code: TestStepHookFunction_2<WorldType>) => void) & (<WorldType_1 = IWorld_2<any>>(tags: string, code: TestStepHookFunction_2<WorldType_1>) => void) & (<WorldType_2 = IWorld_2<any>>(options: IDefineTestStepHookOptions_2, code: TestStepHookFunction_2<WorldType_2>) => void);
+export const BeforeStep: (<WorldType = IWorld<any>>(code: TestStepHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(tags: string, code: TestStepHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(options: IDefineTestStepHookOptions, code: TestStepHookFunction<WorldType>) => void);
 
 // @public @deprecated (undocumented)
 export const Cli: typeof Cli_2;
@@ -72,10 +60,10 @@ export class DataTable {
 }
 
 // @public (undocumented)
-export const defineParameterType: (options: IParameterTypeDefinition_2<any>) => void;
+export const defineParameterType: (options: IParameterTypeDefinition<any>) => void;
 
 // @public (undocumented)
-export const defineStep: IDefineStep_2;
+export const defineStep: IDefineStep;
 
 // @public (undocumented)
 class EventDataCollector {
@@ -93,21 +81,21 @@ class EventDataCollector {
     // (undocumented)
     storeAttachment(attachment: messages.Attachment): void;
     // (undocumented)
-    storeTestCaseResult({ testCaseStartedId, willBeRetried, }: messages.TestCaseFinished): void;
+    storeTestCaseResult(input: messages.TestCaseFinished): void;
     // (undocumented)
-    storeTestStepResult({ testCaseStartedId, testStepId, testStepResult, }: messages.TestStepFinished): void;
+    storeTestStepResult(input: messages.TestStepFinished): void;
     // (undocumented)
     readonly undefinedParameterTypes: messages.UndefinedParameterType[];
 }
 
 // @public (undocumented)
-function formatIssue({ colorFns, number, snippetBuilder, testCaseAttempt, supportCodeLibrary, printAttachments, }: IFormatIssueRequest): string;
+function formatIssue(input: IFormatIssueRequest): string;
 
 // @public (undocumented)
 function formatLocation(obj: ILineAndUri, cwd?: string): string;
 
 // @public (undocumented)
-function formatSummary({ colorFns, testCaseAttempts, testRunDuration, }: IFormatSummaryRequest): string;
+function formatSummary(input: IFormatSummaryRequest): string;
 
 // @public (undocumented)
 export class Formatter {
@@ -138,8 +126,8 @@ export class Formatter {
 export const FormatterBuilder: {
     build(FormatterConstructor: string | typeof Formatter, options: IBuildOptions): Promise<Formatter>;
     getConstructorByType(type: string, cwd: string): Promise<typeof Formatter>;
-    getStepDefinitionSnippetBuilder({ cwd, snippetInterface, snippetSyntax, supportCodeLibrary, }: IGetStepDefinitionSnippetBuilderOptions): Promise<StepDefinitionSnippetBuilder>;
-    loadCustomClass(type: 'formatter' | 'syntax', descriptor: string, cwd: string): Promise<any>;
+    getStepDefinitionSnippetBuilder(input: IGetStepDefinitionSnippetBuilderOptions): Promise<StepDefinitionSnippetBuilder>;
+    loadCustomClass(type: "formatter" | "syntax", descriptor: string, cwd: string): Promise<any>;
     loadFile(urlOrName: URL | string): Promise<any>;
     resolveConstructor(ImportedCode: any): any;
 };
@@ -176,22 +164,22 @@ function getGherkinScenarioMap(gherkinDocument: messages.GherkinDocument): Recor
 function getGherkinStepMap(gherkinDocument: messages.GherkinDocument): Record<string, messages.Step>;
 
 // @public (undocumented)
-function getPickleLocation({ gherkinDocument, pickle, }: IGetPickleLocationRequest): messages.Location;
+function getPickleLocation(input: IGetPickleLocationRequest): messages.Location;
 
 // @public (undocumented)
 function getPickleStepMap(pickle: messages.Pickle): Record<string, messages.PickleStep>;
 
 // @public (undocumented)
-function getScenarioDescription({ pickle, gherkinScenarioMap, }: IGetScenarioDescriptionRequest): string;
+function getScenarioDescription(input: IGetScenarioDescriptionRequest): string;
 
 // @public (undocumented)
-function getStepKeyword({ pickleStep, gherkinStepMap, }: IGetStepKeywordRequest): string;
+function getStepKeyword(input: IGetStepKeywordRequest): string;
 
 // @public (undocumented)
-function getStepKeywordType({ keyword, language, previousKeywordType, }: IGetStepKeywordTypeOptions): KeywordType;
+function getStepKeywordType(input: IGetStepKeywordTypeOptions): KeywordType;
 
 // @public (undocumented)
-function getUsage({ stepDefinitions, eventDataCollector, }: IGetUsageRequest): IUsage[];
+function getUsage(input: IGetUsageRequest): IUsage[];
 
 declare namespace GherkinDocumentParser {
     export {
@@ -203,7 +191,35 @@ declare namespace GherkinDocumentParser {
 }
 
 // @public (undocumented)
-export const Given: IDefineStep_2;
+export const Given: IDefineStep;
+
+// @public
+export interface IConfiguration {
+    backtrace: boolean;
+    dryRun: boolean;
+    failFast: boolean;
+    forceExit: boolean;
+    format: Array<string | [string, string?]>;
+    formatOptions: JsonObject;
+    import: string[];
+    language: string;
+    loader: string[];
+    name: string[];
+    order: IPickleOrder;
+    parallel: number;
+    paths: string[];
+    plugin: string[];
+    pluginOptions: JsonObject;
+    publish: boolean;
+    require: string[];
+    requireModule: string[];
+    retry: number;
+    retryTagFilter: string;
+    shard: string;
+    strict: boolean;
+    tags: string;
+    worldParameters: JsonObject;
+}
 
 // @public (undocumented)
 export interface IContext<ParametersType = any> {
@@ -259,6 +275,9 @@ interface IGetStepKeywordRequest {
     pickleStep: messages.PickleStep;
 }
 
+// @public
+export type IProfiles = Record<string, Partial<IConfiguration>>;
+
 // @public (undocumented)
 function isFailure(result: messages.TestStepResult, willBeRetried?: boolean): boolean;
 
@@ -270,6 +289,8 @@ function isWarning(result: messages.TestStepResult, willBeRetried?: boolean): bo
 
 // @public (undocumented)
 export interface ITestCaseHookParameter {
+    // (undocumented)
+    error?: any;
     // (undocumented)
     gherkinDocument: messages.GherkinDocument;
     // (undocumented)
@@ -284,6 +305,8 @@ export interface ITestCaseHookParameter {
 
 // @public (undocumented)
 export interface ITestStepHookParameter {
+    // (undocumented)
+    error?: any;
     // (undocumented)
     gherkinDocument: messages.GherkinDocument;
     // (undocumented)
@@ -338,19 +361,19 @@ export class JsonFormatter extends Formatter {
     // (undocumented)
     formatStepArgument(stepArgument: messages.PickleStepArgument, gherkinStep: messages.Step): any;
     // (undocumented)
-    getFeatureData({ feature, elements, uri, }: IBuildJsonFeatureOptions): IJsonFeature;
+    getFeatureData(input: IBuildJsonFeatureOptions): IJsonFeature;
     // (undocumented)
     getFeatureTags(feature: messages.Feature): IJsonTag[];
     // (undocumented)
-    getScenarioData({ feature, gherkinScenarioLocationMap, gherkinExampleRuleMap, gherkinScenarioMap, pickle, steps, }: IBuildJsonScenarioOptions): IJsonScenario;
+    getScenarioData(input: IBuildJsonScenarioOptions): IJsonScenario;
     // (undocumented)
-    getScenarioTags({ feature, pickle, gherkinScenarioMap, }: {
+    getScenarioTags(input: {
         feature: messages.Feature;
         pickle: messages.Pickle;
         gherkinScenarioMap: Record<string, messages.Scenario>;
     }): IJsonTag[];
     // (undocumented)
-    getStepData({ isBeforeHook, gherkinStepMap, pickleStepMap, testStep, testStepAttachments, testStepResult, }: IBuildJsonStepOptions): IJsonStep;
+    getStepData(input: IBuildJsonStepOptions): IJsonStep;
     // (undocumented)
     onTestRunFinished(): void;
 }
@@ -373,7 +396,7 @@ declare namespace parallelCanAssignHelpers {
 export { parallelCanAssignHelpers }
 
 // @public (undocumented)
-function parseTestCaseAttempt({ testCaseAttempt, snippetBuilder, supportCodeLibrary, }: IParseTestCaseAttemptRequest): IParsedTestCaseAttempt;
+function parseTestCaseAttempt(input: IParseTestCaseAttemptRequest): IParsedTestCaseAttempt;
 
 declare namespace PickleParser {
     export {
@@ -393,7 +416,7 @@ export class ProgressFormatter extends SummaryFormatter {
     // (undocumented)
     static readonly documentation: string;
     // (undocumented)
-    logProgress({ testStepResult: { status } }: TestStepFinished): void;
+    logProgress(input: TestStepFinished): void;
 }
 
 // @public (undocumented)
@@ -418,7 +441,7 @@ export const setDefaultTimeout: (milliseconds: number) => void;
 export const setDefinitionFunctionWrapper: (fn: Function) => void;
 
 // @public (undocumented)
-export const setParallelCanAssign: (fn: ParallelAssignmentValidator_2) => void;
+export const setParallelCanAssign: (fn: ParallelAssignmentValidator) => void;
 
 // @public (undocumented)
 export const setWorldConstructor: (fn: any) => void;
@@ -441,7 +464,7 @@ export class SummaryFormatter extends Formatter {
     // (undocumented)
     static readonly documentation: string;
     // (undocumented)
-    logIssues({ issues, title }: ILogIssuesRequest): void;
+    logIssues(input: ILogIssuesRequest): void;
     // (undocumented)
     logSummary(testRunDuration: messages.Duration): void;
 }
@@ -455,7 +478,7 @@ export class TestCaseHookDefinition extends Definition implements IDefinition {
     // (undocumented)
     appliesToTestCase(pickle: messages.Pickle): boolean;
     // (undocumented)
-    getInvocationParameters({ hookParameter, }: IGetInvocationDataRequest): Promise<IGetInvocationDataResponse>;
+    getInvocationParameters(input: IGetInvocationDataRequest): Promise<IGetInvocationDataResponse>;
     // (undocumented)
     readonly name: string;
     // (undocumented)
@@ -463,7 +486,7 @@ export class TestCaseHookDefinition extends Definition implements IDefinition {
 }
 
 // @public (undocumented)
-export const Then: IDefineStep_2;
+export const Then: IDefineStep;
 
 // @public (undocumented)
 export class UsageFormatter extends Formatter {
@@ -489,11 +512,11 @@ export class UsageJsonFormatter extends Formatter {
 export const version: string;
 
 // @public (undocumented)
-export const When: IDefineStep_2;
+export const When: IDefineStep;
 
 // @public (undocumented)
 export class World<ParametersType = any> implements IWorld<ParametersType> {
-    constructor({ attach, log, link, parameters, }: IWorldOptions<ParametersType>);
+    constructor(input: IWorldOptions<ParametersType>);
     // (undocumented)
     readonly attach: ICreateAttachment;
     // (undocumented)

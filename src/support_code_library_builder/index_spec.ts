@@ -54,7 +54,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('without definition function wrapper', () => {
       it('adds a step definition and makes original code available', function () {
         // Arrange
-        const step = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const step = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.defineStep('I do a thing', step)
 
@@ -70,7 +70,7 @@ describe('supportCodeLibraryBuilder', () => {
 
       it('uses the canonical ids provided in order', function () {
         // Arrange
-        const step = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const step = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.defineStep('I do a thing', step)
         supportCodeLibraryBuilder.methods.defineStep('I do another thing', step)
@@ -80,6 +80,8 @@ describe('supportCodeLibraryBuilder', () => {
           stepDefinitionIds: ['one', 'two'],
           beforeTestCaseHookDefinitionIds: [],
           afterTestCaseHookDefinitionIds: [],
+          beforeTestRunHookDefinitionIds: [],
+          afterTestRunHookDefinitionIds: [],
         })
 
         // Assert
@@ -93,7 +95,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('with definition function wrapper', () => {
       it('adds a step definition and makes original code available', function () {
         // Arrange
-        const step = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const step = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.defineStep('I do a thing', step)
         supportCodeLibraryBuilder.methods.setDefinitionFunctionWrapper(
@@ -114,7 +116,7 @@ describe('supportCodeLibraryBuilder', () => {
     })
 
     describe('keyword retention', () => {
-      const step = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+      const step = function (): void {}
 
       beforeEach(() =>
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
@@ -154,7 +156,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('function only', () => {
       it('adds a test case hook definition', function () {
         // Arrange
-        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.After(hook)
 
@@ -169,7 +171,7 @@ describe('supportCodeLibraryBuilder', () => {
 
       it('uses the canonical ids provided in order', function () {
         // Arrange
-        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.After(hook)
         supportCodeLibraryBuilder.methods.After(hook)
@@ -179,6 +181,8 @@ describe('supportCodeLibraryBuilder', () => {
           stepDefinitionIds: [],
           beforeTestCaseHookDefinitionIds: [],
           afterTestCaseHookDefinitionIds: ['one', 'two'],
+          beforeTestRunHookDefinitionIds: [],
+          afterTestRunHookDefinitionIds: [],
         })
 
         // Assert
@@ -194,7 +198,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('tag and function', () => {
       it('adds a scenario hook definition', async function () {
         // Arrange
-        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.After('@tagA', hook)
         const pickleWithTagA = await getPickleWithTags(['@tagA'])
@@ -219,7 +223,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('options and function', () => {
       it('adds a scenario hook definition', async function () {
         // Arrange
-        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.After({ tags: '@tagA' }, hook)
         const pickleWithTagA = await getPickleWithTags(['@tagA'])
@@ -244,8 +248,8 @@ describe('supportCodeLibraryBuilder', () => {
     describe('multiple', () => {
       it('adds the scenario hook definitions in the order of definition', function () {
         // Arrange
-        const hook1 = function hook1(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
-        const hook2 = function hook2(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook1 = function hook1(): void {}
+        const hook2 = function hook2(): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.After(hook1)
         supportCodeLibraryBuilder.methods.After(hook2)
@@ -265,7 +269,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('function only', () => {
       it('adds a scenario hook definition', function () {
         // Arrange
-        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.Before(hook)
 
@@ -280,7 +284,7 @@ describe('supportCodeLibraryBuilder', () => {
 
       it('uses the canonical ids provided in order', function () {
         // Arrange
-        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.Before(hook)
         supportCodeLibraryBuilder.methods.Before(hook)
@@ -290,6 +294,8 @@ describe('supportCodeLibraryBuilder', () => {
           stepDefinitionIds: [],
           beforeTestCaseHookDefinitionIds: ['one', 'two'],
           afterTestCaseHookDefinitionIds: [],
+          beforeTestRunHookDefinitionIds: [],
+          afterTestRunHookDefinitionIds: [],
         })
 
         // Assert
@@ -305,7 +311,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('tag and function', () => {
       it('adds a scenario hook definition', async function () {
         // Arrange
-        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.Before('@tagA', hook)
         const pickleWithTagA = await getPickleWithTags(['@tagA'])
@@ -330,7 +336,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('options and function', () => {
       it('adds a scenario hook definition', async function () {
         // Arrange
-        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.Before({ tags: '@tagA' }, hook)
         const pickleWithTagA = await getPickleWithTags(['@tagA'])
@@ -355,8 +361,8 @@ describe('supportCodeLibraryBuilder', () => {
     describe('multiple', () => {
       it('adds the scenario hook definitions in the order of definition', function () {
         // Arrange
-        const hook1 = function hook1(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
-        const hook2 = function hook2(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook1 = function hook1(): void {}
+        const hook2 = function hook2(): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.Before(hook1)
         supportCodeLibraryBuilder.methods.Before(hook2)
@@ -376,7 +382,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('function only', () => {
       it('adds a test step hook definition', function () {
         // Arrange
-        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.AfterStep(hook)
 
@@ -393,7 +399,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('tag and function', () => {
       it('adds a step hook definition', async function () {
         // Arrange
-        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.AfterStep('@tagA', hook)
         const pickleWithTagA = await getPickleWithTags(['@tagA'])
@@ -418,7 +424,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('options and function', () => {
       it('adds a step hook definition', async function () {
         // Arrange
-        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.AfterStep({ tags: '@tagA' }, hook)
         const pickleWithTagA = await getPickleWithTags(['@tagA'])
@@ -443,8 +449,8 @@ describe('supportCodeLibraryBuilder', () => {
     describe('multiple', () => {
       it('adds the step hook definitions in the order of definition', function () {
         // Arrange
-        const hook1 = function hook1(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
-        const hook2 = function hook2(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook1 = function hook1(): void {}
+        const hook2 = function hook2(): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.AfterStep(hook1)
         supportCodeLibraryBuilder.methods.AfterStep(hook2)
@@ -464,7 +470,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('function only', () => {
       it('adds a step hook definition', function () {
         // Arrange
-        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.BeforeStep(hook)
 
@@ -481,7 +487,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('tag and function', () => {
       it('adds a step hook definition', async function () {
         // Arrange
-        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.BeforeStep('@tagA', hook)
         const pickleWithTagA = await getPickleWithTags(['@tagA'])
@@ -506,7 +512,7 @@ describe('supportCodeLibraryBuilder', () => {
     describe('options and function', () => {
       it('adds a step hook definition', async function () {
         // Arrange
-        const hook = function (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook = function (): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.BeforeStep({ tags: '@tagA' }, hook)
         const pickleWithTagA = await getPickleWithTags(['@tagA'])
@@ -531,8 +537,8 @@ describe('supportCodeLibraryBuilder', () => {
     describe('multiple', () => {
       it('adds the step hook definitions in the order of definition', function () {
         // Arrange
-        const hook1 = function hook1(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
-        const hook2 = function hook2(): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        const hook1 = function hook1(): void {}
+        const hook2 = function hook2(): void {}
         supportCodeLibraryBuilder.reset('path/to/project', uuid())
         supportCodeLibraryBuilder.methods.BeforeStep(hook1)
         supportCodeLibraryBuilder.methods.BeforeStep(hook2)
@@ -544,6 +550,166 @@ describe('supportCodeLibraryBuilder', () => {
         expect(options.beforeTestStepHookDefinitions).to.have.lengthOf(2)
         expect(options.beforeTestStepHookDefinitions[0].code).to.eql(hook1)
         expect(options.beforeTestStepHookDefinitions[1].code).to.eql(hook2)
+      })
+    })
+  })
+
+  describe('AfterAll', () => {
+    describe('function only', () => {
+      it('adds a test run hook definition', function () {
+        // Arrange
+        const hook = function (): void {}
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.AfterAll(hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.afterTestRunHookDefinitions).to.have.lengthOf(1)
+        const testRunHookDefinition = options.afterTestRunHookDefinitions[0]
+        expect(testRunHookDefinition.code).to.eql(hook)
+      })
+
+      it('uses the canonical ids provided in order', function () {
+        // Arrange
+        const hook = function (): void {}
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.AfterAll(hook)
+        supportCodeLibraryBuilder.methods.AfterAll(hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize({
+          stepDefinitionIds: [],
+          beforeTestCaseHookDefinitionIds: [],
+          afterTestCaseHookDefinitionIds: [],
+          beforeTestRunHookDefinitionIds: [],
+          afterTestRunHookDefinitionIds: ['one', 'two'],
+        })
+
+        // Assert
+        expect(options.afterTestRunHookDefinitions).to.have.lengthOf(2)
+        expect(
+          options.afterTestRunHookDefinitions.map((definition) => definition.id)
+        ).to.deep.eq(['one', 'two'])
+      })
+    })
+
+    describe('options and function', () => {
+      it('adds a test run hook definition', function () {
+        // Arrange
+        const hook = function (): void {}
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.AfterAll({ timeout: 1000 }, hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.afterTestRunHookDefinitions).to.have.lengthOf(1)
+        const testRunHookDefinition = options.afterTestRunHookDefinitions[0]
+        expect(testRunHookDefinition.code).to.eql(hook)
+        expect(testRunHookDefinition.options.timeout).to.eql(1000)
+      })
+    })
+
+    describe('multiple', () => {
+      it('adds the test run hook definitions in the order of definition', function () {
+        // Arrange
+        const hook1 = function hook1(): void {}
+        const hook2 = function hook2(): void {}
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.AfterAll(hook1)
+        supportCodeLibraryBuilder.methods.AfterAll(hook2)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.afterTestRunHookDefinitions).to.have.lengthOf(2)
+        expect(options.afterTestRunHookDefinitions[0].code).to.eql(hook1)
+        expect(options.afterTestRunHookDefinitions[1].code).to.eql(hook2)
+      })
+    })
+  })
+
+  describe('BeforeAll', () => {
+    describe('function only', () => {
+      it('adds a test run hook definition', function () {
+        // Arrange
+        const hook = function (): void {}
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.BeforeAll(hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.beforeTestRunHookDefinitions).to.have.lengthOf(1)
+        const testRunHookDefinition = options.beforeTestRunHookDefinitions[0]
+        expect(testRunHookDefinition.code).to.eql(hook)
+      })
+
+      it('uses the canonical ids provided in order', function () {
+        // Arrange
+        const hook = function (): void {}
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.BeforeAll(hook)
+        supportCodeLibraryBuilder.methods.BeforeAll(hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize({
+          stepDefinitionIds: [],
+          beforeTestCaseHookDefinitionIds: [],
+          afterTestCaseHookDefinitionIds: [],
+          beforeTestRunHookDefinitionIds: ['one', 'two'],
+          afterTestRunHookDefinitionIds: [],
+        })
+
+        // Assert
+        expect(options.beforeTestRunHookDefinitions).to.have.lengthOf(2)
+        expect(
+          options.beforeTestRunHookDefinitions.map(
+            (definition) => definition.id
+          )
+        ).to.deep.eq(['one', 'two'])
+      })
+    })
+
+    describe('options and function', () => {
+      it('adds a test run hook definition', function () {
+        // Arrange
+        const hook = function (): void {}
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.BeforeAll({ timeout: 1000 }, hook)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.beforeTestRunHookDefinitions).to.have.lengthOf(1)
+        const testRunHookDefinition = options.beforeTestRunHookDefinitions[0]
+        expect(testRunHookDefinition.code).to.eql(hook)
+        expect(testRunHookDefinition.options.timeout).to.eql(1000)
+      })
+    })
+
+    describe('multiple', () => {
+      it('adds the test run hook definitions in the order of definition', function () {
+        // Arrange
+        const hook1 = function hook1(): void {}
+        const hook2 = function hook2(): void {}
+        supportCodeLibraryBuilder.reset('path/to/project', uuid())
+        supportCodeLibraryBuilder.methods.BeforeAll(hook1)
+        supportCodeLibraryBuilder.methods.BeforeAll(hook2)
+
+        // Act
+        const options = supportCodeLibraryBuilder.finalize()
+
+        // Assert
+        expect(options.beforeTestRunHookDefinitions).to.have.lengthOf(2)
+        expect(options.beforeTestRunHookDefinitions[0].code).to.eql(hook1)
+        expect(options.beforeTestRunHookDefinitions[1].code).to.eql(hook2)
       })
     })
   })

@@ -2,6 +2,12 @@
 
 This document describes breaking changes and how to upgrade. For a complete list of changes including minor and patch releases, please refer to the [changelog](./CHANGELOG.md).
 
+## 12.0.0
+
+### publishQuiet
+
+The `publishQuiet` option (or `--publish-quiet` on the CLI) was used to hide the banner suggesting to use Cucumber Reports. The banner has since been removed, so the option now does nothing. To adapt, remove the option from your configuration files and CLI commands (especially the latter, since the CLI will fail on unrecognised options).
+
 ## 11.0.0
 
 ### `parseGherkinMessageStream` and `PickleFilter`

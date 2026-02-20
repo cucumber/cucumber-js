@@ -20,7 +20,7 @@ Then(
     actual = normalizeMessageOutput(actual, this.tmpDir)
     actual = stripMetaMessages(actual)
     const fixturePath = path.join(__dirname, '..', 'fixtures', filePath)
-    const expected = require(fixturePath) // eslint-disable-line @typescript-eslint/no-var-requires
+    const expected = require(fixturePath) // eslint-disable-line @typescript-eslint/no-require-imports
     try {
       expect(actual).excludingEvery(ignorableKeys).to.deep.eq(expected)
     } catch (e) {
@@ -44,7 +44,7 @@ Then(
     const actualJson = await fs.readFile(actualPath, 'utf8')
     const actual = normalizeJsonOutput(actualJson, this.tmpDir)
     const fixturePath = path.join(__dirname, '..', 'fixtures', filePath)
-    const expected = require(fixturePath) // eslint-disable-line @typescript-eslint/no-var-requires
+    const expected = require(fixturePath) // eslint-disable-line @typescript-eslint/no-require-imports
     try {
       expect(actual).to.eql(expected)
     } catch (e) {
@@ -55,7 +55,6 @@ Then(
           'utf-8'
         )
       } else {
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         e.message = `${e.message}\n\nTry running again with GOLDEN=1 if you believe the fixtures need to be overwritten with actual results`
         throw e
       }

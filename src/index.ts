@@ -18,6 +18,9 @@ import { version as _version } from './version'
 // type version as string to avoid tripping api-extractor every release
 export const version = _version as string
 
+// Configuration
+export { IConfiguration, IProfiles } from './configuration'
+
 // Top level
 export { default as supportCodeLibraryBuilder } from './support_code_library_builder'
 export { default as DataTable } from './models/data_table'

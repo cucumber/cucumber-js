@@ -14,7 +14,7 @@ The short tag is `-p`
 cucumber-js -p my_profile
 ```
 
-## Simple Example
+## Simple example
 
 Let's take the common case of having some things a bit different locally than on a continuous integration server. Here's the configuration we've been running locally:
 
@@ -65,6 +65,31 @@ Now, if we just run `cucumber-js` with no arguments, it will pick up our profile
 
 ```shell
 cucumber-js -p ci
+```
+
+## ESM example
+
+When using ES modules, you should use a default export for your default profile and named exports for additional profiles:
+
+```javascript
+const common = {
+  requireModule: ['ts-node/register'],
+  require: ['support/**/*.ts'],
+  worldParameters: {
+    appUrl: process.env.MY_APP_URL || 'http://localhost:3000/'
+  }
+}
+
+export default {
+  ...common,
+  format: ['progress-bar', 'html:cucumber-report.html'],
+}
+
+export const ci = {
+  ...common,
+  format: ['html:cucumber-report.html'],
+  publish: true
+}
 ```
 
 ## Defining profiles dynamically

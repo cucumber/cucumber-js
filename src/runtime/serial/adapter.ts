@@ -5,23 +5,28 @@ import { AssembledTestCase } from '../../assemble'
 import { Worker } from '../worker'
 import { RuntimeOptions } from '../index'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
+import StepDefinitionSnippetBuilder from '../../formatter/step_definition_snippet_builder'
 
 export class InProcessAdapter implements RuntimeAdapter {
   private readonly worker: Worker
   private failing: boolean = false
 
   constructor(
+    testRunStartedId: string,
     eventBroadcaster: EventEmitter,
     newId: IdGenerator.NewId,
     options: RuntimeOptions,
-    supportCodeLibrary: SupportCodeLibrary
+    supportCodeLibrary: SupportCodeLibrary,
+    snippetBuilder: StepDefinitionSnippetBuilder
   ) {
     this.worker = new Worker(
+      testRunStartedId,
       undefined,
       eventBroadcaster,
       newId,
       options,
-      supportCodeLibrary
+      supportCodeLibrary,
+      snippetBuilder
     )
   }
 

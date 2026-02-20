@@ -19,6 +19,7 @@ export async function convertConfiguration(
       names: flatConfiguration.name,
       tagExpression: flatConfiguration.tags,
       order: flatConfiguration.order,
+      shard: flatConfiguration.shard,
     },
     support: {
       requireModules: flatConfiguration.requireModule,
@@ -37,6 +38,10 @@ export async function convertConfiguration(
       worldParameters: flatConfiguration.worldParameters,
     },
     formats: convertFormats(logger, flatConfiguration, env),
+    plugins: {
+      specifiers: flatConfiguration.plugin,
+      options: flatConfiguration.pluginOptions,
+    },
   }
 }
 

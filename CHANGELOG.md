@@ -8,6 +8,62 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Handle ESM when building source references ([#2740](https://github.com/cucumber/cucumber-js/pull/2740))
+- Fix error type resolution ([#2744](https://github.com/cucumber/cucumber-js/pull/2744))
+
+## [12.6.0] - 2026-01-22
+### Deprecated
+- Deprecate colorsEnabled format option in favour of environment variables ([#2729](https://github.com/cucumber/cucumber-js/pull/2729))
+
+## [12.5.0] - 2025-12-26
+### Added
+- Allow external plugins (see [documentation](./docs/plugins.md)) ([#2715](https://github.com/cucumber/cucumber-js/pull/2715))
+
+## [12.4.0] - 2025-12-13
+### Added
+- Allow loading config files in TypeScript format ([#2709](https://github.com/cucumber/cucumber-js/pull/2709))
+
+### Changed
+- Compress report content with gzip before publishing ([#2687](https://github.com/cucumber/cucumber-js/pull/2687))
+
+## [12.3.0] - 2025-12-01
+### Added
+- Add support for Node.js 25.x ([#2704](https://github.com/cucumber/cucumber-js/pull/2704))
+- Support named BeforeAll/AfterAll hooks ([#2661](https://github.com/cucumber/cucumber-js/pull/2661))
+- Emit messages for test run hooks ([#2644](https://github.com/cucumber/cucumber-js/pull/2644))
+- Emit messages for suggestions ([#2703](https://github.com/cucumber/cucumber-js/pull/2703))
+
+### Changed
+- Render a more test case-centric HTML report ([react-components/#396](https://github.com/cucumber/react-components/pull/396))
+
+## [12.2.0] - 2025-08-22
+### Added
+- Export configuration types ([#2598](https://github.com/cucumber/cucumber-js/pull/2598))
+- Add support for execution sharding ([#2303](https://github.com/cucumber/cucumber-js/pull/2303)) by [@agologan](https://github.com/agologan)
+
+### Fixed
+- Revert pretty formatter to 1.x.x version ([#2629](https://github.com/cucumber/cucumber-js/pull/2629))
+
+## [12.1.0] - 2025-07-19
+### Added
+- Include updated pretty formatter ([#2592](https://github.com/cucumber/cucumber-js/pull/2592))
+
+## [12.0.0] - 2025-07-13
+### Added
+- Allow comments inside descriptions ([cucumber/gherkin#334](https://github.com/cucumber/gherkin/pull/334))
+- Add original `error` to `After` and `AfterStep` hook parameters ([#2572](https://github.com/cucumber/cucumber-js/pull/2572))
+- Add support for Node.js 24.x ([#2588](https://github.com/cucumber/cucumber-js/pull/2588))
+
+### Changed
+- Redesigned HTML formatter header ([cucumber/react-components#381](https://github.com/cucumber/react-components/pull/381))
+
+### Removed
+- BREAKING CHANGE: Remove support for Node.js 18.x ([#2588](https://github.com/cucumber/cucumber-js/pull/2588))
+- BREAKING CHANGE: Remove support for Node.js 23.x ([#2588](https://github.com/cucumber/cucumber-js/pull/2588))
+- BREAKING CHANGE: Remove `publishQuiet` option ([#2587](https://github.com/cucumber/cucumber-js/pull/2587))
+
+## [11.3.0] - 2025-05-14
 ### Changed
 - Improve error handling in publish plugin ([#2526](https://github.com/cucumber/cucumber-js/pull/2526))
 - Improve type safety in features/support/formatter_output_helpers, removes explicit `any` ([#1648](https://github.com/cucumber/cucumber-js/pull/2106))
@@ -1666,7 +1722,15 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v11.2.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.6.0...HEAD
+[12.6.0]: https://github.com/cucumber/cucumber-js/compare/v12.5.0...v12.6.0
+[12.5.0]: https://github.com/cucumber/cucumber-js/compare/v12.4.0...v12.5.0
+[12.4.0]: https://github.com/cucumber/cucumber-js/compare/v12.3.0...v12.4.0
+[12.3.0]: https://github.com/cucumber/cucumber-js/compare/v12.2.0...v12.3.0
+[12.2.0]: https://github.com/cucumber/cucumber-js/compare/v12.1.0...v12.2.0
+[12.1.0]: https://github.com/cucumber/cucumber-js/compare/v12.0.0...v12.1.0
+[12.0.0]: https://github.com/cucumber/cucumber-js/compare/v11.3.0...v12.0.0
+[11.3.0]: https://github.com/cucumber/cucumber-js/compare/v11.2.0...v11.3.0
 [11.2.0]: https://github.com/cucumber/cucumber-js/compare/v11.1.1...v11.2.0
 [11.1.1]: https://github.com/cucumber/cucumber-js/compare/v11.1.0...v11.1.1
 [11.1.0]: https://github.com/cucumber/cucumber-js/compare/v11.0.1...v11.1.0

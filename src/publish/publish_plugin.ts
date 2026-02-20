@@ -1,17 +1,18 @@
 import { Writable } from 'node:stream'
+import { pipeline } from 'node:stream/promises'
 import { stripVTControlCharacters } from 'node:util'
 import { mkdtemp, stat } from 'node:fs/promises'
 import path from 'node:path'
 import { tmpdir } from 'node:os'
 import { createReadStream, createWriteStream } from 'node:fs'
+import { createGzip } from 'node:zlib'
 import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
-import { InternalPlugin } from '../plugin'
-import { IPublishConfig } from './types'
+import { Plugin } from '../plugin'
 
 const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://messages.cucumber.io/api/reports'
 
-export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
+export const publishPlugin: Plugin = {
   type: 'plugin',
   coordinator: async ({ on, logger, options, environment }) => {
     if (!options) {
@@ -44,22 +45,32 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
 
     const uploadUrl = touchResponse.headers.get('Location')
     const tempDir = await mkdtemp(path.join(tmpdir(), `cucumber-js-publish-`))
-    const tempFilePath = path.join(tempDir, 'envelopes.ndjson')
-    const tempFileStream = createWriteStream(tempFilePath, {
-      encoding: 'utf-8',
-    })
-    on('message', (value) => tempFileStream.write(JSON.stringify(value) + '\n'))
+    const tempFilePath = path.join(tempDir, 'envelopes.jsonl.gz')
+    const writeStream = createGzip()
+    const finishedWriting = pipeline(
+      writeStream,
+      createWriteStream(tempFilePath)
+    )
+    on('message', (value) => writeStream.write(JSON.stringify(value) + '\n'))
 
     return () => {
       return new Promise<void>((resolve) => {
-        tempFileStream.end(async () => {
+        writeStream.end(async () => {
+          await finishedWriting
           const stats = await stat(tempFilePath)
+          const contentLength = stats.size.toString()
+          logger.debug(
+            'Uploading envelopes to Cucumber Reports with content length:',
+            contentLength
+          )
           const uploadResponse = await fetch(uploadUrl, {
             method: 'PUT',
             headers: {
-              'Content-Length': stats.size.toString(),
+              'Content-Type': 'application/jsonl',
+              'Content-Encoding': 'gzip',
+              'Content-Length': contentLength,
             },
-            body: createReadStream(tempFilePath, { encoding: 'utf-8' }),
+            body: createReadStream(tempFilePath),
             duplex: 'half',
           })
           if (uploadResponse.ok) {
@@ -72,7 +83,7 @@ export const publishPlugin: InternalPlugin<IPublishConfig | false> = {
                 new URL(uploadUrl).origin
               } with status ${uploadResponse.status}`
             )
-            logger.debug(uploadResponse)
+            logger.debug(await uploadResponse.text())
           }
           resolve()
         })

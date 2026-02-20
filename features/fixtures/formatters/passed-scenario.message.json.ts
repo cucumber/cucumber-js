@@ -55,6 +55,10 @@ module.exports = [
     pickle: {
       id: '4',
       uri: 'features/a.feature',
+      location: {
+        line: 2,
+        column: 3,
+      },
       name: 'a scenario',
       language: 'en',
       steps: [
@@ -73,7 +77,7 @@ module.exports = [
     stepDefinition: {
       id: '0',
       pattern: {
-        source: '/^a step$/',
+        source: '^a step$',
         type: 'REGULAR_EXPRESSION',
       },
       sourceReference: {

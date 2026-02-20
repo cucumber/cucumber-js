@@ -11,6 +11,7 @@ import timeMethods from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
+import FormatterBuilder from '../formatter/builder'
 import { assembleTestCases } from '../assemble'
 import TestCaseRunner from './test_case_runner'
 
@@ -45,6 +46,12 @@ async function testRunner(options: {
 
   // listen for envelopers _after_ we've assembled test cases
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
+  const snippetBuilder = await FormatterBuilder.getStepDefinitionSnippetBuilder(
+    {
+      cwd: process.cwd(),
+      supportCodeLibrary: options.supportCodeLibrary,
+    }
+  )
   const runner = new TestCaseRunner({
     workerId: options.workerId,
     eventBroadcaster,
@@ -57,6 +64,7 @@ async function testRunner(options: {
     skip: valueOrDefault(options.skip, false),
     supportCodeLibrary: options.supportCodeLibrary,
     worldParameters: {},
+    snippetBuilder,
   })
   const result = await runner.run()
   return { envelopes, result }
@@ -151,7 +159,7 @@ describe('TestCaseRunner', () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
           Given('a step', function () {
-            throw 'fail' // eslint-disable-line @typescript-eslint/no-throw-literal
+            throw 'fail'
           })
         })
         const {
@@ -166,7 +174,7 @@ describe('TestCaseRunner', () => {
           status: messages.TestStepResultStatus.FAILED,
           message: 'fail',
           exception: {
-            type: 'Error',
+            type: 'String',
             message: 'fail',
             stackTrace: undefined,
           },
@@ -185,6 +193,42 @@ describe('TestCaseRunner', () => {
           failingTestResult
         )
         expect(result).to.eql(messages.TestStepResultStatus.FAILED)
+      })
+
+      it('should provide the error to AfterStep and After hooks', async () => {
+        // Arrange
+        const error = new Error('fail')
+        const afterStepStub = sinon.stub()
+        const afterStub = sinon.stub()
+        const supportCodeLibrary = buildSupportCodeLibrary(
+          ({ Given, AfterStep, After }) => {
+            Given('a step', function () {
+              throw error
+            })
+            AfterStep(afterStepStub)
+            After(afterStub)
+          }
+        )
+        const {
+          gherkinDocument,
+          pickles: [pickle],
+        } = await parse({
+          data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
+          uri: 'a.feature',
+        })
+
+        // Act
+        await testRunner({
+          gherkinDocument,
+          pickle,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(afterStepStub).to.have.been.calledOnce()
+        expect(afterStepStub.lastCall.firstArg.error).to.eq(error)
+        expect(afterStub).to.have.been.calledOnce()
+        expect(afterStub.lastCall.firstArg.error).to.eq(error)
       })
     })
 
@@ -248,14 +292,14 @@ describe('TestCaseRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(4)
-        const expected: messages.TestStepResult = {
+        expect(envelopes).to.have.lengthOf(5)
+        expect(envelopes[2].suggestion.snippets).to.have.lengthOf(1)
+        expect(envelopes[3].testStepFinished.testStepResult).to.eql({
           status: messages.TestStepResultStatus.UNDEFINED,
           duration: messages.TimeConversion.millisecondsToDuration(0),
-        }
-        expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
+        })
         expect(result).to.eql(
-          envelopes[2].testStepFinished.testStepResult.status
+          envelopes[3].testStepFinished.testStepResult.status
         )
       })
     })
@@ -271,7 +315,7 @@ describe('TestCaseRunner', () => {
               return
             }
             willPass = true
-            throw 'Oh no!' // eslint-disable-line @typescript-eslint/no-throw-literal
+            throw 'Oh no!'
           })
         })
         const {
@@ -314,7 +358,7 @@ describe('TestCaseRunner', () => {
                 duration: messages.TimeConversion.millisecondsToDuration(1),
                 message: 'Oh no!',
                 exception: {
-                  type: 'Error',
+                  type: 'String',
                   message: 'Oh no!',
                   stackTrace: undefined,
                 },
@@ -380,7 +424,7 @@ describe('TestCaseRunner', () => {
                 return
               }
               willPass = true
-              throw 'error' // eslint-disable-line @typescript-eslint/no-throw-literal
+              throw 'error'
             })
             After(hookStub)
           }
@@ -453,8 +497,8 @@ describe('TestCaseRunner', () => {
             Given('a step', function () {
               clock.tick(1)
             })
-            Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            After(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Before(function () {})
+            After(function () {})
           }
         )
         const {
@@ -491,8 +535,8 @@ describe('TestCaseRunner', () => {
             Given('a step', function () {
               clock.tick(1)
             })
-            BeforeStep(beforeStep) // eslint-disable-line @typescript-eslint/no-empty-function
-            AfterStep(afterStep) // eslint-disable-line @typescript-eslint/no-empty-function
+            BeforeStep(beforeStep)
+            AfterStep(afterStep)
           }
         )
         const {
@@ -522,6 +566,7 @@ describe('TestCaseRunner', () => {
           testCaseStartedId: envelopes[1].testStepStarted.testCaseStartedId,
           testStepId: envelopes[1].testStepStarted.testStepId,
           result: undefined,
+          error: undefined,
         })
         expect(afterStep).to.have.been.calledOnceWith({
           gherkinDocument,
@@ -530,6 +575,7 @@ describe('TestCaseRunner', () => {
           testCaseStartedId: envelopes[2].testStepFinished.testCaseStartedId,
           testStepId: envelopes[2].testStepFinished.testStepId,
           result: envelopes[2].testStepFinished.testStepResult,
+          error: undefined,
         })
       })
     })

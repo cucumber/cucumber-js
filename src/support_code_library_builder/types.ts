@@ -16,6 +16,7 @@ export interface ITestCaseHookParameter {
   gherkinDocument: messages.GherkinDocument
   pickle: messages.Pickle
   result?: messages.TestStepResult
+  error?: any
   willBeRetried?: boolean
   testCaseStartedId: string
 }
@@ -25,6 +26,7 @@ export interface ITestStepHookParameter {
   pickle: messages.Pickle
   pickleStep: messages.PickleStep
   result: messages.TestStepResult
+  error?: any
   testCaseStartedId: string
   testStepId: string
 }
@@ -65,6 +67,7 @@ export interface IDefineTestStepHookOptions {
 }
 
 export interface IDefineTestRunHookOptions {
+  name?: string
   timeout?: number
 }
 
@@ -155,6 +158,8 @@ export interface CanonicalSupportCodeIds {
   stepDefinitionIds: string[]
   beforeTestCaseHookDefinitionIds: string[]
   afterTestCaseHookDefinitionIds: string[]
+  beforeTestRunHookDefinitionIds: string[]
+  afterTestRunHookDefinitionIds: string[]
 }
 
 export interface SupportCodeLibrary {

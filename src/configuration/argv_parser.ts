@@ -10,6 +10,8 @@ export interface IParsedArgvOptions {
   i18nKeywords?: string
   i18nLanguages?: boolean
   profile: string[]
+  plugin?: string[]
+  pluginOptions?: object
 }
 
 export interface IParsedArgv {
@@ -67,6 +69,7 @@ const ArgvParser = {
     const program = new Command('cucumber-js')
 
     program
+      .allowExcessArguments(true)
       .storeOptionsAsProperties(false)
       .usage('[options] [<GLOB|DIR|FILE[:LINE]>...]')
       .version(version, '-v, --version')
@@ -118,10 +121,9 @@ const ArgvParser = {
         'only execute the scenarios with name matching the expression (repeatable)',
         ArgvParser.collect
       )
-
       .option(
         '--order <TYPE[:SEED]>',
-        'run scenarios in the specified order. Type should be `defined` or `random`'
+        'run scenarios in the specified order. Type should be `defined`, `reverse` or `random`'
       )
       .option(
         '-p, --profile <NAME>',
@@ -134,11 +136,17 @@ const ArgvParser = {
         'run in parallel with the given number of workers',
         (val) => ArgvParser.validateCountOption(val, '--parallel')
       )
-      .option('--publish', 'Publish a report to https://reports.cucumber.io')
       .option(
-        '--publish-quiet',
-        "Don't print information banner about publishing reports"
+        '--plugin <SPECIFIER>',
+        'load a plugin (repeatable)',
+        ArgvParser.collect
       )
+      .option(
+        '--plugin-options <JSON>',
+        'provide options for plugins (repeatable)',
+        ArgvParser.mergeJson('--plugin-options')
+      )
+      .option('--publish', 'Publish a report to https://reports.cucumber.io')
       .option(
         '-r, --require <GLOB|DIR|FILE>',
         'require files before executing features (repeatable)',
@@ -159,6 +167,10 @@ const ArgvParser = {
         `only retries the features or scenarios with tags matching the expression (repeatable).
         This option requires '--retry' to be specified.`,
         ArgvParser.mergeTags
+      )
+      .option(
+        '--shard <INDEX/TOTAL>',
+        'run shard INDEX of TOTAL shards. The index starts at 1'
       )
       .option('--strict', 'fail if there are pending steps')
       .option('--no-strict', 'succeed even if there are pending steps')

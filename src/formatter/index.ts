@@ -13,6 +13,9 @@ export interface FormatRerunOptions {
 }
 
 export interface FormatOptions {
+  /**
+   * @deprecated use `FORCE_COLOR` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md
+   */
   colorsEnabled?: boolean
   html?: {
     externalAttachments?: boolean

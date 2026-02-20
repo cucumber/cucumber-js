@@ -8,6 +8,18 @@ import { IConfiguration } from './types'
 import { mergeConfigurations } from './merge_configurations'
 import { parseConfiguration } from './parse_configuration'
 
+const SUPPORTED_EXTENSIONS = [
+  '.json',
+  '.yaml',
+  '.yml',
+  '.js',
+  '.cjs',
+  '.mjs',
+  '.ts',
+  '.cts',
+  '.mts',
+]
+
 export async function fromFile(
   logger: ILogger,
   cwd: string,
@@ -79,58 +91,80 @@ async function loadFile(
 ): Promise<Record<string, any>> {
   const filePath: string = path.join(cwd, file)
   const extension = path.extname(filePath)
-  let definitions
-  switch (extension) {
-    case '.json':
-      definitions = JSON.parse(
-        await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
-      )
-      break
-    case '.yaml':
-    case '.yml':
-      definitions = YAML.parse(
-        await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
-      )
-      break
-    case '.cjs':
-      logger.debug(
-        `Loading configuration file "${file}" as CommonJS based on extension`
-      )
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      definitions = require(filePath)
-      break
-    case '.mjs':
-      logger.debug(
-        `Loading configuration file "${file}" as ESM based on extension`
-      )
-      definitions = await import(pathToFileURL(filePath).toString())
-      break
-    case '.js':
-      {
-        const parentPackage = await readPackageJson(filePath)
-        if (!parentPackage) {
-          logger.debug(
-            `Loading configuration file "${file}" as CommonJS based on absence of a parent package`
-          )
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
-          definitions = require(filePath)
-        } else if (parentPackage.type === 'module') {
-          logger.debug(
-            `Loading configuration file "${file}" as ESM based on "${parentPackage.name}" package type`
-          )
-          definitions = await import(pathToFileURL(filePath).toString())
-        } else {
-          logger.debug(
-            `Loading configuration file "${file}" as CommonJS based on "${parentPackage.name}" package type`
-          )
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
-          definitions = require(filePath)
-        }
-      }
-      break
-    default:
-      throw new Error(`Unsupported configuration file extension "${extension}"`)
+  if (!SUPPORTED_EXTENSIONS.includes(extension)) {
+    throw new Error(`Unsupported configuration file extension "${extension}"`)
   }
+  let definitions
+  try {
+    switch (extension) {
+      case '.json':
+        definitions = JSON.parse(
+          await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
+        )
+        break
+      case '.yaml':
+      case '.yml':
+        definitions = YAML.parse(
+          await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
+        )
+        break
+      case '.cjs':
+        logger.debug(
+          `Loading configuration file "${file}" as CommonJS based on extension`
+        )
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        definitions = require(filePath)
+        break
+      case '.cts':
+        logger.debug(
+          `Loading configuration file "${file}" as TypeScript based on extension`
+        )
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        definitions = require(filePath)
+        break
+      case '.mjs':
+        logger.debug(
+          `Loading configuration file "${file}" as ESM based on extension`
+        )
+        definitions = await import(pathToFileURL(filePath).toString())
+        break
+      case '.mts':
+      case '.ts':
+        logger.debug(
+          `Loading configuration file "${file}" as TypeScript based on extension`
+        )
+        definitions = await import(pathToFileURL(filePath).toString())
+        break
+      case '.js':
+        {
+          const parentPackage = await readPackageJson(filePath)
+          if (!parentPackage) {
+            logger.debug(
+              `Loading configuration file "${file}" as CommonJS based on absence of a parent package`
+            )
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
+            definitions = require(filePath)
+          } else if (parentPackage.type === 'module') {
+            logger.debug(
+              `Loading configuration file "${file}" as ESM based on "${parentPackage.name}" package type`
+            )
+            definitions = await import(pathToFileURL(filePath).toString())
+          } else {
+            logger.debug(
+              `Loading configuration file "${file}" as CommonJS based on "${parentPackage.name}" package type`
+            )
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
+            definitions = require(filePath)
+          }
+        }
+        break
+    }
+  } catch (error) {
+    throw new Error(`Configuration file "${file}" failed to load/parse`, {
+      cause: error,
+    })
+  }
+
   if (typeof definitions !== 'object') {
     throw new Error(`Configuration file ${filePath} does not export an object`)
   }

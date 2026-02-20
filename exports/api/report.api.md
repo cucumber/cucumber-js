@@ -4,11 +4,53 @@
 
 ```ts
 
-/// <reference types="node" />
-
 import { Envelope } from '@cucumber/messages';
+import { GherkinDocument } from '@cucumber/messages';
 import { JsonObject } from 'type-fest';
+import { Location } from '@cucumber/messages';
+import { Pickle } from '@cucumber/messages';
 import { Writable } from 'node:stream';
+
+// @public
+export type CoordinatorContext<OptionsType> = {
+    operation: PluginOperation;
+    on: <EventKey extends CoordinatorEventKey>(event: EventKey, handler: CoordinatorEventHandler<EventKey>) => void;
+    transform: <EventKey extends CoordinatorTransformKey>(event: EventKey, handler: CoordinatorTransformer<EventKey>) => void;
+    options: OptionsType;
+    logger: ILogger;
+    environment: CoordinatorEnvironment;
+};
+
+// @public
+export type CoordinatorEnvironment = {
+    cwd: string;
+    stderr: Writable;
+    env: Record<string, string | undefined>;
+};
+
+// @public
+export type CoordinatorEventHandler<K extends CoordinatorEventKey> = (value: CoordinatorEventValues[K]) => void;
+
+// @public
+export type CoordinatorEventKey = 'message' | 'paths:resolve';
+
+// @public
+export type CoordinatorEventValues = {
+    message: Readonly<Envelope>;
+    'paths:resolve': Readonly<IResolvedPaths>;
+};
+
+// @public
+export type CoordinatorTransformer<K extends CoordinatorTransformKey> = (value: CoordinatorTransformValues[K]) => PromiseLike<CoordinatorTransformValues[K]> | CoordinatorTransformValues[K];
+
+// @public
+export type CoordinatorTransformKey = 'pickles:filter' | 'pickles:order';
+
+// @public
+export type CoordinatorTransformValues = {
+    'pickles:filter': Readonly<Array<IFilterablePickle>>;
+    'pickles:order': Readonly<Array<IFilterablePickle>>;
+};
 
 // @public
 export interface IConfiguration {
@@ -25,16 +67,27 @@ export interface IConfiguration {
     order: IPickleOrder;
     parallel: number;
     paths: string[];
+    plugin: string[];
+    pluginOptions: JsonObject;
     publish: boolean;
-    // @deprecated (undocumented)
-    publishQuiet: boolean;
     require: string[];
     requireModule: string[];
     retry: number;
     retryTagFilter: string;
+    shard: string;
     strict: boolean;
     tags: string;
     worldParameters: JsonObject;
+}
+
+// @public
+export interface IFilterablePickle {
+    // (undocumented)
+    gherkinDocument: GherkinDocument;
+    // (undocumented)
+    location: Location;
+    // (undocumented)
+    pickle: Pickle;
 }
 
 // @public
@@ -59,7 +112,19 @@ export interface ILoadSupportOptions {
 }
 
 // @public
-export type IPickleOrder = 'defined' | 'random' | `random:${string}`;
+export interface ILogger {
+    // (undocumented)
+    debug: (message?: any, ...optionalParams: any[]) => void;
+    // (undocumented)
+    error: (message?: any, ...optionalParams: any[]) => void;
+    // (undocumented)
+    info: (message?: any, ...optionalParams: any[]) => void;
+    // (undocumented)
+    warn: (message?: any, ...optionalParams: any[]) => void;
+}
+
+// @public
+export type IPickleOrder = 'defined' | 'reverse' | 'random' | `random:${string}`;
 
 // @public
 export interface IPlannedPickle {
@@ -86,9 +151,23 @@ export interface IResolvedConfiguration {
 }
 
 // @public
+export interface IResolvedPaths {
+    // (undocumented)
+    importPaths: string[];
+    // (undocumented)
+    requirePaths: string[];
+    // (undocumented)
+    sourcePaths: string[];
+    // (undocumented)
+    unexpandedSourcePaths: string[];
+}
+
+// @public
 export interface IRunConfiguration {
     // (undocumented)
     formats: IRunOptionsFormats;
+    // (undocumented)
+    plugins?: IRunOptionsPlugins;
     // (undocumented)
     runtime: IRunOptionsRuntime;
     // (undocumented)
@@ -111,6 +190,8 @@ export interface IRunOptions {
     // (undocumented)
     formats: IRunOptionsFormats;
     // (undocumented)
+    plugins?: IRunOptionsPlugins;
+    // (undocumented)
     runtime: IRunOptionsRuntime;
     // (undocumented)
     sources: ISourcesCoordinates;
@@ -124,6 +205,12 @@ export interface IRunOptionsFormats {
     options: JsonObject;
     publish: IPublishConfig | false;
     stdout: string;
+}
+
+// @public
+export interface IRunOptionsPlugins {
+    options: JsonObject;
+    specifiers: string[];
 }
 
 // @public
@@ -150,6 +237,7 @@ export interface ISourcesCoordinates {
     names: string[];
     order: IPickleOrder;
     paths: string[];
+    shard?: string;
     tagExpression: string;
 }
 
@@ -190,6 +278,19 @@ export function loadSources(coordinates: ISourcesCoordinates, environment?: IRun
 
 // @public
 export function loadSupport(options: ILoadSupportOptions, environment?: IRunEnvironment): Promise<ISupportCodeLibrary>;
+
+// @public
+export type Plugin<OptionsType = any> = {
+    type: 'plugin';
+    coordinator: (context: CoordinatorContext<OptionsType>) => PromiseLike<PluginCleanup | void> | PluginCleanup | void;
+    optionsKey?: string;
+};
+
+// @public
+export type PluginCleanup = () => PromiseLike<void> | void;
+
+// @public
+export type PluginOperation = 'loadSources' | 'loadSupport' | 'runCucumber';
 
 // @public
 export function runCucumber(options: IRunOptions, environment?: IRunEnvironment, onMessage?: (message: Envelope) => void): Promise<IRunResult>;

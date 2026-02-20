@@ -1,5 +1,6 @@
 import { URL } from 'node:url'
 import assert from 'node:assert'
+import { gunzipSync } from 'node:zlib'
 import { expect } from 'chai'
 import { Given, Then, DataTable } from '../..'
 import { World } from '../support/world'
@@ -30,7 +31,7 @@ Then(
       .map((row) => row[0])
 
     const receivedBodies = await this.reportServer.stop()
-    const ndjson = receivedBodies.toString('utf-8').trim()
+    const ndjson = gunzipSync(receivedBodies).toString('utf-8').trim()
     if (ndjson === '') assert.fail('Server received nothing')
 
     const receivedMessageTypes = ndjson

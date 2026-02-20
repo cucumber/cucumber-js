@@ -27,7 +27,7 @@ export function formatError(
   return {
     message,
     exception: {
-      type: error.name || 'Error',
+      type: error.constructor.name || 'Error',
       message: typeof error === 'string' ? error : error.message,
       stackTrace: processedStackTrace ?? error.stack,
     },

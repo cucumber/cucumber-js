@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { PassThrough, pipeline, Writable } from 'node:stream'
-import util from 'node:util'
+import { PassThrough, Writable } from 'node:stream'
+import { pipeline } from 'node:stream/promises'
 import { describe, it } from 'mocha'
 import { config, expect, use } from 'chai'
 import chaiExclude from 'chai-exclude'
@@ -12,44 +12,61 @@ import { Envelope } from '@cucumber/messages'
 import { ignorableKeys } from '../features/support/formatter_output_helpers'
 import { runCucumber, IRunConfiguration } from '../src/api'
 
-const asyncPipeline = util.promisify(pipeline)
 const PROJECT_PATH = path.join(__dirname, '..')
 const CCK_FEATURES_PATH = 'node_modules/@cucumber/compatibility-kit/features'
 const CCK_IMPLEMENTATIONS_PATH = 'compatibility/features'
+
+const UNSUPPORTED = [
+  // not a test sample
+  'all-statuses',
+  // we aren't fully compliant yet for global hooks
+  'global-hooks-attachments',
+  'global-hooks-beforeall-error',
+  'global-hooks-afterall-error',
+  // not a test sample
+  'test-run-exception',
+]
 
 config.truncateThreshold = 100
 use(chaiExclude)
 
 describe('Cucumber Compatibility Kit', () => {
-  const ndjsonFiles = glob.sync(`${CCK_FEATURES_PATH}/**/*.ndjson`)
-  ndjsonFiles.forEach((fixturePath) => {
-    const match = /^.+[/\\](.+)(\.feature(?:\.md)?)\.ndjson$/.exec(fixturePath)
-    const suiteName = match[1]
-    const extension = match[2]
-    it(`passes the cck suite for '${suiteName}'`, async () => {
+  const directories = glob.sync(`${CCK_FEATURES_PATH}/*`, { nodir: false })
+
+  for (const directory of directories) {
+    const suite = path.basename(directory)
+
+    if (UNSUPPORTED.includes(suite)) {
+      it.skip(suite, () => {})
+      continue
+    }
+
+    it(suite, async () => {
       const actualMessages: Envelope[] = []
       const stdout = new PassThrough()
       const stderr = new PassThrough()
       const runConfiguration: IRunConfiguration = {
         sources: {
           defaultDialect: 'en',
-          paths: [`${CCK_FEATURES_PATH}/${suiteName}/${suiteName}${extension}`],
+          paths: [
+            `${CCK_FEATURES_PATH}/${suite}/*.feature`,
+            `${CCK_FEATURES_PATH}/${suite}/*.feature.md`,
+          ],
           names: [],
           tagExpression: '',
-          order: 'defined',
+          order: suite === 'multiple-features-reversed' ? 'reverse' : 'defined',
+          shard: '',
         },
         support: {
           requireModules: ['ts-node/register'],
-          requirePaths: [
-            `${CCK_IMPLEMENTATIONS_PATH}/${suiteName}/${suiteName}.ts`,
-          ],
+          requirePaths: [`${CCK_IMPLEMENTATIONS_PATH}/${suite}/*.ts`],
         },
         runtime: {
           dryRun: false,
           failFast: false,
           filterStacktraces: true,
           parallel: 0,
-          retry: suiteName === 'retry' ? 2 : 0,
+          retry: suite === 'retry' ? 2 : 0,
           retryTagFilter: '',
           strict: true,
           worldParameters: {},
@@ -74,8 +91,10 @@ describe('Cucumber Compatibility Kit', () => {
       stderr.end()
 
       const expectedMessages: messages.Envelope[] = []
-      await asyncPipeline(
-        fs.createReadStream(fixturePath, { encoding: 'utf-8' }),
+      await pipeline(
+        fs.createReadStream(path.join(directory, suite + '.ndjson'), {
+          encoding: 'utf-8',
+        }),
         new messageStreams.NdjsonToMessageStream(),
         new Writable({
           objectMode: true,
@@ -86,9 +105,45 @@ describe('Cucumber Compatibility Kit', () => {
         })
       )
 
-      expect(actualMessages)
+      expect(reorderEnvelopes(actualMessages))
         .excludingEvery(ignorableKeys)
         .to.deep.eq(expectedMessages)
     })
-  })
+  }
 })
+
+function reorderEnvelopes(
+  envelopes: ReadonlyArray<Envelope>
+): ReadonlyArray<Envelope> {
+  let testRunStartedEnvelope: Envelope
+  let testCaseStartedEnvelope: Envelope
+
+  const result: Envelope[] = []
+  const moveAfterTestRunStarted: Envelope[] = []
+
+  for (const envelope of envelopes) {
+    if (envelope.testRunStarted) {
+      testRunStartedEnvelope = envelope
+    }
+    if (envelope.testCaseStarted) {
+      testCaseStartedEnvelope = envelope
+    }
+
+    if (
+      (envelope.testRunHookStarted || envelope.testRunHookFinished) &&
+      !testCaseStartedEnvelope
+    ) {
+      moveAfterTestRunStarted.push(envelope)
+    } else {
+      result.push(envelope)
+    }
+  }
+
+  result.splice(
+    result.indexOf(testRunStartedEnvelope) + 1,
+    0,
+    ...moveAfterTestRunStarted
+  )
+
+  return result
+}

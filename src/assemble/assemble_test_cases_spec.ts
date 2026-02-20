@@ -173,7 +173,7 @@ describe('assembleTestCases', () => {
             stepMatchArguments: [
               {
                 group: {
-                  children: [],
+                  children: undefined,
                   start: 12,
                   value: '1',
                 },
@@ -187,7 +187,7 @@ describe('assembleTestCases', () => {
                         {
                           start: undefined,
                           value: undefined,
-                          children: [],
+                          children: undefined,
                         },
                       ],
                       start: 19,
@@ -200,7 +200,7 @@ describe('assembleTestCases', () => {
                         {
                           start: undefined,
                           value: undefined,
-                          children: [],
+                          children: undefined,
                         },
                       ],
                     },
@@ -224,8 +224,8 @@ describe('assembleTestCases', () => {
             Given('a step', function () {
               clock.tick(1)
             })
-            Before(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            After(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            Before(function () {})
+            After(function () {})
           }
         )
         const { gherkinDocument, pickles } = await parse({
@@ -279,8 +279,8 @@ describe('assembleTestCases', () => {
             Given('a step', function () {
               clock.tick(1)
             })
-            BeforeStep(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
-            AfterStep(function () {}) // eslint-disable-line @typescript-eslint/no-empty-function
+            BeforeStep(function () {})
+            AfterStep(function () {})
           }
         )
         const { gherkinDocument, pickles } = await parse({
