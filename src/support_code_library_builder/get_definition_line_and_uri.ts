@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import errorStackParser, { StackFrame } from 'error-stack-parser'
 import { isFileNameInCucumber } from '../filter_stack_trace'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
@@ -19,6 +20,9 @@ export function getDefinitionLineAndUri(
     line = stackframe.getLineNumber()
     uri = stackframe.getFileName()
     if (doesHaveValue(uri)) {
+      if (uri.startsWith('file://')) {
+        uri = fileURLToPath(uri)
+      }
       uri = path.relative(cwd, uri)
     }
   }

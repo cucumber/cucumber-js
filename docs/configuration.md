@@ -71,11 +71,18 @@ module.exports = {
 
 (If you're wondering why the configuration sits within a "default" property, that's to allow for [Profiles](./profiles.md).)
 
-### Type checking
+### TypeScript
 
-If you want to type check your configuration, we export two types that can help with that:
-- `IProfiles` represents the dictionary of profile names to configuration objects exported for CommonJS
-- `IConfiguration` represents a single configuration object exported with named exports for ESM (`Partial<IConfiguration>` will be more useful in practise)
+You can also write your configuration file in TypeScript, with a `.ts`, `.mts` or `.cts` extension. These files are loaded with [Node.js built-in TypeScript support](https://nodejs.org/api/typescript.html), which has several caveats and limitations, mostly that your `tsconfig.json` won't be honoured and that you need to be explicit about type imports. Here's an example:
+
+```typescript
+import type { IConfiguration } from '@cucumber/cucumber'
+
+export default {
+  parallel: 2,
+  format: ['html:cucumber-report.html']
+} satisfies Partial<IConfiguration>
+```
 
 ## Options
 
@@ -99,11 +106,14 @@ These options can be used in a configuration file (see [above](#files)) or on th
 | `name`            | `string`   | No         | `--name`                  | Regular expressions of which scenario names should match one of to be run - see [Filtering](./filtering.md#names)  | []      |
 | `order`           | `string`   | No         | `--order`                 | Run in the order defined, or in a random order - see [Filtering and Ordering](./filtering.md#order)                | defined |
 | `parallel`        | `number`   | No         | `--parallel`              | Run tests in parallel with the given number of worker processes - see [Parallel](./parallel.md)                    | 0       |
+| `plugin`          | `string[]` | Yes        | `--plugin`                | Paths or package names of plugins to load - see [Plugins](./plugins.md)                                            | []      |
+| `pluginOptions`   | `object`   | Yes        | `--plugin-options`        | Options to be provided to plugins - see [Plugins](./plugins.md)                                                    | {}      |
 | `publish`         | `boolean`  | No         | `--publish`               | Publish a report of your test run to <https://reports.cucumber.io/>                                                | false   |
 | `require`         | `string[]` | Yes        | `--require`, `-r`         | Paths to where your support code is, for CommonJS - see [below](#finding-your-code)                                | []      |
 | `requireModule`   | `string[]` | Yes        | `--require-module`        | Names of transpilation modules to load, loaded via `require()` - see [Transpiling](./transpiling.md)               | []      |
 | `retry`           | `number`   | No         | `--retry`                 | Retry failing tests up to the given number of times - see [Retry](./retry.md)                                      | 0       |
 | `retryTagFilter`  | `string`   | Yes        | `--retry-tag-filter`      | Tag expression to filter which scenarios can be retried - see [Retry](./retry.md)                                  |         |
+| `shard`           | `string`   | No         | `--shard`                 | Run a subset of scenarios across multiple test runs - see [Sharding](./sharding.md)                                |         |
 | `strict`          | `boolean`  | No         | `--strict`, `--no-strict` | Fail the test run if there are pending steps                                                                       | true    |
 | `tags`            | `string`   | Yes        | `--tags`, `-t`            | Tag expression to filter which scenarios should be run - see [Filtering](./filtering.md#tags)                      |         |
 | `worldParameters` | `object`   | Yes        | `--world-parameters`      | Parameters to be passed to your World - see [World](./support_files/world.md)                                      | {}      |

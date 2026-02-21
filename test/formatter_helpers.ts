@@ -9,7 +9,7 @@ import FormatterBuilder from '../src/formatter/builder'
 import { SupportCodeLibrary } from '../src/support_code_library_builder/types'
 import { ITestCaseAttempt } from '../src/formatter/helpers/event_data_collector'
 import { doesNotHaveValue } from '../src/value_checker'
-import { emitSupportCodeMessages } from '../src/cli/helpers'
+import { emitSupportCodeMessages } from '../src/api/emit_support_code_messages'
 import { FormatOptions } from '../src/formatter'
 import { SourcedPickle } from '../src/assemble'
 import { IRunEnvironment } from '../src/api'
@@ -94,6 +94,7 @@ export async function testFormatter({
       ...buildOptions(runtimeOptions),
       parallel: 0,
     },
+    snippetOptions: {},
   })
   await runtime.run()
 
@@ -155,6 +156,7 @@ export async function getEnvelopesAndEventDataCollector({
       ...buildOptions(runtimeOptions),
       parallel: 0,
     },
+    snippetOptions: {},
   })
   await runtime.run()
 

@@ -22,15 +22,9 @@ export interface IUsage {
   uri: string
 }
 
-export enum UsageOrder {
-  EXECUTION_TIME = 'EXECUTION_TIME',
-  LOCATION = 'LOCATION',
-}
-
 export interface IGetUsageRequest {
   eventDataCollector: EventDataCollector
   stepDefinitions: StepDefinition[]
-  order?: UsageOrder
 }
 
 function buildEmptyMapping(
@@ -59,7 +53,7 @@ const unexecutedStatuses: readonly messages.TestStepResultStatus[] = [
 function buildMapping({
   stepDefinitions,
   eventDataCollector,
-}: Omit<IGetUsageRequest, 'order'>): Record<string, IUsage> {
+}: IGetUsageRequest): Record<string, IUsage> {
   const mapping = buildEmptyMapping(stepDefinitions)
   eventDataCollector.getTestCaseAttempts().forEach((testCaseAttempt) => {
     const pickleStepMap = getPickleStepMap(testCaseAttempt.pickle)
@@ -97,10 +91,7 @@ function normalizeDuration(duration?: messages.Duration): number {
   return messages.TimeConversion.durationToMilliseconds(duration)
 }
 
-function buildResult(
-  mapping: Record<string, IUsage>,
-  order: UsageOrder
-): IUsage[] {
+function buildResult(mapping: Record<string, IUsage>): IUsage[] {
   return Object.keys(mapping)
     .map((stepDefinitionId) => {
       const { matches, ...rest } = mapping[stepDefinitionId]
@@ -108,11 +99,7 @@ function buildResult(
         if (a.duration === b.duration) {
           return a.text < b.text ? -1 : 1
         }
-        if (order === UsageOrder.EXECUTION_TIME) {
-          return normalizeDuration(b.duration) - normalizeDuration(a.duration)
-        } else {
-          return a.text.localeCompare(b.text)
-        }
+        return normalizeDuration(b.duration) - normalizeDuration(a.duration)
       })
       const result = { matches: sortedMatches, ...rest }
       const durations: messages.Duration[] = matches
@@ -129,22 +116,16 @@ function buildResult(
       }
       return result
     })
-    .sort((a: IUsage, b: IUsage) => {
-      if (order === UsageOrder.EXECUTION_TIME) {
-        return (
-          normalizeDuration(b.meanDuration) - normalizeDuration(a.meanDuration)
-        )
-      } else {
-        return a.uri.localeCompare(b.uri)
-      }
-    })
+    .sort(
+      (a: IUsage, b: IUsage) =>
+        normalizeDuration(b.meanDuration) - normalizeDuration(a.meanDuration)
+    )
 }
 
 export function getUsage({
   stepDefinitions,
   eventDataCollector,
-  order = UsageOrder.EXECUTION_TIME,
 }: IGetUsageRequest): IUsage[] {
   const mapping = buildMapping({ stepDefinitions, eventDataCollector })
-  return buildResult(mapping, order)
+  return buildResult(mapping)
 }

@@ -11,6 +11,7 @@ import timeMethods from '../time'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
+import FormatterBuilder from '../formatter/builder'
 import { assembleTestCases } from '../assemble'
 import TestCaseRunner from './test_case_runner'
 
@@ -45,6 +46,12 @@ async function testRunner(options: {
 
   // listen for envelopers _after_ we've assembled test cases
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
+  const snippetBuilder = await FormatterBuilder.getStepDefinitionSnippetBuilder(
+    {
+      cwd: process.cwd(),
+      supportCodeLibrary: options.supportCodeLibrary,
+    }
+  )
   const runner = new TestCaseRunner({
     workerId: options.workerId,
     eventBroadcaster,
@@ -57,6 +64,7 @@ async function testRunner(options: {
     skip: valueOrDefault(options.skip, false),
     supportCodeLibrary: options.supportCodeLibrary,
     worldParameters: {},
+    snippetBuilder,
   })
   const result = await runner.run()
   return { envelopes, result }
@@ -166,7 +174,7 @@ describe('TestCaseRunner', () => {
           status: messages.TestStepResultStatus.FAILED,
           message: 'fail',
           exception: {
-            type: 'Error',
+            type: 'String',
             message: 'fail',
             stackTrace: undefined,
           },
@@ -284,14 +292,14 @@ describe('TestCaseRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(4)
-        const expected: messages.TestStepResult = {
+        expect(envelopes).to.have.lengthOf(5)
+        expect(envelopes[2].suggestion.snippets).to.have.lengthOf(1)
+        expect(envelopes[3].testStepFinished.testStepResult).to.eql({
           status: messages.TestStepResultStatus.UNDEFINED,
           duration: messages.TimeConversion.millisecondsToDuration(0),
-        }
-        expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
+        })
         expect(result).to.eql(
-          envelopes[2].testStepFinished.testStepResult.status
+          envelopes[3].testStepFinished.testStepResult.status
         )
       })
     })
@@ -350,7 +358,7 @@ describe('TestCaseRunner', () => {
                 duration: messages.TimeConversion.millisecondsToDuration(1),
                 message: 'Oh no!',
                 exception: {
-                  type: 'Error',
+                  type: 'String',
                   message: 'Oh no!',
                   stackTrace: undefined,
                 },

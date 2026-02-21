@@ -58,3 +58,11 @@ When('a PDF document is attached and renamed', async function () {
 When('a link to {string} is attached', async function (uri: string) {
   this.link(uri)
 })
+
+When(
+  'the string {string} is attached as {string} before a failure',
+  async function (text: string, mediaType: string) {
+    this.attach(text, mediaType)
+    throw new Error('whoops')
+  }
+)

@@ -1,6 +1,10 @@
 import { EventEmitter } from 'node:events'
 import * as messages from '@cucumber/messages'
-import { getWorstTestStepResult, IdGenerator } from '@cucumber/messages'
+import {
+  Envelope,
+  getWorstTestStepResult,
+  IdGenerator,
+} from '@cucumber/messages'
 import { JsonObject } from 'type-fest'
 import {
   ITestCaseHookParameter,
@@ -13,10 +17,12 @@ import { IDefinition } from '../models/definition'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import StepDefinition from '../models/step_definition'
 import { IWorldOptions } from '../support_code_library_builder/world'
+import StepDefinitionSnippetBuilder from '../formatter/step_definition_snippet_builder'
 import { timestamp } from './stopwatch'
 import StepRunner, { RunStepResult } from './step_runner'
 import AttachmentManager from './attachment_manager'
 import { getAmbiguousStepException } from './helpers'
+import { makeSuggestion } from './make_suggestion'
 
 export interface INewTestCaseRunnerOptions {
   workerId?: string
@@ -30,6 +36,7 @@ export interface INewTestCaseRunnerOptions {
   filterStackTraces: boolean
   supportCodeLibrary: SupportCodeLibrary
   worldParameters: JsonObject
+  snippetBuilder: StepDefinitionSnippetBuilder
 }
 
 export default class TestCaseRunner {
@@ -46,6 +53,7 @@ export default class TestCaseRunner {
   private readonly skip: boolean
   private readonly filterStackTraces: boolean
   private readonly supportCodeLibrary: SupportCodeLibrary
+  private readonly snippetBuilder: StepDefinitionSnippetBuilder
   private testStepResults: messages.TestStepResult[]
   private world: any
   private readonly worldParameters: JsonObject
@@ -62,6 +70,7 @@ export default class TestCaseRunner {
     filterStackTraces,
     supportCodeLibrary,
     worldParameters,
+    snippetBuilder,
   }: INewTestCaseRunnerOptions) {
     this.workerId = workerId
     this.attachmentManager = new AttachmentManager(
@@ -95,6 +104,7 @@ export default class TestCaseRunner {
     this.filterStackTraces = filterStackTraces
     this.supportCodeLibrary = supportCodeLibrary
     this.worldParameters = worldParameters
+    this.snippetBuilder = snippetBuilder
     this.resetTestProgressData()
   }
 
@@ -324,6 +334,13 @@ export default class TestCaseRunner {
       }
     )
     if (stepDefinitions.length === 0) {
+      this.eventBroadcaster.emit('envelope', {
+        suggestion: makeSuggestion({
+          newId: this.newId,
+          snippetBuilder: this.snippetBuilder,
+          pickleStep,
+        }),
+      } satisfies Envelope)
       return {
         result: {
           status: messages.TestStepResultStatus.UNDEFINED,

@@ -251,6 +251,30 @@ export interface IRunOptionsFormats {
 }
 
 /**
+ * Options relating to plugins - which ones to use and how they should behave
+ * @public
+ */
+export interface IRunOptionsPlugins {
+  /**
+   * Specifiers of plugins to load
+   * @example
+   * [
+   *   "\@cucumber/my-plugin",
+   *   "./custom-plugin.js"
+   * ]
+   * @remarks
+   * Each item is a module specifier for a plugin to be loaded.
+   */
+  specifiers: string[]
+  /**
+   * Options to be provided to plugins
+   * @remarks
+   * The value must be a JSON-serializable object.
+   */
+  options: JsonObject
+}
+
+/**
  * Structured configuration object suitable for passing to {@link runCucumber}
  * @public
  */
@@ -259,6 +283,7 @@ export interface IRunConfiguration {
   support: Partial<ISupportCodeCoordinates>
   runtime: IRunOptionsRuntime
   formats: IRunOptionsFormats
+  plugins?: IRunOptionsPlugins
 }
 
 /**
@@ -299,6 +324,7 @@ export interface IRunOptions {
   support: ISupportCodeCoordinatesOrLibrary
   runtime: IRunOptionsRuntime
   formats: IRunOptionsFormats
+  plugins?: IRunOptionsPlugins
 }
 
 /**

@@ -67,6 +67,7 @@ export interface IDefineTestStepHookOptions {
 }
 
 export interface IDefineTestRunHookOptions {
+  name?: string
   timeout?: number
 }
 
@@ -157,6 +158,8 @@ export interface CanonicalSupportCodeIds {
   stepDefinitionIds: string[]
   beforeTestCaseHookDefinitionIds: string[]
   afterTestCaseHookDefinitionIds: string[]
+  beforeTestRunHookDefinitionIds: string[]
+  afterTestRunHookDefinitionIds: string[]
 }
 
 export interface SupportCodeLibrary {

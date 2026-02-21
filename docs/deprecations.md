@@ -33,6 +33,21 @@ User-specified formats where either the formatter name/path or the target path (
 | `html:file://hostname/formatter/report.html` | `"html":"file://hostname/formatter/report.html"` |
 | `file://C:\custom\formatter`                 | `"file://C:\custom\formatter"`                   |
 
+### `colorsEnabled` format option
+
+Deprecated in `12.6.0`, will be removed in `14.0.0` or later.
+
+The `colorsEnabled` format option allows you to forcibly enable or disable colored output from formatters. This is being removed in favour of using the `FORCE_COLOR` environment variable, which is a cross-tool standard that will also influence other tools in your stack such as assertion libraries.
+
+In `13.0.0`, the option's behaviour will change to set the `FORCE_COLOR` environment variable under the hood. In `14.0.0`, the option will be removed entirely.
+
+To adapt:
+
+| Before | After |
+|--------|-------|
+| `--format-options '{"colorsEnabled":true}'` | `FORCE_COLOR=1` |
+| `--format-options '{"colorsEnabled":false}'` | `FORCE_COLOR=0` |
+
 ## Previous deprecations
 
 For deprecations that have been completed (i.e. the functionality removed), see [UPGRADING.md](../UPGRADING.md).
