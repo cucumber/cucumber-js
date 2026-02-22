@@ -28,33 +28,10 @@ For CommonJS, you need to use the `requireModule` configuration option to regist
 
 ## ESM
 
-There are two ways of doing this depending on your version of Cucumber. Given the transitional state of modules in Node.js, consider them both experimental for now.
+For ESM, you need to use the `import` configuration option to register `tsx/esm`, and then `import` for your TypeScript support code, in that order, like this:
 
-### Loader option
-
-ℹ️ Added in v10.6.0
-
-For ESM, you need to use the `loader` configuration option to register `tsx/esm`, and then `import` for your TypeScript support code, like this:
-
-- In a configuration file `{ loader: ['tsx/esm'], import: ['features/step-definitions/**/*.ts'] }`
-- On the CLI `npx cucumber-js --loader tsx/esm --import 'features/step-definitions/**/*.ts'`
-
-The value of `loader` will usually be a package/module name, but if you have a loader you've authored locally, you can provide a path that's relative to your project's working directory.
-
-Note that some LTS version streams of Node.js introduced this loaders support fairly recently, and you might need to upgrade to a newer minor version:
-
-- 18.x - you need at least 18.19.0
-- 20.x - you need at least 20.6.0
-
-### Environment variable
-
-In versions earlier than v10.6.0 (without the `loader` option), you can still instruct Node.js to register the loader on the process via the `NODE_OPTIONS` environment variable, like this:
-
-`NODE_OPTIONS=\"--loader tsx/esm\"`
-
-You then just need to specify the `import` option as above for your support code.
-
-(This approach is no longer recommended, and you might see a warning from Node.js telling you so.)
+- In a configuration file `{ import: ['tsx/esm', 'features/step-definitions/**/*.ts'] }`
+- On the CLI `npx cucumber-js --import tsx/esm --import 'features/step-definitions/**/*.ts'`
 
 ### tsconfig-paths
 
