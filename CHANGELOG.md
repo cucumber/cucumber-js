@@ -11,7 +11,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Fixed
 - Handle ESM when building source references ([#2740](https://github.com/cucumber/cucumber-js/pull/2740))
 - Fix error type resolution ([#2744](https://github.com/cucumber/cucumber-js/pull/2744)) 
-- Environment variables will now be inherited from child processes in parallel mode ([#2752](https://github.com/cucumber/cucumber-js/pull/2752))
+- Ensure that environment variables reach child processes in parallel mode ([#2752](https://github.com/cucumber/cucumber-js/pull/2752))
 
 ## [12.6.0] - 2026-01-22
 ### Deprecated
