@@ -51,7 +51,7 @@ In a future release, we'll change it so that the command line argument(s) _overr
 ]
 ```
 
-This will be unlike all other configuration options, however in the case of paths we think this makes the most sense.
+This will be unlike all other configuration options - no others are changing. However, in the case of paths we think this makes the most sense.
 
 ### `Cli`
 

@@ -47,7 +47,7 @@ export async function loadConfiguration(
     const mergedPaths = [...configPaths, ...cliPaths]
     logger.warn(
       `You have specified paths in both your configuration file and as CLI arguments.\n` +
-        `In a future major version, the CLI paths will override those from the configuration file instead of merging.\n` +
+        `In a future major version, the CLI argument will override the configuration file instead of being merged.\n` +
         `To prepare for this change, see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md\n` +
         `  Current result:     ${mergedPaths.join(', ')}\n` +
         `  Future result:      ${cliPaths.join(', ')}`
