@@ -14,6 +14,45 @@ In some cases, we might wait longer than `N+2.0.0` before removing functionality
 
 ## Current deprecations
 
+### Paths in configuration and CLI
+
+Announced in `12.7.0`, will change in `14.0.0` or later.
+
+When you provide paths in both your configuration file _and_ as command line arguments, Cucumber currently merges these options. So given this configuration:
+
+```yaml
+default:
+  paths:
+    - "features/**/*.feature"
+```
+
+And this invocation on the command line:
+
+```shell
+cucumber-js features/auth.feature
+```
+
+The resolved "paths" option will be:
+
+```json
+[
+  "features/**/*.feature",
+  "features/auth.feature"
+]
+```
+
+Meaning everything will be run. This probably isn't what you want.
+
+In a future release, we'll change it so that the command line argument(s) _override_ the configuration rather than merge with it. So going back to our example, the resolved "paths" option will then be:
+
+```json
+[
+  "features/auth.feature"
+]
+```
+
+This will be unlike all other configuration options - no others are changing. However, in the case of paths we think this makes the most sense.
+
 ### `Cli`
 
 Deprecated in `8.7.0`, will be removed in `10.0.0` or later.

@@ -8,9 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- Warn about merged paths from config and CLI ([#2759](https://github.com/cucumber/cucumber-js/pull/2759))
+
 ### Fixed
 - Handle ESM when building source references ([#2740](https://github.com/cucumber/cucumber-js/pull/2740))
-- Fix error type resolution ([#2744](https://github.com/cucumber/cucumber-js/pull/2744)) 
+- Fix error type resolution ([#2744](https://github.com/cucumber/cucumber-js/pull/2744))
 - Ensure that environment variables reach child processes in parallel mode ([#2752](https://github.com/cucumber/cucumber-js/pull/2752))
 
 ## [12.6.0] - 2026-01-22
