@@ -109,9 +109,6 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1) Scenario: b # a.feature:2\n' +
             `   ${figures.cross} Given an ambiguous step\n` +
-            '       Multiple step definitions match:\n' +
-            '         an ambiguous step    - steps.ts:13\n' +
-            '         /an? ambiguous step/ - steps.ts:14\n' +
             '\n' +
             '1 scenario (1 ambiguous)\n' +
             '1 step (1 ambiguous)\n' +
