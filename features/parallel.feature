@@ -126,3 +126,25 @@ Feature: Running scenarios in parallel
     Then it passes
     And the first two scenarios run in parallel while the last runs sequentially
     And the scenario 'fail_parallel' retried 3 times
+
+  Scenario: environment variables are passed to parallel workers
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+      const assert = require('assert')
+
+      Given('I check the environment variable', function() {
+        assert.strictEqual(process.env.MY_CUSTOM_VAR, 'my_custom_value')
+      })
+      """
+    And a file named "features/a.feature" with:
+      """
+      Feature: env check
+        Scenario: a
+          Given I check the environment variable
+
+        Scenario: b
+          Given I check the environment variable
+      """
+    When I run cucumber-js with arguments `--parallel 2` and env `MY_CUSTOM_VAR=my_custom_value`
+    Then it passes

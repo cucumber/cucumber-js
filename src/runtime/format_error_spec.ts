@@ -55,7 +55,7 @@ describe('formatError', () => {
           throw 'Yikes!'
         })
       ).to.eql({
-        type: 'Error',
+        type: 'String',
         message: 'Yikes!',
       })
     })

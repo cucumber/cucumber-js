@@ -24,7 +24,7 @@ export function formatError(
       },
     },
   })
-  const type = error.name || 'Error'
+  const type = error.constructor.name || 'Error'
   const message = typeof error === 'string' ? error : error.message
   let stackTrace = `${type}: ${message}`
   if (processedStackTrace) {

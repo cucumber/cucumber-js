@@ -12,7 +12,7 @@ jobs:
   incomplete-issues:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@997185467fa4f803885201cee163a9f38240193d # v10
+      - uses: actions/stale@b5d41d4e1d5dceea10e7104786b73624c18a190f # v10
         with:
           stale-issue-label: ':hourglass: stale'
           stale-issue-message: 'This issue is stale because it has been open for 3 weeks with no activity. Remove the stale label or comment or this will be closed in another 5 days.'
