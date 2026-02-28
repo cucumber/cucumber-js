@@ -1,5 +1,5 @@
 import { Writable } from 'node:stream'
-import chalk from 'chalk'
+import pc from 'picocolors'
 import { ColorInfo, supportsColor } from 'supports-color'
 import { TestStepResultStatus } from '@cucumber/messages'
 import { doesNotHaveValue } from '../value_checker'
@@ -22,39 +22,25 @@ export default function getColorFns(
   enabled?: boolean
 ): IColorFns {
   const support: ColorInfo = detectSupport(stream, env, enabled)
-  if (support) {
-    const chalkInstance = new chalk.Instance(support)
-    return {
-      forStatus(status: TestStepResultStatus) {
-        return {
-          AMBIGUOUS: chalkInstance.red.bind(chalk),
-          FAILED: chalkInstance.red.bind(chalk),
-          PASSED: chalkInstance.green.bind(chalk),
-          PENDING: chalkInstance.yellow.bind(chalk),
-          SKIPPED: chalkInstance.cyan.bind(chalk),
-          UNDEFINED: chalkInstance.yellow.bind(chalk),
-          UNKNOWN: chalkInstance.yellow.bind(chalk),
-        }[status]
-      },
-      location: chalkInstance.gray.bind(chalk),
-      tag: chalkInstance.cyan.bind(chalk),
-      diffAdded: chalkInstance.green.bind(chalk),
-      diffRemoved: chalkInstance.red.bind(chalk),
-      errorMessage: chalkInstance.red.bind(chalk),
-      errorStack: chalkInstance.grey.bind(chalk),
-    }
-  } else {
-    return {
-      forStatus(_status: TestStepResultStatus) {
-        return (x) => x
-      },
-      location: (x) => x,
-      tag: (x) => x,
-      diffAdded: (x) => x,
-      diffRemoved: (x) => x,
-      errorMessage: (x) => x,
-      errorStack: (x) => x,
-    }
+  const colors = pc.createColors(!!support)
+  return {
+    forStatus(status: TestStepResultStatus) {
+      return {
+        AMBIGUOUS: colors.red,
+        FAILED: colors.red,
+        PASSED: colors.green,
+        PENDING: colors.yellow,
+        SKIPPED: colors.cyan,
+        UNDEFINED: colors.yellow,
+        UNKNOWN: colors.yellow,
+      }[status]
+    },
+    location: colors.gray,
+    tag: colors.cyan,
+    diffAdded: colors.green,
+    diffRemoved: colors.red,
+    errorMessage: colors.red,
+    errorStack: colors.gray,
   }
 }
 
