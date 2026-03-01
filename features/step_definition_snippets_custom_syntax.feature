@@ -73,6 +73,7 @@ Feature: step definition snippets custom syntax
       | async-await | ->                           | 'pending'              |
       | synchronous | ->                           | 'pending'              |
 
+  @parallel
   Scenario: Custom snippet syntax works in parallel runtime
     When I run cucumber-js with `--parallel 2 --format-options '{"snippetInterface": "async-await", "snippetSyntax": "./coffeescript_syntax.js"}'`
     Then it fails

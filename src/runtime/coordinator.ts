@@ -24,15 +24,32 @@ export class Coordinator implements Runtime {
       },
     } satisfies Envelope)
 
-    const assembledTestCases = await assembleTestCases(
-      this.testRunStartedId,
-      this.eventBroadcaster,
-      this.newId,
-      this.sourcedPickles,
-      this.supportCodeLibrary
-    )
+    await this.adapter.setup()
 
-    const success = await this.adapter.run(assembledTestCases)
+    const successByPhase = {
+      beforeAllHooks: false,
+      testCases: false,
+      afterAllHooks: false,
+    }
+    successByPhase.beforeAllHooks = await this.adapter.runBeforeAllHooks()
+    if (successByPhase.beforeAllHooks) {
+      const assembledTestCases = await assembleTestCases(
+        this.testRunStartedId,
+        this.eventBroadcaster,
+        this.newId,
+        this.sourcedPickles,
+        this.supportCodeLibrary
+      )
+      successByPhase.testCases =
+        await this.adapter.runTestCases(assembledTestCases)
+    }
+    successByPhase.afterAllHooks = await this.adapter.runAfterAllHooks()
+    const success =
+      successByPhase.beforeAllHooks &&
+      successByPhase.testCases &&
+      successByPhase.afterAllHooks
+
+    await this.adapter.teardown()
 
     this.eventBroadcaster.emit('envelope', {
       testRunFinished: {

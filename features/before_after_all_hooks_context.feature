@@ -88,6 +88,7 @@ Feature: Before/After All Hooks Context
     When I run cucumber-js
     Then it passes
 
+  @parallel
   Scenario: Works the same way on the parallel runtime
     Given a file named "features/support/hooks.js" with:
       """
