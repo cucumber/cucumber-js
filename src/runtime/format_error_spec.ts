@@ -77,35 +77,38 @@ describe('formatError', () => {
         }
 
         it('should handle a custom error', () => {
-          expect(
-            testFormatError(() => {
-              assert.ok(false, 'Thing that should have been truthy was falsy!')
-            })
-          ).to.have.string(' at ')
+          const result = testFormatError(() => {
+            assert.ok(false, 'Thing that should have been truthy was falsy!')
+          })
+          expect(result).to.have.string(' at ')
+          expect(result).to.have.string(
+            'AssertionError: Thing that should have been truthy was falsy!'
+          )
         })
 
         it('should handle a generic error', () => {
-          expect(
-            testFormatError(() => {
-              throw new Error('A generally bad thing happened!')
-            })
-          ).to.have.string(' at ')
+          const result = testFormatError(() => {
+            throw new Error('A generally bad thing happened!')
+          })
+          expect(result).to.have.string(' at ')
+          expect(result).to.have.string(
+            'Error: A generally bad thing happened!'
+          )
         })
 
         it('should handle an omitted message', () => {
-          expect(
-            testFormatError(() => {
-              throw new Error()
-            })
-          ).to.have.string(' at ')
+          const result = testFormatError(() => {
+            throw new Error()
+          })
+          expect(result).to.have.string(' at ')
+          expect(result).to.have.string('Error: ')
         })
 
         it('should handle a thrown string', () => {
-          expect(
-            testFormatError(() => {
-              throw 'Yikes!'
-            })
-          ).to.be.undefined
+          const result = testFormatError(() => {
+            throw 'Yikes!'
+          })
+          expect(result).to.eq('Error: Yikes!')
         })
       })
     })
