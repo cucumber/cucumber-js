@@ -15,10 +15,15 @@ export function validateConfiguration(
       'Use of `loader` option normally means you should specify your support code paths with `import`; see https://github.com/cucumber/cucumber-js/blob/main/docs/configuration.md#finding-your-code'
     )
   }
-  if (configuration.formatOptions.colorsEnabled !== undefined) {
+  if (
+    configuration.formatOptions.colorsEnabled !== undefined &&
+    !('FORCE_COLOR' in process.env)
+  ) {
+    const value = configuration.formatOptions.colorsEnabled ? '1' : '0'
     logger.warn(
       `The 'colorsEnabled' format option is deprecated and will be removed in a future major version. ` +
-        `Use the FORCE_COLOR environment variable instead (FORCE_COLOR=1 to enable, FORCE_COLOR=0 to disable); ` +
+        `Setting FORCE_COLOR=${value} based on the provided value. ` +
+        `Use the FORCE_COLOR environment variable directly instead; ` +
         `see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md`
     )
   }
