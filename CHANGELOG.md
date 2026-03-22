@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- BREAKING CHANGE: Set `FORCE_COLOR` based on deprecated format option ([#2769](https://github.com/cucumber/cucumber-js/pull/2769))
 
 ## [12.7.0] - 2026-02-25
 ### Changed
