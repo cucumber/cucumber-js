@@ -1,5 +1,5 @@
 import { reindent } from 'reindent-template-literals'
-import chalk from 'chalk'
+import pc from 'picocolors'
 
 export function warnUserAboutEnablingDeveloperMode(error: any): void {
   if (!(error?.code === 'EPERM')) {
@@ -11,7 +11,7 @@ export function warnUserAboutEnablingDeveloperMode(error: any): void {
 
   // eslint-disable-next-line no-console
   console.error(
-    chalk.red(
+    pc.red(
       reindent(`
         Error: Unable to run feature tests!
 
