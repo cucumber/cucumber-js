@@ -21,8 +21,6 @@ const UNSUPPORTED = [
   'all-statuses',
   // we aren't fully compliant yet for global hooks
   'global-hooks-attachments',
-  'global-hooks-beforeall-error',
-  'global-hooks-afterall-error',
   // not a test sample
   'test-run-exception',
 ]

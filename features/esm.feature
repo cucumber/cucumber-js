@@ -43,6 +43,7 @@ Feature: ES modules support
     Then it runs 2 scenarios
     And it passes
 
+  @parallel
   Scenario: native modules work with parallel runtime
     Given a file named "features/a.feature" with:
       """
