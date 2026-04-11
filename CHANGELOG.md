@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Support custom externalising option ([#2780](https://github.com/cucumber/cucumber-js/pull/2780))
 
 ## [12.7.0] - 2026-02-25
 ### Changed
