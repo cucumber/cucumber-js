@@ -18,7 +18,7 @@ export interface FormatOptions {
    */
   colorsEnabled?: boolean
   html?: {
-    externalAttachments?: boolean
+    externalAttachments?: boolean | ReadonlyArray<string>
   }
   rerun?: FormatRerunOptions
   snippetInterface?: SnippetInterface

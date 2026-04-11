@@ -116,7 +116,23 @@ By default, the HTML report includes all attachments from your test run as embed
 }
 ```
 
-This will cause attachments to be saved in the same directory as the report file, with filenames that look like `attachment-8e7c5d3d-1ef0-4be6-86e0-16362bad9531.png`. If you want to put the report file somewhere - say, a web server - to be viewed, you'll need to bring those files along with it.
+For more granular control, you can provide an array of content type patterns to match against:
+
+```json
+{
+  "formatOptions": {
+    "html": {
+      "externalAttachments": ["image/*", "video/*"]
+    }
+  }
+}
+```
+
+Patterns can be exact types like `image/png` or use a wildcard for the subtype like `image/*`.
+
+Note that log and link attachments are never externalized regardless of the option value.
+
+Externalized attachments are saved in the same directory as the report file, with filenames that look like `attachment-8e7c5d3d-1ef0-4be6-86e0-16362bad9531.png`. If you want to put the report file somewhere - say, a web server - to be viewed, you'll need to bring those files along with it.
 
 ### `message`
 
