@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Resolve dependency issue with `junit-xml-formatter` and `query` ([junit-xml-formatter#143](https://github.com/cucumber/junit-xml-formatter/pull/143))
 
 ## [12.8.0] - 2026-04-12
 ### Added
