@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [12.8.1] - 2026-04-14
 ### Fixed
 - Resolve dependency issue with `junit-xml-formatter` and `query` ([junit-xml-formatter#143](https://github.com/cucumber/junit-xml-formatter/pull/143))
 
@@ -1733,7 +1735,8 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.8.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.8.1...HEAD
+[12.8.1]: https://github.com/cucumber/cucumber-js/compare/v12.8.0...v12.8.1
 [12.8.0]: https://github.com/cucumber/cucumber-js/compare/v12.7.0...v12.8.0
 [12.7.0]: https://github.com/cucumber/cucumber-js/compare/v12.6.0...v12.7.0
 [12.6.0]: https://github.com/cucumber/cucumber-js/compare/v12.5.0...v12.6.0
