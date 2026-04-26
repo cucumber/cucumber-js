@@ -11,6 +11,18 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Changed
 - BREAKING CHANGE: Set `FORCE_COLOR` based on deprecated format option ([#2769](https://github.com/cucumber/cucumber-js/pull/2769))
 
+## [12.8.2] - 2026-04-25
+### Changed
+- Various dependency updates
+
+## [12.8.1] - 2026-04-14
+### Fixed
+- Resolve dependency issue with `junit-xml-formatter` and `query` ([junit-xml-formatter#143](https://github.com/cucumber/junit-xml-formatter/pull/143))
+
+## [12.8.0] - 2026-04-12
+### Added
+- Support custom externalising option ([#2780](https://github.com/cucumber/cucumber-js/pull/2780))
+
 ## [12.7.0] - 2026-02-25
 ### Changed
 - Warn about merged paths from config and CLI ([#2759](https://github.com/cucumber/cucumber-js/pull/2759))
@@ -1729,7 +1741,10 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.7.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.8.2...HEAD
+[12.8.2]: https://github.com/cucumber/cucumber-js/compare/v12.8.1...v12.8.2
+[12.8.1]: https://github.com/cucumber/cucumber-js/compare/v12.8.0...v12.8.1
+[12.8.0]: https://github.com/cucumber/cucumber-js/compare/v12.7.0...v12.8.0
 [12.7.0]: https://github.com/cucumber/cucumber-js/compare/v12.6.0...v12.7.0
 [12.6.0]: https://github.com/cucumber/cucumber-js/compare/v12.5.0...v12.6.0
 [12.5.0]: https://github.com/cucumber/cucumber-js/compare/v12.4.0...v12.5.0

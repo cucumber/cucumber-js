@@ -28,10 +28,19 @@ For CommonJS, you need to use the `requireModule` configuration option to regist
 
 ## ESM
 
-For ESM, you need to use the `import` configuration option to register `tsx/esm`, and then `import` for your TypeScript support code, in that order, like this:
+For ESM, you need a small setup file that explicitly [registers tsx](https://tsx.hirok.io/dev-api/register-esm) using its programmatic API:
 
-- In a configuration file `{ import: ['tsx/esm', 'features/step-definitions/**/*.ts'] }`
-- On the CLI `npx cucumber-js --import tsx/esm --import 'features/step-definitions/**/*.ts'`
+```js
+// tsx-register.js
+import { register } from 'tsx/esm/api'
+
+register()
+```
+
+Then use the `import` configuration option with that file followed by your TypeScript support code, in that order:
+
+- In a configuration file `{ import: ['./tsx-register.js', 'features/step-definitions/**/*.ts'] }`
+- On the CLI `npx cucumber-js --import ./tsx-register.js --import 'features/step-definitions/**/*.ts'`
 
 ### tsconfig-paths
 
