@@ -78,7 +78,7 @@ Deprecated in `12.6.0`, will be removed in `14.0.0` or later.
 
 The `colorsEnabled` format option allows you to forcibly enable or disable colored output from formatters. This is being removed in favour of using the `FORCE_COLOR` environment variable, which is a cross-tool standard that will also influence other tools in your stack such as assertion libraries.
 
-In `13.0.0`, the option's behaviour will change to set the `FORCE_COLOR` environment variable under the hood. In `14.0.0`, the option will be removed entirely.
+In `13.0.0`, the option's behaviour changed to set the `FORCE_COLOR` environment variable under the hood. In `14.0.0` or later, the option will be removed entirely.
 
 To adapt:
 
