@@ -110,10 +110,14 @@ export type CoordinatorContext<OptionsType> = {
   ) => void
   /**
    * Options for the plugin
+   * @remarks
+   * If the plugin definition provides an `optionsKey`, this value will be
+   * from that key in the global options object. Otherwise, it will be the
+   * entire global options object.
    */
   options: OptionsType
   /**
-   * Logger for emitting user-facing messages or diagnostics
+   * Logger for emitting user-facing messages or diagnostics; goes to `stderr`
    */
   logger: ILogger
   /**
@@ -138,7 +142,7 @@ export type Plugin<OptionsType = any> = {
    * Coordinator function called during initialization
    * @remarks
    * Can do async work, and the Promise will be awaited. Can optionally return
-   * a cleanup function to be called when Cucumber is about to exit.
+   * a cleanup function to be called when the operation has finished.
    */
   coordinator: (
     context: CoordinatorContext<OptionsType>
@@ -149,21 +153,66 @@ export type Plugin<OptionsType = any> = {
   optionsKey?: string
 }
 
+/**
+ * Context object passed to a formatter plugin's function
+ * @public
+ */
 export type FormatterPluginContext<OptionsType> = {
+  /**
+   * Register a handler for Cucumber Messages
+   */
   on: (key: 'message', handler: (value: Envelope) => void) => void
+  /**
+   * Options for the formatter
+   * @remarks
+   * If the plugin definition provides an `optionsKey`, this value will be
+   * from that key in the global options object. Otherwise, it will be the
+   * entire global options object.
+   */
   options: OptionsType
+  /**
+   * Logger for emitting user-facing messages or diagnostics; goes to `stderr`
+   */
   logger: ILogger
+  /**
+   * The writable stream the output is being written to
+   * @remarks
+   * Ideally you should use this only for feature detection and/or advanced
+   * TTY functionality; for just writing output, use `write`
+   */
   stream: NodeJS.WritableStream
+  /**
+   * Fire-and-forget function to write data to the output stream
+   */
   write: (buffer: string | Uint8Array) => void
+  /**
+   * The directory containing the target file, if the output stream is for a
+   * file
+   * @remarks
+   * This can be used to write additional files as siblings to the output file,
+   * but this should be for exceptional cases; we recommend keeping formatter
+   * output self-contained as much as possible.
+   */
   directory?: string
 }
 
-export type FormatterPluginFunction<OptionsType> = (
-  context: FormatterPluginContext<OptionsType>
-) => PromiseLike<PluginCleanup | void> | PluginCleanup | void
-
+/**
+ * A plugin that consumes Cucumber Messages and writes formatted output to a stream
+ * @public
+ */
 export type FormatterPlugin<OptionsType = any> = {
   type: 'formatter'
-  formatter: FormatterPluginFunction<OptionsType>
+  /**
+   * Coordinator function called during initialization
+   * @remarks
+   * Can do async work, and the Promise will be awaited. Can optionally return
+   * a cleanup function to be called before the stream is finished.
+   */
+  formatter: (
+    context: FormatterPluginContext<OptionsType>
+  ) => PromiseLike<PluginCleanup | void> | PluginCleanup | void
+  /**
+   * Optional key to extract plugin-specific options from the format options object
+   */
   optionsKey?: string
 }

@@ -87,6 +87,26 @@ To adapt:
 | `--format-options '{"colorsEnabled":true}'` | `FORCE_COLOR=1` |
 | `--format-options '{"colorsEnabled":false}'` | `FORCE_COLOR=0` |
 
+### `printAttachments` format option
+
+Deprecated in `13.0.0`, will be removed in `14.0.0` or later.
+
+The `printAttachments` format option has been renamed to `includeAttachments`. The behaviour is unchanged - if set to `false`, attachments won't be included in the output of the terminal formatters.
+
+To adapt:
+
+| Before | After |
+|--------|-------|
+| `--format-options '{"printAttachments":false}'` | `--format-options '{"includeAttachments":false}'` |
+
+### `SummaryFormatter` and `ProgressFormatter` classes
+
+Deprecated in `13.0.0`, will be removed in `15.0.0` or later.
+
+The built-in `summary` and `progress` formatters are now implemented as formatter plugins and no longer use the legacy `SummaryFormatter` and `ProgressFormatter` classes. The classes themselves are still exported for now, but will be removed in a future major version.
+
+If you've been extending these classes to build a custom formatter, migrate to the [formatter plugin architecture](./custom_formatters.md) instead.
+
 ## Previous deprecations
 
 For deprecations that have been completed (i.e. the functionality removed), see [UPGRADING.md](../UPGRADING.md).

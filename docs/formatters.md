@@ -34,15 +34,75 @@ Many formatters, including the built-in ones, support some configuration via opt
 
 This option is repeatable, so you can use it multiple times and the objects will be merged with the later ones taking precedence.
 
-Some common options supported by built-in formatters:
+Some common options supported by the terminal formatters (`summary`, `progress`, `progress-bar`, `pretty`):
 
 - `colorsEnabled` - [see below](#colored-output) (deprecated)
-- `printAttachments` - if set to `false`, attachments won't be part of progress bars and summary reports
+- `includeAttachments` - if set to `false`, attachments won't be included in the output (default `true`)
+- `theme` - customise the styling applied to the output. [See below](#theme).
 
 Some formatters have options that are only applicable to them. These options will be under a key that matches the formatter name, like this:
 
-- In a configuration file `{ formatOptions: { pretty: { featuresAndRules : false } }`
-- On the CLI `cucumber-js --format-options '{"pretty":{"featuresAndRules":false}}'`
+- In a configuration file `{ formatOptions: { pretty: { useStatusIcon: false } } }`
+- On the CLI `cucumber-js --format-options '{"pretty":{"useStatusIcon":false}}'`
+
+### Theme
+
+The `theme` option lets you customise the styling applied to the terminal output. Most values are arrays of style names accepted by Node.js's [`util.styleText`](https://nodejs.org/api/util.html#utilstyletextformat-text-options) - e.g. modifiers like `bold` and `italic`, foreground colors like `red` and `magenta`, and background colors like `bgYellow`.
+
+Every key is optional; provide only the ones you want to override.
+
+```jsonc
+{
+  "formatOptions": {
+    "theme": {
+      "affix": ["dim"],                          // prefixes and suffixes for titles etc
+      "attachment": ["cyan"],                    // text representations of attachments
+      "dataTable": {
+        "all": [],                               // styles applied to the entire data table
+        "border": ["dim"],                       // the border characters
+        "content": []                            // the cell content
+      },
+      "docString": {
+        "all": [],                               // styles applied to the entire doc string
+        "content": [],                           // the content
+        "delimiter": ["dim"],                    // the `"""` delimiters
+        "mediaType": ["dim"]                     // the optional media type
+      },
+      "feature": {
+        "all": [],                               // styles applied to the entire feature line
+        "keyword": ["bold"],                     // the `Feature:` keyword
+        "name": []                               // the feature name
+      },
+      "location": ["dim"],                       // source locations printed alongside scenario and step lines
+      "rule": {
+        "all": [],                               // styles applied to the entire rule line
+        "keyword": ["bold"],                     // the `Rule:` keyword
+        "name": []                               // the rule name
+      },
+      "scenario": {
+        "all": [],                               // styles applied to the entire scenario line
+        "keyword": ["bold"],                     // the `Scenario:` (or other) keyword
+        "name": []                               // the scenario name
+      },
+      "status": {
+        // each of these is a map keyed by status (PASSED, FAILED, SKIPPED, PENDING, UNDEFINED, AMBIGUOUS)
+        "all":      { "PASSED": ["green"], "FAILED": ["red"] /* …etc */ },  // styles applied to step lines per status
+        "icon":     { "PASSED": "✔", "FAILED": "✘" /* …etc */ },             // icon characters used by `pretty`
+        "progress": { "PASSED": ".", "FAILED": "F" /* …etc */ }              // characters used by `progress`
+      },
+      "step": {
+        "argument": [],                          // data tables and doc strings attached to steps
+        "keyword": ["bold"],                     // the step keyword (`Given`, `When`, etc.)
+        "text": []                               // the step text
+      },
+      "symbol": {
+        "bullet": "•"                            // the bullet character used in summaries
+      },
+      "tag": ["cyan"]                            // tags on features, rules and scenarios
+    }
+  }
+}
+```
 
 ## Colored output
 
@@ -60,7 +120,7 @@ The Summary Formatter outputs a summary of the test run's results.
 
 If everything passed, this will be short and sweet:
 
-![](./images/summary_green.gif)
+![](./images/summary.png)
 
 If there were issues, you'll see useful details including:
 
@@ -72,13 +132,13 @@ If there were issues, you'll see useful details including:
 
 The Progress Formatter has the same output as the Summary Formatter at the end of the test run, but also provides concise real-time feedback each time a step or hook completes:
 
-![](./images/progress.gif)
+![](./images/progress.png)
 
 ### `progress-bar`
 
 Similar to the Progress Formatter, but provides a real-time updating progress bar based on the total number of steps to be executed in the test run:
 
-![](./images/progress_bar_green.gif)
+![](./images/progress-bar.png)
 
 ### `pretty`
 
@@ -88,6 +148,12 @@ Similar to the Progress Formatter, but provides a real-time updating progress ba
 Writes a rich report of the scenario and example execution as it happens.
 
 ![](./images/pretty.png)
+
+In addition to the common terminal options mentioned earlier, the `pretty` formatter supports the following keys under a `pretty` object:
+
+- `includeFeatureLine` - if `false`, the `Feature:` heading line is omitted (default `true`)
+- `includeRuleLine` - if `false`, the `Rule:` heading line is omitted (default `true`)
+- `useStatusIcon` - if `false`, status icons are not shown alongside step results (default `true`)
 
 ### `html`
 
@@ -190,6 +256,3 @@ The Usage Formatter lists your step definitions and tells you about usages in yo
 
 Does what the Usage Formatter does, but outputs JSON, which can be output to a file and then consumed by other tools.
 
-### Other officially-supported formatters
-
-* [@cucumber/pretty-formatter](https://www.npmjs.com/package/@cucumber/pretty-formatter) - prints the feature with inline results,  colours and custom themes.

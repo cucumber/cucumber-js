@@ -10,6 +10,14 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ## [Unreleased]
 ### Changed
 - BREAKING CHANGE: Set `FORCE_COLOR` based on deprecated format option ([#2769](https://github.com/cucumber/cucumber-js/pull/2769))
+- Redesigned output for summary, progress, progress bar and pretty formatters ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
+
+### Deprecated
+- Deprecate legacy `SummaryFormatter` and `ProgressFormatter` classes in favour of new formatter architecture ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
+- Deprecate `printAttachments` format option in favour of `includeAttachments` ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
+
+### Fixed
+- Handle thrown strings correctly ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
 
 ## [12.8.2] - 2026-04-25
 ### Changed

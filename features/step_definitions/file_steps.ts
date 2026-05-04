@@ -53,6 +53,30 @@ Then(
 )
 
 Then(
+  'the file {string} contains the text:',
+  async function (this: World, filePath: string, text: string) {
+    filePath = Mustache.render(filePath, this)
+    const absoluteFilePath = path.resolve(this.tmpDir, filePath)
+    const content = await fs.readFile(absoluteFilePath, 'utf8')
+    const actualContent = normalizeText(content)
+    const expectedContent = normalizeText(text)
+    expect(actualContent).to.include(expectedContent)
+  }
+)
+
+Then(
+  'the file {string} does not contain the text:',
+  async function (this: World, filePath: string, text: string) {
+    filePath = Mustache.render(filePath, this)
+    const absoluteFilePath = path.resolve(this.tmpDir, filePath)
+    const content = await fs.readFile(absoluteFilePath, 'utf8')
+    const actualContent = normalizeText(content)
+    const expectedContent = normalizeText(text)
+    expect(actualContent).not.to.include(expectedContent)
+  }
+)
+
+Then(
   'the file {string} contains colors',
   async function (this: World, filePath: string) {
     filePath = Mustache.render(filePath, this)

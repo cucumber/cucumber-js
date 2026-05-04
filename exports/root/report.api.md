@@ -6,6 +6,7 @@
 
 import { EventEmitter } from 'node:events';
 import { Expression } from '@cucumber/cucumber-expressions';
+import type { FormatCodeFunction } from '@cucumber/pretty-formatter';
 import { GeneratedExpression } from '@cucumber/cucumber-expressions';
 import { IdGenerator } from '@cucumber/messages';
 import { JsonObject } from 'type-fest';
@@ -14,6 +15,7 @@ import { ParameterType } from '@cucumber/cucumber-expressions';
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions';
 import { Readable } from 'node:stream';
 import { TestStepResultStatus } from '@cucumber/messages';
+import type { Theme } from '@cucumber/pretty-formatter';
 import { Writable } from 'node:stream';
 
 // @public (undocumented)
@@ -410,7 +412,7 @@ declare namespace PickleParser {
     }
 }
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export class ProgressFormatter extends SummaryFormatter {
     constructor(options: IFormatterOptions);
     // (undocumented)
@@ -458,7 +460,7 @@ export class SnippetsFormatter extends Formatter {
 // @public (undocumented)
 export const Status: typeof messages.TestStepResultStatus;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export class SummaryFormatter extends Formatter {
     constructor(options: IFormatterOptions);
     // (undocumented)
