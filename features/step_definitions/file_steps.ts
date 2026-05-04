@@ -1,7 +1,7 @@
 import path from 'node:path'
+import fs from 'node:fs/promises'
 import { expect } from 'chai'
 import hasAnsi from 'has-ansi'
-import fs from 'mz/fs'
 import fsExtra from 'fs-extra'
 import Mustache from 'mustache'
 import { normalizeText } from '../support/helpers'

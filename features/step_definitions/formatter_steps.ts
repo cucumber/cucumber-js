@@ -1,7 +1,8 @@
 import path from 'node:path'
+import { readFileSync, readdirSync } from 'node:fs'
+import fs from 'node:fs/promises'
 import { expect, use } from 'chai'
 import chaiExclude from 'chai-exclude'
-import fs from 'mz/fs'
 import { Then, DataTable } from '../../'
 import {
   ignorableKeys,
@@ -72,9 +73,9 @@ Then('the html formatter output is complete', async function (this: World) {
 Then(
   'the formatter has no externalised attachments',
   async function (this: World) {
-    const actual = fs
-      .readdirSync(this.tmpDir)
-      .filter((filename) => filename.startsWith('attachment-')).length
+    const actual = readdirSync(this.tmpDir).filter((filename) =>
+      filename.startsWith('attachment-')
+    ).length
     expect(actual).to.eq(0)
   }
 )
@@ -82,11 +83,10 @@ Then(
 Then(
   'the formatter has these external attachments:',
   async function (this: World, table: DataTable) {
-    const actual = fs
-      .readdirSync(this.tmpDir)
+    const actual = readdirSync(this.tmpDir)
       .filter((filename) => filename.startsWith('attachment-'))
       .map((filename) =>
-        fs.readFileSync(path.join(this.tmpDir, filename), { encoding: 'utf-8' })
+        readFileSync(path.join(this.tmpDir, filename), { encoding: 'utf-8' })
       )
     actual.sort()
     expect(actual).to.deep.eq(table.raw().map((row) => row[0]))
