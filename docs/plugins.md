@@ -170,9 +170,11 @@ type MyPluginOptions = {
   }
 }
 
-export default myPlugin: Plugin<MyOptions> = {
+const myPlugin: Plugin<MyPluginOptions> = {
   type: 'plugin',
   coordinator: (context) => {...},
   optionsKey: 'foo'
 }
+
+export default myPlugin
 ```

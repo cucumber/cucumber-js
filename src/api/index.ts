@@ -20,6 +20,8 @@ export {
   CoordinatorTransformer,
   CoordinatorContext,
   CoordinatorEnvironment,
+  FormatterPlugin,
+  FormatterPluginContext,
   Plugin,
   PluginCleanup,
   PluginOperation,

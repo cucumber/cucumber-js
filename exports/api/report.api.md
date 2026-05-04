@@ -53,6 +53,23 @@ export type CoordinatorTransformValues = {
 };
 
 // @public
+export type FormatterPlugin<OptionsType = any> = {
+    type: 'formatter';
+    formatter: (context: FormatterPluginContext<OptionsType>) => PromiseLike<PluginCleanup | void> | PluginCleanup | void;
+    optionsKey?: string;
+};
+
+// @public
+export type FormatterPluginContext<OptionsType> = {
+    on: (key: 'message', handler: (value: Envelope) => void) => void;
+    options: OptionsType;
+    logger: ILogger;
+    stream: NodeJS.WritableStream;
+    write: (buffer: string | Uint8Array) => void;
+    directory?: string;
+};
+
+// @public
 export interface IConfiguration {
     backtrace: boolean;
     dryRun: boolean;

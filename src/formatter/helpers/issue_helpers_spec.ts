@@ -59,7 +59,7 @@ describe('IssueHelpers', () => {
             1) Scenario: my scenario # a.feature:2
                ${figures.tick} Given a passing step # steps.ts:29
                ${figures.cross} When a failing step # steps.ts:9
-                   error
+                   Error: error
                - Then a passing step # steps.ts:29
 
 
@@ -88,9 +88,6 @@ describe('IssueHelpers', () => {
             1) Scenario: my scenario # a.feature:2
                ${figures.tick} Given a passing step # steps.ts:29
                ${figures.cross} When an ambiguous step
-                   Multiple step definitions match:
-                     an ambiguous step    - steps.ts:13
-                     /an? ambiguous step/ - steps.ts:14
                - Then a passing step # steps.ts:29
 
 
@@ -263,7 +260,7 @@ describe('IssueHelpers', () => {
                    Attachment (image/png): screenshot.png
                ${figures.cross} When attachment step2 # steps.ts:44
                    Attachment (text/plain): Other info
-                   error
+                   Error: error
                - Then a passing step # steps.ts:29
 
 
@@ -291,7 +288,7 @@ describe('IssueHelpers', () => {
               1) Scenario: my scenario # a.feature:2
                  ${figures.tick} Given attachment step1 # steps.ts:35
                  ${figures.cross} When attachment step2 # steps.ts:44
-                     error
+                     Error: error
                  - Then a passing step # steps.ts:29
 
 

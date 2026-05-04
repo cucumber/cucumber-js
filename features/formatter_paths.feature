@@ -18,8 +18,8 @@ Feature: Formatter Paths
     When I run cucumber-js with `-f summary:summary.txt`
     Then the file "summary.txt" has the text:
       """
-      1 scenario (1 passed)
-      1 step (1 passed)
+      1 scenarios (1 passed)
+      1 steps (1 passed)
       <duration-stat>
       """
 
@@ -28,8 +28,8 @@ Feature: Formatter Paths
     When I run cucumber-js with `-f summary:"{{{tmpDir}}}/summary.txt"`
     Then the file "{{{tmpDir}}}/summary.txt" has the text:
       """
-      1 scenario (1 passed)
-      1 step (1 passed)
+      1 scenarios (1 passed)
+      1 steps (1 passed)
       <duration-stat>
       """
 
@@ -37,8 +37,8 @@ Feature: Formatter Paths
     When I run cucumber-js with `-f summary:some/long/path/for/reports/summary.txt`
     Then the file "some/long/path/for/reports/summary.txt" has the text:
       """
-      1 scenario (1 passed)
-      1 step (1 passed)
+      1 scenarios (1 passed)
+      1 steps (1 passed)
       <duration-stat>
       """
 
