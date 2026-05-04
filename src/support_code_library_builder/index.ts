@@ -41,6 +41,7 @@ interface IStepDefinitionConfig {
   code: Function
   line: number
   options: any
+  order: number
   keyword: GherkinStepKeyword
   pattern: string | RegExp
   uri: string
@@ -50,6 +51,7 @@ interface ITestCaseHookDefinitionConfig {
   code: any
   line: number
   options: any
+  order: number
   uri: string
 }
 
@@ -57,6 +59,7 @@ interface ITestStepHookDefinitionConfig {
   code: Function
   line: number
   options: any
+  order: number
   uri: string
 }
 
@@ -64,6 +67,7 @@ interface ITestRunHookDefinitionConfig {
   code: Function
   line: number
   options: any
+  order: number
   uri: string
 }
 
@@ -81,6 +85,7 @@ export class SupportCodeLibraryBuilder {
   private cwd: string
   private defaultTimeout: number
   private definitionFunctionWrapper: any
+  private definitionOrder: number
   private newId: IdGenerator.NewId
   private parameterTypeRegistry: SourcedParameterTypeRegistry
   private stepDefinitionConfigs: IStepDefinitionConfig[]
@@ -157,7 +162,11 @@ export class SupportCodeLibraryBuilder {
   defineParameterType(options: IParameterTypeDefinition<any>): void {
     const parameterType = buildParameterType(options)
     const source = getDefinitionLineAndUri(this.cwd)
-    this.parameterTypeRegistry.defineSourcedParameterType(parameterType, source)
+    this.parameterTypeRegistry.defineSourcedParameterType(
+      parameterType,
+      source,
+      this.definitionOrder++
+    )
   }
 
   defineStep(
@@ -183,6 +192,7 @@ export class SupportCodeLibraryBuilder {
         code,
         line,
         options,
+        order: this.definitionOrder++,
         keyword,
         pattern,
         uri,
@@ -222,6 +232,7 @@ export class SupportCodeLibraryBuilder {
         code,
         line,
         options,
+        order: this.definitionOrder++,
         uri,
       })
     }
@@ -259,6 +270,7 @@ export class SupportCodeLibraryBuilder {
         code,
         line,
         options,
+        order: this.definitionOrder++,
         uri,
       })
     }
@@ -282,6 +294,7 @@ export class SupportCodeLibraryBuilder {
         code,
         line,
         options,
+        order: this.definitionOrder++,
         uri,
       })
     }
@@ -309,7 +322,7 @@ export class SupportCodeLibraryBuilder {
     configs: ITestCaseHookDefinitionConfig[],
     canonicalIds?: string[]
   ): TestCaseHookDefinition[] {
-    return configs.map(({ code, line, options, uri }, index) => {
+    return configs.map(({ code, line, options, order, uri }, index) => {
       const wrappedCode = this.wrapCode({
         code,
         wrapperOptions: options.wrapperOptions,
@@ -319,6 +332,7 @@ export class SupportCodeLibraryBuilder {
         id: canonicalIds ? canonicalIds[index] : this.newId(),
         line,
         options,
+        order,
         unwrappedCode: code,
         uri,
       })
@@ -328,7 +342,7 @@ export class SupportCodeLibraryBuilder {
   buildTestStepHookDefinitions(
     configs: ITestStepHookDefinitionConfig[]
   ): TestStepHookDefinition[] {
-    return configs.map(({ code, line, options, uri }) => {
+    return configs.map(({ code, line, options, order, uri }) => {
       const wrappedCode = this.wrapCode({
         code,
         wrapperOptions: options.wrapperOptions,
@@ -338,6 +352,7 @@ export class SupportCodeLibraryBuilder {
         id: this.newId(),
         line,
         options,
+        order,
         unwrappedCode: code,
         uri,
       })
@@ -348,7 +363,7 @@ export class SupportCodeLibraryBuilder {
     configs: ITestRunHookDefinitionConfig[],
     canonicalIds?: string[]
   ): TestRunHookDefinition[] {
-    return configs.map(({ code, line, options, uri }, index) => {
+    return configs.map(({ code, line, options, order, uri }, index) => {
       const wrappedCode = this.wrapCode({
         code,
         wrapperOptions: options.wrapperOptions,
@@ -358,6 +373,7 @@ export class SupportCodeLibraryBuilder {
         id: canonicalIds ? canonicalIds[index] : this.newId(),
         line,
         options: options as ITestRunHookDefinitionOptions,
+        order,
         unwrappedCode: code,
         uri,
       })
@@ -371,7 +387,7 @@ export class SupportCodeLibraryBuilder {
     const stepDefinitions: StepDefinition[] = []
     const undefinedParameterTypes: messages.UndefinedParameterType[] = []
     this.stepDefinitionConfigs.forEach(
-      ({ code, line, options, keyword, pattern, uri }, index) => {
+      ({ code, line, options, order, keyword, pattern, uri }, index) => {
         let expression
         if (typeof pattern === 'string') {
           try {
@@ -407,6 +423,7 @@ export class SupportCodeLibraryBuilder {
             id: canonicalIds ? canonicalIds[index] : this.newId(),
             line,
             options,
+            order,
             keyword,
             pattern,
             unwrappedCode: code,
@@ -476,6 +493,7 @@ export class SupportCodeLibraryBuilder {
     this.beforeTestRunHookDefinitionConfigs = []
     this.beforeTestStepHookDefinitionConfigs = []
     this.definitionFunctionWrapper = null
+    this.definitionOrder = 0
     this.defaultTimeout = 5000
     this.parameterTypeRegistry = new SourcedParameterTypeRegistry()
     this.stepDefinitionConfigs = []

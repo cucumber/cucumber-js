@@ -57,7 +57,7 @@ export class World {
   async run(
     executablePath: string,
     inputArgs: string[],
-    envOverride: NodeJS.ProcessEnv = null
+    envOverride: NodeJS.ProcessEnv = {}
   ): Promise<void> {
     const messageFilename = 'message.ndjson'
     const args = ['node', executablePath].concat(inputArgs, [
@@ -65,12 +65,12 @@ export class World {
       '--format',
       `message:${messageFilename}`,
     ])
-    const env = { ...process.env, ...this.sharedEnv, ...envOverride }
     const cwd = this.tmpDir
 
     let result: IRunResult
 
     if (this.spawn) {
+      const env = { ...process.env, ...this.sharedEnv, ...envOverride }
       result = await new Promise((resolve) => {
         execFile(
           args[0],
@@ -84,8 +84,11 @@ export class World {
     } else {
       const stdout = new PassThrough()
       const stderr = new PassThrough()
-      const environment: IRunEnvironment = { cwd, stdout, stderr, env }
+      const environment: IRunEnvironment = { cwd, stdout, stderr }
       let error: any
+      for (const key of Object.keys(envOverride)) {
+        process.env[key] = envOverride[key]
+      }
       try {
         const { options, configuration: argvConfiguration } =
           ArgvParser.parse(args)
@@ -104,6 +107,10 @@ export class World {
         }
       } catch (err) {
         error = err
+      } finally {
+        for (const key of Object.keys(envOverride)) {
+          delete process.env[key]
+        }
       }
       if (error) {
         new Console(stderr).error(error)

@@ -1,17 +1,16 @@
-import { InternalPlugin } from '../plugin'
-import { ISourcesCoordinates } from '../api'
+import { Plugin } from '../plugin'
 import PickleFilter from '../pickle_filter'
-import { orderPickles } from '../cli/helpers'
+import { orderPickles } from './order_pickles'
 
-export const filterPlugin: InternalPlugin<ISourcesCoordinates> = {
+export const filterPlugin: Plugin = {
   type: 'plugin',
-  coordinator: async ({ on, options, logger, environment }) => {
+  coordinator: async ({ on, transform, options, logger, environment }) => {
     let unexpandedSourcePaths: string[] = []
     on('paths:resolve', (paths) => {
       unexpandedSourcePaths = paths.unexpandedSourcePaths
     })
 
-    on('pickles:filter', async (allPickles) => {
+    transform('pickles:filter', async (allPickles) => {
       const pickleFilter = new PickleFilter({
         cwd: environment.cwd,
         featurePaths: unexpandedSourcePaths,
@@ -22,7 +21,7 @@ export const filterPlugin: InternalPlugin<ISourcesCoordinates> = {
       return allPickles.filter((pickle) => pickleFilter.matches(pickle))
     })
 
-    on('pickles:order', async (unorderedPickles) => {
+    transform('pickles:order', async (unorderedPickles) => {
       const orderedPickles = [...unorderedPickles]
       orderPickles(orderedPickles, options.order, logger)
       return orderedPickles

@@ -4,10 +4,21 @@ import errorStackParser from 'error-stack-parser'
 import { filterStackTrace } from '../filter_stack_trace'
 
 export function formatError(
-  error: Error,
+  error: Error | string,
   filterStackTraces: boolean
 ): Pick<TestStepResult, 'message' | 'exception'> {
-  let processedStackTrace: string
+  if (typeof error === 'string') {
+    const stackTrace = `Error: ${error}`
+    return {
+      message: stackTrace,
+      exception: {
+        type: 'Error',
+        message: error,
+        stackTrace,
+      },
+    }
+  }
+  let processedStackTrace: string = error.stack
   try {
     const parsedStack = errorStackParser.parse(error)
     const filteredStack = filterStackTraces
@@ -17,19 +28,25 @@ export function formatError(
   } catch {
     // if we weren't able to parse and process, we'll settle for the original
   }
-  const message = format(error, {
+  const legacyMessage = format(error, {
     colorFns: {
       errorStack: (stack: string) => {
         return processedStackTrace ? `\n${processedStackTrace}` : stack
       },
     },
   })
+  const type = error.constructor.name
+  const message = typeof error === 'string' ? error : error.message
+  let stackTrace = `${type}: ${message}`
+  if (processedStackTrace) {
+    stackTrace += '\n' + processedStackTrace
+  }
   return {
-    message,
+    message: legacyMessage,
     exception: {
-      type: error.name || 'Error',
-      message: typeof error === 'string' ? error : error.message,
-      stackTrace: processedStackTrace ?? error.stack,
+      type,
+      message,
+      stackTrace,
     },
   }
 }

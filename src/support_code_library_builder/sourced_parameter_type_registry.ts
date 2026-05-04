@@ -5,15 +5,18 @@ import {
 import { ILineAndUri } from '../types'
 
 export class SourcedParameterTypeRegistry extends ParameterTypeRegistry {
-  private parameterTypeToSource: WeakMap<ParameterType<unknown>, ILineAndUri> =
-    new WeakMap()
+  private parameterTypeToSource: WeakMap<
+    ParameterType<unknown>,
+    ILineAndUri & { order: number }
+  > = new WeakMap()
 
   defineSourcedParameterType(
     parameterType: ParameterType<unknown>,
-    source: ILineAndUri
+    source: ILineAndUri,
+    order: number
   ) {
     this.defineParameterType(parameterType)
-    this.parameterTypeToSource.set(parameterType, source)
+    this.parameterTypeToSource.set(parameterType, { ...source, order })
   }
 
   lookupSource(parameterType: ParameterType<unknown>) {

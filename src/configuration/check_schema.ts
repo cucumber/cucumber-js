@@ -16,13 +16,25 @@ const schema = yup.object().shape({
           : yup.string()
       )
     ),
-  formatOptions: yup.object(),
+  formatOptions: yup
+    .object({
+      colorsEnabled: yup.boolean(),
+      html: yup.object(),
+      includeAttachments: yup.boolean(),
+      pretty: yup.object(),
+      printAttachments: yup.boolean(),
+      rerun: yup.object(),
+      theme: yup.object(),
+    })
+    .noUnknown(false),
   import: yup.array().of(yup.string()),
   language: yup.string().oneOf(Object.keys(dialects)),
   name: yup.array().of(yup.string()),
   order: yup.string().matches(/^random:.*|random|defined$/),
   paths: yup.array().of(yup.string()),
   parallel: yup.number().integer().min(0),
+  plugin: yup.array().of(yup.string()),
+  pluginOptions: yup.object(),
   publish: yup.boolean(),
   require: yup.array().of(yup.string()),
   requireModule: yup.array().of(yup.string()),

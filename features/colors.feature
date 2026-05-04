@@ -28,6 +28,10 @@ Feature: Colors
   Scenario: colored output can be activated with the format option
     When I run cucumber-js with `--format-options '{"colorsEnabled":true}'`
     Then the file "summary.out" contains colors
+    And the error output contains the text:
+      """
+      The 'colorsEnabled' format option is deprecated and will be removed in a future major version. Setting FORCE_COLOR=1 based on the provided value.
+      """
 
   Scenario: colored output can be activated with FORCE_COLOR
     When I run cucumber-js with env `FORCE_COLOR=1`

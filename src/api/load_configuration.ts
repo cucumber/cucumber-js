@@ -8,7 +8,7 @@ import {
 } from '../configuration'
 import { IRunEnvironment, makeEnvironment } from '../environment'
 import { convertConfiguration } from './convert_configuration'
-import { IResolvedConfiguration, ILoadConfigurationOptions } from './types'
+import { ILoadConfigurationOptions, IResolvedConfiguration } from './types'
 
 /**
  * Load user-authored configuration to be used in a test run
@@ -33,10 +33,30 @@ export async function loadConfiguration(
   const profileConfiguration = configFile
     ? await fromFile(logger, cwd, configFile, options.profiles)
     : {}
+  const providedConfiguration = parseConfiguration(
+    logger,
+    'Provided',
+    options.provided
+  )
+  if (
+    profileConfiguration.paths?.length > 0 &&
+    providedConfiguration.paths?.length > 0
+  ) {
+    const configPaths = profileConfiguration.paths
+    const cliPaths = providedConfiguration.paths
+    const mergedPaths = [...configPaths, ...cliPaths]
+    logger.warn(
+      `You have specified paths in both your configuration file and as CLI arguments.\n` +
+        `In a future major version, the CLI argument will override the configuration file instead of being merged.\n` +
+        `To prepare for this change, see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md\n` +
+        `  Current result:     ${mergedPaths.join(', ')}\n` +
+        `  Future result:      ${cliPaths.join(', ')}`
+    )
+  }
   const original = mergeConfigurations(
     DEFAULT_CONFIGURATION,
     profileConfiguration,
-    parseConfiguration(logger, 'Provided', options.provided)
+    providedConfiguration
   )
   logger.debug('Resolved configuration:', original)
   validateConfiguration(original, logger)

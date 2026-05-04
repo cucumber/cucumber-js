@@ -1,7 +1,6 @@
 import util from 'node:util'
 import * as messages from '@cucumber/messages'
 import { Query } from '@cucumber/query'
-import { getWorstTestStepResult } from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../src/value_checker'
 import {
   getPickleStepMap,
@@ -49,8 +48,13 @@ export function getTestCaseResult(
 ): messages.TestStepResult {
   const query = new Query()
   envelopes.forEach((envelope) => query.update(envelope))
-  const pickle = getAcceptedPickle(envelopes, pickleName)
-  return getWorstTestStepResult(query.getPickleTestStepResults([pickle.id]))
+  const matched = query
+    .findAllTestCaseStarted()
+    .find(
+      (testCaseStarted) =>
+        query.findPickleBy(testCaseStarted).name === pickleName
+    )
+  return query.findMostSevereTestStepResultBy(matched)
 }
 
 export function getTestStepResults(

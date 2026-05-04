@@ -1,5 +1,5 @@
 import path from 'node:path'
-import parse from '@cucumber/tag-expressions'
+import { Node, parse } from '@cucumber/tag-expressions'
 import * as messages from '@cucumber/messages'
 import { getGherkinScenarioLocationMap } from './formatter/helpers/gherkin_document_parser'
 import { doesHaveValue, doesNotHaveValue } from './value_checker'
@@ -129,7 +129,7 @@ export class PickleNameFilter {
 }
 
 export class PickleTagFilter {
-  private readonly tagExpressionNode: any // cucumber-tag-expressions does not export interface
+  private readonly tagExpressionNode: Node
 
   constructor(tagExpression: string) {
     if (doesHaveValue(tagExpression) && tagExpression !== '') {
