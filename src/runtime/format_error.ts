@@ -28,7 +28,7 @@ export function formatError(
   } catch {
     // if we weren't able to parse and process, we'll settle for the original
   }
-  const legacyMessage = format(error, {
+  const stackTrace = format(error, {
     colorFns: {
       errorStack: (stack: string) => {
         return processedStackTrace ? `\n${processedStackTrace}` : stack
@@ -37,12 +37,8 @@ export function formatError(
   })
   const type = error.constructor.name
   const message = typeof error === 'string' ? error : error.message
-  let stackTrace = `${type}: ${message}`
-  if (processedStackTrace) {
-    stackTrace += '\n' + processedStackTrace
-  }
   return {
-    message: legacyMessage,
+    message: stackTrace,
     exception: {
       type,
       message,
