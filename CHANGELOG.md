@@ -18,6 +18,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ### Fixed
 - Handle thrown strings correctly ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
+- Include assertion info in stack trace ([#2803](https://github.com/cucumber/cucumber-js/pull/2803))
 
 ## [12.8.2] - 2026-04-25
 ### Changed

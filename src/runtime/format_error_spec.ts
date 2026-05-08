@@ -1,4 +1,5 @@
 import assert from 'node:assert'
+import { stripVTControlCharacters } from 'node:util'
 import { expect } from 'chai'
 import { formatError } from './format_error'
 
@@ -81,8 +82,9 @@ describe('formatError', () => {
             assert.ok(false, 'Thing that should have been truthy was falsy!')
           })
           expect(result).to.have.string(' at ')
+          expect(result).to.have.string('AssertionError')
           expect(result).to.have.string(
-            'AssertionError: Thing that should have been truthy was falsy!'
+            'Thing that should have been truthy was falsy!'
           )
         })
 
@@ -96,12 +98,24 @@ describe('formatError', () => {
           )
         })
 
+        it('should handle an assertion error', () => {
+          const result = testFormatError(() => {
+            assert.equal(1, 2, 'number go up')
+          })
+          const sanitised = stripVTControlCharacters(result)
+          expect(sanitised).to.have.string('number go up')
+          expect(sanitised).to.have.string('+ expected')
+          expect(sanitised).to.have.string('- actual')
+          expect(sanitised).to.have.string('-1')
+          expect(sanitised).to.have.string('+2')
+        })
+
         it('should handle an omitted message', () => {
           const result = testFormatError(() => {
             throw new Error()
           })
           expect(result).to.have.string(' at ')
-          expect(result).to.have.string('Error: ')
+          expect(result).to.have.string('{}')
         })
 
         it('should handle a thrown string', () => {
