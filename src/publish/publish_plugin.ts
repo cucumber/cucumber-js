@@ -15,7 +15,7 @@ type TouchResult = {
   url?: string
 }
 
-const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://messages.cucumber.io/api/reports'
+const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://reports.cucumber.io/api/reports'
 
 export const publishPlugin: Plugin = {
   type: 'plugin',
