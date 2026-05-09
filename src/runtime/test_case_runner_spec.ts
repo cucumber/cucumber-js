@@ -172,11 +172,11 @@ describe('TestCaseRunner', () => {
         const failingTestResult: messages.TestStepResult = {
           duration: messages.TimeConversion.millisecondsToDuration(0),
           status: messages.TestStepResultStatus.FAILED,
-          message: 'fail',
+          message: 'Error: fail',
           exception: {
-            type: 'String',
+            type: 'Error',
             message: 'fail',
-            stackTrace: undefined,
+            stackTrace: 'Error: fail',
           },
         }
 
@@ -356,11 +356,11 @@ describe('TestCaseRunner', () => {
               testCaseStartedId: '3',
               testStepResult: {
                 duration: messages.TimeConversion.millisecondsToDuration(1),
-                message: 'Oh no!',
+                message: 'Error: Oh no!',
                 exception: {
-                  type: 'String',
+                  type: 'Error',
                   message: 'Oh no!',
-                  stackTrace: undefined,
+                  stackTrace: 'Error: Oh no!',
                 },
                 status: messages.TestStepResultStatus.FAILED,
               },

@@ -28,7 +28,7 @@ Feature: Error formatting
 
       1) Scenario: some scenario # features/a.feature:2
          ✖ Before # features/support/hooks.js:3
-            Fail
+            Error: Fail
          - Given a passing step # features/step_definitions/cucumber_steps.js:3
 
       1 scenario (1 failed)

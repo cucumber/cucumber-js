@@ -36,7 +36,7 @@ Feature: Retry flaky tests
     When I run cucumber-js with `--retry 0`
     Then scenario "Failing" step "Given a failing step" failed with:
       """
-      fail
+      Error: fail
       """
     And it fails
 
@@ -56,7 +56,7 @@ Feature: Retry flaky tests
     When I run cucumber-js
     Then scenario "Failing" step "Given a failing step" failed with:
       """
-      fail
+      Error: fail
       """
     And it fails
 
@@ -90,7 +90,7 @@ Feature: Retry flaky tests
 
       1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
          ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
-             fail
+             Error: fail
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -130,7 +130,7 @@ Feature: Retry flaky tests
 
       1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
          ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
-             fail
+             Error: fail
 
       1 scenario (1 passed)
       1 step (1 passed)
@@ -176,7 +176,7 @@ Feature: Retry flaky tests
 
       1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
          ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
-            fail
+            Error: fail
 
       2 scenarios (2 passed)
       2 steps (2 passed)
@@ -224,7 +224,7 @@ Feature: Retry flaky tests
 
       1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
          ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
-             fail
+             Error: fail
          - And a good step # features/step_definitions/cucumber_steps.js:13
 
       2 scenarios (2 passed)
@@ -277,17 +277,17 @@ Feature: Retry flaky tests
 
       1) Scenario: Bad (attempt 2) # features/a.feature:6
          ✖ Given a bad step # features/step_definitions/cucumber_steps.js:17
-             fail
+             Error: fail
 
       Warnings:
 
       1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
          ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
-             fail
+             Error: fail
 
       2) Scenario: Bad (attempt 1, retried) # features/a.feature:6
          ✖ Given a bad step # features/step_definitions/cucumber_steps.js:17
-             fail
+             Error: fail
 
       3 scenarios (1 failed, 2 passed)
       3 steps (1 failed, 2 passed)

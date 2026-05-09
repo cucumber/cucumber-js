@@ -128,7 +128,7 @@ Feature: Rule keyword
     ✔ Given there are more than one ninja alive # features/step_definitions/cucumber_steps.js:11
     ✔ When 2 ninjas meet, they will fight # features/step_definitions/cucumber_steps.js:15
     ✖ Then one ninja dies # features/step_definitions/cucumber_steps.js:20
-        fail
+        Error: fail
     - And there is one ninja less alive # features/step_definitions/cucumber_steps.js:24
 
     2 scenarios (1 failed, 1 passed)

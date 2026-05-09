@@ -1,4 +1,5 @@
 import assert from 'node:assert'
+import { stripVTControlCharacters } from 'node:util'
 import { expect } from 'chai'
 import { formatError } from './format_error'
 
@@ -55,7 +56,7 @@ describe('formatError', () => {
           throw 'Yikes!'
         })
       ).to.eql({
-        type: 'String',
+        type: 'Error',
         message: 'Yikes!',
       })
     })
@@ -71,41 +72,57 @@ describe('formatError', () => {
           } catch (error) {
             const {
               exception: { stackTrace },
-            } = formatError(error, false)
+            } = formatError(error, filterStackTraces)
             return stackTrace
           }
         }
 
         it('should handle a custom error', () => {
-          expect(
-            testFormatError(() => {
-              assert.ok(false, 'Thing that should have been truthy was falsy!')
-            })
-          ).to.have.string(' at ')
+          const result = testFormatError(() => {
+            assert.ok(false, 'Thing that should have been truthy was falsy!')
+          })
+          expect(result).to.have.string(' at ')
+          expect(result).to.have.string('AssertionError')
+          expect(result).to.have.string(
+            'Thing that should have been truthy was falsy!'
+          )
         })
 
         it('should handle a generic error', () => {
-          expect(
-            testFormatError(() => {
-              throw new Error('A generally bad thing happened!')
-            })
-          ).to.have.string(' at ')
+          const result = testFormatError(() => {
+            throw new Error('A generally bad thing happened!')
+          })
+          expect(result).to.have.string(' at ')
+          expect(result).to.have.string(
+            'Error: A generally bad thing happened!'
+          )
+        })
+
+        it('should handle an assertion error', () => {
+          const result = testFormatError(() => {
+            assert.equal(1, 2, 'number go up')
+          })
+          const sanitised = stripVTControlCharacters(result)
+          expect(sanitised).to.have.string('number go up')
+          expect(sanitised).to.have.string('+ expected')
+          expect(sanitised).to.have.string('- actual')
+          expect(sanitised).to.have.string('-1')
+          expect(sanitised).to.have.string('+2')
         })
 
         it('should handle an omitted message', () => {
-          expect(
-            testFormatError(() => {
-              throw new Error()
-            })
-          ).to.have.string(' at ')
+          const result = testFormatError(() => {
+            throw new Error()
+          })
+          expect(result).to.have.string(' at ')
+          expect(result).to.have.string('{}')
         })
 
         it('should handle a thrown string', () => {
-          expect(
-            testFormatError(() => {
-              throw 'Yikes!'
-            })
-          ).to.be.undefined
+          const result = testFormatError(() => {
+            throw 'Yikes!'
+          })
+          expect(result).to.eq('Error: Yikes!')
         })
       })
     })

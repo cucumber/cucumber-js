@@ -64,7 +64,7 @@ describe('ProgressFormatter', () => {
 
         2) Scenario: a2 # a.feature:4
            ${figures.cross} Given a failing step # steps.ts:9
-               error
+               Error: error
 
         3) Scenario: a6 # a.feature:12
            ? Given an undefined step
