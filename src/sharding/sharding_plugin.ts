@@ -1,6 +1,6 @@
-import { Plugin } from '../plugin'
+import { InternalPlugin } from '../plugin'
 
-export const shardingPlugin: Plugin = {
+export const shardingPlugin: InternalPlugin = {
   type: 'plugin',
   coordinator: async ({ transform, options }) => {
     transform('pickles:filter', async (allPickles) => {

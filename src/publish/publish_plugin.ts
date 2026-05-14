@@ -8,7 +8,7 @@ import { createReadStream, createWriteStream } from 'node:fs'
 import { createGzip } from 'node:zlib'
 import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
-import { Plugin } from '../plugin'
+import { InternalPlugin } from '../plugin'
 
 type TouchResult = {
   banner: string
@@ -17,9 +17,9 @@ type TouchResult = {
 
 const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://reports.cucumber.io/api/reports'
 
-export const publishPlugin: Plugin = {
+export const publishPlugin: InternalPlugin = {
   type: 'plugin',
-  coordinator: async ({ on, logger, options, environment }) => {
+  coordinator: async ({ on, emit, logger, options, environment }) => {
     if (!options) {
       return undefined
     }
@@ -51,6 +51,10 @@ export const publishPlugin: Plugin = {
           sanitisePublishOutput(touchResult.banner, environment.stderr) + '\n'
         )
       }
+    }
+
+    if (touchResult.url) {
+      emit('publish:url', touchResult.url)
     }
 
     const uploadUrl = touchResponse.headers.get('Location')
