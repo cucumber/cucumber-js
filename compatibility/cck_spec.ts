@@ -5,7 +5,6 @@ import { pipeline } from 'node:stream/promises'
 import { describe, it } from 'mocha'
 import { config, expect, use } from 'chai'
 import chaiExclude from 'chai-exclude'
-import { glob } from 'glob'
 import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
 import { Envelope } from '@cucumber/messages'
@@ -31,7 +30,8 @@ config.truncateThreshold = 100
 use(chaiExclude)
 
 describe('Cucumber Compatibility Kit', () => {
-  const directories = glob.sync(`${CCK_FEATURES_PATH}/*`, { nodir: false })
+  // @ts-expect-error -- Requires Node 22
+  const directories = fs.globSync(`${CCK_FEATURES_PATH}/*`)
 
   for (const directory of directories) {
     const suite = path.basename(directory)
