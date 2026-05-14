@@ -1,6 +1,5 @@
 import { dialects } from '@cucumber/gherkin'
 import Table from 'cli-table3'
-import { capitalCase } from 'capital-case'
 
 const keywords = [
   'feature',
@@ -46,6 +45,13 @@ function getAsTable(header: string[], rows: string[][]): string {
   return table.toString()
 }
 
+function capitalizeKeyword(word: string): string {
+  return (
+    word[0].toUpperCase() +
+    word.substring(1).replace(/([A-Z])/g, (char) => ` ${char}`)
+  )
+}
+
 export function getLanguages(): string {
   const rows = Object.keys(dialects).map((isoCode) => [
     isoCode,
@@ -59,7 +65,7 @@ export function getKeywords(isoCode: string): string {
   const language = dialects[isoCode]
   const rows = keywords.map((keyword) => {
     const words = language[keyword].map((s) => `"${s}"`).join(', ')
-    return [capitalCase(keyword), words]
+    return [capitalizeKeyword(keyword), words]
   })
   return getAsTable(['ENGLISH KEYWORD', 'NATIVE KEYWORDS'], rows)
 }
