@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "lib": ["es2022"],
+    "lib": ["es2022", "ESNext.Array"],
     "module": "node16",
     "noImplicitAny": true,
     "noImplicitReturns": true,
