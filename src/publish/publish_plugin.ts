@@ -8,39 +8,53 @@ import { createReadStream, createWriteStream } from 'node:fs'
 import { createGzip } from 'node:zlib'
 import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
-import { Plugin } from '../plugin'
+import { InternalPlugin } from '../plugin'
 
-const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://messages.cucumber.io/api/reports'
+type TouchResult = {
+  banner: string
+  url?: string
+}
 
-export const publishPlugin: Plugin = {
+const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://reports.cucumber.io/api/reports'
+
+export const publishPlugin: InternalPlugin = {
   type: 'plugin',
-  coordinator: async ({ on, logger, options, environment }) => {
+  coordinator: async ({ on, emit, logger, options, environment }) => {
     if (!options) {
       return undefined
     }
     const { url = DEFAULT_CUCUMBER_PUBLISH_URL, token } = options
-    const headers: { [key: string]: string } = {}
+    const headers: { [key: string]: string } = {
+      Accept: 'application/json',
+    }
     if (token !== undefined) {
       headers.Authorization = `Bearer ${token}`
     }
     const touchResponse = await fetch(url, { headers })
-    const banner = await touchResponse.text()
+
+    if (touchResponse.status >= 500) {
+      return () => {
+        logger.error(
+          `Failed to publish report to ${new URL(url).origin} with status ${
+            touchResponse.status
+          }`
+        )
+        logger.debug(touchResponse)
+      }
+    }
+
+    const touchResult = (await touchResponse.json()) as TouchResult
 
     if (!touchResponse.ok) {
       return () => {
-        if (touchResponse.status < 500) {
-          environment.stderr.write(
-            sanitisePublishOutput(banner, environment.stderr) + '\n'
-          )
-        } else {
-          logger.error(
-            `Failed to publish report to ${new URL(url).origin} with status ${
-              touchResponse.status
-            }`
-          )
-          logger.debug(touchResponse)
-        }
+        environment.stderr.write(
+          sanitisePublishOutput(touchResult.banner, environment.stderr) + '\n'
+        )
       }
+    }
+
+    if (touchResult.url) {
+      emit('publish:url', touchResult.url)
     }
 
     const uploadUrl = touchResponse.headers.get('Location')
@@ -75,7 +89,8 @@ export const publishPlugin: Plugin = {
           })
           if (uploadResponse.ok) {
             environment.stderr.write(
-              sanitisePublishOutput(banner, environment.stderr) + '\n'
+              sanitisePublishOutput(touchResult.banner, environment.stderr) +
+                '\n'
             )
           } else {
             logger.error(

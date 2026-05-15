@@ -23,6 +23,8 @@ const schema = yup.object().shape({
   order: yup.string().matches(/^random:.*|random|defined$/),
   paths: yup.array().of(yup.string()),
   parallel: yup.number().integer().min(0),
+  plugin: yup.array().of(yup.string().trim().required()),
+  pluginOptions: yup.object(),
   publish: yup.boolean(),
   require: yup.array().of(yup.string()),
   requireModule: yup.array().of(yup.string()),
