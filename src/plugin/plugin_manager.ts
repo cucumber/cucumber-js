@@ -1,5 +1,6 @@
 import { UsableEnvironment } from '../environment'
 import {
+  CoordinatorContext,
   CoordinatorEventHandler,
   CoordinatorEventKey,
   CoordinatorEventValues,
@@ -7,6 +8,7 @@ import {
   CoordinatorTransformKey,
   CoordinatorTransformValues,
   FormatterPlugin,
+  InternalPlugin,
   Plugin,
   PluginCleanup,
   PluginOperation,
@@ -39,6 +41,7 @@ export class PluginManager {
   private readonly handlers: HandlerRegistry = {
     message: [],
     'paths:resolve': [],
+    'publish:url': [],
   }
   private readonly transformers: TransformerRegistry = {
     'pickles:filter': [],
@@ -104,13 +107,57 @@ export class PluginManager {
     }
   }
 
-  async initCoordinator<OptionsType>(
+  async initCoordinatorExternal<OptionsType>(
     operation: PluginOperation,
     plugin: Plugin<OptionsType>,
     options: OptionsType,
     specifier?: string
   ) {
+    const context = this.makeCoordinatorContext(
+      operation,
+      plugin,
+      options,
+      specifier
+    )
+    await this.initCoordinator(plugin, context, specifier)
+  }
+
+  async initCoordinatorInternal<OptionsType>(
+    operation: PluginOperation,
+    plugin: Plugin<OptionsType>,
+    options: OptionsType
+  ) {
     const context = {
+      ...this.makeCoordinatorContext(operation, plugin, options),
+      emit: this.emit.bind(this),
+    }
+    await this.initCoordinator(plugin, context)
+  }
+
+  private async initCoordinator<OptionsType>(
+    plugin: Plugin<OptionsType>,
+    context: CoordinatorContext<OptionsType>,
+    specifier?: string
+  ) {
+    const cleanupFn = await wrapErrorAsync(
+      async () => await plugin.coordinator(context),
+      `${formatCulprit(specifier)} errored when trying to init`
+    )
+    if (typeof cleanupFn === 'function') {
+      this.cleanupFns.push({
+        cleanupFn: cleanupFn,
+        specifier,
+      })
+    }
+  }
+
+  private makeCoordinatorContext<OptionsType>(
+    operation: PluginOperation,
+    plugin: Plugin<OptionsType> | InternalPlugin<OptionsType>,
+    options: OptionsType,
+    specifier?: string
+  ) {
+    return {
       operation,
       on: <K extends CoordinatorEventKey>(
         event: K,
@@ -131,17 +178,6 @@ export class PluginManager {
         env: { ...this.environment.env },
       },
     }
-    const cleanupFn = await wrapErrorAsync(
-      async () => await plugin.coordinator(context),
-      specifier,
-      `Plugin "${specifier}" errored when trying to init`
-    )
-    if (typeof cleanupFn === 'function') {
-      this.cleanupFns.push({
-        cleanupFn: cleanupFn,
-        specifier,
-      })
-    }
   }
 
   emit<K extends CoordinatorEventKey>(
@@ -151,8 +187,7 @@ export class PluginManager {
     this.handlers[event].forEach(({ handler, specifier }) => {
       wrapError(
         () => handler(value),
-        specifier,
-        `Plugin "${specifier}" errored when trying to handle a "${event}" event`
+        `${formatCulprit(specifier)} errored when trying to handle a "${event}" event`
       )
     })
   }
@@ -165,8 +200,7 @@ export class PluginManager {
     for (const { transformer, specifier } of this.transformers[event]) {
       const returned = await wrapErrorAsync(
         async () => await transformer(transformed),
-        specifier,
-        `Plugin "${specifier}" errored when trying to do a "${event}" transform`
+        `${formatCulprit(specifier)} errored when trying to do a "${event}" transform`
       )
       if (typeof returned !== 'undefined') {
         transformed = returned
@@ -179,35 +213,31 @@ export class PluginManager {
     for (const { cleanupFn, specifier } of this.cleanupFns) {
       await wrapErrorAsync(
         async () => await cleanupFn(),
-        specifier,
-        `Plugin "${specifier}" errored when trying to cleanup`
+        `${formatCulprit(specifier)} errored when trying to cleanup`
       )
     }
   }
 }
 
-function wrapError<T>(fn: () => T, specifier: string, message: string): T {
+function formatCulprit(specifier?: string) {
+  return specifier ? `Plugin "${specifier}"` : 'Cucumber'
+}
+
+function wrapError<T>(fn: () => T, message: string): T {
   try {
     return fn()
   } catch (error) {
-    if (specifier) {
-      throw new Error(message, { cause: error })
-    }
-    throw error
+    throw new Error(message, { cause: error })
   }
 }
 
 async function wrapErrorAsync<T>(
   fn: () => Promise<T>,
-  specifier: string,
   message: string
 ): Promise<T> {
   try {
     return await fn()
   } catch (error) {
-    if (specifier) {
-      throw new Error(message, { cause: error })
-    }
-    throw error
+    throw new Error(message, { cause: error })
   }
 }

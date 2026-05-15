@@ -87,6 +87,7 @@ You can register passive event handlers for these things that happen in Cucumber
 
 - `message` - emitted for each [Cucumber Message](https://github.com/cucumber/messages) during the process. These are most commonly consumed by [Formatters](./formatters.md), but have other uses too.
 - `paths:resolve` - emitted when Cucumber has resolved the paths on the file system from which it will load feature files and support code.
+- `publish:url` - emitted when Cucumber Reports has reserved a slot for a new report, with the URL where it will be available as a string. Only fires when publishing is enabled and the initial reservation succeeds; it does not guarantee the upload itself will succeed.
 
 Here's an example emitting a log when the test run finishes:
 

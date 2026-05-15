@@ -57,7 +57,11 @@ export async function initializeForLoadSources(
 ): Promise<PluginManager> {
   // eventually we'll load plugin packages here
   const pluginManager = new PluginManager(environment)
-  await pluginManager.initCoordinator('loadSources', filterPlugin, coordinates)
+  await pluginManager.initCoordinatorInternal(
+    'loadSources',
+    filterPlugin,
+    coordinates
+  )
   return pluginManager
 }
 
@@ -74,17 +78,12 @@ export async function initializeForRunCucumber(
 ): Promise<PluginManager> {
   const pluginManager = new PluginManager(environment)
 
-  await pluginManager.initCoordinator(
-    'runCucumber',
-    publishPlugin,
-    configuration.formats.publish
-  )
-  await pluginManager.initCoordinator(
+  await pluginManager.initCoordinatorInternal(
     'runCucumber',
     filterPlugin,
     configuration.sources
   )
-  await pluginManager.initCoordinator(
+  await pluginManager.initCoordinatorInternal(
     'runCucumber',
     shardingPlugin,
     configuration.sources
@@ -93,7 +92,7 @@ export async function initializeForRunCucumber(
   if (configuration.plugins) {
     for (const specifier of configuration.plugins.specifiers) {
       const plugin = await loadPlugin(specifier, environment.cwd)
-      await pluginManager.initCoordinator(
+      await pluginManager.initCoordinatorExternal(
         'runCucumber',
         plugin,
         configuration.plugins.options,
@@ -101,6 +100,13 @@ export async function initializeForRunCucumber(
       )
     }
   }
+
+  // internal plugins that `emit` go last so consumers have a chance to `on`
+  await pluginManager.initCoordinatorInternal(
+    'runCucumber',
+    publishPlugin,
+    configuration.formats.publish
+  )
 
   return pluginManager
 }

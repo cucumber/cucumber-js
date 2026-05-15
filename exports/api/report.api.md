@@ -32,12 +32,13 @@ export type CoordinatorEnvironment = {
 export type CoordinatorEventHandler<K extends CoordinatorEventKey> = (value: CoordinatorEventValues[K]) => void;
 
 // @public
-export type CoordinatorEventKey = 'message' | 'paths:resolve';
+export type CoordinatorEventKey = 'message' | 'paths:resolve' | 'publish:url';
 
 // @public
 export type CoordinatorEventValues = {
     message: Readonly<Envelope>;
     'paths:resolve': Readonly<IResolvedPaths>;
+    'publish:url': string;
 };
 
 // @public
