@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Emit new `publish:url` event for plugins ([#2808](https://github.com/cucumber/cucumber-js/pull/2808))
+
 ### Changed
 - BREAKING CHANGE: Set `FORCE_COLOR` based on deprecated format option ([#2769](https://github.com/cucumber/cucumber-js/pull/2769))
 - Redesigned output for summary, progress, progress bar and pretty formatters ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
