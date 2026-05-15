@@ -38,7 +38,7 @@ export type CoordinatorEnvironment = {
  * Keys for event handlers that plugins can register
  * @public
  */
-export type CoordinatorEventKey = 'message' | 'paths:resolve'
+export type CoordinatorEventKey = 'message' | 'paths:resolve' | 'publish:url'
 
 /**
  * Keys for transforms that plugins can register
@@ -53,6 +53,7 @@ export type CoordinatorTransformKey = 'pickles:filter' | 'pickles:order'
 export type CoordinatorEventValues = {
   message: Readonly<Envelope>
   'paths:resolve': Readonly<IResolvedPaths>
+  'publish:url': string
 }
 
 /**
@@ -151,6 +152,29 @@ export type Plugin<OptionsType = any> = {
    * Optional key to extract plugin-specific options from the root options object
    */
   optionsKey?: string
+}
+
+/**
+ * Context object passed to an internal plugin's coordinator function
+ * @internal
+ */
+export type InternalCoordinatorContext<OptionsType> =
+  CoordinatorContext<OptionsType> & {
+    emit: <EventKey extends CoordinatorEventKey>(
+      event: EventKey,
+      value: CoordinatorEventValues[EventKey]
+    ) => void
+  }
+
+/**
+ * A built-in plugin with the additional ability to emit events
+ * @internal
+ */
+export type InternalPlugin<OptionsType = any> = {
+  type: 'plugin'
+  coordinator: (
+    context: InternalCoordinatorContext<OptionsType>
+  ) => PromiseLike<PluginCleanup | void> | PluginCleanup | void
 }
 
 /**

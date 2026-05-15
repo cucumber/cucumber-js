@@ -16,8 +16,14 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 - Deprecate legacy `SummaryFormatter` and `ProgressFormatter` classes in favour of new formatter architecture ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
 - Deprecate `printAttachments` format option in favour of `includeAttachments` ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
 
+## [12.9.0] - 2026-05-15
+### Added
+- Emit new `publish:url` event for plugins ([#2808](https://github.com/cucumber/cucumber-js/pull/2808))
+
+## [12.8.3] - 2026-05-09
 ### Fixed
 - Handle thrown strings correctly ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
+- Include assertion info in stack trace ([#2803](https://github.com/cucumber/cucumber-js/pull/2803))
 
 ## [12.8.2] - 2026-04-25
 ### Changed
@@ -1749,7 +1755,9 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.8.2...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...HEAD
+[12.9.0]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...v12.9.0
+[12.8.3]: https://github.com/cucumber/cucumber-js/compare/v12.8.2...v12.8.3
 [12.8.2]: https://github.com/cucumber/cucumber-js/compare/v12.8.1...v12.8.2
 [12.8.1]: https://github.com/cucumber/cucumber-js/compare/v12.8.0...v12.8.1
 [12.8.0]: https://github.com/cucumber/cucumber-js/compare/v12.7.0...v12.8.0

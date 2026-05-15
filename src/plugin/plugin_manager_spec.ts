@@ -4,6 +4,7 @@ import { FakeLogger } from '../../test/fake_logger'
 import { IFilterablePickle } from '../filter'
 import { UsableEnvironment } from '../environment'
 import { PluginManager } from './plugin_manager'
+import { InternalPlugin } from './types'
 
 describe('PluginManager', () => {
   const usableEnvironment: UsableEnvironment = {
@@ -18,7 +19,7 @@ describe('PluginManager', () => {
   it('passes the correct context to the coordinator function', async () => {
     const pluginManager = new PluginManager(usableEnvironment)
     const coordinator = sinon.fake()
-    await pluginManager.initCoordinator(
+    await pluginManager.initCoordinatorExternal(
       'runCucumber',
       {
         type: 'plugin',
@@ -44,7 +45,7 @@ describe('PluginManager', () => {
     const originalError = new Error('whoops')
 
     try {
-      await pluginManager.initCoordinator(
+      await pluginManager.initCoordinatorExternal(
         'runCucumber',
         {
           type: 'plugin',
@@ -64,12 +65,12 @@ describe('PluginManager', () => {
     }
   })
 
-  it('does not wrap errors from internal plugin coordinator functions', async () => {
+  it('wraps errors from internal plugin coordinator functions as Cucumber', async () => {
     const pluginManager = new PluginManager(usableEnvironment)
     const originalError = new Error('whoops')
 
     try {
-      await pluginManager.initCoordinator(
+      await pluginManager.initCoordinatorExternal(
         'runCucumber',
         {
           type: 'plugin',
@@ -81,7 +82,8 @@ describe('PluginManager', () => {
       )
       expect.fail('Expected error to be thrown')
     } catch (error) {
-      expect(error).to.equal(originalError)
+      expect(error.message).to.equal('Cucumber errored when trying to init')
+      expect(error.cause).to.equal(originalError)
     }
   })
 
@@ -90,7 +92,7 @@ describe('PluginManager', () => {
       const pluginManager = new PluginManager(usableEnvironment)
 
       try {
-        await pluginManager.initCoordinator(
+        await pluginManager.initCoordinatorExternal(
           'runCucumber',
           {
             type: 'plugin',
@@ -114,7 +116,7 @@ describe('PluginManager', () => {
       const pluginManager = new PluginManager(usableEnvironment)
       const handler1 = sinon.fake()
       const handler2 = sinon.fake()
-      await pluginManager.initCoordinator(
+      await pluginManager.initCoordinatorExternal(
         'runCucumber',
         {
           type: 'plugin',
@@ -122,7 +124,7 @@ describe('PluginManager', () => {
         },
         {}
       )
-      await pluginManager.initCoordinator(
+      await pluginManager.initCoordinatorExternal(
         'runCucumber',
         {
           type: 'plugin',
@@ -148,7 +150,7 @@ describe('PluginManager', () => {
     it('wraps errors from custom plugin event handlers', async () => {
       const pluginManager = new PluginManager(usableEnvironment)
       const originalError = new Error('handler failed')
-      await pluginManager.initCoordinator(
+      await pluginManager.initCoordinatorExternal(
         'runCucumber',
         {
           type: 'plugin',
@@ -176,10 +178,10 @@ describe('PluginManager', () => {
       }
     })
 
-    it('does not wrap errors from internal plugin event handlers', async () => {
+    it('wraps errors from internal plugin event handlers as Cucumber', async () => {
       const pluginManager = new PluginManager(usableEnvironment)
       const originalError = new Error('handler failed')
-      await pluginManager.initCoordinator(
+      await pluginManager.initCoordinatorExternal(
         'runCucumber',
         {
           type: 'plugin',
@@ -199,7 +201,10 @@ describe('PluginManager', () => {
         })
         expect.fail('Expected error to be thrown')
       } catch (error) {
-        expect(error).to.equal(originalError)
+        expect(error.message).to.equal(
+          'Cucumber errored when trying to handle a "message" event'
+        )
+        expect(error.cause).to.equal(originalError)
       }
     })
   })
@@ -209,7 +214,7 @@ describe('PluginManager', () => {
       const pluginManager = new PluginManager(usableEnvironment)
 
       try {
-        await pluginManager.initCoordinator(
+        await pluginManager.initCoordinatorExternal(
           'runCucumber',
           {
             type: 'plugin',
@@ -250,7 +255,7 @@ describe('PluginManager', () => {
 
     it('should apply transforms in the order registered', async () => {
       const pluginManager = new PluginManager(usableEnvironment)
-      await pluginManager.initCoordinator(
+      await pluginManager.initCoordinatorExternal(
         'runCucumber',
         {
           type: 'plugin',
@@ -263,7 +268,7 @@ describe('PluginManager', () => {
         },
         {}
       )
-      await pluginManager.initCoordinator(
+      await pluginManager.initCoordinatorExternal(
         'runCucumber',
         {
           type: 'plugin',
@@ -286,7 +291,7 @@ describe('PluginManager', () => {
 
     it('should treat undefined as a noop', async () => {
       const pluginManager = new PluginManager(usableEnvironment)
-      await pluginManager.initCoordinator(
+      await pluginManager.initCoordinatorExternal(
         'runCucumber',
         {
           type: 'plugin',
@@ -307,7 +312,7 @@ describe('PluginManager', () => {
     it('wraps errors from custom plugin transformers', async () => {
       const pluginManager = new PluginManager(usableEnvironment)
       const originalError = new Error('transformer failed')
-      await pluginManager.initCoordinator(
+      await pluginManager.initCoordinatorExternal(
         'runCucumber',
         {
           type: 'plugin',
@@ -331,10 +336,10 @@ describe('PluginManager', () => {
       }
     })
 
-    it('does not wrap errors from internal plugin transformers', async () => {
+    it('wraps errors from internal plugin transformers as Cucumber', async () => {
       const pluginManager = new PluginManager(usableEnvironment)
       const originalError = new Error('transformer failed')
-      await pluginManager.initCoordinator(
+      await pluginManager.initCoordinatorExternal(
         'runCucumber',
         {
           type: 'plugin',
@@ -350,8 +355,68 @@ describe('PluginManager', () => {
         await pluginManager.transform('pickles:filter', filterablePickles)
         expect.fail('Expected error to be thrown')
       } catch (error) {
-        expect(error).to.equal(originalError)
+        expect(error.message).to.equal(
+          'Cucumber errored when trying to do a "pickles:filter" transform'
+        )
+        expect(error.cause).to.equal(originalError)
       }
+    })
+  })
+
+  describe('emit', () => {
+    it('passes an emit function to internal plugins', async () => {
+      const pluginManager = new PluginManager(usableEnvironment)
+      const coordinator = sinon.fake()
+      await pluginManager.initCoordinatorInternal(
+        'runCucumber',
+        {
+          type: 'plugin',
+          coordinator,
+        },
+        {}
+      )
+
+      expect(coordinator.lastCall.firstArg.emit).to.be.a('function')
+    })
+
+    it('does not pass an emit function to external plugins', async () => {
+      const pluginManager = new PluginManager(usableEnvironment)
+      const coordinator = sinon.fake()
+      await pluginManager.initCoordinatorExternal(
+        'runCucumber',
+        {
+          type: 'plugin',
+          coordinator,
+        },
+        {}
+      )
+
+      expect(coordinator.lastCall.firstArg.emit).to.be.undefined
+    })
+
+    it('allows an internal plugin to emit events to registered handlers', async () => {
+      const pluginManager = new PluginManager(usableEnvironment)
+      const handler = sinon.fake()
+      await pluginManager.initCoordinatorExternal(
+        'runCucumber',
+        {
+          type: 'plugin',
+          coordinator: ({ on }) => on('publish:url', handler),
+        },
+        {}
+      )
+      const internalPlugin: InternalPlugin = {
+        type: 'plugin',
+        coordinator: ({ emit }) =>
+          emit('publish:url', 'https://example.com/report'),
+      }
+      await pluginManager.initCoordinatorInternal(
+        'runCucumber',
+        internalPlugin,
+        {}
+      )
+
+      expect(handler).to.have.been.calledOnceWith('https://example.com/report')
     })
   })
 
@@ -360,7 +425,7 @@ describe('PluginManager', () => {
       const pluginManager = new PluginManager(usableEnvironment)
       const cleanup1 = sinon.fake()
       const cleanup2 = sinon.fake()
-      await pluginManager.initCoordinator(
+      await pluginManager.initCoordinatorExternal(
         'runCucumber',
         {
           type: 'plugin',
@@ -368,7 +433,7 @@ describe('PluginManager', () => {
         },
         {}
       )
-      await pluginManager.initCoordinator(
+      await pluginManager.initCoordinatorExternal(
         'runCucumber',
         {
           type: 'plugin',
@@ -386,7 +451,7 @@ describe('PluginManager', () => {
     it('wraps errors from custom plugin cleanup functions', async () => {
       const pluginManager = new PluginManager(usableEnvironment)
       const originalError = new Error('cleanup failed')
-      await pluginManager.initCoordinator(
+      await pluginManager.initCoordinatorExternal(
         'runCucumber',
         {
           type: 'plugin',
@@ -409,10 +474,10 @@ describe('PluginManager', () => {
       }
     })
 
-    it('does not wrap errors from internal plugin cleanup functions', async () => {
+    it('wraps errors from internal plugin cleanup functions as Cucumber', async () => {
       const pluginManager = new PluginManager(usableEnvironment)
       const originalError = new Error('cleanup failed')
-      await pluginManager.initCoordinator(
+      await pluginManager.initCoordinatorExternal(
         'runCucumber',
         {
           type: 'plugin',
@@ -427,7 +492,10 @@ describe('PluginManager', () => {
         await pluginManager.cleanup()
         expect.fail('Expected error to be thrown')
       } catch (error) {
-        expect(error).to.equal(originalError)
+        expect(error.message).to.equal(
+          'Cucumber errored when trying to cleanup'
+        )
+        expect(error.cause).to.equal(originalError)
       }
     })
   })

@@ -1,8 +1,8 @@
-import { Plugin } from '../plugin'
+import { InternalPlugin } from '../plugin'
 import PickleFilter from '../pickle_filter'
 import { orderPickles } from './order_pickles'
 
-export const filterPlugin: Plugin = {
+export const filterPlugin: InternalPlugin = {
   type: 'plugin',
   coordinator: async ({ on, transform, options, logger, environment }) => {
     let unexpandedSourcePaths: string[] = []
