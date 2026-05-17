@@ -8,9 +8,17 @@ import { AssembledTestCase } from '../../assemble'
 import { ILogger, IRunEnvironment } from '../../environment'
 import { IRunOptionsRuntime } from '../../api'
 import { FormatOptions } from '../../formatter'
-import { SupportCodeLibrary } from '../../support_code_library_builder/types'
-import { WorkerCommand, WorkerData, WorkerEvent } from './types'
-import { TestCaseQueue } from './queue'
+import {
+  ParallelAssignmentValidator,
+  SupportCodeLibrary,
+} from '../../support_code_library_builder/types'
+import {
+  FinishedEvent,
+  RunTestCaseCommand,
+  WorkerCommand,
+  WorkerData,
+  WorkerEvent,
+} from './types'
 
 type ManagedWorker = {
   id: string
@@ -18,10 +26,112 @@ type ManagedWorker = {
   ready: boolean
 }
 
-export class WorkerThreadsAdapter implements RuntimeAdapter {
+interface Phase<T extends WorkerCommand> {
+  fill: () => T | undefined
+  next: (command: T, event: FinishedEvent) => WorkerCommand | undefined
+}
+
+class TestRunHooksPhase implements Phase<WorkerCommand> {
+  private failing = false
+  private waiting = 0
+
+  constructor(
+    private readonly resolve: (success: boolean) => void,
+    private readonly reject: (reason: unknown) => void,
+    private readonly type: 'BEFOREALL_HOOKS' | 'AFTERALL_HOOKS'
+  ) {}
+
+  fill(): WorkerCommand | undefined {
+    this.waiting++
+    return {
+      type: this.type,
+    }
+  }
+
+  next(
+    command: WorkerCommand,
+    event: FinishedEvent
+  ): WorkerCommand | undefined {
+    if (!event.success) {
+      this.failing = true
+    }
+    this.waiting--
+    if (this.waiting === 0) {
+      this.resolve(!this.failing)
+    }
+    return undefined
+  }
+}
+
+class TestCasesPhase implements Phase<RunTestCaseCommand> {
   private failing = false
   private idleInterventions = 0
-  private readonly queue: TestCaseQueue
+  private readonly queue: Array<AssembledTestCase> = []
+  private readonly running: Set<Pickle> = new Set()
+
+  constructor(
+    private readonly resolve: (success: boolean) => void,
+    private readonly reject: (reason: unknown) => void,
+    private readonly logger: ILogger,
+    private readonly canAssign: ParallelAssignmentValidator,
+    assembledTestCases: ReadonlyArray<AssembledTestCase>
+  ) {
+    this.queue.push(...assembledTestCases)
+  }
+
+  fill(): RunTestCaseCommand | undefined {
+    return this.select()
+  }
+
+  next(
+    command: RunTestCaseCommand,
+    event: FinishedEvent
+  ): RunTestCaseCommand | undefined {
+    if (!event.success) {
+      this.failing = true
+    }
+    this.running.delete(command.assembledTestCase.pickle)
+    if (this.queue.length === 0 && this.running.size === 0) {
+      if (this.idleInterventions > 0) {
+        this.logger.warn(
+          `WARNING: All workers went idle ${this.idleInterventions} time(s). Consider revising handler passed to setParallelCanAssign.`
+        )
+      }
+      this.resolve(!this.failing)
+      return undefined
+    }
+    return this.select()
+  }
+
+  private select(): RunTestCaseCommand {
+    if (this.queue.length === 0) {
+      return undefined
+    }
+    for (const assembledTestCase of this.queue) {
+      if (this.canAssign(assembledTestCase.pickle, [...this.running])) {
+        return this.dequeue(assembledTestCase)
+      }
+    }
+    if (this.running.size === 0) {
+      this.idleInterventions++
+      return this.dequeue(this.queue.at(0))
+    }
+    return undefined
+  }
+
+  private dequeue(assembledTestCase: AssembledTestCase): RunTestCaseCommand {
+    this.queue.splice(this.queue.indexOf(assembledTestCase), 1)
+    this.running.add(assembledTestCase.pickle)
+    return {
+      type: 'TEST_CASE',
+      assembledTestCase,
+      failing: this.failing,
+    }
+  }
+}
+
+export class WorkerThreadsAdapter implements RuntimeAdapter {
+  private phase: Phase<WorkerCommand>
   private readonly workers: Set<ManagedWorker> = new Set()
   private readonly running: Map<ManagedWorker, WorkerCommand> = new Map()
 
@@ -36,18 +146,16 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
       'snippetInterface' | 'snippetSyntax'
     >,
     private readonly supportCodeLibrary: SupportCodeLibrary
-  ) {
-    this.queue = new TestCaseQueue(this.supportCodeLibrary.parallelCanAssign)
-  }
+  ) {}
 
-  private get firstWorker(): ManagedWorker {
-    return [...this.workers][0]
-  }
-
-  private get runningPickles(): Array<Pickle> {
-    return [...this.running.values()]
-      .filter((command) => command.type === 'TEST_CASE')
-      .map((command) => command.assembledTestCase.pickle)
+  private initiatePhase(phase: Phase<WorkerCommand>) {
+    this.phase = phase
+    for (const worker of this.workers) {
+      const command = phase.fill()
+      if (command) {
+        this.issueCommandToWorker(worker, command)
+      }
+    }
   }
 
   async setup() {
@@ -114,58 +222,36 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
     }
   }
 
-  async runBeforeAllHooks() {
-    this.failing = false
-    for (const worker of this.workers) {
-      this.issueCommandToWorker(worker, {
-        type: 'BEFOREALL_HOOKS',
-      })
-    }
-    for await (const started of setInterval(100, performance.now())) {
-      if (this.running.size === 0) {
-        this.logger.debug(
-          `Ran BeforeAll hooks in ${performance.now() - started}`
-        )
-        break
-      }
-    }
-    return !this.failing
-  }
-
-  async runTestCases(assembledTestCases: ReadonlyArray<AssembledTestCase>) {
-    this.failing = false
-    this.queue.push(...assembledTestCases)
-    this.allocateTestCases()
-    for await (const started of setInterval(100, performance.now())) {
-      if (this.queue.size === 0 && this.running.size === 0) {
-        this.logger.debug(`Ran test cases in ${performance.now() - started}`)
-        break
-      }
-    }
-    if (this.idleInterventions > 0) {
-      this.logger.warn(
-        `WARNING: All workers went idle ${this.idleInterventions} time(s). Consider revising handler passed to setParallelCanAssign.`
+  runBeforeAllHooks(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.initiatePhase(
+        new TestRunHooksPhase(resolve, reject, 'BEFOREALL_HOOKS')
       )
-    }
-    return !this.failing
+    })
   }
 
-  async runAfterAllHooks() {
-    this.failing = false
-    for (const worker of this.workers) {
-      this.issueCommandToWorker(worker, {
-        type: 'AFTERALL_HOOKS',
-      })
-    }
-    for await (const started of setInterval(100, performance.now())) {
-      if (this.running.size === 0) {
-        this.logger.debug(
-          `Ran AfterAll hooks in ${performance.now() - started}`
+  runTestCases(
+    assembledTestCases: ReadonlyArray<AssembledTestCase>
+  ): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.initiatePhase(
+        new TestCasesPhase(
+          resolve,
+          reject,
+          this.logger,
+          this.supportCodeLibrary.parallelCanAssign,
+          assembledTestCases
         )
-        break
-      }
-    }
-    return !this.failing
+      )
+    })
+  }
+
+  runAfterAllHooks(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.initiatePhase(
+        new TestRunHooksPhase(resolve, reject, 'AFTERALL_HOOKS')
+      )
+    })
   }
 
   private issueCommandToWorker(worker: ManagedWorker, command: WorkerCommand) {
@@ -181,39 +267,16 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
       case 'ENVELOPE':
         this.eventBroadcaster.emit('envelope', event.envelope)
         break
-      case 'FINISHED':
+      case 'FINISHED': {
+        const command = this.running.get(worker)
         this.running.delete(worker)
-        if (!event.success) {
-          this.failing = true
+
+        const newCommand = this.phase.next(command, event)
+        if (newCommand) {
+          this.issueCommandToWorker(worker, newCommand)
         }
-        this.allocateTestCases()
         break
-    }
-  }
-
-  private allocateTestCases() {
-    if (this.queue.size === 0) {
-      return
-    }
-    for (const worker of this.workers) {
-      if (!this.running.has(worker)) {
-        this.allocateTestCaseToWorker(worker)
       }
-    }
-    if (this.running.size === 0) {
-      this.idleInterventions++
-      this.allocateTestCaseToWorker(this.firstWorker, true)
-    }
-  }
-
-  private allocateTestCaseToWorker(worker: ManagedWorker, force = false) {
-    const assembledTestCase = this.queue.shift(this.runningPickles, force)
-    if (assembledTestCase) {
-      this.issueCommandToWorker(worker, {
-        type: 'TEST_CASE',
-        assembledTestCase,
-        failing: this.failing,
-      })
     }
   }
 }
