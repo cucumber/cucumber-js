@@ -228,7 +228,7 @@
     "@cucumber/junit-xml-formatter": "0.13.3",
     "@cucumber/message-streams": "4.1.1",
     "@cucumber/messages": "32.3.1",
-    "@cucumber/pretty-formatter": "3.3.0",
+    "@cucumber/pretty-formatter": "3.3.1",
     "@cucumber/tag-expressions": "9.1.0",
     "assertion-error-formatter": "^3.0.0",
     "chalk": "^4.1.2",
