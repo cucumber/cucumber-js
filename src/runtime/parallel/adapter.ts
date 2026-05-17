@@ -1,46 +1,139 @@
-import { ChildProcess, fork } from 'node:child_process'
-import path from 'node:path'
 import { EventEmitter } from 'node:events'
-import { SupportCodeLibrary } from '../../support_code_library_builder/types'
+import { Worker } from 'node:worker_threads'
+import path from 'node:path'
+import { setInterval } from 'node:timers/promises'
+import { Pickle } from '@cucumber/messages'
+import { RuntimeAdapter } from '../types'
 import { AssembledTestCase } from '../../assemble'
 import { ILogger, IRunEnvironment } from '../../environment'
-import { RuntimeAdapter } from '../types'
 import { IRunOptionsRuntime } from '../../api'
 import { FormatOptions } from '../../formatter'
 import {
-  FinalizeCommand,
-  InitializeCommand,
-  RunCommand,
-  WorkerToCoordinatorEvent,
+  ParallelAssignmentValidator,
+  SupportCodeLibrary,
+} from '../../support_code_library_builder/types'
+import {
+  FinishedEvent,
+  RunTestCaseCommand,
+  WorkerCommand,
+  WorkerData,
+  WorkerEvent,
 } from './types'
 
-const runWorkerPath = path.resolve(__dirname, 'run_worker.js')
-
-const enum WorkerState {
-  'idle',
-  'closed',
-  'running',
-  'new',
-}
-
-interface ManagedWorker {
-  state: WorkerState
-  process: ChildProcess
+type ManagedWorker = {
   id: string
+  workerThread: Worker
+  ready: boolean
 }
 
-interface WorkPlacement {
-  index: number
-  item: AssembledTestCase
+interface Phase<T extends WorkerCommand> {
+  fill: () => T | undefined
+  next: (command: T, event: FinishedEvent) => WorkerCommand | undefined
 }
 
-export class ChildProcessAdapter implements RuntimeAdapter {
-  private idleInterventions: number = 0
-  private failing: boolean = false
-  private onFinish: (success: boolean) => void
-  private todo: Array<AssembledTestCase> = []
-  private readonly inProgress: Record<string, AssembledTestCase> = {}
-  private readonly workers: Record<string, ManagedWorker> = {}
+class TestRunHooksPhase implements Phase<WorkerCommand> {
+  private failing = false
+  private waiting = 0
+
+  constructor(
+    private readonly resolve: (success: boolean) => void,
+    private readonly reject: (reason: unknown) => void,
+    private readonly type: 'BEFOREALL_HOOKS' | 'AFTERALL_HOOKS'
+  ) {}
+
+  fill(): WorkerCommand | undefined {
+    this.waiting++
+    return {
+      type: this.type,
+    }
+  }
+
+  next(
+    command: WorkerCommand,
+    event: FinishedEvent
+  ): WorkerCommand | undefined {
+    if (!event.success) {
+      this.failing = true
+    }
+    this.waiting--
+    if (this.waiting === 0) {
+      this.resolve(!this.failing)
+    }
+    return undefined
+  }
+}
+
+class TestCasesPhase implements Phase<RunTestCaseCommand> {
+  private failing = false
+  private idleInterventions = 0
+  private readonly queue: Array<AssembledTestCase> = []
+  private readonly running: Set<Pickle> = new Set()
+
+  constructor(
+    private readonly resolve: (success: boolean) => void,
+    private readonly reject: (reason: unknown) => void,
+    private readonly logger: ILogger,
+    private readonly canAssign: ParallelAssignmentValidator,
+    assembledTestCases: ReadonlyArray<AssembledTestCase>
+  ) {
+    this.queue.push(...assembledTestCases)
+  }
+
+  fill(): RunTestCaseCommand | undefined {
+    return this.select()
+  }
+
+  next(
+    command: RunTestCaseCommand,
+    event: FinishedEvent
+  ): RunTestCaseCommand | undefined {
+    if (!event.success) {
+      this.failing = true
+    }
+    this.running.delete(command.assembledTestCase.pickle)
+    if (this.queue.length === 0 && this.running.size === 0) {
+      if (this.idleInterventions > 0) {
+        this.logger.warn(
+          `WARNING: All workers went idle ${this.idleInterventions} time(s). Consider revising handler passed to setParallelCanAssign.`
+        )
+      }
+      this.resolve(!this.failing)
+      return undefined
+    }
+    return this.select()
+  }
+
+  private select(): RunTestCaseCommand {
+    if (this.queue.length === 0) {
+      return undefined
+    }
+    for (const assembledTestCase of this.queue) {
+      if (this.canAssign(assembledTestCase.pickle, [...this.running])) {
+        return this.dequeue(assembledTestCase)
+      }
+    }
+    if (this.running.size === 0) {
+      this.idleInterventions++
+      return this.dequeue(this.queue.at(0))
+    }
+    return undefined
+  }
+
+  private dequeue(assembledTestCase: AssembledTestCase): RunTestCaseCommand {
+    this.queue.splice(this.queue.indexOf(assembledTestCase), 1)
+    this.running.add(assembledTestCase.pickle)
+    return {
+      type: 'TEST_CASE',
+      assembledTestCase,
+      failing: this.failing,
+    }
+  }
+}
+
+export class WorkerThreadsAdapter implements RuntimeAdapter {
+  private phase: Phase<WorkerCommand>
+  private readonly workers: Set<ManagedWorker> = new Set()
+  private readonly running: Map<ManagedWorker, WorkerCommand> = new Map()
 
   constructor(
     private readonly testRunStartedId: string,
@@ -55,168 +148,135 @@ export class ChildProcessAdapter implements RuntimeAdapter {
     private readonly supportCodeLibrary: SupportCodeLibrary
   ) {}
 
-  parseWorkerMessage(
-    worker: ManagedWorker,
-    message: WorkerToCoordinatorEvent
-  ): void {
-    switch (message.type) {
-      case 'READY':
-        worker.state = WorkerState.idle
-        this.awakenWorkers(worker)
-        break
-      case 'ENVELOPE':
-        this.eventBroadcaster.emit('envelope', message.envelope)
-        break
-      case 'FINISHED':
-        if (!message.success) {
-          this.failing = true
-        }
-        delete this.inProgress[worker.id]
-        worker.state = WorkerState.idle
-        this.awakenWorkers(worker)
-        break
-      default:
-        throw new Error(
-          `Unexpected message from worker: ${JSON.stringify(message)}`
-        )
-    }
-  }
-
-  awakenWorkers(triggeringWorker: ManagedWorker): void {
-    Object.values(this.workers).forEach((worker) => {
-      if (worker.state === WorkerState.idle) {
-        this.giveWork(worker)
+  private initiatePhase(phase: Phase<WorkerCommand>) {
+    this.phase = phase
+    for (const worker of this.workers) {
+      const command = phase.fill()
+      if (command) {
+        this.issueCommandToWorker(worker, command)
       }
-      return worker.state !== WorkerState.idle
-    })
-
-    if (Object.keys(this.inProgress).length == 0 && this.todo.length > 0) {
-      this.giveWork(triggeringWorker, true)
-      this.idleInterventions++
     }
   }
 
-  startWorker(id: string, total: number): void {
-    const workerProcess = fork(runWorkerPath, [], {
-      cwd: this.environment.cwd,
-      env: {
-        ...this.environment.env,
-        CUCUMBER_PARALLEL: 'true',
-        CUCUMBER_TOTAL_WORKERS: total.toString(),
-        CUCUMBER_WORKER_ID: id,
-      },
-      stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
-    })
-    const worker = { state: WorkerState.new, process: workerProcess, id }
-    this.workers[id] = worker
-    worker.process.on('message', (message: WorkerToCoordinatorEvent) => {
-      this.parseWorkerMessage(worker, message)
-    })
-    worker.process.on('close', (exitCode) => {
-      worker.state = WorkerState.closed
-      this.onWorkerProcessClose(exitCode)
-    })
-    worker.process.send({
-      type: 'INITIALIZE',
-      testRunStartedId: this.testRunStartedId,
-      supportCodeCoordinates: this.supportCodeLibrary.originalCoordinates,
-      supportCodeIds: {
-        stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map(
-          (s) => s.id
-        ),
-        beforeTestCaseHookDefinitionIds:
-          this.supportCodeLibrary.beforeTestCaseHookDefinitions.map(
-            (h) => h.id
-          ),
-        afterTestCaseHookDefinitionIds:
-          this.supportCodeLibrary.afterTestCaseHookDefinitions.map((h) => h.id),
-        beforeTestRunHookDefinitionIds:
-          this.supportCodeLibrary.beforeTestRunHookDefinitions.map((h) => h.id),
-        afterTestRunHookDefinitionIds:
-          this.supportCodeLibrary.afterTestRunHookDefinitions.map((h) => h.id),
-      },
-      options: this.options,
-      snippetOptions: this.snippetOptions,
-    } satisfies InitializeCommand)
+  async setup() {
+    const total = this.options.parallel
+    for (let i = 0; i < total; i++) {
+      const id = i.toString()
+      const workerThread = new Worker(path.resolve(__dirname, 'worker.mjs'), {
+        env: {
+          ...this.environment.env,
+          CUCUMBER_PARALLEL: 'true',
+          CUCUMBER_TOTAL_WORKERS: total.toString(),
+          CUCUMBER_WORKER_ID: id,
+        },
+        workerData: {
+          cwd: this.environment.cwd,
+          testRunStartedId: this.testRunStartedId,
+          supportCodeCoordinates: this.supportCodeLibrary.originalCoordinates,
+          supportCodeIds: {
+            stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map(
+              (s) => s.id
+            ),
+            beforeTestCaseHookDefinitionIds:
+              this.supportCodeLibrary.beforeTestCaseHookDefinitions.map(
+                (h) => h.id
+              ),
+            afterTestCaseHookDefinitionIds:
+              this.supportCodeLibrary.afterTestCaseHookDefinitions.map(
+                (h) => h.id
+              ),
+            beforeTestRunHookDefinitionIds:
+              this.supportCodeLibrary.beforeTestRunHookDefinitions.map(
+                (h) => h.id
+              ),
+            afterTestRunHookDefinitionIds:
+              this.supportCodeLibrary.afterTestRunHookDefinitions.map(
+                (h) => h.id
+              ),
+          },
+          options: this.options,
+          snippetOptions: this.snippetOptions,
+        } satisfies WorkerData,
+      })
+      const worker = {
+        id,
+        workerThread,
+        ready: false,
+      }
+      this.workers.add(worker)
+      workerThread.on('message', (event: WorkerEvent) => {
+        this.handleEventFromWorker(worker, event)
+      })
+    }
+    for await (const started of setInterval(100, performance.now())) {
+      if ([...this.workers].every((mw) => mw.ready)) {
+        this.logger.debug(`Prepared workers in ${performance.now() - started}`)
+        break
+      }
+    }
   }
 
-  onWorkerProcessClose(exitCode: number): void {
-    if (exitCode !== 0) {
-      this.failing = true
-    }
-
-    if (
-      Object.values(this.workers).every((x) => x.state === WorkerState.closed)
-    ) {
-      this.onFinish(!this.failing)
+  async teardown() {
+    for (const worker of this.workers.values()) {
+      await worker.workerThread.terminate()
     }
   }
 
-  async run(
+  runBeforeAllHooks(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.initiatePhase(
+        new TestRunHooksPhase(resolve, reject, 'BEFOREALL_HOOKS')
+      )
+    })
+  }
+
+  runTestCases(
     assembledTestCases: ReadonlyArray<AssembledTestCase>
   ): Promise<boolean> {
-    this.todo = Array.from(assembledTestCases)
-    return await new Promise<boolean>((resolve) => {
-      for (let i = 0; i < this.options.parallel; i++) {
-        this.startWorker(i.toString(), this.options.parallel)
-      }
-      this.onFinish = (status) => {
-        if (this.idleInterventions > 0) {
-          this.logger.warn(
-            `WARNING: All workers went idle ${this.idleInterventions} time(s). Consider revising handler passed to setParallelCanAssign.`
-          )
-        }
-
-        resolve(status)
-      }
+    return new Promise((resolve, reject) => {
+      this.initiatePhase(
+        new TestCasesPhase(
+          resolve,
+          reject,
+          this.logger,
+          this.supportCodeLibrary.parallelCanAssign,
+          assembledTestCases
+        )
+      )
     })
   }
 
-  nextWorkPlacement(): WorkPlacement {
-    for (let index = 0; index < this.todo.length; index++) {
-      const placement = this.placementAt(index)
-      if (
-        this.supportCodeLibrary.parallelCanAssign(
-          placement.item.pickle,
-          Object.values(this.inProgress).map(({ pickle }) => pickle)
-        )
-      ) {
-        return placement
+  runAfterAllHooks(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.initiatePhase(
+        new TestRunHooksPhase(resolve, reject, 'AFTERALL_HOOKS')
+      )
+    })
+  }
+
+  private issueCommandToWorker(worker: ManagedWorker, command: WorkerCommand) {
+    this.running.set(worker, command)
+    worker.workerThread.postMessage(command)
+  }
+
+  private handleEventFromWorker(worker: ManagedWorker, event: WorkerEvent) {
+    switch (event.type) {
+      case 'READY':
+        worker.ready = true
+        break
+      case 'ENVELOPE':
+        this.eventBroadcaster.emit('envelope', event.envelope)
+        break
+      case 'FINISHED': {
+        const command = this.running.get(worker)
+        this.running.delete(worker)
+
+        const newCommand = this.phase.next(command, event)
+        if (newCommand) {
+          this.issueCommandToWorker(worker, newCommand)
+        }
+        break
       }
     }
-
-    return null
-  }
-
-  placementAt(index: number): WorkPlacement {
-    return {
-      index,
-      item: this.todo[index],
-    }
-  }
-
-  giveWork(worker: ManagedWorker, force: boolean = false): void {
-    if (this.todo.length < 1) {
-      worker.state = WorkerState.running
-      worker.process.send({ type: 'FINALIZE' } satisfies FinalizeCommand)
-      return
-    }
-
-    const workPlacement = force ? this.placementAt(0) : this.nextWorkPlacement()
-
-    if (workPlacement === null) {
-      return
-    }
-
-    const { index: nextIndex, item } = workPlacement
-
-    this.todo.splice(nextIndex, 1)
-    this.inProgress[worker.id] = item
-    worker.state = WorkerState.running
-    worker.process.send({
-      type: 'RUN',
-      assembledTestCase: item,
-      failing: this.failing,
-    } satisfies RunCommand)
   }
 }

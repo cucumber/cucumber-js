@@ -1,3 +1,4 @@
+@parallel
 Feature: Running scenarios in parallel
 
   Scenario: running in parallel can improve speed if there are async operations
@@ -42,19 +43,15 @@ Feature: Running scenarios in parallel
           Given a slow step
       """
     When I run cucumber-js with `--parallel 2`
-    And the error output contains the text:
-      """
-      BeforeAll hook errored on worker 0, process exiting:
-      """
-    And the error output contains the text:
-      """
-      BeforeAll hook errored on worker 1, process exiting:
-      """
-    And the error output contains the text:
-      """
-      my error
-      """
     Then it fails
+    And the output contains the text:
+      """
+      2 hooks (2 failed)
+      """
+    And the output contains the text:
+      """
+      Error: my error
+      """
 
   Scenario: `testCaseStarted` envelope from workers contains `workerId` parameter
     Given a file named "features/step_definitions/cucumber_steps.js" with:
