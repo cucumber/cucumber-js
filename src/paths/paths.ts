@@ -1,5 +1,6 @@
 import path from 'node:path'
-import { glob } from 'glob'
+// @ts-expect-error -- Requires Node 22
+import { glob } from 'node:fs/promises'
 import fs from 'mz/fs'
 import { ILogger } from '../environment'
 import { ISourcesCoordinates, ISupportCodeCoordinates } from '../api'
@@ -54,17 +55,16 @@ async function expandPaths(
 ): Promise<string[]> {
   const expandedPaths = await Promise.all(
     unexpandedPaths.map(async (unexpandedPath) => {
-      const matches = await glob(unexpandedPath, {
-        absolute: true,
-        windowsPathsNoEscape: true,
-        cwd,
-      })
-      const expanded = await Promise.all(
-        matches.map(async (match) => {
+      // @ts-expect-error -- Requires Node 22
+      const matches: string[] = await Array.fromAsync(
+        glob(unexpandedPath, { cwd })
+      )
+      const expanded: string[][] = await Promise.all(
+        matches.map(async (matchRelative) => {
+          const match = path.resolve(cwd, matchRelative)
           if (path.extname(match) === '') {
-            return glob(`${match}/**/*${defaultExtension}`, {
-              windowsPathsNoEscape: true,
-            })
+            // @ts-expect-error -- Requires Node 22
+            return Array.fromAsync(glob(`${match}/**/*${defaultExtension}`))
           }
           return [match]
         })
