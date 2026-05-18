@@ -91,6 +91,32 @@ Feature: Error formatting
       """
     And it fails
 
+  Scenario: failing step error surfaces Error.cause
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+        Scenario: some scenario
+          Given a step with a wrapped error
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+
+      Given('a step with a wrapped error', function() {
+        try {
+          throw new Error('original cause')
+        } catch (cause) {
+          throw new Error('wrapped failure', { cause })
+        }
+      })
+      """
+    When I run cucumber-js
+    Then it fails
+    And the output contains the text:
+      """
+      Caused by: Error: original cause
+      """
+
   Scenario: failing scenario when requested to not print step attachments
     Given a file named "features/a.feature" with:
       """

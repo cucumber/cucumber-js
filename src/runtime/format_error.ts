@@ -35,12 +35,25 @@ export function formatError(
   })
   const type = error.constructor.name
   const message = typeof error === 'string' ? error : error.message
+  let stackTrace = `${type}: ${message}`
+  if (processedStackTrace) {
+    stackTrace += '\n' + processedStackTrace
+  }
+  const causeSuffix = formatCause((error as { cause?: unknown }).cause)
   return {
-    message: stackTrace,
+    message: legacyMessage + causeSuffix,
     exception: {
       type,
       message,
-      stackTrace,
+      stackTrace: stackTrace + causeSuffix,
     },
   }
+}
+
+function formatCause(cause: unknown): string {
+  if (cause === undefined || cause === null) return ''
+  if (cause instanceof Error) {
+    return `\nCaused by: ${cause.constructor.name}: ${cause.message}`
+  }
+  return `\nCaused by: ${String(cause)}`
 }

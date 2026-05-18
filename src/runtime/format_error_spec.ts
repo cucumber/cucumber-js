@@ -123,4 +123,27 @@ describe('formatError', () => {
       })
     })
   })
+
+  describe('error cause', () => {
+    it('appends the cause to message and stackTrace', () => {
+      const original = new Error('Original cause')
+      const wrapper = new Error('Wrapper message', { cause: original })
+
+      const { message, exception } = formatError(wrapper, false)
+
+      expect(exception.stackTrace).to.have.string('Error: Wrapper message')
+      expect(exception.stackTrace).to.have.string(
+        'Caused by: Error: Original cause'
+      )
+      expect(message).to.have.string('Caused by: Error: Original cause')
+    })
+
+    it('does nothing when cause is absent', () => {
+      const plain = new Error('No cause here')
+
+      const { exception } = formatError(plain, false)
+
+      expect(exception.stackTrace).to.not.have.string('Caused by:')
+    })
+  })
 })
