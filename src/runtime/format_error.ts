@@ -35,13 +35,9 @@ export function formatError(
   })
   const type = error.constructor.name
   const message = typeof error === 'string' ? error : error.message
-  let stackTrace = `${type}: ${message}`
-  if (processedStackTrace) {
-    stackTrace += '\n' + processedStackTrace
-  }
   const causeSuffix = formatCause((error as { cause?: unknown }).cause)
   return {
-    message: legacyMessage + causeSuffix,
+    message: stackTrace + causeSuffix,
     exception: {
       type,
       message,
