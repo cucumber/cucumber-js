@@ -10,7 +10,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/@cucumber/cucumber" style="text-decoration: none"><img src="https://img.shields.io/npm/v/@cucumber/cucumber?style=flat&color=dark-green" alt="Latest version on npm"></a>
   <a href="https://coveralls.io/github/cucumber/cucumber-js?branch=master" style="text-decoration: none"><img src="https://coveralls.io/repos/github/cucumber/cucumber-js/badge.svg?branch=main" alt="Coverage"></a>
-  <a href="https://scorecard.dev/viewer/?uri=github.com/cucumber/cucumber-js"><img src="https://api.scorecard.dev/projects/github.com/cucumber/cucumber-jvm/badge" alt="OpenSSF Scorecard"></a>
+  <a href="https://scorecard.dev/viewer/?uri=github.com/cucumber/cucumber-js"><img src="https://api.scorecard.dev/projects/github.com/cucumber/cucumber-js/badge" alt="OpenSSF Scorecard"></a>
   <a href="https://opencollective.com/cucumber"><img src="https://opencollective.com/cucumber/backers/badge.svg" alt="Backers"></a>
   <a href="https://opencollective.com/cucumber"><img src="https://opencollective.com/cucumber/sponsors/badge.svg" alt="Sponsors"></a>
   <a href="https://vshymanskyy.github.io/StandWithUkraine"><img src="https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg" alt="Ukraine solidarity"></a>
