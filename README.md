@@ -54,7 +54,7 @@ class Greeter {
 
 module.exports = {
   Greeter
-}
+};
 ```
 
 Then, write your feature in `features/greeting.feature`:
@@ -70,16 +70,16 @@ Feature: Greeting
 Next, implement your steps in `features/support/steps.js`:
 
 ```js
-const assert = require('assert')
-const { When, Then } = require('@cucumber/cucumber')
-const { Greeter } = require('../../src')
+const assert = require('assert');
+const { When, Then } = require('@cucumber/cucumber');
+const { Greeter } = require('../../src');
 
 When('the greeter says hello', function () {
-  this.whatIHeard = new Greeter().sayHello()
+  this.whatIHeard = new Greeter().sayHello();
 });
 
 Then('I should have heard {string}', function (expectedResponse) {
-  assert.equal(this.whatIHeard, expectedResponse)
+  assert.equal(this.whatIHeard, expectedResponse);
 });
 ```
 
