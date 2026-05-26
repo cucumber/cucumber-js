@@ -35,6 +35,7 @@ export async function convertConfiguration(
       retry: flatConfiguration.retry,
       retryTagFilter: flatConfiguration.retryTagFilter,
       strict: flatConfiguration.strict,
+      workerOptions: flatConfiguration.workerOptions,
       worldParameters: flatConfiguration.worldParameters,
     },
     formats: convertFormats(logger, flatConfiguration, env),

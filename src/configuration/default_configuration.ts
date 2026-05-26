@@ -24,5 +24,6 @@ export const DEFAULT_CONFIGURATION: IConfiguration = {
   shard: '',
   strict: true,
   tags: '',
+  workerOptions: {},
   worldParameters: {},
 }

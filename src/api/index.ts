@@ -7,7 +7,7 @@
  * These docs cover the API used for running Cucumber programmatically. The entry point is `@cucumber/cucumber/api`.
  */
 
-export { IConfiguration } from '../configuration'
+export { IConfiguration, IWorkerOptions } from '../configuration'
 export { ILogger, IRunEnvironment } from '../environment'
 export { IFilterablePickle, IPickleOrder } from '../filter'
 export { IResolvedPaths } from '../paths'
