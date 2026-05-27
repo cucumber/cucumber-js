@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Add support for Node.js 26.x ([#2818](https://github.com/cucumber/cucumber-js/pull/2818))
+
 ### Changed
 - BREAKING CHANGE: Reimplement parallel runtime with worker threads ([#2710](https://github.com/cucumber/cucumber-js/pull/2710))
 - BREAKING CHANGE: All `BeforeAll` and `AfterAll` hooks are always executed ([#2710](https://github.com/cucumber/cucumber-js/pull/2710))
@@ -17,6 +20,10 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Deprecated
 - Deprecate legacy `SummaryFormatter` and `ProgressFormatter` classes in favour of new formatter architecture ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
 - Deprecate `printAttachments` format option in favour of `includeAttachments` ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
+
+### Removed
+- BREAKING CHANGE: Drop support for Node.js 20.x ([#2818](https://github.com/cucumber/cucumber-js/pull/2818))
+- BREAKING CHANGE: Drop support for Node.js 25.x ([#2818](https://github.com/cucumber/cucumber-js/pull/2818))
 
 ## [12.9.0] - 2026-05-15
 ### Added
