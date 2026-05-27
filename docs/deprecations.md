@@ -61,17 +61,6 @@ The `Cli` class is used internally to represent an instance of the command-line 
 
 To adapt, pivot to the `runCucumber` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
 
-### Ambiguous colons in formats
-
-Deprecated in `9.6.0`. Will be removed in `11.0.0` or later.
-
-User-specified formats where either the formatter name/path or the target path (or both) contains colon(s) are ambiguous because the separator between the two parts is also a colon. Cucumber tries to detect and handle things like Windows drives and `file://` URLs on a best-effort basis, but this logic is being removed in favour of wrapping values in double-quotes.
-
-| Before                                       | After                                            |
-|----------------------------------------------|--------------------------------------------------|
-| `html:file://hostname/formatter/report.html` | `"html":"file://hostname/formatter/report.html"` |
-| `file://C:\custom\formatter`                 | `"file://C:\custom\formatter"`                   |
-
 ### `colorsEnabled` format option
 
 Deprecated in `12.6.0`, will be removed in `14.0.0` or later.
