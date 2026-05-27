@@ -32,6 +32,7 @@ describe('convertConfiguration', () => {
         retry: 0,
         retryTagFilter: '',
         strict: true,
+        workerOptions: {},
         worldParameters: {},
       },
       sources: {

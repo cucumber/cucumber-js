@@ -14,6 +14,7 @@ import * as messages from '@cucumber/messages';
 import { ParameterType } from '@cucumber/cucumber-expressions';
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions';
 import { Readable } from 'node:stream';
+import { ResourceLimits } from 'node:worker_threads';
 import { TestStepResultStatus } from '@cucumber/messages';
 import type { Theme } from '@cucumber/pretty-formatter';
 import { Writable } from 'node:stream';
@@ -220,6 +221,7 @@ export interface IConfiguration {
     shard: string;
     strict: boolean;
     tags: string;
+    workerOptions: IWorkerOptions;
     worldParameters: JsonObject;
 }
 

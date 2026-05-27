@@ -9,6 +9,7 @@ import { GherkinDocument } from '@cucumber/messages';
 import { JsonObject } from 'type-fest';
 import { Location } from '@cucumber/messages';
 import { Pickle } from '@cucumber/messages';
+import { ResourceLimits } from 'node:worker_threads';
 import { Writable } from 'node:stream';
 
 // @public
@@ -95,6 +96,7 @@ export interface IConfiguration {
     shard: string;
     strict: boolean;
     tags: string;
+    workerOptions: IWorkerOptions;
     worldParameters: JsonObject;
 }
 
@@ -240,6 +242,7 @@ export interface IRunOptionsRuntime {
     retry: number;
     retryTagFilter: string;
     strict: boolean;
+    workerOptions?: IWorkerOptions;
     worldParameters: JsonObject;
 }
 
@@ -286,6 +289,11 @@ export type ISupportCodeCoordinatesOrLibrary = Partial<ISupportCodeCoordinates> 
 export interface ISupportCodeLibrary {
     // (undocumented)
     readonly originalCoordinates: ISupportCodeCoordinates;
+}
+
+// @public
+export interface IWorkerOptions {
+    resourceLimits?: ResourceLimits;
 }
 
 // @public

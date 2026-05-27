@@ -5,6 +5,7 @@ import { IFilterablePickle } from '../filter'
 import { EventDataCollector } from '../formatter/helpers'
 import { resolvePaths } from '../paths'
 import { makeRuntime } from '../runtime'
+import { timestamp } from '../runtime/stopwatch'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { version } from '../version'
 import {
@@ -148,7 +149,9 @@ Running from: ${__dirname}
     newId,
   })
 
+  const testRunStartedId = newId()
   const runtime = await makeRuntime({
+    testRunStartedId,
     environment: mergedEnvironment,
     logger,
     eventBroadcaster,
@@ -158,7 +161,20 @@ Running from: ${__dirname}
     options: options.runtime,
     snippetOptions: options.formats.options,
   })
+  eventBroadcaster.emit('envelope', {
+    testRunStarted: {
+      id: testRunStartedId,
+      timestamp: timestamp(),
+    },
+  } satisfies Envelope)
   const success = await runtime.run()
+  eventBroadcaster.emit('envelope', {
+    testRunFinished: {
+      testRunStartedId,
+      timestamp: timestamp(),
+      success,
+    },
+  } satisfies Envelope)
   await pluginManager.cleanup()
   await cleanupFormatters()
 

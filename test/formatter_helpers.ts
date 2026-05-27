@@ -4,6 +4,7 @@ import { promisify } from 'node:util'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
 import { makeRuntime, RuntimeOptions } from '../src/runtime'
+import { timestamp } from '../src/runtime/stopwatch'
 import { EventDataCollector } from '../src/formatter/helpers'
 import FormatterBuilder from '../src/formatter/builder'
 import { SupportCodeLibrary } from '../src/support_code_library_builder/types'
@@ -84,6 +85,7 @@ export async function testFormatter({
   }
 
   const runtime = await makeRuntime({
+    testRunStartedId: '1',
     environment: {} as IRunEnvironment,
     logger: new FakeLogger(),
     eventBroadcaster,
@@ -96,7 +98,17 @@ export async function testFormatter({
     },
     snippetOptions: {},
   })
-  await runtime.run()
+  eventBroadcaster.emit('envelope', {
+    testRunStarted: { id: '1', timestamp: timestamp() },
+  } satisfies messages.Envelope)
+  const success = await runtime.run()
+  eventBroadcaster.emit('envelope', {
+    testRunFinished: {
+      testRunStartedId: '1',
+      timestamp: timestamp(),
+      success,
+    },
+  } satisfies messages.Envelope)
 
   return normalizeLegacySummaryDuration(output)
 }
@@ -146,6 +158,7 @@ export async function getEnvelopesAndEventDataCollector({
   }
 
   const runtime = await makeRuntime({
+    testRunStartedId: '1',
     environment: {} as IRunEnvironment,
     logger: new FakeLogger(),
     eventBroadcaster,
@@ -158,7 +171,17 @@ export async function getEnvelopesAndEventDataCollector({
     },
     snippetOptions: {},
   })
-  await runtime.run()
+  eventBroadcaster.emit('envelope', {
+    testRunStarted: { id: '1', timestamp: timestamp() },
+  } satisfies messages.Envelope)
+  const success = await runtime.run()
+  eventBroadcaster.emit('envelope', {
+    testRunFinished: {
+      testRunStartedId: '1',
+      timestamp: timestamp(),
+      success,
+    },
+  } satisfies messages.Envelope)
 
   return { envelopes, eventDataCollector }
 }

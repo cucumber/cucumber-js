@@ -42,6 +42,9 @@ const schema = yup.object().shape({
   retryTagFilter: yup.string(),
   strict: yup.boolean(),
   tags: yup.string(),
+  workerOptions: yup.object({
+    resourceLimits: yup.object(),
+  }),
   worldParameters: yup.object(),
 })
 

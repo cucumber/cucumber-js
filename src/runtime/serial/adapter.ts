@@ -7,9 +7,11 @@ import { RuntimeOptions } from '../index'
 import { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import StepDefinitionSnippetBuilder from '../../formatter/step_definition_snippet_builder'
 
+/**
+ * A simple adapter that executes all work in serial on the main thread
+ */
 export class InProcessAdapter implements RuntimeAdapter {
   private readonly worker: Worker
-  private failing: boolean = false
 
   constructor(
     testRunStartedId: string,
@@ -30,17 +32,29 @@ export class InProcessAdapter implements RuntimeAdapter {
     )
   }
 
-  async run(
-    assembledTestCases: ReadonlyArray<AssembledTestCase>
-  ): Promise<boolean> {
-    await this.worker.runBeforeAllHooks()
+  async setup() {
+    // no-op for serial runtime
+  }
+
+  async teardown() {
+    // no-op for serial runtime
+  }
+
+  async runBeforeAllHooks() {
+    return await this.worker.runBeforeAllHooks()
+  }
+
+  async runTestCases(assembledTestCases: ReadonlyArray<AssembledTestCase>) {
+    let failing = false
     for (const item of assembledTestCases) {
-      const success = await this.worker.runTestCase(item, this.failing)
-      if (!success) {
-        this.failing = true
+      if (!(await this.worker.runTestCase(item, failing))) {
+        failing = true
       }
     }
-    await this.worker.runAfterAllHooks()
-    return !this.failing
+    return !failing
+  }
+
+  async runAfterAllHooks() {
+    return await this.worker.runAfterAllHooks()
   }
 }

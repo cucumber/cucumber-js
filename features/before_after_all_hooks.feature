@@ -59,7 +59,7 @@ Feature: Environment Hooks
     When I run cucumber-js
     Then it passes
 
-  Scenario: Failing before all hook kills the suite
+  Scenario: Failing before all hook fails the test run
     Given a file named "features/support/hooks.js" with:
       """
       const {BeforeAll} = require('@cucumber/cucumber')
@@ -70,12 +70,20 @@ Feature: Environment Hooks
       """
     When I run cucumber-js
     Then it fails
-    And the error output contains the text snippets:
-      | a BeforeAll hook errored, process exiting |
-      | Error: my error                           |
-      | features/support/hooks.js:4               |
+    And the output contains the text:
+      """
+      1 hooks (1 failed)
+      """
+    And the output contains the text:
+      """
+      Error: my error
+      """
+    And the output contains the text:
+      """
+      features/support/hooks.js:4
+      """
 
-  Scenario: Failing after all hook kills the suite
+  Scenario: Failing after all hook fails the test run
     Given a file named "features/support/hooks.js" with:
       """
       const {AfterAll} = require('@cucumber/cucumber')
@@ -86,7 +94,15 @@ Feature: Environment Hooks
       """
     When I run cucumber-js
     Then it fails
-    And the error output contains the text snippets:
-      | an AfterAll hook errored, process exiting |
-      | Error: my error                           |
-      | features/support/hooks.js:4               |
+    And the output contains the text:
+      """
+      1 hooks (1 failed)
+      """
+    And the output contains the text:
+      """
+      Error: my error
+      """
+    And the output contains the text:
+      """
+      features/support/hooks.js:4
+      """
