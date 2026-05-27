@@ -36,7 +36,6 @@ Matching groups in the regular expression are passed as parameters to the step d
 const { Then, When } = require('@cucumber/cucumber');
 const assert = require('assert');
 const fs = require('fs');
-const mzFs = require('mz/fs')
 const seleniumWebdriver = require('selenium-webdriver');
 
 // Synchronous
