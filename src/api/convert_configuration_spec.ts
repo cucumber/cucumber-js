@@ -1,17 +1,12 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import { DEFAULT_CONFIGURATION } from '../configuration'
-import { FakeLogger } from '../../test/fake_logger'
 import { convertConfiguration } from './convert_configuration'
 import { IRunConfiguration } from './types'
 
 describe('convertConfiguration', () => {
   it('should convert defaults correctly', async () => {
-    const result = await convertConfiguration(
-      new FakeLogger(),
-      DEFAULT_CONFIGURATION,
-      {}
-    )
+    const result = await convertConfiguration(DEFAULT_CONFIGURATION, {})
 
     expect(result).to.eql({
       formats: {
@@ -54,7 +49,6 @@ describe('convertConfiguration', () => {
 
   it('should map multiple formatters with string notation', async () => {
     const result = await convertConfiguration(
-      new FakeLogger(),
       {
         ...DEFAULT_CONFIGURATION,
         format: [
@@ -80,7 +74,6 @@ describe('convertConfiguration', () => {
 
   it('should map multiple formatters with array notation', async () => {
     const result = await convertConfiguration(
-      new FakeLogger(),
       {
         ...DEFAULT_CONFIGURATION,
         format: [
@@ -106,11 +99,10 @@ describe('convertConfiguration', () => {
 
   it('should map formatters correctly when file:// urls are involved', async () => {
     const result = await convertConfiguration(
-      new FakeLogger(),
       {
         ...DEFAULT_CONFIGURATION,
         format: [
-          'file:///my/fancy/formatter',
+          '"file:///my/fancy/formatter"',
           'json:./report.json',
           'html:./report.html',
         ],
