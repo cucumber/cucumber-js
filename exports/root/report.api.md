@@ -40,9 +40,6 @@ export const BeforeAll: ((code: TestRunHookFunction) => void) & ((options: IDefi
 // @public (undocumented)
 export const BeforeStep: (<WorldType = IWorld<any>>(code: TestStepHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(tags: string, code: TestStepHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(options: IDefineTestStepHookOptions, code: TestStepHookFunction<WorldType>) => void);
 
-// @public @deprecated (undocumented)
-export const Cli: typeof Cli_2;
-
 // @beta
 const context_2: IContext<any>;
 export { context_2 as context }
