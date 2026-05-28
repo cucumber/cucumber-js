@@ -29,7 +29,7 @@ Feature: Error formatting
            Before # features/support/hooks.js:3
                Error: Fail
 
-      1 scenarios (1 failed)
+      1 scenario (1 failed)
       2 steps (1 skipped, 1 failed)
       <duration-stat>
       """

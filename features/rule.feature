@@ -154,7 +154,7 @@ Feature: Rule keyword
     """
     .
 
-    1 scenarios (1 passed)
-    1 steps (1 passed)
+    1 scenario (1 passed)
+    1 step (1 passed)
     <duration-stat>
     """
