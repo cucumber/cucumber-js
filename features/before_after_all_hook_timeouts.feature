@@ -29,7 +29,7 @@ Feature: before / after all hook timeouts
     Then it fails
     And the output contains the text:
       """
-      1 hooks (1 failed)
+      1 hook (1 failed)
       """
     And the output contains the text:
       """
