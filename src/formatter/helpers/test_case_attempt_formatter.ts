@@ -1,17 +1,14 @@
-import indentString from 'indent-string'
 import * as messages from '@cucumber/messages'
 import figures from 'figures'
-import { IColorFns } from '../get_color_fns'
+import indentString from 'indent-string'
+import type { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import { doesHaveValue, valueOrDefault } from '../../value_checker'
-import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
-import { SupportCodeLibrary } from '../../support_code_library_builder/types'
+import type { IColorFns } from '../get_color_fns'
+import type StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
+import type { ITestCaseAttempt } from './event_data_collector'
 import { formatLocation } from './location_helpers'
-import {
-  IParsedTestStep,
-  parseTestCaseAttempt,
-} from './test_case_attempt_parser'
 import { formatStepArgument } from './step_argument_formatter'
-import { ITestCaseAttempt } from './event_data_collector'
+import { type IParsedTestStep, parseTestCaseAttempt } from './test_case_attempt_parser'
 
 const CHARACTERS: Map<messages.TestStepResultStatus, string> = new Map([
   [messages.TestStepResultStatus.AMBIGUOUS, figures.cross],
@@ -43,11 +40,7 @@ interface IFormatStepRequest {
   printAttachments?: boolean
 }
 
-function formatStep({
-  colorFns,
-  testStep,
-  printAttachments,
-}: IFormatStepRequest): string {
+function formatStep({ colorFns, testStep, printAttachments }: IFormatStepRequest): string {
   const {
     name,
     result: { status },
@@ -108,9 +101,7 @@ export function formatTestCaseAttempt({
   })
   let text = `Scenario: ${parsed.testCase.name}`
   text += getAttemptText(parsed.testCase.attempt, testCaseAttempt.willBeRetried)
-  text += ` # ${colorFns.location(
-    formatLocation(parsed.testCase.sourceLocation)
-  )}\n`
+  text += ` # ${colorFns.location(formatLocation(parsed.testCase.sourceLocation))}\n`
   parsed.testSteps.forEach((testStep) => {
     text += formatStep({ colorFns, testStep, printAttachments })
   })

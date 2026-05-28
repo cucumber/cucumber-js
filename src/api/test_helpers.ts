@@ -1,9 +1,9 @@
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import { PassThrough } from 'node:stream'
-import fs from 'node:fs/promises'
-import { reindent } from 'reindent-template-literals'
 import { IdGenerator } from '@cucumber/messages'
-import { IRunEnvironment } from '../environment'
+import { reindent } from 'reindent-template-literals'
+import type { IRunEnvironment } from '../environment'
 
 const newId = IdGenerator.uuid()
 

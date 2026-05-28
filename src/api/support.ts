@@ -1,10 +1,10 @@
 import { register } from 'node:module'
 import { pathToFileURL } from 'node:url'
-import { IdGenerator } from '@cucumber/messages'
-import { SupportCodeLibrary } from '../support_code_library_builder/types'
+import type { IdGenerator } from '@cucumber/messages'
+import type { ILogger } from '../environment'
 import supportCodeLibraryBuilder from '../support_code_library_builder'
+import type { SupportCodeLibrary } from '../support_code_library_builder/types'
 import tryRequire from '../try_require'
-import { ILogger } from '../environment'
 
 export async function getSupportCodeLibrary({
   logger,
@@ -30,14 +30,14 @@ export async function getSupportCodeLibrary({
     loaders,
   })
 
-  requireModules.map((path) => {
+  for (const path of requireModules) {
     logger.debug(`Attempting to require code from "${path}"`)
     tryRequire(path)
-  })
-  requirePaths.map((path) => {
+  }
+  for (const path of requirePaths) {
     logger.debug(`Attempting to require code from "${path}"`)
     tryRequire(path)
-  })
+  }
 
   for (const specifier of loaders) {
     logger.debug(`Attempting to register loader "${specifier}"`)

@@ -1,4 +1,3 @@
-import { locateFile } from '../configuration/locate_file'
 import {
   DEFAULT_CONFIGURATION,
   fromFile,
@@ -6,9 +5,10 @@ import {
   parseConfiguration,
   validateConfiguration,
 } from '../configuration'
-import { IRunEnvironment, makeEnvironment } from '../environment'
+import { locateFile } from '../configuration/locate_file'
+import { type IRunEnvironment, makeEnvironment } from '../environment'
 import { convertConfiguration } from './convert_configuration'
-import { ILoadConfigurationOptions, IResolvedConfiguration } from './types'
+import type { ILoadConfigurationOptions, IResolvedConfiguration } from './types'
 
 /**
  * Load user-authored configuration to be used in a test run
@@ -33,15 +33,8 @@ export async function loadConfiguration(
   const profileConfiguration = configFile
     ? await fromFile(logger, cwd, configFile, options.profiles)
     : {}
-  const providedConfiguration = parseConfiguration(
-    logger,
-    'Provided',
-    options.provided
-  )
-  if (
-    profileConfiguration.paths?.length > 0 &&
-    providedConfiguration.paths?.length > 0
-  ) {
+  const providedConfiguration = parseConfiguration(logger, 'Provided', options.provided)
+  if (profileConfiguration.paths?.length > 0 && providedConfiguration.paths?.length > 0) {
     const configPaths = profileConfiguration.paths
     const cliPaths = providedConfiguration.paths
     const mergedPaths = [...configPaths, ...cliPaths]

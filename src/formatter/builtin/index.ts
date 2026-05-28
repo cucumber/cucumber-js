@@ -1,15 +1,15 @@
-import { FormatterImplementation } from '../index'
+import type { FormatterImplementation } from '../index'
 import JsonFormatter from '../json_formatter'
 import RerunFormatter from '../rerun_formatter'
 import SnippetsFormatter from '../snippets_formatter'
 import UsageFormatter from '../usage_formatter'
 import UsageJsonFormatter from '../usage_json_formatter'
-import summaryFormatter from './summary'
+import htmlFormatter from './html'
+import messageFormatter from './message'
 import prettyFormatter from './pretty'
 import progressFormatter from './progress'
 import progressBarFormatter from './progress-bar'
-import messageFormatter from './message'
-import htmlFormatter from './html'
+import summaryFormatter from './summary'
 
 const builtin = {
   // new plugin-based formatters
@@ -35,8 +35,7 @@ export const documentation = {
   html: 'Outputs a HTML report',
   junit: 'Produces a JUnit XML report',
   message: 'Emits Cucumber messages in newline-delimited JSON',
-  pretty:
-    'Writes a rich report of the scenario and example execution as it happens',
+  pretty: 'Writes a rich report of the scenario and example execution as it happens',
   progress: 'Prints one character per scenario.',
   'progress-bar': 'Provides a real-time updating progress bar',
   summary: 'Summary output of feature and scenarios',

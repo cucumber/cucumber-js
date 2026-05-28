@@ -16,12 +16,7 @@ export interface IRunResponse {
 }
 
 const UserCodeRunner = {
-  async run({
-    argsArray,
-    thisArg,
-    fn,
-    timeoutInMilliseconds,
-  }: IRunRequest): Promise<IRunResponse> {
+  async run({ argsArray, thisArg, fn, timeoutInMilliseconds }: IRunRequest): Promise<IRunResponse> {
     const callbackPromise = new Promise((resolve, reject) => {
       argsArray.push((error: Error, result: IRunResponse) => {
         if (doesHaveValue(error)) {
@@ -32,7 +27,7 @@ const UserCodeRunner = {
       })
     })
 
-    let fnReturn
+    let fnReturn: any
     try {
       fnReturn = fn.apply(thisArg, argsArray)
     } catch (e) {
@@ -42,8 +37,7 @@ const UserCodeRunner = {
 
     const racingPromises = []
     const callbackInterface = fn.length === argsArray.length
-    const promiseInterface =
-      doesHaveValue(fnReturn) && typeof fnReturn.then === 'function'
+    const promiseInterface = doesHaveValue(fnReturn) && typeof fnReturn.then === 'function'
 
     if (callbackInterface && promiseInterface) {
       return {
@@ -61,8 +55,8 @@ const UserCodeRunner = {
       return { result: fnReturn }
     }
 
-    let exceptionHandler
-    const uncaughtExceptionPromise = new Promise((resolve, reject) => {
+    let exceptionHandler: any
+    const uncaughtExceptionPromise = new Promise((_resolve, reject) => {
       exceptionHandler = reject
       UncaughtExceptionManager.registerHandler(exceptionHandler)
     })
@@ -74,14 +68,10 @@ const UserCodeRunner = {
         'function timed out, ensure the ' +
         (callbackInterface ? 'callback is executed' : 'promise resolves') +
         ` within ${timeoutInMilliseconds.toString()} milliseconds`
-      finalPromise = wrapPromiseWithTimeout(
-        finalPromise,
-        timeoutInMilliseconds,
-        timeoutMessage
-      )
+      finalPromise = wrapPromiseWithTimeout(finalPromise, timeoutInMilliseconds, timeoutMessage)
     }
 
-    let error, result
+    let error: any, result: any
     try {
       result = await finalPromise
     } catch (e) {

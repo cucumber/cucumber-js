@@ -1,8 +1,8 @@
 import path from 'node:path'
 import { expect } from 'chai'
-import { IRunEnvironment } from '../environment'
-import { loadSupport } from './load_support'
+import type { IRunEnvironment } from '../environment'
 import { loadConfiguration } from './load_configuration'
+import { loadSupport } from './load_support'
 import { setupEnvironment, teardownEnvironment } from './test_helpers'
 
 describe('loadSupport', function () {

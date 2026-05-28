@@ -1,4 +1,4 @@
-import { Dialect, dialects } from '@cucumber/gherkin'
+import { type Dialect, dialects } from '@cucumber/gherkin'
 import { doesHaveValue } from '../../value_checker'
 
 export enum KeywordType {
@@ -31,7 +31,7 @@ export function getStepKeywordType({
       if (doesHaveValue(previousKeywordType)) {
         return previousKeywordType
       }
-    // fallthrough
+      return KeywordType.Precondition
     default:
       return KeywordType.Precondition
   }

@@ -1,4 +1,4 @@
-import { Duration, TimeConversion } from '@cucumber/messages'
+import { type Duration, TimeConversion } from '@cucumber/messages'
 import methods from '../time'
 
 /**
@@ -33,14 +33,11 @@ class StopwatchImpl implements IStopwatch {
     }
     return TimeConversion.addDurations(
       this.base,
-      TimeConversion.millisecondsToDuration(
-        methods.performance.now() - this.started
-      )
+      TimeConversion.millisecondsToDuration(methods.performance.now() - this.started)
     )
   }
 }
 
 export const create = (base?: Duration): IStopwatch => new StopwatchImpl(base)
 
-export const timestamp = () =>
-  TimeConversion.millisecondsSinceEpochToTimestamp(methods.Date.now())
+export const timestamp = () => TimeConversion.millisecondsSinceEpochToTimestamp(methods.Date.now())

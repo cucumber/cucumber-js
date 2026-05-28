@@ -1,9 +1,9 @@
 import * as messages from '@cucumber/messages'
-import { getPickleStepMap } from '../pickle_parser'
-import { getGherkinStepMap } from '../gherkin_document_parser'
-import StepDefinition from '../../../models/step_definition'
+import type StepDefinition from '../../../models/step_definition'
 import { doesHaveValue } from '../../../value_checker'
-import EventDataCollector from '../event_data_collector'
+import type EventDataCollector from '../event_data_collector'
+import { getGherkinStepMap } from '../gherkin_document_parser'
+import { getPickleStepMap } from '../pickle_parser'
 
 export interface IUsageMatch {
   duration?: messages.Duration
@@ -27,9 +27,7 @@ export interface IGetUsageRequest {
   stepDefinitions: StepDefinition[]
 }
 
-function buildEmptyMapping(
-  stepDefinitions: StepDefinition[]
-): Record<string, IUsage> {
+function buildEmptyMapping(stepDefinitions: StepDefinition[]): Record<string, IUsage> {
   const mapping: Record<string, IUsage> = {}
   stepDefinitions.forEach((stepDefinition) => {
     mapping[stepDefinition.id] = {
@@ -59,10 +57,7 @@ function buildMapping({
     const pickleStepMap = getPickleStepMap(testCaseAttempt.pickle)
     const gherkinStepMap = getGherkinStepMap(testCaseAttempt.gherkinDocument)
     testCaseAttempt.testCase.testSteps.forEach((testStep) => {
-      if (
-        doesHaveValue(testStep.pickleStepId) &&
-        testStep.stepDefinitionIds.length === 1
-      ) {
+      if (doesHaveValue(testStep.pickleStepId) && testStep.stepDefinitionIds.length === 1) {
         const stepDefinitionId = testStep.stepDefinitionIds[0]
         const pickleStep = pickleStepMap[testStep.pickleStepId]
         const gherkinStep = gherkinStepMap[pickleStep.astNodeIds[0]]
@@ -122,10 +117,7 @@ function buildResult(mapping: Record<string, IUsage>): IUsage[] {
     )
 }
 
-export function getUsage({
-  stepDefinitions,
-  eventDataCollector,
-}: IGetUsageRequest): IUsage[] {
+export function getUsage({ stepDefinitions, eventDataCollector }: IGetUsageRequest): IUsage[] {
   const mapping = buildMapping({ stepDefinitions, eventDataCollector })
   return buildResult(mapping)
 }

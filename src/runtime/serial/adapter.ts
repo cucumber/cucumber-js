@@ -1,11 +1,11 @@
-import { EventEmitter } from 'node:events'
-import { IdGenerator } from '@cucumber/messages'
-import { RuntimeAdapter } from '../types'
-import { AssembledTestCase } from '../../assemble'
+import type { EventEmitter } from 'node:events'
+import type { IdGenerator } from '@cucumber/messages'
+import type { AssembledTestCase } from '../../assemble'
+import type StepDefinitionSnippetBuilder from '../../formatter/step_definition_snippet_builder'
+import type { SupportCodeLibrary } from '../../support_code_library_builder/types'
+import type { RuntimeOptions } from '../index'
+import type { RuntimeAdapter } from '../types'
 import { Worker } from '../worker'
-import { RuntimeOptions } from '../index'
-import { SupportCodeLibrary } from '../../support_code_library_builder/types'
-import StepDefinitionSnippetBuilder from '../../formatter/step_definition_snippet_builder'
 
 /**
  * A simple adapter that executes all work in serial on the main thread

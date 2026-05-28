@@ -1,16 +1,16 @@
-import path from 'node:path'
-import { readFileSync, readdirSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import fs from 'node:fs/promises'
+import path from 'node:path'
 import { expect, use } from 'chai'
 import chaiExclude from 'chai-exclude'
-import { Then, DataTable } from '../../'
+import { type DataTable, Then } from '../../'
 import {
   ignorableKeys,
   normalizeJsonOutput,
   normalizeMessageOutput,
   stripMetaMessages,
 } from '../support/formatter_output_helpers'
-import { World } from '../support/world'
+import type { World } from '../support/world'
 
 use(chaiExclude)
 
@@ -21,14 +21,14 @@ Then(
     actual = normalizeMessageOutput(actual, this.tmpDir)
     actual = stripMetaMessages(actual)
     const fixturePath = path.join(__dirname, '..', 'fixtures', filePath)
-    const expected = require(fixturePath) // eslint-disable-line @typescript-eslint/no-require-imports
+    const expected = require(fixturePath)
     try {
       expect(actual).excludingEvery(ignorableKeys).to.deep.eq(expected)
     } catch (e) {
       if (process.env.GOLDEN) {
         await fs.writeFile(
-          fixturePath + '.ts',
-          'module.exports = ' + JSON.stringify(actual, null, 2),
+          `${fixturePath}.ts`,
+          `module.exports = ${JSON.stringify(actual, null, 2)}`,
           'utf-8'
         )
       } else {
@@ -45,14 +45,14 @@ Then(
     const actualJson = await fs.readFile(actualPath, 'utf8')
     const actual = normalizeJsonOutput(actualJson, this.tmpDir)
     const fixturePath = path.join(__dirname, '..', 'fixtures', filePath)
-    const expected = require(fixturePath) // eslint-disable-line @typescript-eslint/no-require-imports
+    const expected = require(fixturePath)
     try {
       expect(actual).to.eql(expected)
     } catch (e) {
       if (process.env.GOLDEN) {
         await fs.writeFile(
-          fixturePath + '.ts',
-          'module.exports = ' + JSON.stringify(actual, null, 2),
+          `${fixturePath}.ts`,
+          `module.exports = ${JSON.stringify(actual, null, 2)}`,
           'utf-8'
         )
       } else {
@@ -70,24 +70,19 @@ Then('the html formatter output is complete', async function (this: World) {
   expect(actual).to.contain('</html>')
 })
 
-Then(
-  'the formatter has no externalised attachments',
-  async function (this: World) {
-    const actual = readdirSync(this.tmpDir).filter((filename) =>
-      filename.startsWith('attachment-')
-    ).length
-    expect(actual).to.eq(0)
-  }
-)
+Then('the formatter has no externalised attachments', async function (this: World) {
+  const actual = readdirSync(this.tmpDir).filter((filename) =>
+    filename.startsWith('attachment-')
+  ).length
+  expect(actual).to.eq(0)
+})
 
 Then(
   'the formatter has these external attachments:',
   async function (this: World, table: DataTable) {
     const actual = readdirSync(this.tmpDir)
       .filter((filename) => filename.startsWith('attachment-'))
-      .map((filename) =>
-        readFileSync(path.join(this.tmpDir, filename), { encoding: 'utf-8' })
-      )
+      .map((filename) => readFileSync(path.join(this.tmpDir, filename), { encoding: 'utf-8' }))
     actual.sort()
     expect(actual).to.deep.eq(table.raw().map((row) => row[0]))
   }

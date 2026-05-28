@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
 import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { splitFormatDescriptor } from './split_format_descriptor'
 
 describe('splitFormatDescriptor', () => {
@@ -31,20 +31,13 @@ describe('splitFormatDescriptor', () => {
     },
     {
       description: 'splits UNC paths',
-      input:
-        '\\\\hostname\\custom\\formatter:\\\\hostname\\formatter\\output.txt',
-      output: [
-        '\\\\hostname\\custom\\formatter',
-        '\\\\hostname\\formatter\\output.txt',
-      ],
+      input: '\\\\hostname\\custom\\formatter:\\\\hostname\\formatter\\output.txt',
+      output: ['\\\\hostname\\custom\\formatter', '\\\\hostname\\formatter\\output.txt'],
     },
     {
       description: 'splits UNC paths with "/" as directory separator',
       input: '//hostname/custom/formatter://hostname/formatter/output.txt',
-      output: [
-        '//hostname/custom/formatter',
-        '//hostname/formatter/output.txt',
-      ],
+      output: ['//hostname/custom/formatter', '//hostname/formatter/output.txt'],
     },
     {
       description: 'splits a bare name and quoted target',
@@ -67,14 +60,12 @@ describe('splitFormatDescriptor', () => {
       output: ['html', 'file://hostname/formatter/report.html'],
     },
     {
-      description:
-        'uses quoting to keep a single file:// formatter intact, adds empty string',
+      description: 'uses quoting to keep a single file:// formatter intact, adds empty string',
       input: '"file://C:\\custom\\formatter"',
       output: ['file://C:\\custom\\formatter', ''],
     },
     {
-      description:
-        'splits an unquoted file URL on its only colon (now requires quoting)',
+      description: 'splits an unquoted file URL on its only colon (now requires quoting)',
       input: 'file:///custom/formatter',
       output: ['file', '///custom/formatter'],
     },
@@ -92,22 +83,18 @@ describe('splitFormatDescriptor', () => {
       input: 'foo:bar:baz:qux',
     },
     {
-      description:
-        'throws when a quoted name is followed by a bare target with colons',
+      description: 'throws when a quoted name is followed by a bare target with colons',
       input: '"foo:bar":baz:qux',
     },
     {
-      description:
-        'throws when a bare name with colons precedes a quoted target',
+      description: 'throws when a bare name with colons precedes a quoted target',
       input: 'foo:bar:"baz:qux"',
     },
   ]
 
   ambiguous.forEach(({ description, input }) => {
     it(description, () => {
-      expect(() => splitFormatDescriptor(input)).to.throw(
-        `Could not parse "${input}"`
-      )
+      expect(() => splitFormatDescriptor(input)).to.throw(`Could not parse "${input}"`)
     })
   })
 })

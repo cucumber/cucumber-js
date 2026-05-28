@@ -151,10 +151,7 @@ module.exports = [
         },
       ],
       tags: [],
-      astNodeIds: [
-        'c7298d57-92ec-4d2b-96aa-8083cddeac78',
-        '3c9ecdb7-88c3-498b-9c66-c2af131812e3',
-      ],
+      astNodeIds: ['c7298d57-92ec-4d2b-96aa-8083cddeac78', '3c9ecdb7-88c3-498b-9c66-c2af131812e3'],
     },
   },
   {
@@ -179,10 +176,7 @@ module.exports = [
         },
       ],
       tags: [],
-      astNodeIds: [
-        'c7298d57-92ec-4d2b-96aa-8083cddeac78',
-        '31296968-d322-4b73-9321-ee3177a4cb42',
-      ],
+      astNodeIds: ['c7298d57-92ec-4d2b-96aa-8083cddeac78', '31296968-d322-4b73-9321-ee3177a4cb42'],
     },
   },
   {
@@ -207,10 +201,7 @@ module.exports = [
         },
       ],
       tags: [],
-      astNodeIds: [
-        'c7298d57-92ec-4d2b-96aa-8083cddeac78',
-        'fcbafbc5-4084-4a43-ad3a-20ad8cd31671',
-      ],
+      astNodeIds: ['c7298d57-92ec-4d2b-96aa-8083cddeac78', 'fcbafbc5-4084-4a43-ad3a-20ad8cd31671'],
     },
   },
   {

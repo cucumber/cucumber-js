@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { Before, When, After } from '../../../src'
+import { After, Before, When } from '../../../src'
 
 Before(async function () {
   await this.attach(
@@ -19,7 +19,7 @@ Before(async function () {
   )
 })
 
-When('a step passes', function () {
+When('a step passes', () => {
   // no-op
 })
 

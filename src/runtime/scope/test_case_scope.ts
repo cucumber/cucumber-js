@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from 'node:async_hooks'
-import { IWorld } from '../../support_code_library_builder/world'
+import type { IWorld } from '../../support_code_library_builder/world'
 import { makeProxy } from './make_proxy'
 
 interface TestCaseScopeStore<ParametersType = any> {

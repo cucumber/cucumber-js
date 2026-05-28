@@ -1,5 +1,5 @@
-import { Before, setWorldConstructor, When, IWorld, World } from '../'
 import { expectError } from 'tsd'
+import { Before, type IWorld, setWorldConstructor, When, World } from '../'
 
 // should allow us to read parameters and add attachments
 Before(async function () {

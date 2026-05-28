@@ -1,4 +1,4 @@
-import Formatter from '../.'
+import type Formatter from '../.'
 import JsonFormatter from '../json_formatter'
 import ProgressFormatter from '../progress_formatter'
 import RerunFormatter from '../rerun_formatter'

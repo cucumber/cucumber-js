@@ -1,14 +1,14 @@
-import { Expression } from '@cucumber/cucumber-expressions'
+import type { Expression } from '@cucumber/cucumber-expressions'
 import { parseStepArgument } from '../step_arguments'
 import { doesHaveValue } from '../value_checker'
 import DataTable from './data_table'
 import Definition, {
-  IDefinition,
-  IGetInvocationDataRequest,
-  IGetInvocationDataResponse,
-  IStepDefinitionParameters,
+  type IDefinition,
+  type IGetInvocationDataRequest,
+  type IGetInvocationDataResponse,
+  type IStepDefinitionParameters,
 } from './definition'
-import { GherkinStepKeyword } from './gherkin_step_keyword'
+import type { GherkinStepKeyword } from './gherkin_step_keyword'
 
 export default class StepDefinition extends Definition implements IDefinition {
   public readonly keyword: GherkinStepKeyword
@@ -37,8 +37,7 @@ export default class StepDefinition extends Definition implements IDefinition {
       parameters.push(argumentParameter)
     }
     return {
-      getInvalidCodeLengthMessage: () =>
-        this.baseGetInvalidCodeLengthMessage(parameters),
+      getInvalidCodeLengthMessage: () => this.baseGetInvalidCodeLengthMessage(parameters),
       parameters,
       validCodeLengths: [parameters.length, parameters.length + 1],
     }

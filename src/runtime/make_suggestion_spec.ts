@@ -1,7 +1,7 @@
-import { describe, it } from 'mocha'
-import { expect } from 'chai'
-import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
+import { IdGenerator } from '@cucumber/messages'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import FormatterBuilder from '../formatter/builder'
 import { makeSuggestion } from './make_suggestion'
@@ -9,11 +9,10 @@ import { makeSuggestion } from './make_suggestion'
 describe('makeSuggestion', () => {
   it('generates multiple snippets for expressions with numeric parameters', async () => {
     const supportCodeLibrary = buildSupportCodeLibrary()
-    const snippetBuilder =
-      await FormatterBuilder.getStepDefinitionSnippetBuilder({
-        cwd: process.cwd(),
-        supportCodeLibrary,
-      })
+    const snippetBuilder = await FormatterBuilder.getStepDefinitionSnippetBuilder({
+      cwd: process.cwd(),
+      supportCodeLibrary,
+    })
     const newId = IdGenerator.incrementing()
     const pickleStep: messages.PickleStep = {
       id: '1',

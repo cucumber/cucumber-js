@@ -1,22 +1,22 @@
 import { EventEmitter } from 'node:events'
 import { PassThrough } from 'node:stream'
 import { promisify } from 'node:util'
+import type * as messages from '@cucumber/messages'
 import { IdGenerator } from '@cucumber/messages'
-import * as messages from '@cucumber/messages'
-import { makeRuntime, RuntimeOptions } from '../src/runtime'
-import { timestamp } from '../src/runtime/stopwatch'
-import { EventDataCollector } from '../src/formatter/helpers'
-import FormatterBuilder from '../src/formatter/builder'
-import { SupportCodeLibrary } from '../src/support_code_library_builder/types'
-import { ITestCaseAttempt } from '../src/formatter/helpers/event_data_collector'
-import { doesNotHaveValue } from '../src/value_checker'
+import type { IRunEnvironment } from '../src/api'
 import { emitSupportCodeMessages } from '../src/api/emit_support_code_messages'
-import { FormatOptions } from '../src/formatter'
-import { SourcedPickle } from '../src/assemble'
-import { IRunEnvironment } from '../src/api'
+import type { SourcedPickle } from '../src/assemble'
+import type { FormatOptions } from '../src/formatter'
+import FormatterBuilder from '../src/formatter/builder'
+import { EventDataCollector } from '../src/formatter/helpers'
+import type { ITestCaseAttempt } from '../src/formatter/helpers/event_data_collector'
+import { makeRuntime, type RuntimeOptions } from '../src/runtime'
+import { timestamp } from '../src/runtime/stopwatch'
+import type { SupportCodeLibrary } from '../src/support_code_library_builder/types'
+import { doesNotHaveValue } from '../src/value_checker'
+import { FakeLogger } from './fake_logger'
 import { generatePickles } from './gherkin_helpers'
 import { buildOptions, buildSupportCodeLibrary } from './runtime_helpers'
-import { FakeLogger } from './fake_logger'
 
 export interface ITestSource {
   data: string
@@ -152,9 +152,7 @@ export async function getEnvelopesAndEventDataCollector({
       eventBroadcaster,
       uri: source.uri,
     })
-    sourcedPickles = sourcedPickles.concat(
-      generated.filter((item) => pickleFilter(item.pickle))
-    )
+    sourcedPickles = sourcedPickles.concat(generated.filter((item) => pickleFilter(item.pickle)))
   }
 
   const runtime = await makeRuntime({
@@ -194,8 +192,5 @@ export function normalizeLegacySummaryDuration(output: string): string {
 }
 
 export function normalizeSummaryDuration(output: string): string {
-  return output.replace(
-    /\d+m \d+\.\d+s \(\d+m \d+\.\d+s executing your code\)/,
-    '<duration-stat>'
-  )
+  return output.replace(/\d+m \d+\.\d+s \(\d+m \d+\.\d+s executing your code\)/, '<duration-stat>')
 }

@@ -1,6 +1,6 @@
-import * as yup from 'yup'
 import { dialects } from '@cucumber/gherkin'
-import { IConfiguration } from './types'
+import * as yup from 'yup'
+import type { IConfiguration } from './types'
 
 const schema = yup.object().shape({
   backtrace: yup.boolean(),
@@ -11,9 +11,7 @@ const schema = yup.object().shape({
     .array()
     .of(
       yup.lazy((val) =>
-        Array.isArray(val)
-          ? yup.array().of(yup.string()).min(1).max(2)
-          : yup.string()
+        Array.isArray(val) ? yup.array().of(yup.string()).min(1).max(2) : yup.string()
       )
     ),
   formatOptions: yup

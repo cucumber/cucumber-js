@@ -1,4 +1,4 @@
-import { Before, After } from '../../../src'
+import { After, Before } from '../../../src'
 
 Before({}, () => {
   // no-op

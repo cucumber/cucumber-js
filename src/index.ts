@@ -9,8 +9,8 @@
 
 import * as messages from '@cucumber/messages'
 import * as formatterHelpers from './formatter/helpers'
-import * as parallelCanAssignHelpers from './support_code_library_builder/parallel_can_assign_helpers'
 import supportCodeLibraryBuilder from './support_code_library_builder'
+import * as parallelCanAssignHelpers from './support_code_library_builder/parallel_can_assign_helpers'
 import { version as _version } from './version'
 
 // type version as string to avoid tripping api-extractor every release
@@ -18,12 +18,6 @@ export const version = _version as string
 
 // Configuration
 export { IConfiguration, IProfiles } from './configuration'
-
-// Top level
-export { default as supportCodeLibraryBuilder } from './support_code_library_builder'
-export { default as DataTable } from './models/data_table'
-export { default as TestCaseHookDefinition } from './models/test_case_hook_definition'
-
 // Formatters
 export { default as Formatter, IFormatterOptions } from './formatter'
 export { default as FormatterBuilder } from './formatter/builder'
@@ -34,6 +28,10 @@ export { default as SnippetsFormatter } from './formatter/snippets_formatter'
 export { default as SummaryFormatter } from './formatter/summary_formatter'
 export { default as UsageFormatter } from './formatter/usage_formatter'
 export { default as UsageJsonFormatter } from './formatter/usage_json_formatter'
+export { default as DataTable } from './models/data_table'
+export { default as TestCaseHookDefinition } from './models/test_case_hook_definition'
+// Top level
+export { default as supportCodeLibraryBuilder } from './support_code_library_builder'
 export { formatterHelpers }
 
 // Support Code Functions
@@ -53,19 +51,18 @@ export const setWorldConstructor = methods.setWorldConstructor
 export const setParallelCanAssign = methods.setParallelCanAssign
 export const Then = methods.Then
 export const When = methods.When
+export { contextProxy as context, worldProxy as world } from './runtime/scope'
+export { IContext } from './support_code_library_builder/context'
+export {
+  ITestCaseHookParameter,
+  ITestStepHookParameter,
+} from './support_code_library_builder/types'
 export {
   default as World,
   IWorld,
   IWorldOptions,
 } from './support_code_library_builder/world'
-export { IContext } from './support_code_library_builder/context'
-export { worldProxy as world, contextProxy as context } from './runtime/scope'
 export { parallelCanAssignHelpers }
-
-export {
-  ITestCaseHookParameter,
-  ITestStepHookParameter,
-} from './support_code_library_builder/types'
 export const Status = messages.TestStepResultStatus
 
 // Time helpers

@@ -5,12 +5,12 @@
 ```ts
 
 import { Envelope } from '@cucumber/messages';
-import { GherkinDocument } from '@cucumber/messages';
-import { JsonObject } from 'type-fest';
-import { Location } from '@cucumber/messages';
-import { Pickle } from '@cucumber/messages';
-import { ResourceLimits } from 'node:worker_threads';
-import { Writable } from 'node:stream';
+import type { GherkinDocument } from '@cucumber/messages';
+import type { JsonObject } from 'type-fest';
+import type { Location } from '@cucumber/messages';
+import type { Pickle } from '@cucumber/messages';
+import type { ResourceLimits } from 'node:worker_threads';
+import type { Writable } from 'node:stream';
 
 // @public
 export type CoordinatorContext<OptionsType> = {

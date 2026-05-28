@@ -1,9 +1,9 @@
-import path from 'node:path'
 import fs from 'node:fs'
-import tmp from 'tmp'
+import path from 'node:path'
 import fsExtra from 'fs-extra'
+import tmp from 'tmp'
 import { Given } from '../../'
-import { World } from '../support/world'
+import type { World } from '../support/world'
 
 /*
 Simulates something like a global install, where the Cucumber being executed
@@ -20,16 +20,11 @@ Given('an invalid installation', async function (this: World) {
   projectNodeModulesDirs.forEach((nodeModuleDir) => {
     let pathsToLink = [nodeModuleDir]
     if (nodeModuleDir[0] === '@') {
-      const scopeNodeModuleDirs = fs.readdirSync(
-        path.join(projectNodeModulesPath, nodeModuleDir)
-      )
+      const scopeNodeModuleDirs = fs.readdirSync(path.join(projectNodeModulesPath, nodeModuleDir))
       pathsToLink = scopeNodeModuleDirs.map((x) => path.join(nodeModuleDir, x))
     }
     pathsToLink.forEach((pathToLink) => {
-      const installationPackagePath = path.join(
-        installationNodeModulesPath,
-        pathToLink
-      )
+      const installationPackagePath = path.join(installationNodeModulesPath, pathToLink)
       const projectPackagePath = path.join(projectNodeModulesPath, pathToLink)
       fsExtra.ensureSymlinkSync(projectPackagePath, installationPackagePath)
     })
@@ -42,15 +37,8 @@ Given('an invalid installation', async function (this: World) {
   )
   const itemsToCopy = ['bin', 'lib', 'package.json']
   itemsToCopy.forEach((item) => {
-    fsExtra.copySync(
-      path.join(projectPath, item),
-      path.join(invalidInstallationCucumberPath, item)
-    )
+    fsExtra.copySync(path.join(projectPath, item), path.join(invalidInstallationCucumberPath, item))
   })
 
-  this.localExecutablePath = path.join(
-    invalidInstallationCucumberPath,
-    'bin',
-    'cucumber.js'
-  )
+  this.localExecutablePath = path.join(invalidInstallationCucumberPath, 'bin', 'cucumber.js')
 })

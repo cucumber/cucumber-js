@@ -1,4 +1,4 @@
-import { InternalPlugin } from '../plugin'
+import type { InternalPlugin } from '../plugin'
 
 export const shardingPlugin: InternalPlugin = {
   type: 'plugin',

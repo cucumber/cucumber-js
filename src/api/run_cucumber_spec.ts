@@ -1,9 +1,9 @@
-import { Envelope, TestStepResultStatus } from '@cucumber/messages'
+import { type Envelope, TestStepResultStatus } from '@cucumber/messages'
 import { expect } from 'chai'
-import { IRunEnvironment } from '../environment'
-import { runCucumber } from './run_cucumber'
-import { loadSupport } from './load_support'
+import type { IRunEnvironment } from '../environment'
 import { loadConfiguration } from './load_configuration'
+import { loadSupport } from './load_support'
+import { runCucumber } from './run_cucumber'
 import { setupEnvironment, teardownEnvironment } from './test_helpers'
 
 describe('runCucumber', function () {
@@ -20,20 +20,15 @@ describe('runCucumber', function () {
       const messages: Envelope[] = []
       const { runConfiguration } = await loadConfiguration({}, environment)
       const support = await loadSupport(runConfiguration, environment)
-      await runCucumber(
-        { ...runConfiguration, support },
-        environment,
-        (envelope) => messages.push(envelope)
+      await runCucumber({ ...runConfiguration, support }, environment, (envelope) =>
+        messages.push(envelope)
       )
-      const testStepFinishedEnvelopes = messages.filter(
-        (envelope) => envelope.testStepFinished
-      )
+      const testStepFinishedEnvelopes = messages.filter((envelope) => envelope.testStepFinished)
       expect(testStepFinishedEnvelopes).to.have.length(2)
       expect(
         testStepFinishedEnvelopes.every(
           (envelope) =>
-            envelope.testStepFinished.testStepResult.status ===
-            TestStepResultStatus.PASSED
+            envelope.testStepFinished.testStepResult.status === TestStepResultStatus.PASSED
         )
       ).to.be.true()
     })
@@ -49,36 +44,25 @@ describe('runCucumber', function () {
     it('successfully executes 2 test runs', async () => {
       const messages: Envelope[] = []
       const { runConfiguration } = await loadConfiguration({}, environment)
-      const { support } = await runCucumber(
-        runConfiguration,
-        environment,
-        (envelope) => messages.push(envelope)
+      const { support } = await runCucumber(runConfiguration, environment, (envelope) =>
+        messages.push(envelope)
       )
-      await runCucumber(
-        { ...runConfiguration, support },
-        environment,
-        (envelope) => messages.push(envelope)
+      await runCucumber({ ...runConfiguration, support }, environment, (envelope) =>
+        messages.push(envelope)
       )
 
-      const testStepFinishedEnvelopes = messages.filter(
-        (envelope) => envelope.testStepFinished
-      )
-      const testRunFinishedEnvelopes = messages.filter(
-        (envelope) => envelope.testRunFinished
-      )
+      const testStepFinishedEnvelopes = messages.filter((envelope) => envelope.testStepFinished)
+      const testRunFinishedEnvelopes = messages.filter((envelope) => envelope.testRunFinished)
       expect(testStepFinishedEnvelopes).to.have.length(4)
       expect(
         testStepFinishedEnvelopes.every(
           (envelope) =>
-            envelope.testStepFinished.testStepResult.status ===
-            TestStepResultStatus.PASSED
+            envelope.testStepFinished.testStepResult.status === TestStepResultStatus.PASSED
         )
       ).to.be.true()
       expect(testRunFinishedEnvelopes).to.have.length(2)
       expect(
-        testRunFinishedEnvelopes.every(
-          (envelope) => envelope.testRunFinished.success === true
-        )
+        testRunFinishedEnvelopes.every((envelope) => envelope.testRunFinished.success === true)
       ).to.be.true()
     })
   })

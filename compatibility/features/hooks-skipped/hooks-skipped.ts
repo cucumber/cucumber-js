@@ -1,33 +1,27 @@
 import { After, Before, When } from '../../../src'
 
-Before({}, function () {
+Before({}, () => {
   // no-op
 })
 
-Before({ tags: '@skip-before' }, function () {
-  return 'skipped'
-})
+Before({ tags: '@skip-before' }, () => 'skipped')
 
-Before({}, function () {
+Before({}, () => {
   // no-op
 })
 
-When('a normal step', function () {
+When('a normal step', () => {
   // no-op
 })
 
-When('a step that skips', function () {
-  return 'skipped'
-})
+When('a step that skips', () => 'skipped')
 
-After({}, function () {
+After({}, () => {
   // no-op
 })
 
-After({ tags: '@skip-after' }, function () {
-  return 'skipped'
-})
+After({ tags: '@skip-after' }, () => 'skipped')
 
-After({}, function () {
+After({}, () => {
   // no-op
 })

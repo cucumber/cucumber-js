@@ -1,16 +1,16 @@
 import { PassThrough } from 'node:stream'
-import { afterEach, beforeEach, describe, it } from 'mocha'
-import { expect } from 'chai'
-import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
 import * as messages from '@cucumber/messages'
-import getColorFns from '../get_color_fns'
-import { getTestCaseAttempts } from '../../../test/formatter_helpers'
+import FakeTimers, { type InstalledClock } from '@sinonjs/fake-timers'
+import { expect } from 'chai'
+import { afterEach, beforeEach, describe, it } from 'mocha'
 import { getBaseSupportCodeLibrary } from '../../../test/fixtures/steps'
-import timeMethods, { durationBetweenTimestamps } from '../../time'
+import { getTestCaseAttempts } from '../../../test/formatter_helpers'
 import { buildSupportCodeLibrary } from '../../../test/runtime_helpers'
-import { RuntimeOptions } from '../../runtime'
-import { SupportCodeLibrary } from '../../support_code_library_builder/types'
+import type { RuntimeOptions } from '../../runtime'
+import type { SupportCodeLibrary } from '../../support_code_library_builder/types'
+import timeMethods, { durationBetweenTimestamps } from '../../time'
 import { doesNotHaveValue } from '../../value_checker'
+import getColorFns from '../get_color_fns'
 import { formatSummary } from './summary_helpers'
 
 interface ITestFormatSummaryOptions {
@@ -56,10 +56,7 @@ async function testFormatSummary({
   return formatSummary({
     colorFns: getColorFns(new PassThrough(), {}, false),
     testCaseAttempts,
-    testRunDuration: durationBetweenTimestamps(
-      testRunStarted.timestamp,
-      testRunFinished.timestamp
-    ),
+    testRunDuration: durationBetweenTimestamps(testRunStarted.timestamp, testRunFinished.timestamp),
   })
 }
 
@@ -85,9 +82,7 @@ describe('SummaryHelpers', () => {
 
         // Assert
         expect(output).to.contain(
-          '0 scenarios\n' +
-            '0 steps\n' +
-            '0m00.000s (executing steps: 0m00.000s)\n'
+          '0 scenarios\n' + '0 steps\n' + '0m00.000s (executing steps: 0m00.000s)\n'
         )
       })
     })
@@ -95,11 +90,7 @@ describe('SummaryHelpers', () => {
     describe('with one passing scenario with one passing step', () => {
       it('outputs the totals and number of each status', async () => {
         // Arrange
-        const sourceData = [
-          'Feature: a',
-          'Scenario: b',
-          'Given a passing step',
-        ].join('\n')
+        const sourceData = ['Feature: a', 'Scenario: b', 'Given a passing step'].join('\n')
 
         // Act
         const output = await testFormatSummary({ sourceData })
@@ -116,17 +107,11 @@ describe('SummaryHelpers', () => {
     describe('with one passing scenario with one step and hook', () => {
       it('filter out the hooks', async () => {
         // Arrange
-        const sourceData = [
-          'Feature: a',
-          'Scenario: b',
-          'Given a passing step',
-        ].join('\n')
-        const supportCodeLibrary = buildSupportCodeLibrary(
-          ({ Given, Before }) => {
-            Given('a passing step', () => {})
-            Before(() => {})
-          }
-        )
+        const sourceData = ['Feature: a', 'Scenario: b', 'Given a passing step'].join('\n')
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given, Before }) => {
+          Given('a passing step', () => {})
+          Before(() => {})
+        })
 
         // Act
         const output = await testFormatSummary({
@@ -146,14 +131,10 @@ describe('SummaryHelpers', () => {
     describe('with one scenario that failed and was retried then passed', () => {
       it('filters out the retried attempts', async () => {
         // Arrange
-        const sourceData = [
-          'Feature: a',
-          'Scenario: b',
-          'Given a flaky step',
-        ].join('\n')
+        const sourceData = ['Feature: a', 'Scenario: b', 'Given a flaky step'].join('\n')
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
           let willPass = false
-          Given('a flaky step', function () {
+          Given('a flaky step', () => {
             if (willPass) {
               return
             }
@@ -236,11 +217,7 @@ describe('SummaryHelpers', () => {
     describe('with a test run finished timestamp of 124 milliseconds and total step duration of 123 milliseconds', () => {
       it('outputs the duration as `0m00.124s (executing steps: 0m00.123s)`', async () => {
         // Arrange
-        const sourceData = [
-          'Feature: a',
-          'Scenario: b',
-          'Given a passing step',
-        ].join('\n')
+        const sourceData = ['Feature: a', 'Scenario: b', 'Given a passing step'].join('\n')
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
           Given('a passing step', () => {
             clock.tick(123)
@@ -278,11 +255,7 @@ describe('SummaryHelpers', () => {
     describe('with a test run finished timestamp of 12.4 seconds and total step duration of 12.3 seconds', () => {
       it('outputs the duration as `0m12.400s (executing steps: 0m12.300s)`', async () => {
         // Arrange
-        const sourceData = [
-          'Feature: a',
-          'Scenario: b',
-          'Given a passing step',
-        ].join('\n')
+        const sourceData = ['Feature: a', 'Scenario: b', 'Given a passing step'].join('\n')
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
           Given('a passing step', () => {
             clock.tick(12.3 * 1000)
@@ -314,11 +287,7 @@ describe('SummaryHelpers', () => {
     describe('with a test run finished timestamp of 124 seconds and total step duration of 123 seconds', () => {
       it('outputs the duration as `2m04.000s (executing steps: 2m03.000s)`', async () => {
         // Arrange
-        const sourceData = [
-          'Feature: a',
-          'Scenario: b',
-          'Given a passing step',
-        ].join('\n')
+        const sourceData = ['Feature: a', 'Scenario: b', 'Given a passing step'].join('\n')
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
           Given('a passing step', () => {
             clock.tick(123 * 1000)
@@ -350,24 +319,18 @@ describe('SummaryHelpers', () => {
     describe('with one passing scenario with one step and a beforeStep and afterStep hook', () => {
       it('outputs the duration as `0m24.000s (executing steps: 0m24.000s)`', async () => {
         // Arrange
-        const sourceData = [
-          'Feature: a',
-          'Scenario: b',
-          'Given a passing step',
-        ].join('\n')
-        const supportCodeLibrary = buildSupportCodeLibrary(
-          ({ Given, BeforeStep, AfterStep }) => {
-            Given('a passing step', () => {
-              clock.tick(12.3 * 1000)
-            })
-            BeforeStep(() => {
-              clock.tick(5 * 1000)
-            })
-            AfterStep(() => {
-              clock.tick(6.7 * 1000)
-            })
-          }
-        )
+        const sourceData = ['Feature: a', 'Scenario: b', 'Given a passing step'].join('\n')
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given, BeforeStep, AfterStep }) => {
+          Given('a passing step', () => {
+            clock.tick(12.3 * 1000)
+          })
+          BeforeStep(() => {
+            clock.tick(5 * 1000)
+          })
+          AfterStep(() => {
+            clock.tick(6.7 * 1000)
+          })
+        })
 
         // Act
         const output = await testFormatSummary({

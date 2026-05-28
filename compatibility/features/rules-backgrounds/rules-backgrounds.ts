@@ -1,6 +1,6 @@
-import { Given, When, Then } from '../../../src'
+import { Given, Then, When } from '../../../src'
 
-Given('an order for {string}', (thing: string) => {
+Given('an order for {string}', (_thing: string) => {
   // no-op
 })
 

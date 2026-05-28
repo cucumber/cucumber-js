@@ -1,5 +1,3 @@
 import { Given } from '../../../src'
 
-Given('a pending step', function () {
-  return 'pending'
-})
+Given('a pending step', () => 'pending')

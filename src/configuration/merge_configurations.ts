@@ -1,15 +1,7 @@
 import mergeWith from 'lodash.mergewith'
-import { IConfiguration } from './types'
+import type { IConfiguration } from './types'
 
-const ADDITIVE_ARRAYS = [
-  'format',
-  'import',
-  'loader',
-  'name',
-  'paths',
-  'require',
-  'requireModule',
-]
+const ADDITIVE_ARRAYS = ['format', 'import', 'loader', 'name', 'paths', 'require', 'requireModule']
 const TAG_EXPRESSIONS = ['tags', 'retryTagFilter']
 
 function mergeArrays(objValue: any[], srcValue: any[]) {

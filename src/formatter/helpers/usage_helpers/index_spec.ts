@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
 import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { getEnvelopesAndEventDataCollector } from '../../../../test/formatter_helpers'
 import { buildSupportCodeLibrary } from '../../../../test/runtime_helpers'
 import { getUsage } from './'
@@ -10,14 +10,13 @@ describe('Usage Helpers', () => {
       describe('without function definition wrapper', () => {
         it('includes stringified code', async () => {
           // Arrange
-          const code = function (): string {
-            return 'original code'
-          }
+          const code = (): string => 'original code'
           const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
             Given('a step', code)
           })
-          const { eventDataCollector } =
-            await getEnvelopesAndEventDataCollector({ supportCodeLibrary })
+          const { eventDataCollector } = await getEnvelopesAndEventDataCollector({
+            supportCodeLibrary,
+          })
 
           // Act
           const output = getUsage({
@@ -34,9 +33,7 @@ describe('Usage Helpers', () => {
       describe('with function definition wrapper', () => {
         it('includes unwrapped version of stringified code', async () => {
           // Arrange
-          const code = function (): string {
-            return 'original code'
-          }
+          const code = (): string => 'original code'
           const supportCodeLibrary = buildSupportCodeLibrary(
             ({ Given, setDefinitionFunctionWrapper }) => {
               Given('a step', code)
@@ -48,8 +45,9 @@ describe('Usage Helpers', () => {
               })
             }
           )
-          const { eventDataCollector } =
-            await getEnvelopesAndEventDataCollector({ supportCodeLibrary })
+          const { eventDataCollector } = await getEnvelopesAndEventDataCollector({
+            supportCodeLibrary,
+          })
 
           // Act
           const output = getUsage({

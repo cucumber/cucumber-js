@@ -1,14 +1,9 @@
-import {
-  ParameterType,
-  ParameterTypeRegistry,
-} from '@cucumber/cucumber-expressions'
-import { ILineAndUri } from '../types'
+import { type ParameterType, ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
+import type { ILineAndUri } from '../types'
 
 export class SourcedParameterTypeRegistry extends ParameterTypeRegistry {
-  private parameterTypeToSource: WeakMap<
-    ParameterType<unknown>,
-    ILineAndUri & { order: number }
-  > = new WeakMap()
+  private parameterTypeToSource: WeakMap<ParameterType<unknown>, ILineAndUri & { order: number }> =
+    new WeakMap()
 
   defineSourcedParameterType(
     parameterType: ParameterType<unknown>,

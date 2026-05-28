@@ -1,6 +1,6 @@
-import { describe, it } from 'mocha'
+import type * as messages from '@cucumber/messages'
 import { expect } from 'chai'
-import * as messages from '@cucumber/messages'
+import { describe, it } from 'mocha'
 import DataTable from './data_table'
 
 const id = 'id'
@@ -110,7 +110,7 @@ describe('DataTable', () => {
 
   describe('table with something other than 2 columns', () => {
     describe('rowsHash', () => {
-      it('throws an error if not all rows have two columns', function () {
+      it('throws an error if not all rows have two columns', () => {
         const dataTable: messages.DataTable = {
           location,
           rows: [

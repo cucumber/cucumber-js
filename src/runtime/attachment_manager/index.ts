@@ -1,6 +1,6 @@
-import { Readable } from 'node:stream'
-import isStream from 'is-stream'
+import type { Readable } from 'node:stream'
 import * as messages from '@cucumber/messages'
+import isStream from 'is-stream'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 
 export interface IAttachmentMedia {
@@ -74,12 +74,7 @@ export default class AttachmentManager {
       if (doesNotHaveValue(options.mediaType)) {
         throw Error('Stream attachments must specify a media type')
       }
-      return this.createStreamAttachment(
-        data,
-        options.mediaType,
-        options.fileName,
-        callback
-      )
+      return this.createStreamAttachment(data, options.mediaType, options.fileName, callback)
     } else if (typeof data === 'string') {
       if (doesNotHaveValue(options.mediaType)) {
         options.mediaType = 'text/plain'
@@ -104,17 +99,11 @@ export default class AttachmentManager {
         )
       }
     } else {
-      throw Error(
-        'Invalid attachment data: must be a buffer, readable stream, or string'
-      )
+      throw Error('Invalid attachment data: must be a buffer, readable stream, or string')
     }
   }
 
-  createBufferAttachment(
-    data: Buffer,
-    mediaType: string,
-    fileName?: string
-  ): void {
+  createBufferAttachment(data: Buffer, mediaType: string, fileName?: string): void {
     this.createStringAttachment(
       data.toString('base64'),
       {
@@ -149,11 +138,7 @@ export default class AttachmentManager {
     }
   }
 
-  createStringAttachment(
-    data: string,
-    media: IAttachmentMedia,
-    fileName?: string
-  ): void {
+  createStringAttachment(data: string, media: IAttachmentMedia, fileName?: string): void {
     this.onAttachment({
       data,
       media,

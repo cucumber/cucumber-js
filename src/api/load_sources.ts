@@ -1,14 +1,14 @@
 import { IdGenerator } from '@cucumber/messages'
+import { type IRunEnvironment, makeEnvironment } from '../environment'
 import { resolvePaths } from '../paths'
-import { IRunEnvironment, makeEnvironment } from '../environment'
-import {
+import { getPicklesAndErrors } from './gherkin'
+import { initializeForLoadSources } from './plugins'
+import type {
   ILoadSourcesResult,
   IPlannedPickle,
   ISourcesCoordinates,
   ISourcesError,
 } from './types'
-import { getPicklesAndErrors } from './gherkin'
-import { initializeForLoadSources } from './plugins'
 
 /**
  * Load and parse features, produce a filtered and ordered test plan and/or
@@ -25,10 +25,7 @@ export async function loadSources(
   const mergedEnvironment = makeEnvironment(environment)
   const { cwd, logger } = mergedEnvironment
   const newId = IdGenerator.uuid()
-  const pluginManager = await initializeForLoadSources(
-    coordinates,
-    mergedEnvironment
-  )
+  const pluginManager = await initializeForLoadSources(coordinates, mergedEnvironment)
   const resolvedPaths = await resolvePaths(logger, cwd, coordinates)
   pluginManager.emit('paths:resolve', resolvedPaths)
   const { sourcePaths } = resolvedPaths
@@ -45,14 +42,8 @@ export async function loadSources(
     coordinates,
     onEnvelope: (envelope) => pluginManager.emit('message', envelope),
   })
-  const filteredPickles = await pluginManager.transform(
-    'pickles:filter',
-    filterablePickles
-  )
-  const orderedPickles = await pluginManager.transform(
-    'pickles:order',
-    filteredPickles
-  )
+  const filteredPickles = await pluginManager.transform('pickles:filter', filterablePickles)
+  const orderedPickles = await pluginManager.transform('pickles:order', filteredPickles)
   const plan: IPlannedPickle[] = orderedPickles.map(({ location, pickle }) => ({
     name: pickle.name,
     uri: pickle.uri,

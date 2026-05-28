@@ -1,7 +1,7 @@
 import debug from 'debug'
-import { ArgvParser } from '../configuration'
-import { IFormatterStream } from '../formatter'
 import { loadConfiguration, runCucumber } from '../api'
+import { ArgvParser } from '../configuration'
+import type { IFormatterStream } from '../formatter'
 import { getKeywords, getLanguages } from './i18n'
 import { validateInstall } from './install_validator'
 
@@ -42,9 +42,7 @@ export default class Cli {
     if (debugEnabled) {
       await validateInstall()
     }
-    const { options, configuration: argvConfiguration } = ArgvParser.parse(
-      this.argv
-    )
+    const { options, configuration: argvConfiguration } = ArgvParser.parse(this.argv)
     if (options.i18nLanguages) {
       this.stdout.write(getLanguages())
       return {
@@ -67,15 +65,14 @@ export default class Cli {
       env: this.env,
       debug: debugEnabled,
     }
-    const { useConfiguration: configuration, runConfiguration } =
-      await loadConfiguration(
-        {
-          file: options.config,
-          profiles: options.profile,
-          provided: argvConfiguration,
-        },
-        environment
-      )
+    const { useConfiguration: configuration, runConfiguration } = await loadConfiguration(
+      {
+        file: options.config,
+        profiles: options.profile,
+        provided: argvConfiguration,
+      },
+      environment
+    )
     const { success } = await runCucumber(runConfiguration, environment)
     return {
       shouldExitImmediately: configuration.forceExit,

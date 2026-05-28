@@ -1,4 +1,4 @@
-import {
+import type {
   FinishedEvent,
   Phase,
   RunAfterAllHooksCommand,
@@ -25,7 +25,7 @@ export class TestRunHooksPhase
   }
 
   next(
-    command: RunBeforeAllHooksCommand | RunAfterAllHooksCommand,
+    _command: RunBeforeAllHooksCommand | RunAfterAllHooksCommand,
     event: FinishedEvent
   ): undefined {
     if (!event.success) {

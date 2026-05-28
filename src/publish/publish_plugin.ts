@@ -1,14 +1,14 @@
-import { Writable } from 'node:stream'
+import { createReadStream, createWriteStream } from 'node:fs'
+import { mkdtemp, stat } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
+import type { Writable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 import { stripVTControlCharacters } from 'node:util'
-import { mkdtemp, stat } from 'node:fs/promises'
-import path from 'node:path'
-import { tmpdir } from 'node:os'
-import { createReadStream, createWriteStream } from 'node:fs'
 import { createGzip } from 'node:zlib'
-import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
-import { InternalPlugin } from '../plugin'
+import { supportsColor } from 'supports-color'
+import type { InternalPlugin } from '../plugin'
 
 type TouchResult = {
   banner: string
@@ -35,9 +35,7 @@ export const publishPlugin: InternalPlugin = {
     if (touchResponse.status >= 500) {
       return () => {
         logger.error(
-          `Failed to publish report to ${new URL(url).origin} with status ${
-            touchResponse.status
-          }`
+          `Failed to publish report to ${new URL(url).origin} with status ${touchResponse.status}`
         )
         logger.debug(touchResponse)
       }
@@ -48,7 +46,7 @@ export const publishPlugin: InternalPlugin = {
     if (!touchResponse.ok) {
       return () => {
         environment.stderr.write(
-          sanitisePublishOutput(touchResult.banner, environment.stderr) + '\n'
+          `${sanitisePublishOutput(touchResult.banner, environment.stderr)}\n`
         )
       }
     }
@@ -61,11 +59,8 @@ export const publishPlugin: InternalPlugin = {
     const tempDir = await mkdtemp(path.join(tmpdir(), `cucumber-js-publish-`))
     const tempFilePath = path.join(tempDir, 'envelopes.jsonl.gz')
     const writeStream = createGzip()
-    const finishedWriting = pipeline(
-      writeStream,
-      createWriteStream(tempFilePath)
-    )
-    on('message', (value) => writeStream.write(JSON.stringify(value) + '\n'))
+    const finishedWriting = pipeline(writeStream, createWriteStream(tempFilePath))
+    on('message', (value) => writeStream.write(`${JSON.stringify(value)}\n`))
 
     return () => {
       return new Promise<void>((resolve) => {
@@ -89,8 +84,7 @@ export const publishPlugin: InternalPlugin = {
           })
           if (uploadResponse.ok) {
             environment.stderr.write(
-              sanitisePublishOutput(touchResult.banner, environment.stderr) +
-                '\n'
+              `${sanitisePublishOutput(touchResult.banner, environment.stderr)}\n`
             )
           } else {
             logger.error(

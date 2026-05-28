@@ -1,15 +1,11 @@
 import * as messages from '@cucumber/messages'
+import type { IDefinition, IGetInvocationDataResponse } from '../models/definition'
+import type { ITestCaseHookParameter } from '../support_code_library_builder/types'
 import UserCodeRunner from '../user_code_runner'
-import { ITestCaseHookParameter } from '../support_code_library_builder/types'
-import { IDefinition, IGetInvocationDataResponse } from '../models/definition'
-import {
-  doesHaveValue,
-  doesNotHaveValue,
-  valueOrDefault,
-} from '../value_checker'
+import { doesHaveValue, doesNotHaveValue, valueOrDefault } from '../value_checker'
+import { formatError } from './format_error'
 import { runInTestCaseScope } from './scope'
 import { create } from './stopwatch'
-import { formatError } from './format_error'
 
 export interface IRunOptions {
   defaultTimeout: number
@@ -49,10 +45,7 @@ export async function run({
   }
 
   if (doesNotHaveValue(error)) {
-    const timeoutInMilliseconds = valueOrDefault(
-      stepDefinition.options.timeout,
-      defaultTimeout
-    )
+    const timeoutInMilliseconds = valueOrDefault(stepDefinition.options.timeout, defaultTimeout)
 
     if (invocationData.validCodeLengths.includes(stepDefinition.code.length)) {
       const data = await runInTestCaseScope({ world }, async () =>

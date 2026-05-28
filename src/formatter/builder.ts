@@ -1,19 +1,16 @@
-import { EventEmitter } from 'node:events'
-import { Writable as WritableStream } from 'node:stream'
+import type { EventEmitter } from 'node:events'
+import type { Writable as WritableStream } from 'node:stream'
+import type { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import { SupportCodeLibrary } from '../support_code_library_builder/types'
-import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
-import EventDataCollector from './helpers/event_data_collector'
-import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
-import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascript_snippet_syntax'
+import type Formatter from '.'
+import type { FormatOptions, IFormatterCleanupFn, IFormatterLogFn } from '.'
 import getColorFns from './get_color_fns'
+import type EventDataCollector from './helpers/event_data_collector'
 import Formatters from './helpers/formatters'
 import { importCode } from './import_code'
-import Formatter, {
-  FormatOptions,
-  IFormatterCleanupFn,
-  IFormatterLogFn,
-} from '.'
+import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
+import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascript_snippet_syntax'
+import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 
 interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
@@ -50,13 +47,12 @@ const FormatterBuilder = {
       options.env,
       options.parsedArgvOptions.colorsEnabled
     )
-    const snippetBuilder =
-      await FormatterBuilder.getStepDefinitionSnippetBuilder({
-        cwd: options.cwd,
-        snippetInterface: options.parsedArgvOptions.snippetInterface,
-        snippetSyntax: options.parsedArgvOptions.snippetSyntax,
-        supportCodeLibrary: options.supportCodeLibrary,
-      })
+    const snippetBuilder = await FormatterBuilder.getStepDefinitionSnippetBuilder({
+      cwd: options.cwd,
+      snippetInterface: options.parsedArgvOptions.snippetInterface,
+      snippetSyntax: options.parsedArgvOptions.snippetSyntax,
+      supportCodeLibrary: options.supportCodeLibrary,
+    })
     return new FormatterConstructor({
       colorFns,
       snippetBuilder,
@@ -64,12 +60,8 @@ const FormatterBuilder = {
     })
   },
 
-  async getConstructorByType(
-    type: string,
-    cwd: string
-  ): Promise<typeof Formatter> {
-    const formatters: Record<string, typeof Formatter> =
-      Formatters.getFormatters()
+  async getConstructorByType(type: string, cwd: string): Promise<typeof Formatter> {
+    const formatters: Record<string, typeof Formatter> = Formatters.getFormatters()
 
     return formatters[type]
       ? formatters[type]
@@ -87,11 +79,7 @@ const FormatterBuilder = {
     }
     let Syntax = JavascriptSnippetSyntax
     if (doesHaveValue(snippetSyntax)) {
-      Syntax = await FormatterBuilder.loadCustomClass(
-        'syntax',
-        snippetSyntax,
-        cwd
-      )
+      Syntax = await FormatterBuilder.loadCustomClass('syntax', snippetSyntax, cwd)
     }
     return new StepDefinitionSnippetBuilder({
       snippetSyntax: new Syntax(snippetInterface),
@@ -99,20 +87,12 @@ const FormatterBuilder = {
     })
   },
 
-  async loadCustomClass(
-    type: 'formatter' | 'syntax',
-    descriptor: string,
-    cwd: string
-  ) {
-    const CustomClass = FormatterBuilder.resolveConstructor(
-      await importCode(descriptor, cwd)
-    )
+  async loadCustomClass(type: 'formatter' | 'syntax', descriptor: string, cwd: string) {
+    const CustomClass = FormatterBuilder.resolveConstructor(await importCode(descriptor, cwd))
     if (doesHaveValue(CustomClass)) {
       return CustomClass
     } else {
-      throw new Error(
-        `Custom ${type} (${descriptor}) does not export a function/class`
-      )
+      throw new Error(`Custom ${type} (${descriptor}) does not export a function/class`)
     }
   },
 
@@ -126,10 +106,7 @@ const FormatterBuilder = {
     }
     if (typeof ImportedCode === 'function') {
       return ImportedCode
-    } else if (
-      typeof ImportedCode === 'object' &&
-      typeof ImportedCode.default === 'function'
-    ) {
+    } else if (typeof ImportedCode === 'object' && typeof ImportedCode.default === 'function') {
       return ImportedCode.default
     } else if (
       typeof ImportedCode.default === 'object' &&

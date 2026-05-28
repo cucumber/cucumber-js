@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from 'node:async_hooks'
-import { IContext } from '../../support_code_library_builder/context'
+import type { IContext } from '../../support_code_library_builder/context'
 import { makeProxy } from './make_proxy'
 
 interface TestRunScopeStore<ParametersType = any> {

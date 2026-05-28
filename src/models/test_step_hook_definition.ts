@@ -1,17 +1,14 @@
-import * as messages from '@cucumber/messages'
+import type * as messages from '@cucumber/messages'
 import { PickleTagFilter } from '../pickle_filter'
 import Definition, {
-  IDefinition,
-  IGetInvocationDataResponse,
-  IGetInvocationDataRequest,
-  IDefinitionParameters,
-  IHookDefinitionOptions,
+  type IDefinition,
+  type IDefinitionParameters,
+  type IGetInvocationDataRequest,
+  type IGetInvocationDataResponse,
+  type IHookDefinitionOptions,
 } from './definition'
 
-export default class TestStepHookDefinition
-  extends Definition
-  implements IDefinition
-{
+export default class TestStepHookDefinition extends Definition implements IDefinition {
   public readonly tagExpression: string
   private readonly pickleTagFilter: PickleTagFilter
 
@@ -29,8 +26,7 @@ export default class TestStepHookDefinition
     hookParameter,
   }: IGetInvocationDataRequest): Promise<IGetInvocationDataResponse> {
     return {
-      getInvalidCodeLengthMessage: () =>
-        this.buildInvalidCodeLengthMessage('0 or 1', '2'),
+      getInvalidCodeLengthMessage: () => this.buildInvalidCodeLengthMessage('0 or 1', '2'),
       parameters: [hookParameter],
       validCodeLengths: [0, 1, 2],
     }

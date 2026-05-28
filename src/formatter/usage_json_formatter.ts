@@ -1,7 +1,8 @@
 import * as messages from '@cucumber/messages'
 import { doesHaveValue } from '../value_checker'
+import Formatter, { type IFormatterOptions } from './'
 import { getUsage } from './helpers'
-import Formatter, { IFormatterOptions } from './'
+
 import IEnvelope = messages.Envelope
 
 export default class UsageJsonFormatter extends Formatter {
@@ -27,7 +28,7 @@ export default class UsageJsonFormatter extends Formatter {
 
   replacer(key: string, value: any): any {
     if (key === 'seconds') {
-      return parseInt(value)
+      return parseInt(value, 10)
     }
     return value
   }

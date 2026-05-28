@@ -1,6 +1,6 @@
 import { Console } from 'node:console'
-import { Writable } from 'node:stream'
-import { ILogger } from './types'
+import type { Writable } from 'node:stream'
+import type { ILogger } from './types'
 
 export class ConsoleLogger implements ILogger {
   private readonly console: Console

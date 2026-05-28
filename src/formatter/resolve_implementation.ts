@@ -1,7 +1,7 @@
 import builtin from './builtin'
-import { importCode } from './import_code'
 import { findClassOrPlugin } from './find_class_or_plugin'
-import { FormatterImplementation } from './index'
+import { importCode } from './import_code'
+import type { FormatterImplementation } from './index'
 
 export async function resolveImplementation(
   specifier: string,

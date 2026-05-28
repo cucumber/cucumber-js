@@ -1,15 +1,15 @@
-import { EventEmitter } from 'node:events'
-import { IdGenerator } from '@cucumber/messages'
-import { IRunOptionsRuntime } from '../api'
-import { ILogger, IRunEnvironment } from '../environment'
-import { SourcedPickle } from '../assemble'
-import { SupportCodeLibrary } from '../support_code_library_builder/types'
+import type { EventEmitter } from 'node:events'
+import type { IdGenerator } from '@cucumber/messages'
+import type { IRunOptionsRuntime } from '../api'
+import type { SourcedPickle } from '../assemble'
+import type { ILogger, IRunEnvironment } from '../environment'
+import type { FormatOptions } from '../formatter'
 import FormatterBuilder from '../formatter/builder'
-import { FormatOptions } from '../formatter'
-import { Runtime } from './types'
-import { InProcessAdapter } from './serial/adapter'
+import type { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { Coordinator } from './coordinator'
 import { WorkerThreadsAdapter } from './parallel/adapter'
+import { InProcessAdapter } from './serial/adapter'
+import type { Runtime } from './types'
 
 export async function makeRuntime({
   testRunStartedId,
@@ -73,14 +73,12 @@ async function makeAdapter(
       supportCodeLibrary
     )
   }
-  const snippetBuilder = await FormatterBuilder.getStepDefinitionSnippetBuilder(
-    {
-      cwd: environment.cwd,
-      snippetInterface: snippetOptions.snippetInterface,
-      snippetSyntax: snippetOptions.snippetSyntax,
-      supportCodeLibrary,
-    }
-  )
+  const snippetBuilder = await FormatterBuilder.getStepDefinitionSnippetBuilder({
+    cwd: environment.cwd,
+    snippetInterface: snippetOptions.snippetInterface,
+    snippetSyntax: snippetOptions.snippetSyntax,
+    supportCodeLibrary,
+  })
   return new InProcessAdapter(
     testRunStartedId,
     eventBroadcaster,

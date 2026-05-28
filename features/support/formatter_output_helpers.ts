@@ -1,14 +1,6 @@
-import * as messages from '@cucumber/messages'
-import {
-  doesHaveValue,
-  doesNotHaveValue,
-  valueOrDefault,
-} from '../../src/value_checker'
-import {
-  IJsonFeature,
-  IJsonScenario,
-  IJsonStep,
-} from '../../src/formatter/json_formatter'
+import type * as messages from '@cucumber/messages'
+import type { IJsonFeature, IJsonScenario, IJsonStep } from '../../src/formatter/json_formatter'
+import { doesHaveValue, doesNotHaveValue, valueOrDefault } from '../../src/value_checker'
 
 function isObject(obj: unknown): obj is Record<string, unknown> {
   return typeof obj === 'object' && obj !== null
@@ -26,32 +18,20 @@ function normalizeExceptionAndUri(exception: string, cwd: string): string {
     .split('\n')[0]
 }
 
-function normalizeMessage(
-  obj: messages.Envelope[keyof messages.Envelope],
-  cwd: string
-): void {
+function normalizeMessage(obj: messages.Envelope[keyof messages.Envelope], cwd: string): void {
   if (isObject(obj)) {
     if (typeof obj.uri === 'string') {
       obj.uri = normalizeExceptionAndUri(obj.uri, cwd)
     }
-    if (
-      isObject(obj.sourceReference) &&
-      typeof obj.sourceReference.uri === 'string'
-    ) {
-      obj.sourceReference.uri = normalizeExceptionAndUri(
-        obj.sourceReference.uri,
-        cwd
-      )
+    if (isObject(obj.sourceReference) && typeof obj.sourceReference.uri === 'string') {
+      obj.sourceReference.uri = normalizeExceptionAndUri(obj.sourceReference.uri, cwd)
     }
     if (isObject(obj.testStepResult)) {
       if (isObject(obj.testStepResult.duration)) {
         obj.testStepResult.duration.nanos = 0
       }
       if (typeof obj.testStepResult.message === 'string') {
-        obj.testStepResult.message = normalizeExceptionAndUri(
-          obj.testStepResult.message,
-          cwd
-        )
+        obj.testStepResult.message = normalizeExceptionAndUri(obj.testStepResult.message, cwd)
       }
     }
   }
@@ -70,9 +50,7 @@ export function normalizeMessageOutput(
   return envelopeObjects
 }
 
-export function stripMetaMessages(
-  envelopeObjects: messages.Envelope[]
-): messages.Envelope[] {
+export function stripMetaMessages(envelopeObjects: messages.Envelope[]): messages.Envelope[] {
   return envelopeObjects.filter((e) => {
     // filter off meta objects, almost none of it predictable/useful for testing
     return doesNotHaveValue(e.meta)
@@ -88,20 +66,14 @@ export function normalizeJsonOutput(str: string, cwd: string): IJsonFeature[] {
     feature.elements.forEach((element: IJsonScenario) => {
       element.steps.forEach((step: IJsonStep) => {
         if (doesHaveValue(step.match) && doesHaveValue(step.match.location)) {
-          step.match.location = normalizeExceptionAndUri(
-            step.match.location,
-            cwd
-          )
+          step.match.location = normalizeExceptionAndUri(step.match.location, cwd)
         }
         if (doesHaveValue(step.result)) {
           if (doesHaveValue(step.result.duration)) {
             step.result.duration = 0
           }
           if (doesHaveValue(step.result.error_message)) {
-            step.result.error_message = normalizeExceptionAndUri(
-              step.result.error_message,
-              cwd
-            )
+            step.result.error_message = normalizeExceptionAndUri(step.result.error_message, cwd)
           }
         }
       })

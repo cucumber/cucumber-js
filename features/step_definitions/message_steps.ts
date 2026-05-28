@@ -1,5 +1,5 @@
-import { expect } from 'chai'
 import * as messages from '@cucumber/messages'
+import { expect } from 'chai'
 import semver from 'semver'
 import { Then } from '../../'
 import DataTable from '../../src/models/data_table'
@@ -11,7 +11,7 @@ import {
   getTestStepAttachmentsForStep,
   getTestStepResults,
 } from '../support/message_helpers'
-import { World } from '../support/world'
+import type { World } from '../support/world'
 
 const ENCODING_MAP: { [key: string]: messages.AttachmentContentEncoding } = {
   IDENTITY: messages.AttachmentContentEncoding.IDENTITY,
@@ -19,9 +19,7 @@ const ENCODING_MAP: { [key: string]: messages.AttachmentContentEncoding } = {
 }
 
 Then('it runs {int} scenarios', function (this: World, expectedCount: number) {
-  const testCaseStartedEvents = this.lastRun.envelopes.filter(
-    (e) => e.testCaseStarted
-  )
+  const testCaseStartedEvents = this.lastRun.envelopes.filter((e) => e.testCaseStarted)
   expect(testCaseStartedEvents).to.have.lengthOf(expectedCount)
 })
 
@@ -44,22 +42,15 @@ Then('it runs the scenarios:', function (this: World, table: DataTable) {
   expect(expectedNames).to.eql(actualNames)
 })
 
-Then(
-  'scenario {string} has status {string}',
-  function (this: World, name: string, status: string) {
-    const result = getTestCaseResult(this.lastRun.envelopes, name)
-    expect(result.status).to.eql(
-      status.toUpperCase() as messages.TestStepResultStatus
-    )
-  }
-)
+Then('scenario {string} has status {string}', function (this: World, name: string, status: string) {
+  const result = getTestCaseResult(this.lastRun.envelopes, name)
+  expect(result.status).to.eql(status.toUpperCase() as messages.TestStepResultStatus)
+})
 
 Then(
   'the scenario {string} has the steps:',
   function (this: World, name: string, table: DataTable) {
-    const actualTexts = getTestStepResults(this.lastRun.envelopes, name).map(
-      (s) => s.text
-    )
+    const actualTexts = getTestStepResults(this.lastRun.envelopes, name).map((s) => s.text)
     const expectedTexts = table.rows().map((row) => row[0])
     expect(actualTexts).to.eql(expectedTexts)
   }
@@ -68,10 +59,7 @@ Then(
 Then(
   'scenario {string} step {string} has status {string}',
   function (this: World, pickleName: string, stepText: string, status: string) {
-    const testStepResults = getTestStepResults(
-      this.lastRun.envelopes,
-      pickleName
-    )
+    const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
     const testStepResult = testStepResults.find((x) => x.text === stepText)
     expect(testStepResult.result.status).to.eql(
       status.toUpperCase() as messages.TestStepResultStatus
@@ -81,18 +69,8 @@ Then(
 
 Then(
   'scenario {string} attempt {int} step {string} has status {string}',
-  function (
-    this: World,
-    pickleName: string,
-    attempt: number,
-    stepText: string,
-    status: string
-  ) {
-    const testStepResults = getTestStepResults(
-      this.lastRun.envelopes,
-      pickleName,
-      attempt
-    )
+  function (this: World, pickleName: string, attempt: number, stepText: string, status: string) {
+    const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName, attempt)
     const testStepResult = testStepResults.find((x) => x.text === stepText)
     expect(testStepResult.result.status).to.eql(
       status.toUpperCase() as messages.TestStepResultStatus
@@ -102,16 +80,8 @@ Then(
 
 Then(
   'scenario {string} {string} hook has status {string}',
-  function (
-    this: World,
-    pickleName: string,
-    hookKeyword: string,
-    status: string
-  ) {
-    const testStepResults = getTestStepResults(
-      this.lastRun.envelopes,
-      pickleName
-    )
+  function (this: World, pickleName: string, hookKeyword: string, status: string) {
+    const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
     const testStepResult = testStepResults.find((x) => x.text === hookKeyword)
     expect(testStepResult.result.status).to.eql(
       status.toUpperCase() as messages.TestStepResultStatus
@@ -121,16 +91,8 @@ Then(
 
 Then(
   'scenario {string} step {string} failed with:',
-  function (
-    this: World,
-    pickleName: string,
-    stepText: string,
-    errorMessage: string
-  ) {
-    const testStepResults = getTestStepResults(
-      this.lastRun.envelopes,
-      pickleName
-    )
+  function (this: World, pickleName: string, stepText: string, errorMessage: string) {
+    const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
     const testStepResult = testStepResults.find((x) => x.text === stepText)
     if (semver.satisfies(process.version, '>=14.0.0')) {
       errorMessage = errorMessage.replace(
@@ -138,9 +100,7 @@ Then(
         '<ref *1> { member: [Circular *1] }'
       )
     }
-    expect(testStepResult.result.status).to.eql(
-      messages.TestStepResultStatus.FAILED
-    )
+    expect(testStepResult.result.status).to.eql(messages.TestStepResultStatus.FAILED)
     expect(testStepResult.result.message).to.include(errorMessage)
   }
 )
@@ -154,61 +114,32 @@ Then(
     stepText: string,
     errorMessage: string
   ) {
-    const testStepResults = getTestStepResults(
-      this.lastRun.envelopes,
-      pickleName,
-      attempt
-    )
+    const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName, attempt)
     const testStepResult = testStepResults.find((x) => x.text === stepText)
-    expect(testStepResult.result.status).to.eql(
-      messages.TestStepResultStatus.FAILED
-    )
+    expect(testStepResult.result.status).to.eql(messages.TestStepResultStatus.FAILED)
     expect(testStepResult.result.message).to.include(errorMessage)
   }
 )
 
 Then(
   'scenario {string} step {string} has the doc string:',
-  function (
-    this: World,
-    pickleName: string,
-    stepText: string,
-    docString: string
-  ) {
-    const pickleStep = getPickleStep(
-      this.lastRun.envelopes,
-      pickleName,
-      stepText
-    )
+  function (this: World, pickleName: string, stepText: string, docString: string) {
+    const pickleStep = getPickleStep(this.lastRun.envelopes, pickleName, stepText)
     expect(pickleStep.argument.docString.content).to.eql(docString)
   }
 )
 
 Then(
   'scenario {string} step {string} has the data table:',
-  function (
-    this: World,
-    pickleName: string,
-    stepText: string,
-    dataTable: DataTable
-  ) {
-    const pickleStep = getPickleStep(
-      this.lastRun.envelopes,
-      pickleName,
-      stepText
-    )
+  function (this: World, pickleName: string, stepText: string, dataTable: DataTable) {
+    const pickleStep = getPickleStep(this.lastRun.envelopes, pickleName, stepText)
     expect(new DataTable(pickleStep.argument.dataTable)).to.eql(dataTable)
   }
 )
 
 Then(
   'scenario {string} step {string} has the attachments:',
-  function (
-    this: World,
-    pickleName: string,
-    stepText: string,
-    table: DataTable
-  ) {
+  function (this: World, pickleName: string, stepText: string, table: DataTable) {
     const expectedAttachments = table.hashes().map((x) => {
       return {
         body: x.DATA,
@@ -234,21 +165,14 @@ Then(
 
 Then(
   'scenario {string} {string} hook has the attachments:',
-  function (
-    this: World,
-    pickleName: string,
-    hookKeyword: string,
-    table: DataTable
-  ) {
-    const expectedAttachments: messages.Attachment[] = table
-      .hashes()
-      .map((x) => {
-        return {
-          body: x.DATA,
-          mediaType: x['MEDIA TYPE'],
-          contentEncoding: ENCODING_MAP[x['MEDIA ENCODING']],
-        }
-      })
+  function (this: World, pickleName: string, hookKeyword: string, table: DataTable) {
+    const expectedAttachments: messages.Attachment[] = table.hashes().map((x) => {
+      return {
+        body: x.DATA,
+        mediaType: x['MEDIA TYPE'],
+        contentEncoding: ENCODING_MAP[x['MEDIA ENCODING']],
+      }
+    })
     const hookAttachments = getTestStepAttachmentsForHook(
       this.lastRun.envelopes,
       pickleName,

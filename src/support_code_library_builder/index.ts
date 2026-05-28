@@ -1,41 +1,37 @@
-import { IdGenerator } from '@cucumber/messages'
-import * as messages from '@cucumber/messages'
+import { CucumberExpression, RegularExpression } from '@cucumber/cucumber-expressions'
+import type * as messages from '@cucumber/messages'
+import type { IdGenerator } from '@cucumber/messages'
 import arity from 'util-arity'
-import {
-  CucumberExpression,
-  RegularExpression,
-} from '@cucumber/cucumber-expressions'
-import TestCaseHookDefinition from '../models/test_case_hook_definition'
-import TestStepHookDefinition from '../models/test_step_hook_definition'
-import TestRunHookDefinition, {
-  ITestRunHookDefinitionOptions,
-} from '../models/test_run_hook_definition'
-import StepDefinition from '../models/step_definition'
 import { formatLocation } from '../formatter/helpers'
+import type { GherkinStepKeyword } from '../models/gherkin_step_keyword'
+import StepDefinition from '../models/step_definition'
+import TestCaseHookDefinition from '../models/test_case_hook_definition'
+import TestRunHookDefinition, {
+  type ITestRunHookDefinitionOptions,
+} from '../models/test_run_hook_definition'
+import TestStepHookDefinition from '../models/test_step_hook_definition'
 import { doesHaveValue } from '../value_checker'
-import { GherkinStepKeyword } from '../models/gherkin_step_keyword'
-import validateArguments from './validate_arguments'
-
-import {
+import { buildParameterType } from './build_parameter_type'
+import { getDefinitionLineAndUri } from './get_definition_line_and_uri'
+import { SourcedParameterTypeRegistry } from './sourced_parameter_type_registry'
+import type {
+  CanonicalSupportCodeIds,
   DefineStepPattern,
+  IDefineStep,
   IDefineStepOptions,
   IDefineSupportCodeMethods,
   IDefineTestCaseHookOptions,
-  IDefineTestStepHookOptions,
   IDefineTestRunHookOptions,
+  IDefineTestStepHookOptions,
   IParameterTypeDefinition,
+  ISupportCodeCoordinates,
+  ParallelAssignmentValidator,
   SupportCodeLibrary,
   TestCaseHookFunction,
   TestStepHookFunction,
-  ParallelAssignmentValidator,
-  ISupportCodeCoordinates,
-  IDefineStep,
-  CanonicalSupportCodeIds,
 } from './types'
+import validateArguments from './validate_arguments'
 import World from './world'
-import { getDefinitionLineAndUri } from './get_definition_line_and_uri'
-import { buildParameterType } from './build_parameter_type'
-import { SourcedParameterTypeRegistry } from './sourced_parameter_type_registry'
 
 interface IStepDefinitionConfig {
   code: Function
@@ -95,24 +91,12 @@ export class SupportCodeLibraryBuilder {
 
   constructor() {
     const methods: IDefineSupportCodeMethods = {
-      After: this.defineTestCaseHook(
-        () => this.afterTestCaseHookDefinitionConfigs
-      ),
-      AfterAll: this.defineTestRunHook(
-        () => this.afterTestRunHookDefinitionConfigs
-      ),
-      AfterStep: this.defineTestStepHook(
-        () => this.afterTestStepHookDefinitionConfigs
-      ),
-      Before: this.defineTestCaseHook(
-        () => this.beforeTestCaseHookDefinitionConfigs
-      ),
-      BeforeAll: this.defineTestRunHook(
-        () => this.beforeTestRunHookDefinitionConfigs
-      ),
-      BeforeStep: this.defineTestStepHook(
-        () => this.beforeTestStepHookDefinitionConfigs
-      ),
+      After: this.defineTestCaseHook(() => this.afterTestCaseHookDefinitionConfigs),
+      AfterAll: this.defineTestRunHook(() => this.afterTestRunHookDefinitionConfigs),
+      AfterStep: this.defineTestStepHook(() => this.afterTestStepHookDefinitionConfigs),
+      Before: this.defineTestCaseHook(() => this.beforeTestCaseHookDefinitionConfigs),
+      BeforeAll: this.defineTestRunHook(() => this.beforeTestRunHookDefinitionConfigs),
+      BeforeStep: this.defineTestStepHook(() => this.beforeTestStepHookDefinitionConfigs),
       defineParameterType: this.defineParameterType.bind(this),
       defineStep: this.defineStep('Unknown', () => this.stepDefinitionConfigs),
       Given: this.defineStep('Given', () => this.stepDefinitionConfigs),
@@ -146,10 +130,7 @@ export class SupportCodeLibraryBuilder {
       }
     }
     this.methods = new Proxy(methods, {
-      get(
-        target: IDefineSupportCodeMethods,
-        method: keyof IDefineSupportCodeMethods
-      ): any {
+      get(target: IDefineSupportCodeMethods, method: keyof IDefineSupportCodeMethods): any {
         return (...args: any[]) => {
           checkInstall(method)
           // @ts-expect-error difficult to type this correctly
@@ -203,17 +184,11 @@ export class SupportCodeLibraryBuilder {
   defineTestCaseHook(
     getCollection: () => ITestCaseHookDefinitionConfig[]
   ): <WorldType>(
-    options:
-      | string
-      | IDefineTestCaseHookOptions
-      | TestCaseHookFunction<WorldType>,
+    options: string | IDefineTestCaseHookOptions | TestCaseHookFunction<WorldType>,
     code?: TestCaseHookFunction<WorldType>
   ) => void {
     return <WorldType>(
-      options:
-        | string
-        | IDefineTestCaseHookOptions
-        | TestCaseHookFunction<WorldType>,
+      options: string | IDefineTestCaseHookOptions | TestCaseHookFunction<WorldType>,
       code?: TestCaseHookFunction<WorldType>
     ) => {
       if (typeof options === 'string') {
@@ -241,17 +216,11 @@ export class SupportCodeLibraryBuilder {
   defineTestStepHook(
     getCollection: () => ITestStepHookDefinitionConfig[]
   ): <WorldType>(
-    options:
-      | string
-      | IDefineTestStepHookOptions
-      | TestStepHookFunction<WorldType>,
+    options: string | IDefineTestStepHookOptions | TestStepHookFunction<WorldType>,
     code?: TestStepHookFunction<WorldType>
   ) => void {
     return <WorldType>(
-      options:
-        | string
-        | IDefineTestStepHookOptions
-        | TestStepHookFunction<WorldType>,
+      options: string | IDefineTestStepHookOptions | TestStepHookFunction<WorldType>,
       code?: TestStepHookFunction<WorldType>
     ) => {
       if (typeof options === 'string') {
@@ -300,13 +269,7 @@ export class SupportCodeLibraryBuilder {
     }
   }
 
-  wrapCode({
-    code,
-    wrapperOptions,
-  }: {
-    code: Function
-    wrapperOptions: any
-  }): Function {
+  wrapCode({ code, wrapperOptions }: { code: Function; wrapperOptions: any }): Function {
     if (doesHaveValue(this.definitionFunctionWrapper)) {
       const codeLength = code.length
       const wrappedCode = this.definitionFunctionWrapper(code, wrapperOptions)
@@ -339,9 +302,7 @@ export class SupportCodeLibraryBuilder {
     })
   }
 
-  buildTestStepHookDefinitions(
-    configs: ITestStepHookDefinitionConfig[]
-  ): TestStepHookDefinition[] {
+  buildTestStepHookDefinitions(configs: ITestStepHookDefinitionConfig[]): TestStepHookDefinition[] {
     return configs.map(({ code, line, options, order, uri }) => {
       const wrappedCode = this.wrapCode({
         code,
@@ -388,13 +349,10 @@ export class SupportCodeLibraryBuilder {
     const undefinedParameterTypes: messages.UndefinedParameterType[] = []
     this.stepDefinitionConfigs.forEach(
       ({ code, line, options, order, keyword, pattern, uri }, index) => {
-        let expression
+        let expression: any
         if (typeof pattern === 'string') {
           try {
-            expression = new CucumberExpression(
-              pattern,
-              this.parameterTypeRegistry
-            )
+            expression = new CucumberExpression(pattern, this.parameterTypeRegistry)
           } catch (e) {
             if (doesHaveValue(e.undefinedParameterTypeName)) {
               undefinedParameterTypes.push({
@@ -406,10 +364,7 @@ export class SupportCodeLibraryBuilder {
             throw e
           }
         } else {
-          expression = new RegularExpression(
-            pattern,
-            this.parameterTypeRegistry
-          )
+          expression = new RegularExpression(pattern, this.parameterTypeRegistry)
         }
 
         const wrappedCode = this.wrapCode({
@@ -437,9 +392,7 @@ export class SupportCodeLibraryBuilder {
 
   finalize(canonicalIds?: CanonicalSupportCodeIds): SupportCodeLibrary {
     this.status = 'FINALIZED'
-    const stepDefinitionsResult = this.buildStepDefinitions(
-      canonicalIds?.stepDefinitionIds
-    )
+    const stepDefinitionsResult = this.buildStepDefinitions(canonicalIds?.stepDefinitionIds)
     return {
       originalCoordinates: this.originalCoordinates,
       afterTestCaseHookDefinitions: this.buildTestCaseHookDefinitions(

@@ -1,9 +1,9 @@
 import { Given } from '../../../src'
 
-Given(/^a (.*?) with (.*?)$/, function () {
+Given(/^a (.*?) with (.*?)$/, () => {
   // first one
 })
 
-Given(/^a step with (.*?)$/, function () {
+Given(/^a step with (.*?)$/, () => {
   // second one
 })

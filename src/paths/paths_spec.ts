@@ -1,11 +1,11 @@
-import { promisify } from 'node:util'
 import path from 'node:path'
-import tmp, { DirOptions } from 'tmp'
+import { promisify } from 'node:util'
+import { expect } from 'chai'
 import fsExtra from 'fs-extra'
 import { describe, it } from 'mocha'
-import { expect } from 'chai'
+import tmp, { type DirOptions } from 'tmp'
 import { FakeLogger } from '../../test/fake_logger'
-import { ILogger } from '../environment'
+import type { ILogger } from '../environment'
 import { resolvePaths } from './paths'
 
 async function buildTestWorkingDirectory(): Promise<string> {
@@ -18,7 +18,7 @@ async function buildTestWorkingDirectory(): Promise<string> {
 
 describe('resolvePaths', () => {
   describe('path to a feature', () => {
-    it('returns the appropriate .feature and support code paths', async function () {
+    it('returns the appropriate .feature and support code paths', async () => {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
       const relativeFeaturePath = path.join('features', 'a.feature')
@@ -30,20 +30,19 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(esmSupportCodePath, '')
 
       // Act
-      const { sourcePaths, unexpandedSourcePaths, requirePaths, importPaths } =
-        await resolvePaths(
-          new FakeLogger(),
-          cwd,
-          {
-            paths: [relativeFeaturePath],
-          },
-          {
-            requireModules: [],
-            requirePaths: [],
-            importPaths: [],
-            loaders: [],
-          }
-        )
+      const { sourcePaths, unexpandedSourcePaths, requirePaths, importPaths } = await resolvePaths(
+        new FakeLogger(),
+        cwd,
+        {
+          paths: [relativeFeaturePath],
+        },
+        {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+          loaders: [],
+        }
+      )
 
       // Assert
       expect(sourcePaths).to.eql([featurePath])
@@ -52,7 +51,7 @@ describe('resolvePaths', () => {
       expect(importPaths).to.eql([jsSupportCodePath, esmSupportCodePath])
     })
 
-    it('deduplicates features based on overlapping expressions', async function () {
+    it('deduplicates features based on overlapping expressions', async () => {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
       const relativeFeaturePath = path.join('features', 'a.feature')
@@ -77,7 +76,7 @@ describe('resolvePaths', () => {
       expect(sourcePaths).to.eql([featurePath])
     })
 
-    it('deduplicates features based on multiple targets of same path', async function () {
+    it('deduplicates features based on multiple targets of same path', async () => {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
       const relativeFeaturePath = path.join('features', 'a.feature')
@@ -102,7 +101,7 @@ describe('resolvePaths', () => {
       expect(sourcePaths).to.eql([featurePath])
     })
 
-    it('returns the appropriate .md and support code paths', async function () {
+    it('returns the appropriate .md and support code paths', async () => {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
       const relativeFeaturePath = path.join('features', 'a.feature.md')
@@ -112,20 +111,19 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(supportCodePath, '')
 
       // Act
-      const { sourcePaths, unexpandedSourcePaths, importPaths } =
-        await resolvePaths(
-          new FakeLogger(),
-          cwd,
-          {
-            paths: [relativeFeaturePath],
-          },
-          {
-            requireModules: [],
-            requirePaths: [],
-            importPaths: [],
-            loaders: [],
-          }
-        )
+      const { sourcePaths, unexpandedSourcePaths, importPaths } = await resolvePaths(
+        new FakeLogger(),
+        cwd,
+        {
+          paths: [relativeFeaturePath],
+        },
+        {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+          loaders: [],
+        }
+      )
 
       // Assert
       expect(sourcePaths).to.eql([featurePath])
@@ -135,7 +133,7 @@ describe('resolvePaths', () => {
   })
 
   describe('path to a nested feature', () => {
-    it('returns the appropriate .feature and support code paths', async function () {
+    it('returns the appropriate .feature and support code paths', async () => {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
       const relativeFeaturePath = path.join('features', 'nested', 'a.feature')
@@ -145,20 +143,19 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(supportCodePath, '')
 
       // Act
-      const { sourcePaths, unexpandedSourcePaths, importPaths } =
-        await resolvePaths(
-          new FakeLogger(),
-          cwd,
-          {
-            paths: [relativeFeaturePath],
-          },
-          {
-            requireModules: [],
-            requirePaths: [],
-            importPaths: [],
-            loaders: [],
-          }
-        )
+      const { sourcePaths, unexpandedSourcePaths, importPaths } = await resolvePaths(
+        new FakeLogger(),
+        cwd,
+        {
+          paths: [relativeFeaturePath],
+        },
+        {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+          loaders: [],
+        }
+      )
 
       // Assert
       expect(sourcePaths).to.eql([featurePath])
@@ -166,34 +163,29 @@ describe('resolvePaths', () => {
       expect(importPaths).to.eql([supportCodePath])
     })
 
-    it('returns the appropriate .md and support code paths', async function () {
+    it('returns the appropriate .md and support code paths', async () => {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
-      const relativeFeaturePath = path.join(
-        'features',
-        'nested',
-        'a.feature.md'
-      )
+      const relativeFeaturePath = path.join('features', 'nested', 'a.feature.md')
       const featurePath = path.join(cwd, relativeFeaturePath)
       await fsExtra.outputFile(featurePath, '')
       const supportCodePath = path.join(cwd, 'features', 'a.js')
       await fsExtra.outputFile(supportCodePath, '')
 
       // Act
-      const { sourcePaths, unexpandedSourcePaths, importPaths } =
-        await resolvePaths(
-          new FakeLogger(),
-          cwd,
-          {
-            paths: [relativeFeaturePath],
-          },
-          {
-            requireModules: [],
-            requirePaths: [],
-            importPaths: [],
-            loaders: [],
-          }
-        )
+      const { sourcePaths, unexpandedSourcePaths, importPaths } = await resolvePaths(
+        new FakeLogger(),
+        cwd,
+        {
+          paths: [relativeFeaturePath],
+        },
+        {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+          loaders: [],
+        }
+      )
 
       // Assert
       expect(sourcePaths).to.eql([featurePath])
@@ -257,7 +249,7 @@ describe('resolvePaths', () => {
   })
 
   describe('path to an empty rerun file', () => {
-    it('returns empty featurePaths and support code paths', async function () {
+    it('returns empty featurePaths and support code paths', async () => {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
 
@@ -265,20 +257,19 @@ describe('resolvePaths', () => {
       const rerunPath = path.join(cwd, '@empty_rerun.txt')
       await fsExtra.outputFile(rerunPath, '')
       // Act
-      const { sourcePaths, unexpandedSourcePaths, requirePaths } =
-        await resolvePaths(
-          new FakeLogger(),
-          cwd,
-          {
-            paths: [relativeRerunPath],
-          },
-          {
-            requireModules: [],
-            requirePaths: [],
-            importPaths: [],
-            loaders: [],
-          }
-        )
+      const { sourcePaths, unexpandedSourcePaths, requirePaths } = await resolvePaths(
+        new FakeLogger(),
+        cwd,
+        {
+          paths: [relativeRerunPath],
+        },
+        {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+          loaders: [],
+        }
+      )
 
       // Assert
       expect(sourcePaths).to.eql([])
@@ -288,7 +279,7 @@ describe('resolvePaths', () => {
   })
 
   describe('path to an rerun file with new line', () => {
-    it('returns empty featurePaths and support code paths', async function () {
+    it('returns empty featurePaths and support code paths', async () => {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
 
@@ -296,20 +287,19 @@ describe('resolvePaths', () => {
       const rerunPath = path.join(cwd, '@empty_rerun.txt')
       await fsExtra.outputFile(rerunPath, '\n')
       // Act
-      const { sourcePaths, unexpandedSourcePaths, requirePaths } =
-        await resolvePaths(
-          new FakeLogger(),
-          cwd,
-          {
-            paths: [relativeRerunPath],
-          },
-          {
-            requireModules: [],
-            requirePaths: [],
-            importPaths: [],
-            loaders: [],
-          }
-        )
+      const { sourcePaths, unexpandedSourcePaths, requirePaths } = await resolvePaths(
+        new FakeLogger(),
+        cwd,
+        {
+          paths: [relativeRerunPath],
+        },
+        {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+          loaders: [],
+        }
+      )
 
       // Assert
       expect(sourcePaths).to.eql([])
@@ -319,7 +309,7 @@ describe('resolvePaths', () => {
   })
 
   describe('path to a rerun file with one new line character', () => {
-    it('returns empty featurePaths and support code paths', async function () {
+    it('returns empty featurePaths and support code paths', async () => {
       // Arrange
       const cwd = await buildTestWorkingDirectory()
 
@@ -328,18 +318,17 @@ describe('resolvePaths', () => {
       await fsExtra.outputFile(rerunPath, '\n\n')
 
       // Act
-      const { sourcePaths, unexpandedSourcePaths, requirePaths } =
-        await resolvePaths(
-          new FakeLogger(),
-          cwd,
-          { paths: [relativeRerunPath] },
-          {
-            requireModules: [],
-            requirePaths: [],
-            importPaths: [],
-            loaders: [],
-          }
-        )
+      const { sourcePaths, unexpandedSourcePaths, requirePaths } = await resolvePaths(
+        new FakeLogger(),
+        cwd,
+        { paths: [relativeRerunPath] },
+        {
+          requireModules: [],
+          requirePaths: [],
+          importPaths: [],
+          loaders: [],
+        }
+      )
 
       // Assert
       expect(sourcePaths).to.eql([])
@@ -377,10 +366,9 @@ describe('resolvePaths', () => {
       )
 
       // Assert
-      expect(logger.debug).to.have.been.calledWith(
-        'Found source files based on configuration:',
-        [featurePath]
-      )
+      expect(logger.debug).to.have.been.calledWith('Found source files based on configuration:', [
+        featurePath,
+      ])
       expect(logger.debug).to.have.been.calledWith(
         'Found support files to load via `require` based on configuration:',
         [cjsSupportCodePath]

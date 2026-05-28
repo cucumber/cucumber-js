@@ -1,12 +1,12 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { promisify } from 'node:util'
 import { pathToFileURL } from 'node:url'
+import { promisify } from 'node:util'
 import YAML from 'yaml'
-import { ILogger } from '../environment'
-import { IConfiguration } from './types'
+import type { ILogger } from '../environment'
 import { mergeConfigurations } from './merge_configurations'
 import { parseConfiguration } from './parse_configuration'
+import type { IConfiguration } from './types'
 
 const SUPPORTED_EXTENSIONS = [
   '.json',
@@ -33,10 +33,7 @@ export async function fromFile(
   if (defaultDefinition) {
     if (typeof defaultDefinition === 'function') {
       logger.debug('Default function found; loading profiles')
-      definitions = await handleDefaultFunctionDefinition(
-        definitions,
-        defaultDefinition
-      )
+      definitions = await handleDefaultFunctionDefinition(definitions, defaultDefinition)
     }
   } else {
     logger.debug('No default profile defined in configuration file')
@@ -57,11 +54,7 @@ export async function fromFile(
   return mergeConfigurations(
     {},
     ...profiles.map((profileKey) =>
-      parseConfiguration(
-        logger,
-        `Profile "${profileKey}"`,
-        definitions[profileKey]
-      )
+      parseConfiguration(logger, `Profile "${profileKey}"`, definitions[profileKey])
     )
   )
 }
@@ -84,55 +77,37 @@ async function handleDefaultFunctionDefinition(
   }
 }
 
-async function loadFile(
-  logger: ILogger,
-  cwd: string,
-  file: string
-): Promise<Record<string, any>> {
+async function loadFile(logger: ILogger, cwd: string, file: string): Promise<Record<string, any>> {
   const filePath: string = path.join(cwd, file)
   const extension = path.extname(filePath)
   if (!SUPPORTED_EXTENSIONS.includes(extension)) {
     throw new Error(`Unsupported configuration file extension "${extension}"`)
   }
-  let definitions
+  let definitions: any
   try {
     switch (extension) {
       case '.json':
-        definitions = JSON.parse(
-          await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
-        )
+        definitions = JSON.parse(await promisify(fs.readFile)(filePath, { encoding: 'utf-8' }))
         break
       case '.yaml':
       case '.yml':
-        definitions = YAML.parse(
-          await promisify(fs.readFile)(filePath, { encoding: 'utf-8' })
-        )
+        definitions = YAML.parse(await promisify(fs.readFile)(filePath, { encoding: 'utf-8' }))
         break
       case '.cjs':
-        logger.debug(
-          `Loading configuration file "${file}" as CommonJS based on extension`
-        )
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        logger.debug(`Loading configuration file "${file}" as CommonJS based on extension`)
         definitions = require(filePath)
         break
       case '.cts':
-        logger.debug(
-          `Loading configuration file "${file}" as TypeScript based on extension`
-        )
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        logger.debug(`Loading configuration file "${file}" as TypeScript based on extension`)
         definitions = require(filePath)
         break
       case '.mjs':
-        logger.debug(
-          `Loading configuration file "${file}" as ESM based on extension`
-        )
+        logger.debug(`Loading configuration file "${file}" as ESM based on extension`)
         definitions = await import(pathToFileURL(filePath).toString())
         break
       case '.mts':
       case '.ts':
-        logger.debug(
-          `Loading configuration file "${file}" as TypeScript based on extension`
-        )
+        logger.debug(`Loading configuration file "${file}" as TypeScript based on extension`)
         definitions = await import(pathToFileURL(filePath).toString())
         break
       case '.js':
@@ -142,7 +117,6 @@ async function loadFile(
             logger.debug(
               `Loading configuration file "${file}" as CommonJS based on absence of a parent package`
             )
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
             definitions = require(filePath)
           } else if (parentPackage.type === 'module') {
             logger.debug(
@@ -153,7 +127,6 @@ async function loadFile(
             logger.debug(
               `Loading configuration file "${file}" as CommonJS based on "${parentPackage.name}" package type`
             )
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
             definitions = require(filePath)
           }
         }
