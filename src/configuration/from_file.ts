@@ -137,24 +137,20 @@ async function loadFile(
         break
       case '.js':
         {
-          const parentPackage = await readPackageJson(filePath)
-          if (!parentPackage) {
+          logger.debug(
+            `Loading configuration file "${file}" as JavaScript based on extension`
+          )
+          const ambiguous = await import(pathToFileURL(filePath).toString())
+          if ('module.exports' in ambiguous) {
             logger.debug(
-              `Loading configuration file "${file}" as CommonJS based on absence of a parent package`
+              `Treating configuration file "${file}" as CommonJS based on heuristics`
             )
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
-            definitions = require(filePath)
-          } else if (parentPackage.type === 'module') {
-            logger.debug(
-              `Loading configuration file "${file}" as ESM based on "${parentPackage.name}" package type`
-            )
-            definitions = await import(pathToFileURL(filePath).toString())
+            definitions = ambiguous['module.exports']
           } else {
             logger.debug(
-              `Loading configuration file "${file}" as CommonJS based on "${parentPackage.name}" package type`
+              `Treating configuration file "${file}" as ESM based on heuristics`
             )
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
-            definitions = require(filePath)
+            definitions = ambiguous
           }
         }
         break
@@ -169,10 +165,4 @@ async function loadFile(
     throw new Error(`Configuration file ${filePath} does not export an object`)
   }
   return definitions
-}
-
-async function readPackageJson(filePath: string) {
-  const { readPackageUp } = await import('read-package-up')
-  const parentPackage = await readPackageUp({ cwd: path.dirname(filePath) })
-  return parentPackage?.packageJson
 }
