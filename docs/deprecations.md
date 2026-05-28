@@ -53,14 +53,6 @@ In a future release, we'll change it so that the command line argument(s) _overr
 
 This will be unlike all other configuration options - no others are changing. However, in the case of paths we think this makes the most sense.
 
-### `Cli`
-
-Deprecated in `8.7.0`, will be removed in `10.0.0` or later.
-
-The `Cli` class is used internally to represent an instance of the command-line program invoked via `cucumber-js`. It can be used to run Cucumber programmatically, but is poorly suited for this.
-
-To adapt, pivot to the `runCucumber` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
-
 ### `colorsEnabled` format option
 
 Deprecated in `12.6.0`, will be removed in `14.0.0` or later.

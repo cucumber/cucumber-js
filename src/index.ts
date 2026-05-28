@@ -7,9 +7,7 @@
  * These docs cover the functions and helpers for user code registration and test setup. The entry point is `@cucumber/cucumber`.
  */
 
-import { deprecate } from 'node:util'
 import * as messages from '@cucumber/messages'
-import { default as _Cli } from './cli'
 import * as formatterHelpers from './formatter/helpers'
 import * as parallelCanAssignHelpers from './support_code_library_builder/parallel_can_assign_helpers'
 import supportCodeLibraryBuilder from './support_code_library_builder'
@@ -72,12 +70,3 @@ export const Status = messages.TestStepResultStatus
 
 // Time helpers
 export { wrapPromiseWithTimeout } from './time'
-
-// Deprecated
-/**
- * @deprecated use `runCucumber` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md
- */
-export const Cli = deprecate(
-  _Cli,
-  '`Cli` is deprecated, use `runCucumber` instead; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md'
-)
