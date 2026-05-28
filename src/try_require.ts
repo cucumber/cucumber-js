@@ -6,6 +6,7 @@
  */
 export default function tryRequire(path: string) {
   try {
+    // biome-ignore lint/style/noCommonJs: this wrapper exists to provide sync require with custom error mapping
     return require(path)
   } catch (error) {
     if (error.code === 'ERR_REQUIRE_ESM') {

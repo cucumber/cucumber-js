@@ -21,6 +21,7 @@ Then(
     actual = normalizeMessageOutput(actual, this.tmpDir)
     actual = stripMetaMessages(actual)
     const fixturePath = path.join(__dirname, '..', 'fixtures', filePath)
+    // biome-ignore lint/style/noCommonJs: fixtures use module.exports for loader compatibility
     const expected = require(fixturePath)
     try {
       expect(actual).excludingEvery(ignorableKeys).to.deep.eq(expected)
@@ -45,6 +46,7 @@ Then(
     const actualJson = await fs.readFile(actualPath, 'utf8')
     const actual = normalizeJsonOutput(actualJson, this.tmpDir)
     const fixturePath = path.join(__dirname, '..', 'fixtures', filePath)
+    // biome-ignore lint/style/noCommonJs: fixtures use module.exports for loader compatibility
     const expected = require(fixturePath)
     try {
       expect(actual).to.eql(expected)

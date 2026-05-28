@@ -2,12 +2,15 @@
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "extends": ["./node_modules/@cucumber/biome-config/base.json"],
   "files": {
-    "includes": ["!test/fixtures"]
+    "includes": ["!features/fixtures", "!test/fixtures"]
   },
   "linter": {
     "rules": {
       "complexity": {
         "noBannedTypes": "off"
+      },
+      "style": {
+        "noCommonJs": "error"
       },
       "suspicious": {
         "noConfusingVoidType": "off",

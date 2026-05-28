@@ -95,10 +95,12 @@ async function loadFile(logger: ILogger, cwd: string, file: string): Promise<Rec
         break
       case '.cjs':
         logger.debug(`Loading configuration file "${file}" as CommonJS based on extension`)
+        // biome-ignore lint/style/noCommonJs: file extension indicates commonjs
         definitions = require(filePath)
         break
       case '.cts':
         logger.debug(`Loading configuration file "${file}" as TypeScript based on extension`)
+        // biome-ignore lint/style/noCommonJs: file extension indicates commonjs
         definitions = require(filePath)
         break
       case '.mjs':
@@ -117,6 +119,7 @@ async function loadFile(logger: ILogger, cwd: string, file: string): Promise<Rec
             logger.debug(
               `Loading configuration file "${file}" as CommonJS based on absence of a parent package`
             )
+            // biome-ignore lint/style/noCommonJs: no parent package, treating as commonjs
             definitions = require(filePath)
           } else if (parentPackage.type === 'module') {
             logger.debug(
@@ -127,6 +130,7 @@ async function loadFile(logger: ILogger, cwd: string, file: string): Promise<Rec
             logger.debug(
               `Loading configuration file "${file}" as CommonJS based on "${parentPackage.name}" package type`
             )
+            // biome-ignore lint/style/noCommonJs: parent package type indicates commonjs
             definitions = require(filePath)
           }
         }
