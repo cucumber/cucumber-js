@@ -1,15 +1,15 @@
-import { EventEmitter } from 'node:events'
+import type { EventEmitter } from 'node:events'
+import type { WriteStream as TtyWriteStream } from 'node:tty'
 import { promisify } from 'node:util'
-import { WriteStream as TtyWriteStream } from 'node:tty'
-import { IFormatterStream } from '../formatter'
-import { EventDataCollector } from '../formatter/helpers'
-import { SupportCodeLibrary } from '../support_code_library_builder/types'
+import type { ILogger } from '../environment'
+import type { IFormatterStream } from '../formatter'
 import FormatterBuilder from '../formatter/builder'
-import { ILogger } from '../environment'
 import { createStream } from '../formatter/create_stream'
+import type { EventDataCollector } from '../formatter/helpers'
 import { resolveImplementation } from '../formatter/resolve_implementation'
-import { PluginManager } from '../plugin'
-import { IRunOptionsFormats } from './types'
+import type { PluginManager } from '../plugin'
+import type { SupportCodeLibrary } from '../support_code_library_builder/types'
+import type { IRunOptionsFormats } from './types'
 
 export async function initializeFormatters({
   env,
@@ -35,10 +35,7 @@ export async function initializeFormatters({
   supportCodeLibrary: SupportCodeLibrary
   pluginManager: PluginManager
 }): Promise<() => Promise<void>> {
-  if (
-    configuration.options.colorsEnabled !== undefined &&
-    !('FORCE_COLOR' in process.env)
-  ) {
+  if (configuration.options.colorsEnabled !== undefined && !('FORCE_COLOR' in process.env)) {
     process.env.FORCE_COLOR = configuration.options.colorsEnabled ? '1' : '0'
   }
 
@@ -72,10 +69,7 @@ export async function initializeFormatters({
             : promisify<any>(stream.end.bind(stream)),
         supportCodeLibrary,
       }
-      const formatter = await FormatterBuilder.build(
-        implementation,
-        typeOptions
-      )
+      const formatter = await FormatterBuilder.build(implementation, typeOptions)
       cleanupFns.push(async () => formatter.finished())
     } else {
       await pluginManager.initFormatter(
@@ -93,16 +87,11 @@ export async function initializeFormatters({
 
   await initializeFormatter(stdout, undefined, 'stdout', configuration.stdout)
   for (const [target, specifier] of Object.entries(configuration.files)) {
-    const { stream, directory } = await createStream(
-      target,
-      onStreamError,
-      cwd,
-      logger
-    )
+    const { stream, directory } = await createStream(target, onStreamError, cwd, logger)
     await initializeFormatter(stream, directory, target, specifier)
   }
 
-  return async function () {
+  return async () => {
     await Promise.all(cleanupFns.map((cleanupFn) => cleanupFn()))
   }
 }

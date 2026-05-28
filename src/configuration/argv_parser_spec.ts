@@ -27,13 +27,7 @@ describe('ArgvParser', () => {
     })
 
     it('should handle mergeable tag strings', () => {
-      const { configuration } = ArgvParser.parse([
-        ...baseArgv,
-        '--tags',
-        '@foo',
-        '--tags',
-        '@bar',
-      ])
+      const { configuration } = ArgvParser.parse([...baseArgv, '--tags', '@foo', '--tags', '@bar'])
       expect(configuration).to.deep.eq({
         tags: '(@foo) and (@bar)',
       })

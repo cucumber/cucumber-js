@@ -1,7 +1,7 @@
-import { JsonObject } from 'type-fest'
-import { IPublishConfig } from '../publish'
-import { IConfiguration, IWorkerOptions } from '../configuration'
-import { IPickleOrder } from '../filter'
+import type { JsonObject } from 'type-fest'
+import type { IConfiguration, IWorkerOptions } from '../configuration'
+import type { IPickleOrder } from '../filter'
+import type { IPublishConfig } from '../publish'
 
 /**
  * Options for {@link loadConfiguration}

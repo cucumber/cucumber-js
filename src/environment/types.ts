@@ -1,4 +1,4 @@
-import { Writable } from 'node:stream'
+import type { Writable } from 'node:stream'
 
 /**
  * A logger that can be used to direct messages to stderr or similar

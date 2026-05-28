@@ -1,6 +1,6 @@
 import { ProgressPrinter } from '@cucumber/pretty-formatter'
-import { FormatterPlugin } from '../../plugin'
-import { FormatOptions } from '..'
+import type { FormatterPlugin } from '../../plugin'
+import type { FormatOptions } from '..'
 import { resolveTerminalOptions } from './resolve_terminal_options'
 
 export default {

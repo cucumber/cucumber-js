@@ -1,9 +1,9 @@
-import { EventEmitter } from 'node:events'
-import { IdGenerator } from '@cucumber/messages'
-import { assembleTestCases, SourcedPickle } from '../assemble'
-import { SupportCodeLibrary } from '../support_code_library_builder/types'
-import { RuntimeAdapter } from './types'
-import { Runtime } from './index'
+import type { EventEmitter } from 'node:events'
+import type { IdGenerator } from '@cucumber/messages'
+import { assembleTestCases, type SourcedPickle } from '../assemble'
+import type { SupportCodeLibrary } from '../support_code_library_builder/types'
+import type { Runtime } from './index'
+import type { RuntimeAdapter } from './types'
 
 /**
  * Handles the high-level coordination of the test run on the main thread
@@ -40,14 +40,11 @@ export class Coordinator implements Runtime {
           this.sourcedPickles,
           this.supportCodeLibrary
         )
-        successByPhase.testCases =
-          await this.adapter.runTestCases(assembledTestCases)
+        successByPhase.testCases = await this.adapter.runTestCases(assembledTestCases)
       }
       successByPhase.afterAllHooks = await this.adapter.runAfterAllHooks()
       return (
-        successByPhase.beforeAllHooks &&
-        successByPhase.testCases &&
-        successByPhase.afterAllHooks
+        successByPhase.beforeAllHooks && successByPhase.testCases && successByPhase.afterAllHooks
       )
     } finally {
       await this.adapter.teardown()

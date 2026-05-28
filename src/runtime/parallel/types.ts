@@ -1,10 +1,10 @@
-import { MessagePort, Worker } from 'node:worker_threads'
-import { Envelope } from '@cucumber/messages'
-import { ISupportCodeCoordinates } from '../../api'
-import { CanonicalSupportCodeIds } from '../../support_code_library_builder/types'
-import { RuntimeOptions } from '../types'
-import { FormatOptions } from '../../formatter'
-import { AssembledTestCase } from '../../assemble'
+import type { MessagePort, Worker } from 'node:worker_threads'
+import type { Envelope } from '@cucumber/messages'
+import type { ISupportCodeCoordinates } from '../../api'
+import type { AssembledTestCase } from '../../assemble'
+import type { FormatOptions } from '../../formatter'
+import type { CanonicalSupportCodeIds } from '../../support_code_library_builder/types'
+import type { RuntimeOptions } from '../types'
 
 export type ManagedWorker = {
   id: string
@@ -37,10 +37,7 @@ export type RunAfterAllHooksCommand = {
   type: 'AFTERALL_HOOKS'
 }
 
-export type WorkerCommand =
-  | RunBeforeAllHooksCommand
-  | RunTestCaseCommand
-  | RunAfterAllHooksCommand
+export type WorkerCommand = RunBeforeAllHooksCommand | RunTestCaseCommand | RunAfterAllHooksCommand
 
 export type ReadyEvent = {
   type: 'READY'

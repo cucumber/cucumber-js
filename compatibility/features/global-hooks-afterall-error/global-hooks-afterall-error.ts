@@ -1,25 +1,25 @@
-import { When, BeforeAll, AfterAll } from '../../../src'
+import { AfterAll, BeforeAll, When } from '../../../src'
 
-BeforeAll({}, function () {
+BeforeAll({}, () => {
   // no-op
 })
 
-BeforeAll({}, function () {
+BeforeAll({}, () => {
   // no-op
 })
 
-When('a step passes', function () {
+When('a step passes', () => {
   // no-op
 })
 
-AfterAll({}, function () {
+AfterAll({}, () => {
   // no-op
 })
 
-AfterAll({}, function () {
+AfterAll({}, () => {
   throw new Error('AfterAll hook went wrong')
 })
 
-AfterAll({}, function () {
+AfterAll({}, () => {
   // no-op
 })

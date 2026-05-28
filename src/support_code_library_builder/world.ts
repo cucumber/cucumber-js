@@ -1,8 +1,4 @@
-import {
-  ICreateAttachment,
-  ICreateLink,
-  ICreateLog,
-} from '../runtime/attachment_manager'
+import type { ICreateAttachment, ICreateLink, ICreateLog } from '../runtime/attachment_manager'
 
 export interface IWorldOptions<ParametersType = any> {
   attach: ICreateAttachment
@@ -20,20 +16,13 @@ export interface IWorld<ParametersType = any> {
   [key: string]: any
 }
 
-export default class World<ParametersType = any>
-  implements IWorld<ParametersType>
-{
+export default class World<ParametersType = any> implements IWorld<ParametersType> {
   public readonly attach: ICreateAttachment
   public readonly log: ICreateLog
   public readonly link: ICreateLink
   public readonly parameters: ParametersType
 
-  constructor({
-    attach,
-    log,
-    link,
-    parameters,
-  }: IWorldOptions<ParametersType>) {
+  constructor({ attach, log, link, parameters }: IWorldOptions<ParametersType>) {
     this.attach = attach
     this.log = log
     this.link = link

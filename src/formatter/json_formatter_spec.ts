@@ -1,13 +1,13 @@
-import { afterEach, beforeEach, describe, it } from 'mocha'
+import FakeTimers, { type InstalledClock } from '@sinonjs/fake-timers'
 import { expect } from 'chai'
-import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
-import { testFormatter } from '../../test/formatter_helpers'
+import { afterEach, beforeEach, describe, it } from 'mocha'
+import type { IJsonFeature, IJsonScenario } from '../../lib/formatter/json_formatter'
 import {
   getJsonFormatterSupportCodeLibrary,
   getJsonFormatterSupportCodeLibraryWithHooks,
 } from '../../test/fixtures/json_formatter_steps'
+import { testFormatter } from '../../test/formatter_helpers'
 import timeMethods from '../time'
-import { IJsonFeature, IJsonScenario } from '../../lib/formatter/json_formatter'
 
 describe('JsonFormatter', () => {
   let clock: InstalledClock
@@ -113,11 +113,9 @@ describe('JsonFormatter', () => {
         // Arrange
         const sources = [
           {
-            data: [
-              'Feature: my feature',
-              '  Scenario: my scenario',
-              '    Given a flaky step',
-            ].join('\n'),
+            data: ['Feature: my feature', '  Scenario: my scenario', '    Given a flaky step'].join(
+              '\n'
+            ),
             uri: 'a.feature',
           },
         ]
@@ -262,7 +260,7 @@ describe('JsonFormatter', () => {
     })
 
     describe('with attachments (buffer)', () => {
-      it('outputs the step with embeddings (preserving base64 encoding)', async function () {
+      it('outputs the step with embeddings (preserving base64 encoding)', async () => {
         // Arrange
         const sources = [
           {
@@ -295,7 +293,7 @@ describe('JsonFormatter', () => {
     })
 
     describe('with attachments (bas64-encoded string)', () => {
-      it('outputs the step with embeddings (preserving base64 encoding)i', async function () {
+      it('outputs the step with embeddings (preserving base64 encoding)i', async () => {
         // Arrange
         const sources = [
           {
@@ -328,7 +326,7 @@ describe('JsonFormatter', () => {
     })
 
     describe('with attachments (string literal)', () => {
-      it('outputs the step with embeddings (base64-encoded)', async function () {
+      it('outputs the step with embeddings (base64-encoded)', async () => {
         // Arrange
         const sources = [
           {
@@ -387,8 +385,7 @@ describe('JsonFormatter', () => {
         })
 
         // Assert
-        const stepArguments =
-          JSON.parse(output)[0].elements[0].steps[0].arguments
+        const stepArguments = JSON.parse(output)[0].elements[0].steps[0].arguments
         expect(stepArguments).to.eql([
           {
             content: 'This is a DocString',
@@ -425,8 +422,7 @@ describe('JsonFormatter', () => {
         })
 
         // Assert
-        const stepArguments =
-          JSON.parse(output)[0].elements[0].steps[0].arguments
+        const stepArguments = JSON.parse(output)[0].elements[0].steps[0].arguments
         expect(stepArguments).to.eql([
           {
             rows: [

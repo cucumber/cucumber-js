@@ -1,8 +1,8 @@
-/* eslint-disable no-console */
 import isInstalledGlobally from 'is-installed-globally'
 
 export async function validateInstall(): Promise<void> {
   if (isInstalledGlobally)
+    // biome-ignore lint/suspicious/noConsole: this is a user-facing warning
     console.warn(
       `
       It looks like you're running Cucumber from a global installation.

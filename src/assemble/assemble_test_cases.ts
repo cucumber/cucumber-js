@@ -1,16 +1,16 @@
-import { EventEmitter } from 'node:events'
-import {
+import type { EventEmitter } from 'node:events'
+import type { Group } from '@cucumber/cucumber-expressions'
+import type {
   Envelope,
   IdGenerator,
+  Group as MessagesGroup,
   Pickle,
   TestCase,
   TestStep,
-  Group as MessagesGroup,
 } from '@cucumber/messages'
-import { Group } from '@cucumber/cucumber-expressions'
-import { SupportCodeLibrary } from '../support_code_library_builder/types'
+import type { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { doesHaveValue } from '../value_checker'
-import { AssembledTestCase, SourcedPickle } from './types'
+import type { AssembledTestCase, SourcedPickle } from './types'
 
 export async function assembleTestCases(
   testRunStartedId: string,
@@ -40,11 +40,7 @@ export async function assembleTestCases(
       testRunStartedId,
       pickleId: pickle.id,
       id: testCaseId,
-      testSteps: [
-        ...fromBeforeHooks,
-        ...fromStepDefinitions,
-        ...fromAfterHooks,
-      ],
+      testSteps: [...fromBeforeHooks, ...fromStepDefinitions, ...fromAfterHooks],
     }
     eventBroadcaster.emit('envelope', { testCase } satisfies Envelope)
     return {
@@ -101,15 +97,13 @@ function makeSteps({
   newId: () => string
 }): TestStep[] {
   return pickle.steps.map((pickleStep) => {
-    const stepDefinitions = supportCodeLibrary.stepDefinitions.filter(
-      (stepDefinition) => stepDefinition.matchesStepName(pickleStep.text)
+    const stepDefinitions = supportCodeLibrary.stepDefinitions.filter((stepDefinition) =>
+      stepDefinition.matchesStepName(pickleStep.text)
     )
     return {
       id: newId(),
       pickleStepId: pickleStep.id,
-      stepDefinitionIds: stepDefinitions.map(
-        (stepDefinition) => stepDefinition.id
-      ),
+      stepDefinitionIds: stepDefinitions.map((stepDefinition) => stepDefinition.id),
       stepMatchArgumentsLists: stepDefinitions.map((stepDefinition) => {
         const result = stepDefinition.expression.match(pickleStep.text)
         return {

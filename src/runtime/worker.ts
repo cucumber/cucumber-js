@@ -1,22 +1,22 @@
-import { EventEmitter } from 'node:events'
+import type { EventEmitter } from 'node:events'
 import {
-  Envelope,
-  IdGenerator,
-  TestStepResult,
+  type Envelope,
+  type IdGenerator,
+  type TestStepResult,
   TestStepResultStatus,
 } from '@cucumber/messages'
-import { AssembledTestCase } from '../assemble'
-import { SupportCodeLibrary } from '../support_code_library_builder/types'
+import type { AssembledTestCase } from '../assemble'
+import type StepDefinitionSnippetBuilder from '../formatter/step_definition_snippet_builder'
+import type TestRunHookDefinition from '../models/test_run_hook_definition'
+import type { SupportCodeLibrary } from '../support_code_library_builder/types'
 import UserCodeRunner from '../user_code_runner'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
-import TestRunHookDefinition from '../models/test_run_hook_definition'
-import StepDefinitionSnippetBuilder from '../formatter/step_definition_snippet_builder'
-import { retriesForPickle, shouldCauseFailure } from './helpers'
-import TestCaseRunner from './test_case_runner'
-import { runInTestRunScope } from './scope'
 import { formatError } from './format_error'
+import { retriesForPickle, shouldCauseFailure } from './helpers'
+import { runInTestRunScope } from './scope'
 import { create, timestamp } from './stopwatch'
-import { RuntimeOptions } from './types'
+import TestCaseRunner from './test_case_runner'
+import type { RuntimeOptions } from './types'
 
 /**
  * Runs individual units of work asynchronously
@@ -35,9 +35,7 @@ export class Worker {
     private readonly snippetBuilder: StepDefinitionSnippetBuilder
   ) {}
 
-  private async runTestRunHook(
-    hookDefinition: TestRunHookDefinition
-  ): Promise<boolean> {
+  private async runTestRunHook(hookDefinition: TestRunHookDefinition): Promise<boolean> {
     const testRunHookStartedId = this.newId()
     this.eventBroadcaster.emit('envelope', {
       testRunHookStarted: {
@@ -101,8 +99,7 @@ export class Worker {
 
   async runBeforeAllHooks(): Promise<boolean> {
     let success = true
-    for (const hookDefinition of this.supportCodeLibrary
-      .beforeTestRunHookDefinitions) {
+    for (const hookDefinition of this.supportCodeLibrary.beforeTestRunHookDefinitions) {
       if (!(await this.runTestRunHook(hookDefinition))) {
         success = false
       }
@@ -136,9 +133,7 @@ export class Worker {
 
   async runAfterAllHooks(): Promise<boolean> {
     let success = true
-    const reversed = [
-      ...this.supportCodeLibrary.afterTestRunHookDefinitions,
-    ].reverse()
+    const reversed = [...this.supportCodeLibrary.afterTestRunHookDefinitions].reverse()
     for (const hookDefinition of reversed) {
       if (!(await this.runTestRunHook(hookDefinition))) {
         success = false

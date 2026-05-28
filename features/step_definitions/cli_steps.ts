@@ -1,15 +1,11 @@
 import { expect } from 'chai'
-import stringArgv from 'string-argv'
 import Mustache from 'mustache'
-import { normalizeText } from '../support/helpers'
-import { DataTable, Then, When } from '../../'
-import {
-  doesHaveValue,
-  doesNotHaveValue,
-  valueOrDefault,
-} from '../../src/value_checker'
-import { World } from '../support/world'
+import stringArgv from 'string-argv'
+import { type DataTable, Then, When } from '../../'
+import { doesHaveValue, doesNotHaveValue, valueOrDefault } from '../../src/value_checker'
 import { version } from '../../src/version'
+import { normalizeText } from '../support/helpers'
+import type { World } from '../support/world'
 
 When('my env includes {string}', function (this: World, envString: string) {
   this.sharedEnv = this.parseEnvString(envString)
@@ -19,15 +15,11 @@ When('I run cucumber-js', { timeout: 10000 }, async function (this: World) {
   return await this.run(this.localExecutablePath, [])
 })
 
-When(
-  'I run cucumber-js with `{}`',
-  { timeout: 10000 },
-  async function (this: World, args: string) {
-    const renderedArgs = Mustache.render(valueOrDefault(args, ''), this)
-    const stringArgs = stringArgv(renderedArgs)
-    return await this.run(this.localExecutablePath, stringArgs)
-  }
-)
+When('I run cucumber-js with `{}`', { timeout: 10000 }, async function (this: World, args: string) {
+  const renderedArgs = Mustache.render(valueOrDefault(args, ''), this)
+  const stringArgs = stringArgv(renderedArgs)
+  return await this.run(this.localExecutablePath, stringArgs)
+})
 
 When(
   'I run cucumber-js with arguments `{}` and env `{}`',
@@ -49,16 +41,12 @@ When(
   }
 )
 
-When(
-  'I run cucumber-js with all formatters',
-  { timeout: 10000 },
-  async function (this: World) {
-    const args = '--format html:html.out --format json:json.out'
-    const renderedArgs = Mustache.render(args, this)
-    const stringArgs = stringArgv(renderedArgs)
-    return await this.run(this.localExecutablePath, stringArgs)
-  }
-)
+When('I run cucumber-js with all formatters', { timeout: 10000 }, async function (this: World) {
+  const args = '--format html:html.out --format json:json.out'
+  const renderedArgs = Mustache.render(args, this)
+  const stringArgs = stringArgv(renderedArgs)
+  return await this.run(this.localExecutablePath, stringArgs)
+})
 
 When(
   'I run cucumber-js with all formatters and `{}`',
@@ -69,7 +57,7 @@ When(
     }
     // message is always outputted as part of run
     const formats = ['html:html.out', 'json:json.out']
-    args += ' ' + formats.map((f) => `--format ${f}`).join(' ')
+    args += ` ${formats.map((f) => `--format ${f}`).join(' ')}`
     const renderedArgs = Mustache.render(args, this)
     const stringArgs = stringArgv(renderedArgs)
     return await this.run(this.localExecutablePath, stringArgs)
@@ -79,14 +67,9 @@ When(
 Then('it passes', () => {})
 
 Then('it fails', function (this: World) {
-  const actualCode: number = doesHaveValue(this.lastRun.error)
-    ? this.lastRun.error.code
-    : 0
+  const actualCode: number = doesHaveValue(this.lastRun.error) ? this.lastRun.error.code : 0
 
-  expect(actualCode).not.to.eql(
-    0,
-    `Expected non-zero exit status, but got ${actualCode}`
-  )
+  expect(actualCode).not.to.eql(0, `Expected non-zero exit status, but got ${actualCode}`)
   this.verifiedLastRunError = true
 })
 
@@ -118,43 +101,31 @@ Then(
   }
 )
 
-Then(
-  'the output does not contain the text:',
-  function (this: World, text: string) {
-    const actualOutput = normalizeText(this.lastRun.output)
-    const expectedOutput = normalizeText(text)
-    expect(actualOutput).not.to.include(expectedOutput)
-  }
-)
+Then('the output does not contain the text:', function (this: World, text: string) {
+  const actualOutput = normalizeText(this.lastRun.output)
+  const expectedOutput = normalizeText(text)
+  expect(actualOutput).not.to.include(expectedOutput)
+})
 
-Then(
-  'the error output contains the text snippets:',
-  function (this: World, table: DataTable) {
-    const actualOutput = normalizeText(this.lastRun.errorOutput)
-    table.rows().forEach((row) => {
-      const expectedOutput = normalizeText(row[0])
-      expect(actualOutput).to.include(expectedOutput)
-    })
-  }
-)
-
-Then(
-  'the error output contains the text:',
-  function (this: World, text: string) {
-    const actualOutput = normalizeText(this.lastRun.errorOutput)
-    const expectedOutput = normalizeText(text)
+Then('the error output contains the text snippets:', function (this: World, table: DataTable) {
+  const actualOutput = normalizeText(this.lastRun.errorOutput)
+  table.rows().forEach((row) => {
+    const expectedOutput = normalizeText(row[0])
     expect(actualOutput).to.include(expectedOutput)
-  }
-)
+  })
+})
 
-Then(
-  'the error output does not contain the text:',
-  function (this: World, text: string) {
-    const actualOutput = normalizeText(this.lastRun.errorOutput)
-    const expectedOutput = normalizeText(text)
-    expect(actualOutput).not.to.include(expectedOutput)
-  }
-)
+Then('the error output contains the text:', function (this: World, text: string) {
+  const actualOutput = normalizeText(this.lastRun.errorOutput)
+  const expectedOutput = normalizeText(text)
+  expect(actualOutput).to.include(expectedOutput)
+})
+
+Then('the error output does not contain the text:', function (this: World, text: string) {
+  const actualOutput = normalizeText(this.lastRun.errorOutput)
+  const expectedOutput = normalizeText(text)
+  expect(actualOutput).not.to.include(expectedOutput)
+})
 
 Then('I see the version of Cucumber', function (this: World) {
   const actualOutput = this.lastRun.output

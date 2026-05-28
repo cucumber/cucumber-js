@@ -1,5 +1,5 @@
-import { pathToFileURL } from 'node:url'
 import path from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { expect } from 'chai'
 import FormatterBuilder from './builder'
 
@@ -22,14 +22,8 @@ describe('custom class loading', () => {
       })
 
       it('should handle a file:// url', async () => {
-        const fileUrl = pathToFileURL(
-          path.resolve(__dirname, `./fixtures/${filename}`)
-        ).toString()
-        const CustomClass = await FormatterBuilder.loadCustomClass(
-          'formatter',
-          fileUrl,
-          __dirname
-        )
+        const fileUrl = pathToFileURL(path.resolve(__dirname, `./fixtures/${filename}`)).toString()
+        const CustomClass = await FormatterBuilder.loadCustomClass('formatter', fileUrl, __dirname)
 
         expect(typeof CustomClass).to.eq('function')
       })

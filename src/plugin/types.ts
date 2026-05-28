@@ -1,8 +1,8 @@
-import { Writable } from 'node:stream'
-import { Envelope } from '@cucumber/messages'
-import { ILogger } from '../environment'
-import { IFilterablePickle } from '../filter'
-import { IResolvedPaths } from '../paths'
+import type { Writable } from 'node:stream'
+import type { Envelope } from '@cucumber/messages'
+import type { ILogger } from '../environment'
+import type { IFilterablePickle } from '../filter'
+import type { IResolvedPaths } from '../paths'
 
 /**
  * The operation Cucumber is doing in this process
@@ -158,13 +158,12 @@ export type Plugin<OptionsType = any> = {
  * Context object passed to an internal plugin's coordinator function
  * @internal
  */
-export type InternalCoordinatorContext<OptionsType> =
-  CoordinatorContext<OptionsType> & {
-    emit: <EventKey extends CoordinatorEventKey>(
-      event: EventKey,
-      value: CoordinatorEventValues[EventKey]
-    ) => void
-  }
+export type InternalCoordinatorContext<OptionsType> = CoordinatorContext<OptionsType> & {
+  emit: <EventKey extends CoordinatorEventKey>(
+    event: EventKey,
+    value: CoordinatorEventValues[EventKey]
+  ) => void
+}
 
 /**
  * A built-in plugin with the additional ability to emit events

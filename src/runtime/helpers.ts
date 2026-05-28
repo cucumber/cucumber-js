@@ -1,14 +1,12 @@
+import * as messages from '@cucumber/messages'
 import Table from 'cli-table3'
 import indentString from 'indent-string'
-import * as messages from '@cucumber/messages'
 import { formatLocation } from '../formatter/helpers/location_helpers'
+import type StepDefinition from '../models/step_definition'
 import { PickleTagFilter } from '../pickle_filter'
-import StepDefinition from '../models/step_definition'
-import { RuntimeOptions } from '.'
+import type { RuntimeOptions } from '.'
 
-export function getAmbiguousStepException(
-  stepDefinitions: StepDefinition[]
-): string {
+export function getAmbiguousStepException(stepDefinitions: StepDefinition[]): string {
   const table = new Table({
     chars: {
       bottom: '',
@@ -39,16 +37,10 @@ export function getAmbiguousStepException(
       return [pattern, formatLocation(stepDefinition)]
     })
   )
-  return `${'Multiple step definitions match:' + '\n'}${indentString(
-    table.toString(),
-    2
-  )}`
+  return `${'Multiple step definitions match:' + '\n'}${indentString(table.toString(), 2)}`
 }
 
-export function retriesForPickle(
-  pickle: messages.Pickle,
-  options: RuntimeOptions
-): number {
+export function retriesForPickle(pickle: messages.Pickle, options: RuntimeOptions): number {
   if (!options.retry) {
     return 0
   }

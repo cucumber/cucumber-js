@@ -2,14 +2,14 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { PassThrough, Writable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
-import { describe, it } from 'mocha'
+import * as messageStreams from '@cucumber/message-streams'
+import type * as messages from '@cucumber/messages'
+import type { Envelope } from '@cucumber/messages'
 import { config, expect, use } from 'chai'
 import chaiExclude from 'chai-exclude'
-import * as messages from '@cucumber/messages'
-import * as messageStreams from '@cucumber/message-streams'
-import { Envelope } from '@cucumber/messages'
+import { describe, it } from 'mocha'
 import { ignorableKeys } from '../features/support/formatter_output_helpers'
-import { runCucumber, IRunConfiguration } from '../src/api'
+import { type IRunConfiguration, runCucumber } from '../src/api'
 
 const PROJECT_PATH = path.join(__dirname, '..')
 const CCK_FEATURES_PATH = 'node_modules/@cucumber/compatibility-kit/features'
@@ -89,7 +89,7 @@ describe('Cucumber Compatibility Kit', () => {
 
       const expectedMessages: messages.Envelope[] = []
       await pipeline(
-        fs.createReadStream(path.join(directory, suite + '.ndjson'), {
+        fs.createReadStream(path.join(directory, `${suite}.ndjson`), {
           encoding: 'utf-8',
         }),
         new messageStreams.NdjsonToMessageStream(),
@@ -109,9 +109,7 @@ describe('Cucumber Compatibility Kit', () => {
   }
 })
 
-function reorderEnvelopes(
-  envelopes: ReadonlyArray<Envelope>
-): ReadonlyArray<Envelope> {
+function reorderEnvelopes(envelopes: ReadonlyArray<Envelope>): ReadonlyArray<Envelope> {
   let testRunStartedEnvelope: Envelope
   let testCaseStartedEnvelope: Envelope
 
@@ -126,21 +124,14 @@ function reorderEnvelopes(
       testCaseStartedEnvelope = envelope
     }
 
-    if (
-      (envelope.testRunHookStarted || envelope.testRunHookFinished) &&
-      !testCaseStartedEnvelope
-    ) {
+    if ((envelope.testRunHookStarted || envelope.testRunHookFinished) && !testCaseStartedEnvelope) {
       moveAfterTestRunStarted.push(envelope)
     } else {
       result.push(envelope)
     }
   }
 
-  result.splice(
-    result.indexOf(testRunStartedEnvelope) + 1,
-    0,
-    ...moveAfterTestRunStarted
-  )
+  result.splice(result.indexOf(testRunStartedEnvelope) + 1, 0, ...moveAfterTestRunStarted)
 
   return result
 }

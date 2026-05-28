@@ -1,7 +1,7 @@
 import { expect } from 'chai'
-import { IRunEnvironment } from '../environment'
-import { setupEnvironment, teardownEnvironment } from './test_helpers'
+import type { IRunEnvironment } from '../environment'
 import { loadConfiguration } from './load_configuration'
+import { setupEnvironment, teardownEnvironment } from './test_helpers'
 
 describe('loadConfiguration', function () {
   this.timeout(10_000)
@@ -31,10 +31,7 @@ describe('loadConfiguration', function () {
   })
 
   it('should skip trying to resolve from a file if `file=false`', async () => {
-    const { useConfiguration } = await loadConfiguration(
-      { file: false },
-      environment
-    )
+    const { useConfiguration } = await loadConfiguration({ file: false }, environment)
 
     // values from configuration file are not present
     expect(useConfiguration.paths).to.deep.eq([])

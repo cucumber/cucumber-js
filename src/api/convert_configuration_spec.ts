@@ -1,8 +1,8 @@
-import { describe, it } from 'mocha'
 import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { DEFAULT_CONFIGURATION } from '../configuration'
 import { convertConfiguration } from './convert_configuration'
-import { IRunConfiguration } from './types'
+import type { IRunConfiguration } from './types'
 
 describe('convertConfiguration', () => {
   it('should convert defaults correctly', async () => {
@@ -51,12 +51,7 @@ describe('convertConfiguration', () => {
     const result = await convertConfiguration(
       {
         ...DEFAULT_CONFIGURATION,
-        format: [
-          'summary',
-          'message',
-          'json:./report.json',
-          'html:./report.html',
-        ],
+        format: ['summary', 'message', 'json:./report.json', 'html:./report.html'],
       },
       {}
     )
@@ -76,12 +71,7 @@ describe('convertConfiguration', () => {
     const result = await convertConfiguration(
       {
         ...DEFAULT_CONFIGURATION,
-        format: [
-          ['summary'],
-          ['message'],
-          ['json', './report.json'],
-          ['html', './report.html'],
-        ],
+        format: [['summary'], ['message'], ['json', './report.json'], ['html', './report.html']],
       },
       {}
     )
@@ -101,11 +91,7 @@ describe('convertConfiguration', () => {
     const result = await convertConfiguration(
       {
         ...DEFAULT_CONFIGURATION,
-        format: [
-          '"file:///my/fancy/formatter"',
-          'json:./report.json',
-          'html:./report.html',
-        ],
+        format: ['"file:///my/fancy/formatter"', 'json:./report.json', 'html:./report.html'],
       },
       {}
     )

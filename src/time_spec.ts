@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
 import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { wrapPromiseWithTimeout } from './time'
 
 describe('wrapPromiseWithTimeout()', () => {
@@ -20,9 +20,7 @@ describe('wrapPromiseWithTimeout()', () => {
 
       // Assert
       expect(error).to.exist()
-      expect(error.message).to.eql(
-        'Action did not complete within 25 milliseconds'
-      )
+      expect(error.message).to.eql('Action did not complete within 25 milliseconds')
     })
   })
 

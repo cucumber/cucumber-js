@@ -1,11 +1,8 @@
-import {
-  GherkinStreams,
-  IGherkinStreamOptions,
-} from '@cucumber/gherkin-streams'
-import { Envelope, IdGenerator, ParseError } from '@cucumber/messages'
+import { GherkinStreams, type IGherkinStreamOptions } from '@cucumber/gherkin-streams'
 import { Query as GherkinQuery } from '@cucumber/gherkin-utils'
-import { IFilterablePickle } from '../filter'
-import { ISourcesCoordinates } from './types'
+import type { Envelope, IdGenerator, ParseError } from '@cucumber/messages'
+import type { IFilterablePickle } from '../filter'
+import type { ISourcesCoordinates } from './types'
 
 export async function getPicklesAndErrors({
   newId,
@@ -41,12 +38,8 @@ export async function getPicklesAndErrors({
     }
   )
   const filterablePickles = gherkinQuery.getPickles().map((pickle) => {
-    const gherkinDocument = gherkinQuery
-      .getGherkinDocuments()
-      .find((doc) => doc.uri === pickle.uri)
-    const location = gherkinQuery.getLocation(
-      pickle.astNodeIds[pickle.astNodeIds.length - 1]
-    )
+    const gherkinDocument = gherkinQuery.getGherkinDocuments().find((doc) => doc.uri === pickle.uri)
+    const location = gherkinQuery.getLocation(pickle.astNodeIds[pickle.astNodeIds.length - 1])
     return {
       gherkinDocument,
       location,

@@ -1,8 +1,8 @@
-import { FormatterPlugin } from '../../plugin'
+import type { FormatterPlugin } from '../../plugin'
 
 export default {
   type: 'formatter',
   formatter({ on, write }) {
-    on('message', (message) => write(JSON.stringify(message) + '\n'))
+    on('message', (message) => write(`${JSON.stringify(message)}\n`))
   },
 } satisfies FormatterPlugin

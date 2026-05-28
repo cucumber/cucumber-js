@@ -1,11 +1,9 @@
-import messages from '@cucumber/messages'
+import type messages from '@cucumber/messages'
 import { expect } from 'chai'
-import { DataTable, Then } from '../../'
-import { World } from '../support/world'
+import { type DataTable, Then } from '../../'
+import type { World } from '../support/world'
 
-function getSetsOfPicklesRunningAtTheSameTime(
-  envelopes: messages.Envelope[]
-): string[] {
+function getSetsOfPicklesRunningAtTheSameTime(envelopes: messages.Envelope[]): string[] {
   const pickleIdToName: Record<string, string> = {}
   const testCaseIdToPickleId: Record<string, string> = {}
   const testCaseStartedIdToPickleId: Record<string, string> = {}
@@ -28,11 +26,8 @@ function getSetsOfPicklesRunningAtTheSameTime(
         result.push(setOfPickleNames)
       }
     } else if (envelope.testCaseFinished != null) {
-      const pickleId =
-        testCaseStartedIdToPickleId[envelope.testCaseFinished.testCaseStartedId]
-      currentRunningPickleIds = currentRunningPickleIds.filter(
-        (x) => x != pickleId
-      )
+      const pickleId = testCaseStartedIdToPickleId[envelope.testCaseFinished.testCaseStartedId]
+      currentRunningPickleIds = currentRunningPickleIds.filter((x) => x !== pickleId)
     }
   })
   return result
@@ -44,52 +39,38 @@ function getSetsOfPicklesRunningAtTheSameTime(
  * @param scenarioName The name of the scenario to gether events for.
  * @returns The events that indicate a particular step failed and was retried.
  */
-function getRetriesForScenario(
-  envelopes: messages.Envelope[],
-  scenarioName: string
-) {
-  const scenarioEnvelope = envelopes.find(
-    (envelope) => envelope.pickle?.name === scenarioName
-  )
+function getRetriesForScenario(envelopes: messages.Envelope[], scenarioName: string) {
+  const scenarioEnvelope = envelopes.find((envelope) => envelope.pickle?.name === scenarioName)
 
   if (scenarioEnvelope === undefined) {
-    throw new Error('Could not find scenario: ' + scenarioEnvelope)
+    throw new Error(`Could not find scenario: ${scenarioEnvelope}`)
   }
 
   const scenarioPickle = scenarioEnvelope.pickle!
-  const testCase = envelopes.find(
-    (env) => env.testCase?.pickleId === scenarioPickle.id
-  )?.testCase
+  const testCase = envelopes.find((env) => env.testCase?.pickleId === scenarioPickle.id)?.testCase
 
   if (testCase === undefined) {
-    throw new Error('Could not find test case for scenario: ' + scenarioName)
+    throw new Error(`Could not find test case for scenario: ${scenarioName}`)
   }
 
   const scenarioCasesStarted = envelopes.filter(
     (envelope) => envelope.testCaseStarted?.testCaseId === testCase.id
   )
-  const testStartedIds = scenarioCasesStarted.map(
-    (started) => started.testCaseStarted.id
-  )
+  const testStartedIds = scenarioCasesStarted.map((started) => started.testCaseStarted.id)
   const scenarioCasesFinished = envelopes.filter((envelope) => {
     if (envelope.testCaseFinished?.testCaseStartedId) {
-      return testStartedIds.includes(
-        envelope.testCaseFinished.testCaseStartedId
-      )
+      return testStartedIds.includes(envelope.testCaseFinished.testCaseStartedId)
     }
     return false
   })
 
   return scenarioCasesFinished.filter(
-    (testCaseFinished) =>
-      testCaseFinished.testCaseFinished.willBeRetried === true
+    (testCaseFinished) => testCaseFinished.testCaseFinished.willBeRetried === true
   )
 }
 
 Then('no pickles run at the same time', function (this: World) {
-  const actualSets = getSetsOfPicklesRunningAtTheSameTime(
-    this.lastRun.envelopes
-  )
+  const actualSets = getSetsOfPicklesRunningAtTheSameTime(this.lastRun.envelopes)
   expect(actualSets).to.eql([])
 })
 
@@ -97,9 +78,7 @@ Then(
   'the following sets of pickles execute at the same time:',
   function (this: World, dataTable: DataTable) {
     const expectedSets = dataTable.raw().map((row) => row[0])
-    const actualSets = getSetsOfPicklesRunningAtTheSameTime(
-      this.lastRun.envelopes
-    )
+    const actualSets = getSetsOfPicklesRunningAtTheSameTime(this.lastRun.envelopes)
     expect(actualSets).to.eql(expectedSets)
   }
 )
@@ -125,8 +104,6 @@ Then(
   function (this: World) {
     const sets = getSetsOfPicklesRunningAtTheSameTime(this.lastRun.envelopes)
 
-    expect(Array.from(new Set(sets).values())).to.eql([
-      'fail_parallel, pass_parallel',
-    ])
+    expect(Array.from(new Set(sets).values())).to.eql(['fail_parallel, pass_parallel'])
   }
 )

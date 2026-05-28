@@ -1,15 +1,11 @@
-import { Given, When, Then } from '../'
+import { Given, Then, When } from '../'
 
-Given('some context', async function () {})
+Given('some context', async () => {})
 
-When('an action context', async function () {})
+When('an action context', async () => {})
 
-Then('verification', async function () {})
+Then('verification', async () => {})
 
-Given('a step that will be skipped', async function () {
-  return 'skipped'
-})
+Given('a step that will be skipped', async () => 'skipped')
 
-Given('a step that we need to implement', async function () {
-  return 'pending'
-})
+Given('a step that we need to implement', async () => 'pending')

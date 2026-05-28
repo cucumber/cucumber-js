@@ -8,11 +8,7 @@ type PackageJSON = {
 }
 
 const readActualPackageJSON: () => PackageJSON = () =>
-  JSON.parse(
-    fs
-      .readFileSync(path.resolve(__dirname, '..', '..', 'package.json'))
-      .toString()
-  )
+  JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', '..', 'package.json')).toString())
 
 export function validateNodeEngineVersion(
   currentVersion: string,

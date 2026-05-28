@@ -1,8 +1,8 @@
-import sinon from 'sinon'
 import { expect } from 'chai'
+import sinon from 'sinon'
+import type { IFormatterLogFn } from '../../formatter'
 import World from '../../support_code_library_builder/world'
-import { ICreateAttachment } from '../attachment_manager'
-import { IFormatterLogFn } from '../../formatter'
+import type { ICreateAttachment } from '../attachment_manager'
 import { runInTestCaseScope, worldProxy } from './test_case_scope'
 
 describe('testCaseScope', () => {

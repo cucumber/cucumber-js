@@ -1,7 +1,7 @@
-import * as messages from '@cucumber/messages'
-import { Expression } from '@cucumber/cucumber-expressions'
-import { ITestCaseHookParameter } from '../support_code_library_builder/types'
-import { GherkinStepKeyword } from './gherkin_step_keyword'
+import type { Expression } from '@cucumber/cucumber-expressions'
+import type * as messages from '@cucumber/messages'
+import type { ITestCaseHookParameter } from '../support_code_library_builder/types'
+import type { GherkinStepKeyword } from './gherkin_step_keyword'
 
 export interface IGetInvocationDataRequest {
   hookParameter: ITestCaseHookParameter
@@ -35,8 +35,7 @@ export interface IDefinitionParameters<T extends IDefinitionOptions> {
   uri: string
 }
 
-export interface IStepDefinitionParameters
-  extends IDefinitionParameters<IDefinitionOptions> {
+export interface IStepDefinitionParameters extends IDefinitionParameters<IDefinitionOptions> {
   keyword: GherkinStepKeyword
   pattern: string | RegExp
   expression: Expression
@@ -95,9 +94,6 @@ export default abstract class Definition {
   }
 
   baseGetInvalidCodeLengthMessage(parameters: any[]): string {
-    return this.buildInvalidCodeLengthMessage(
-      parameters.length,
-      parameters.length + 1
-    )
+    return this.buildInvalidCodeLengthMessage(parameters.length, parameters.length + 1)
   }
 }

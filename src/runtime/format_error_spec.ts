@@ -64,7 +64,7 @@ describe('formatError', () => {
 
   describe('stack traces', () => {
     ;[false, true].forEach((filterStackTraces) => {
-      describe('with filterStackTraces=' + filterStackTraces, () => {
+      describe(`with filterStackTraces=${filterStackTraces}`, () => {
         function testFormatError(fn: () => void) {
           try {
             fn()
@@ -83,9 +83,7 @@ describe('formatError', () => {
           })
           expect(result).to.have.string(' at ')
           expect(result).to.have.string('AssertionError')
-          expect(result).to.have.string(
-            'Thing that should have been truthy was falsy!'
-          )
+          expect(result).to.have.string('Thing that should have been truthy was falsy!')
         })
 
         it('should handle a generic error', () => {
@@ -93,9 +91,7 @@ describe('formatError', () => {
             throw new Error('A generally bad thing happened!')
           })
           expect(result).to.have.string(' at ')
-          expect(result).to.have.string(
-            'Error: A generally bad thing happened!'
-          )
+          expect(result).to.have.string('Error: A generally bad thing happened!')
         })
 
         it('should handle an assertion error', () => {

@@ -1,5 +1,5 @@
-import { InternalPlugin } from '../plugin'
 import PickleFilter from '../pickle_filter'
+import type { InternalPlugin } from '../plugin'
 import { orderPickles } from './order_pickles'
 
 export const filterPlugin: InternalPlugin = {

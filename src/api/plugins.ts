@@ -1,12 +1,12 @@
-import { pathToFileURL } from 'node:url'
 import path from 'node:path'
-import { UsableEnvironment } from '../environment'
+import { pathToFileURL } from 'node:url'
+import type { UsableEnvironment } from '../environment'
 import filterPlugin from '../filter'
-import { PluginManager, Plugin } from '../plugin'
+import { type Plugin, PluginManager } from '../plugin'
 import publishPlugin from '../publish'
 import shardingPlugin from '../sharding'
 import { doesNotHaveValue } from '../value_checker'
-import { IRunConfiguration, ISourcesCoordinates } from './types'
+import type { IRunConfiguration, ISourcesCoordinates } from './types'
 
 async function importPlugin(specifier: string, cwd: string): Promise<any> {
   try {
@@ -57,11 +57,7 @@ export async function initializeForLoadSources(
 ): Promise<PluginManager> {
   // eventually we'll load plugin packages here
   const pluginManager = new PluginManager(environment)
-  await pluginManager.initCoordinatorInternal(
-    'loadSources',
-    filterPlugin,
-    coordinates
-  )
+  await pluginManager.initCoordinatorInternal('loadSources', filterPlugin, coordinates)
   return pluginManager
 }
 
@@ -78,16 +74,8 @@ export async function initializeForRunCucumber(
 ): Promise<PluginManager> {
   const pluginManager = new PluginManager(environment)
 
-  await pluginManager.initCoordinatorInternal(
-    'runCucumber',
-    filterPlugin,
-    configuration.sources
-  )
-  await pluginManager.initCoordinatorInternal(
-    'runCucumber',
-    shardingPlugin,
-    configuration.sources
-  )
+  await pluginManager.initCoordinatorInternal('runCucumber', filterPlugin, configuration.sources)
+  await pluginManager.initCoordinatorInternal('runCucumber', shardingPlugin, configuration.sources)
 
   if (configuration.plugins) {
     for (const specifier of configuration.plugins.specifiers) {

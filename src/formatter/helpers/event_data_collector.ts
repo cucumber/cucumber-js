@@ -1,4 +1,4 @@
-import { EventEmitter } from 'node:events'
+import type { EventEmitter } from 'node:events'
 import * as messages from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 
@@ -65,8 +65,7 @@ export default class EventDataCollector {
 
   parseEnvelope(envelope: messages.Envelope): void {
     if (doesHaveValue(envelope.gherkinDocument)) {
-      this.gherkinDocumentMap[envelope.gherkinDocument.uri] =
-        envelope.gherkinDocument
+      this.gherkinDocumentMap[envelope.gherkinDocument.uri] = envelope.gherkinDocument
     } else if (doesHaveValue(envelope.pickle)) {
       this.pickleMap[envelope.pickle.id] = envelope.pickle
     } else if (doesHaveValue(envelope.undefinedParameterType)) {
@@ -114,17 +113,11 @@ export default class EventDataCollector {
     testStepId,
     testStepResult,
   }: messages.TestStepFinished): void {
-    this.testCaseAttemptDataMap[testCaseStartedId].stepResults[testStepId] =
-      testStepResult
+    this.testCaseAttemptDataMap[testCaseStartedId].stepResults[testStepId] = testStepResult
   }
 
-  storeTestCaseResult({
-    testCaseStartedId,
-    willBeRetried,
-  }: messages.TestCaseFinished): void {
-    const stepResults = Object.values(
-      this.testCaseAttemptDataMap[testCaseStartedId].stepResults
-    )
+  storeTestCaseResult({ testCaseStartedId, willBeRetried }: messages.TestCaseFinished): void {
+    const stepResults = Object.values(this.testCaseAttemptDataMap[testCaseStartedId].stepResults)
     this.testCaseAttemptDataMap[testCaseStartedId].worstTestStepResult =
       messages.getWorstTestStepResult(stepResults)
     this.testCaseAttemptDataMap[testCaseStartedId].willBeRetried = willBeRetried

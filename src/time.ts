@@ -31,9 +31,7 @@ export function durationBetweenTimestamps(
   finishedTimestamp: messages.Timestamp
 ): messages.Duration {
   const durationMillis =
-    messages.TimeConversion.timestampToMillisecondsSinceEpoch(
-      finishedTimestamp
-    ) -
+    messages.TimeConversion.timestampToMillisecondsSinceEpoch(finishedTimestamp) -
     messages.TimeConversion.timestampToMillisecondsSinceEpoch(startedTimestamp)
   return messages.TimeConversion.millisecondsToDuration(durationMillis)
 }
@@ -47,7 +45,7 @@ export async function wrapPromiseWithTimeout<T>(
   if (timeoutMessage === '') {
     timeoutMessage = `Action did not complete within ${timeoutInMilliseconds} milliseconds`
   }
-  const timeoutPromise = new Promise<T>((resolve, reject) => {
+  const timeoutPromise = new Promise<T>((_resolve, reject) => {
     timeoutId = methods.setTimeout(() => {
       reject(new Error(timeoutMessage))
     }, timeoutInMilliseconds)

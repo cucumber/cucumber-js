@@ -1,5 +1,5 @@
-import { UsableEnvironment } from '../environment'
-import {
+import type { UsableEnvironment } from '../environment'
+import type {
   CoordinatorContext,
   CoordinatorEventHandler,
   CoordinatorEventKey,
@@ -71,9 +71,7 @@ export class PluginManager {
     specifier?: string
   ) {
     if (!this.transformers[event]) {
-      throw new Error(
-        `Cannot register transformer for unknown event "${event}"`
-      )
+      throw new Error(`Cannot register transformer for unknown event "${event}"`)
     }
     this.transformers[event].push({
       transformer,
@@ -113,12 +111,7 @@ export class PluginManager {
     options: OptionsType,
     specifier?: string
   ) {
-    const context = this.makeCoordinatorContext(
-      operation,
-      plugin,
-      options,
-      specifier
-    )
+    const context = this.makeCoordinatorContext(operation, plugin, options, specifier)
     await this.initCoordinator(plugin, context, specifier)
   }
 
@@ -159,10 +152,8 @@ export class PluginManager {
   ) {
     return {
       operation,
-      on: <K extends CoordinatorEventKey>(
-        event: K,
-        handler: CoordinatorEventHandler<K>
-      ) => this.registerHandler(event, handler, specifier),
+      on: <K extends CoordinatorEventKey>(event: K, handler: CoordinatorEventHandler<K>) =>
+        this.registerHandler(event, handler, specifier),
       transform: <K extends CoordinatorTransformKey>(
         event: K,
         transformer: CoordinatorTransformer<K>
@@ -180,10 +171,7 @@ export class PluginManager {
     }
   }
 
-  emit<K extends CoordinatorEventKey>(
-    event: K,
-    value: CoordinatorEventValues[K]
-  ): void {
+  emit<K extends CoordinatorEventKey>(event: K, value: CoordinatorEventValues[K]): void {
     this.handlers[event].forEach(({ handler, specifier }) => {
       wrapError(
         () => handler(value),
@@ -231,10 +219,7 @@ function wrapError<T>(fn: () => T, message: string): T {
   }
 }
 
-async function wrapErrorAsync<T>(
-  fn: () => Promise<T>,
-  message: string
-): Promise<T> {
+async function wrapErrorAsync<T>(fn: () => Promise<T>, message: string): Promise<T> {
   try {
     return await fn()
   } catch (error) {

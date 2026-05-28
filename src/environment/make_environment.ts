@@ -1,5 +1,5 @@
 import { ConsoleLogger } from './console_logger'
-import { UsableEnvironment, IRunEnvironment } from './types'
+import type { IRunEnvironment, UsableEnvironment } from './types'
 
 export function makeEnvironment(provided: IRunEnvironment): UsableEnvironment {
   const fullEnvironment = Object.assign(
@@ -13,10 +13,7 @@ export function makeEnvironment(provided: IRunEnvironment): UsableEnvironment {
     },
     provided
   )
-  const logger = new ConsoleLogger(
-    fullEnvironment.stderr,
-    fullEnvironment.debug
-  )
+  const logger = new ConsoleLogger(fullEnvironment.stderr, fullEnvironment.debug)
   logger.debug('Resolved environment:', fullEnvironment)
   return {
     ...fullEnvironment,

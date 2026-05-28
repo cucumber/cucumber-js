@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { Given, When, Then } from '../../../src'
+import { Given, Then, When } from '../../../src'
 
 Given('there are {int} cucumbers', function (initialCount) {
   this.count = initialCount

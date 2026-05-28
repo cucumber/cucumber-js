@@ -1,4 +1,4 @@
-import { Duration } from '@cucumber/messages'
+import type { Duration } from '@cucumber/messages'
 
 const NANOS_IN_SECOND = 1_000_000_000
 

@@ -1,6 +1,6 @@
-import { ResourceLimits } from 'node:worker_threads'
-import { JsonObject } from 'type-fest'
-import { IPickleOrder } from '../filter'
+import type { ResourceLimits } from 'node:worker_threads'
+import type { JsonObject } from 'type-fest'
+import type { IPickleOrder } from '../filter'
 
 /**
  * User-defined configuration

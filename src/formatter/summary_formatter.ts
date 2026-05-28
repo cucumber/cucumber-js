@@ -1,10 +1,10 @@
-import * as messages from '@cucumber/messages'
-import { doesHaveValue } from '../value_checker'
+import type * as messages from '@cucumber/messages'
 import { durationBetweenTimestamps } from '../time'
+import { doesHaveValue } from '../value_checker'
+import Formatter, { type IFormatterOptions } from './'
 import { formatIssue, formatSummary, isFailure, isWarning } from './helpers'
-import { ITestCaseAttempt } from './helpers/event_data_collector'
+import type { ITestCaseAttempt } from './helpers/event_data_collector'
 import { formatUndefinedParameterTypes } from './helpers/issue_helpers'
-import Formatter, { IFormatterOptions } from './'
 
 interface ILogIssuesRequest {
   issues: ITestCaseAttempt[]
@@ -15,8 +15,7 @@ interface ILogIssuesRequest {
  * @deprecated the built-in `summary` formatter is now plugin-based and no longer uses this class; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md
  */
 export default class SummaryFormatter extends Formatter {
-  public static readonly documentation: string =
-    'Summary output of feature and scenarios'
+  public static readonly documentation: string = 'Summary output of feature and scenarios'
 
   constructor(options: IFormatterOptions) {
     super(options)
@@ -28,10 +27,7 @@ export default class SummaryFormatter extends Formatter {
       if (doesHaveValue(envelope.testRunFinished)) {
         const testRunFinishedTimestamp = envelope.testRunFinished.timestamp
         this.logSummary(
-          durationBetweenTimestamps(
-            testRunStartedTimestamp,
-            testRunFinishedTimestamp
-          )
+          durationBetweenTimestamps(testRunStartedTimestamp, testRunFinishedTimestamp)
         )
       }
     })
@@ -42,28 +38,14 @@ export default class SummaryFormatter extends Formatter {
     const warnings: ITestCaseAttempt[] = []
     const testCaseAttempts = this.eventDataCollector.getTestCaseAttempts()
     testCaseAttempts.forEach((testCaseAttempt) => {
-      if (
-        isFailure(
-          testCaseAttempt.worstTestStepResult,
-          testCaseAttempt.willBeRetried
-        )
-      ) {
+      if (isFailure(testCaseAttempt.worstTestStepResult, testCaseAttempt.willBeRetried)) {
         failures.push(testCaseAttempt)
-      } else if (
-        isWarning(
-          testCaseAttempt.worstTestStepResult,
-          testCaseAttempt.willBeRetried
-        )
-      ) {
+      } else if (isWarning(testCaseAttempt.worstTestStepResult, testCaseAttempt.willBeRetried)) {
         warnings.push(testCaseAttempt)
       }
     })
     if (this.eventDataCollector.undefinedParameterTypes.length > 0) {
-      this.log(
-        formatUndefinedParameterTypes(
-          this.eventDataCollector.undefinedParameterTypes
-        )
-      )
+      this.log(formatUndefinedParameterTypes(this.eventDataCollector.undefinedParameterTypes))
     }
     if (failures.length > 0) {
       this.logIssues({ issues: failures, title: 'Failures' })

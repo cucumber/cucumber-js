@@ -1,7 +1,7 @@
-import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
+import { describe, it } from 'mocha'
 import { testFormatter } from '../../test/formatter_helpers'
+import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 
 const onePickleSources = [
   {
@@ -28,7 +28,7 @@ describe('RerunFormatter', () => {
       it('outputs nothing', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function () {})
+          Given('a step', () => {})
         })
 
         // Act
@@ -47,8 +47,8 @@ describe('RerunFormatter', () => {
       it('outputs the reference needed to run the scenario again', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function () {})
-          Given('a step', function () {})
+          Given('a step', () => {})
+          Given('a step', () => {})
         })
 
         // Act
@@ -67,7 +67,7 @@ describe('RerunFormatter', () => {
       it('outputs the reference needed to run the scenario again', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function () {
+          Given('a step', () => {
             throw new Error('error')
           })
         })
@@ -88,9 +88,7 @@ describe('RerunFormatter', () => {
       it('outputs the reference needed to run the scenario again', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function () {
-            return 'pending'
-          })
+          Given('a step', () => 'pending')
         })
 
         // Act
@@ -109,9 +107,7 @@ describe('RerunFormatter', () => {
       it('outputs the reference needed to run the scenario again', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function () {
-            return 'skipped'
-          })
+          Given('a step', () => 'skipped')
         })
 
         // Act

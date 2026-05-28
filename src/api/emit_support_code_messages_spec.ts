@@ -1,22 +1,19 @@
 import { EventEmitter } from 'node:events'
-import * as messages from '@cucumber/messages'
-import { HookType, IdGenerator } from '@cucumber/messages'
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
 import {
   CucumberExpression,
   ParameterType,
   RegularExpression,
 } from '@cucumber/cucumber-expressions'
+import * as messages from '@cucumber/messages'
+import { HookType, IdGenerator } from '@cucumber/messages'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import StepDefinition from '../models/step_definition'
-import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import TestCaseHookDefinition from '../models/test_case_hook_definition'
 import TestRunHookDefinition from '../models/test_run_hook_definition'
 import { SourcedParameterTypeRegistry } from '../support_code_library_builder/sourced_parameter_type_registry'
-import {
-  emitMetaMessage,
-  emitSupportCodeMessages,
-} from './emit_support_code_messages'
+import type { SupportCodeLibrary } from '../support_code_library_builder/types'
+import { emitMetaMessage, emitSupportCodeMessages } from './emit_support_code_messages'
 
 const noopFunction = (): void => {
   // no code

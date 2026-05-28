@@ -1,8 +1,8 @@
-import path from 'node:path'
-import { Writable } from 'node:stream'
 import fs from 'node:fs'
+import path from 'node:path'
+import type { Writable } from 'node:stream'
 import { mkdirp } from 'mkdirp'
-import { ILogger } from '../environment'
+import type { ILogger } from '../environment'
 
 export async function createStream(
   target: string,

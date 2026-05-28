@@ -1,8 +1,8 @@
-import { Pickle } from '@cucumber/messages'
-import { AssembledTestCase } from '../../assemble'
-import { ILogger } from '../../environment'
-import { ParallelAssignmentValidator } from '../../support_code_library_builder/types'
-import { FinishedEvent, Phase, RunTestCaseCommand } from './types'
+import type { Pickle } from '@cucumber/messages'
+import type { AssembledTestCase } from '../../assemble'
+import type { ILogger } from '../../environment'
+import type { ParallelAssignmentValidator } from '../../support_code_library_builder/types'
+import type { FinishedEvent, Phase, RunTestCaseCommand } from './types'
 
 export class TestCasesPhase implements Phase<RunTestCaseCommand> {
   private failing = false
@@ -24,10 +24,7 @@ export class TestCasesPhase implements Phase<RunTestCaseCommand> {
     return this.select()
   }
 
-  next(
-    command: RunTestCaseCommand,
-    event: FinishedEvent
-  ): RunTestCaseCommand | undefined {
+  next(command: RunTestCaseCommand, event: FinishedEvent): RunTestCaseCommand | undefined {
     if (!event.success) {
       this.failing = true
     }

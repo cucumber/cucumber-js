@@ -1,4 +1,4 @@
-import { IConfiguration } from './types'
+import type { IConfiguration } from './types'
 
 export const DEFAULT_CONFIGURATION: IConfiguration = {
   backtrace: false,

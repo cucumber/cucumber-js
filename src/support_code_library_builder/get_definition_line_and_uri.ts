@@ -1,9 +1,9 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import errorStackParser, { StackFrame } from 'error-stack-parser'
+import errorStackParser, { type StackFrame } from 'error-stack-parser'
 import { isFileNameInCucumber } from '../filter_stack_trace'
+import type { ILineAndUri } from '../types'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
-import { ILineAndUri } from '../types'
 
 export function getDefinitionLineAndUri(
   cwd: string,
@@ -13,8 +13,7 @@ export function getDefinitionLineAndUri(
   let uri: string
   const stackframes: StackFrame[] = errorStackParser.parse(new Error())
   const stackframe = stackframes.find(
-    (frame: StackFrame) =>
-      frame.fileName !== __filename && !isExcluded(frame.fileName)
+    (frame: StackFrame) => frame.fileName !== __filename && !isExcluded(frame.fileName)
   )
   if (stackframe != null) {
     line = stackframe.getLineNumber()

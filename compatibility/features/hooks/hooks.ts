@@ -1,17 +1,17 @@
-import { When, Before, After } from '../../../src'
+import { After, Before, When } from '../../../src'
 
-Before(function () {
+Before(() => {
   // no-op
 })
 
-When('a step passes', function () {
+When('a step passes', () => {
   // no-op
 })
 
-When('a step fails', function () {
+When('a step fails', () => {
   throw new Error('Exception in step')
 })
 
-After(function () {
+After(() => {
   // no-op
 })

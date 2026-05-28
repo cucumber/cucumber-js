@@ -1,8 +1,8 @@
 import * as messages from '@cucumber/messages'
 import { Interval } from 'luxon'
-import { IColorFns } from '../get_color_fns'
 import { doesHaveValue } from '../../value_checker'
-import { ITestCaseAttempt } from './event_data_collector'
+import type { IColorFns } from '../get_color_fns'
+import type { ITestCaseAttempt } from './event_data_collector'
 
 const STATUS_REPORT_ORDER = [
   messages.TestStepResultStatus.FAILED,
@@ -28,24 +28,22 @@ export function formatSummary({
   const testCaseResults: messages.TestStepResult[] = []
   const testStepResults: messages.TestStepResult[] = []
   let totalStepDuration = messages.TimeConversion.millisecondsToDuration(0)
-  testCaseAttempts.forEach(
-    ({ testCase, willBeRetried, worstTestStepResult, stepResults }) => {
-      Object.values(stepResults).forEach((stepResult) => {
-        totalStepDuration = messages.TimeConversion.addDurations(
-          totalStepDuration,
-          stepResult.duration
-        )
+  testCaseAttempts.forEach(({ testCase, willBeRetried, worstTestStepResult, stepResults }) => {
+    Object.values(stepResults).forEach((stepResult) => {
+      totalStepDuration = messages.TimeConversion.addDurations(
+        totalStepDuration,
+        stepResult.duration
+      )
+    })
+    if (!willBeRetried) {
+      testCaseResults.push(worstTestStepResult)
+      testCase.testSteps.forEach((testStep) => {
+        if (doesHaveValue(testStep.pickleStepId)) {
+          testStepResults.push(stepResults[testStep.id])
+        }
       })
-      if (!willBeRetried) {
-        testCaseResults.push(worstTestStepResult)
-        testCase.testSteps.forEach((testStep) => {
-          if (doesHaveValue(testStep.pickleStepId)) {
-            testStepResults.push(stepResults[testStep.id])
-          }
-        })
-      }
     }
-  )
+  })
   const scenarioSummary = getCountSummary({
     colorFns,
     objects: testCaseResults,
@@ -68,14 +66,14 @@ interface IGetCountSummaryRequest {
   type: string
 }
 
-function getCountSummary({
-  colorFns,
-  objects,
-  type,
-}: IGetCountSummaryRequest): string {
+function getCountSummary({ colorFns, objects, type }: IGetCountSummaryRequest): string {
   const counts: Record<string, number> = {}
-  STATUS_REPORT_ORDER.forEach((x) => (counts[x] = 0))
-  objects.forEach((x) => (counts[x.status] += 1))
+  for (const x of STATUS_REPORT_ORDER) {
+    counts[x] = 0
+  }
+  for (const x of objects) {
+    counts[x.status] += 1
+  }
   const total = Object.values(counts).reduce((acc, x) => acc + x, 0)
   let text = `${total.toString()} ${type}${total === 1 ? '' : 's'}`
   if (total > 0) {
@@ -83,9 +81,7 @@ function getCountSummary({
     STATUS_REPORT_ORDER.forEach((status) => {
       if (counts[status] > 0) {
         details.push(
-          colorFns.forStatus(status)(
-            `${counts[status].toString()} ${status.toLowerCase()}`
-          )
+          colorFns.forStatus(status)(`${counts[status].toString()} ${status.toLowerCase()}`)
         )
       }
     })
@@ -96,9 +92,7 @@ function getCountSummary({
 
 function getDurationSummary(durationMsg: messages.Duration): string {
   const start = new Date(0)
-  const end = new Date(
-    messages.TimeConversion.durationToMilliseconds(durationMsg)
-  )
+  const end = new Date(messages.TimeConversion.durationToMilliseconds(durationMsg))
   const duration = Interval.fromDateTimes(start, end).toDuration([
     'minutes',
     'seconds',

@@ -1,17 +1,14 @@
 import * as messages from '@cucumber/messages'
 import { TestStepResult } from '@cucumber/messages'
-import StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
-import { SupportCodeLibrary } from '../../support_code_library_builder/types'
+import type TestCaseHookDefinition from '../../models/test_case_hook_definition'
+import type { SupportCodeLibrary } from '../../support_code_library_builder/types'
+import type { ILineAndUri } from '../../types'
 import { doesHaveValue, valueOrDefault } from '../../value_checker'
-import TestCaseHookDefinition from '../../models/test_case_hook_definition'
-import { ILineAndUri } from '../../types'
+import type StepDefinitionSnippetBuilder from '../step_definition_snippet_builder'
+import type { ITestCaseAttempt } from './event_data_collector'
+import { getGherkinScenarioLocationMap, getGherkinStepMap } from './gherkin_document_parser'
 import { getStepKeywordType, KeywordType } from './keyword_type'
-import {
-  getGherkinScenarioLocationMap,
-  getGherkinStepMap,
-} from './gherkin_document_parser'
 import { getPickleStepMap, getStepKeyword } from './pickle_parser'
-import { ITestCaseAttempt } from './event_data_collector'
 
 export interface IParsedTestStep {
   actionLocation?: ILineAndUri
@@ -66,11 +63,7 @@ function parseStep({
 }: IParseStepRequest): IParsedTestStep {
   const out: IParsedTestStep = {
     attachments: testStepAttachments,
-    keyword: doesHaveValue(testStep.pickleStepId)
-      ? keyword
-      : isBeforeHook
-        ? 'Before'
-        : 'After',
+    keyword: doesHaveValue(testStep.pickleStepId) ? keyword : isBeforeHook ? 'Before' : 'After',
     result: testStepResult,
   }
   if (doesHaveValue(testStep.hookId)) {
@@ -90,10 +83,7 @@ function parseStep({
     }
     out.name = hookDefinition.name
   }
-  if (
-    doesHaveValue(testStep.stepDefinitionIds) &&
-    testStep.stepDefinitionIds.length === 1
-  ) {
+  if (doesHaveValue(testStep.stepDefinitionIds) && testStep.stepDefinitionIds.length === 1) {
     const stepDefinition = supportCodeLibrary.stepDefinitions.find(
       (x) => x.id === testStep.stepDefinitionIds[0]
     )
@@ -133,8 +123,7 @@ export function parseTestCaseAttempt({
 }: IParseTestCaseAttemptRequest): IParsedTestCaseAttempt {
   const { testCase, pickle, gherkinDocument } = testCaseAttempt
   const gherkinStepMap = getGherkinStepMap(gherkinDocument)
-  const gherkinScenarioLocationMap =
-    getGherkinScenarioLocationMap(gherkinDocument)
+  const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(gherkinDocument)
   const pickleStepMap = getPickleStepMap(pickle)
   const relativePickleUri = pickle.uri
   const parsedTestCase: IParsedTestCase = {
@@ -142,9 +131,7 @@ export function parseTestCaseAttempt({
     name: pickle.name,
     sourceLocation: {
       uri: relativePickleUri,
-      line: gherkinScenarioLocationMap[
-        pickle.astNodeIds[pickle.astNodeIds.length - 1]
-      ].line,
+      line: gherkinScenarioLocationMap[pickle.astNodeIds[pickle.astNodeIds.length - 1]].line,
     },
     worstTestStepResult: testCaseAttempt.worstTestStepResult,
   }
@@ -153,12 +140,11 @@ export function parseTestCaseAttempt({
   let previousKeywordType = KeywordType.Precondition
 
   testCase.testSteps.forEach((testStep) => {
-    const testStepResult =
-      testCaseAttempt.stepResults[testStep.id] || new TestStepResult()
+    const testStepResult = testCaseAttempt.stepResults[testStep.id] || new TestStepResult()
 
     isBeforeHook = isBeforeHook && doesHaveValue(testStep.hookId)
 
-    let keyword, keywordType, pickleStep
+    let keyword: any, keywordType: any, pickleStep: any
     if (doesHaveValue(testStep.pickleStepId)) {
       pickleStep = pickleStepMap[testStep.pickleStepId]
       keyword = getStepKeyword({ pickleStep, gherkinStepMap })
@@ -179,10 +165,7 @@ export function parseTestCaseAttempt({
       supportCodeLibrary,
       testStep,
       testStepResult,
-      testStepAttachments: valueOrDefault(
-        testCaseAttempt.stepAttachments[testStep.id],
-        []
-      ),
+      testStepAttachments: valueOrDefault(testCaseAttempt.stepAttachments[testStep.id], []),
     })
     parsedTestSteps.push(parsedStep)
     previousKeywordType = keywordType

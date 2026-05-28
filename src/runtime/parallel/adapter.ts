@@ -1,21 +1,15 @@
-import { EventEmitter } from 'node:events'
-import { MessageChannel, Worker } from 'node:worker_threads'
+import type { EventEmitter } from 'node:events'
 import path from 'node:path'
-import { RuntimeAdapter } from '../types'
-import { AssembledTestCase } from '../../assemble'
-import { ILogger, IRunEnvironment } from '../../environment'
-import { IRunOptionsRuntime } from '../../api'
-import { FormatOptions } from '../../formatter'
-import { SupportCodeLibrary } from '../../support_code_library_builder/types'
-import {
-  ManagedWorker,
-  Phase,
-  WorkerCommand,
-  WorkerData,
-  WorkerEvent,
-} from './types'
-import { TestRunHooksPhase } from './test_run_hooks_phase'
+import { MessageChannel, Worker } from 'node:worker_threads'
+import type { IRunOptionsRuntime } from '../../api'
+import type { AssembledTestCase } from '../../assemble'
+import type { ILogger, IRunEnvironment } from '../../environment'
+import type { FormatOptions } from '../../formatter'
+import type { SupportCodeLibrary } from '../../support_code_library_builder/types'
+import type { RuntimeAdapter } from '../types'
 import { TestCasesPhase } from './test_cases_phase'
+import { TestRunHooksPhase } from './test_run_hooks_phase'
+import type { ManagedWorker, Phase, WorkerCommand, WorkerData, WorkerEvent } from './types'
 
 /**
  * An adapter that distributes work across multiple worker threads
@@ -39,10 +33,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
     private readonly logger: ILogger,
     private readonly eventBroadcaster: EventEmitter,
     private readonly options: IRunOptionsRuntime,
-    private readonly snippetOptions: Pick<
-      FormatOptions,
-      'snippetInterface' | 'snippetSyntax'
-    >,
+    private readonly snippetOptions: Pick<FormatOptions, 'snippetInterface' | 'snippetSyntax'>,
     private readonly supportCodeLibrary: SupportCodeLibrary
   ) {}
 
@@ -67,25 +58,15 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
             testRunStartedId: this.testRunStartedId,
             supportCodeCoordinates: this.supportCodeLibrary.originalCoordinates,
             supportCodeIds: {
-              stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map(
-                (s) => s.id
-              ),
+              stepDefinitionIds: this.supportCodeLibrary.stepDefinitions.map((s) => s.id),
               beforeTestCaseHookDefinitionIds:
-                this.supportCodeLibrary.beforeTestCaseHookDefinitions.map(
-                  (h) => h.id
-                ),
+                this.supportCodeLibrary.beforeTestCaseHookDefinitions.map((h) => h.id),
               afterTestCaseHookDefinitionIds:
-                this.supportCodeLibrary.afterTestCaseHookDefinitions.map(
-                  (h) => h.id
-                ),
+                this.supportCodeLibrary.afterTestCaseHookDefinitions.map((h) => h.id),
               beforeTestRunHookDefinitionIds:
-                this.supportCodeLibrary.beforeTestRunHookDefinitions.map(
-                  (h) => h.id
-                ),
+                this.supportCodeLibrary.beforeTestRunHookDefinitions.map((h) => h.id),
               afterTestRunHookDefinitionIds:
-                this.supportCodeLibrary.afterTestRunHookDefinitions.map(
-                  (h) => h.id
-                ),
+                this.supportCodeLibrary.afterTestRunHookDefinitions.map((h) => h.id),
             },
             options: this.options,
             snippetOptions: this.snippetOptions,
@@ -120,9 +101,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
     return success
   }
 
-  async runTestCases(
-    assembledTestCases: ReadonlyArray<AssembledTestCase>
-  ): Promise<boolean> {
+  async runTestCases(assembledTestCases: ReadonlyArray<AssembledTestCase>): Promise<boolean> {
     const success = await new Promise<boolean>((resolve, reject) => {
       this.phase = new TestCasesPhase(
         resolve,

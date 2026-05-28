@@ -1,5 +1,5 @@
-import { reindent } from 'reindent-template-literals'
 import chalk from 'chalk'
+import { reindent } from 'reindent-template-literals'
 
 export function warnUserAboutEnablingDeveloperMode(error: any): void {
   if (!(error?.code === 'EPERM')) {
@@ -9,7 +9,7 @@ export function warnUserAboutEnablingDeveloperMode(error: any): void {
     throw error
   }
 
-  // eslint-disable-next-line no-console
+  // biome-ignore lint/suspicious/noConsole: this is the user-facing warning
   console.error(
     chalk.red(
       reindent(`

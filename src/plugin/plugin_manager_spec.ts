@@ -1,10 +1,10 @@
-import sinon from 'sinon'
 import { expect } from 'chai'
+import sinon from 'sinon'
 import { FakeLogger } from '../../test/fake_logger'
-import { IFilterablePickle } from '../filter'
-import { UsableEnvironment } from '../environment'
+import type { UsableEnvironment } from '../environment'
+import type { IFilterablePickle } from '../filter'
 import { PluginManager } from './plugin_manager'
-import { InternalPlugin } from './types'
+import type { InternalPlugin } from './types'
 
 describe('PluginManager', () => {
   const usableEnvironment: UsableEnvironment = {
@@ -58,9 +58,7 @@ describe('PluginManager', () => {
       )
       expect.fail('Expected error to be thrown')
     } catch (error) {
-      expect(error.message).to.equal(
-        'Plugin "./my-plugin.mjs" errored when trying to init'
-      )
+      expect(error.message).to.equal('Plugin "./my-plugin.mjs" errored when trying to init')
       expect(error.cause).to.equal(originalError)
     }
   })
@@ -103,12 +101,8 @@ describe('PluginManager', () => {
         )
         expect.fail('Expected error to be thrown')
       } catch (error) {
-        expect(error.message).to.equal(
-          'Plugin "./my-plugin.mjs" errored when trying to init'
-        )
-        expect(error.cause.message).to.equal(
-          'Cannot register handler for unknown event "unknown"'
-        )
+        expect(error.message).to.equal('Plugin "./my-plugin.mjs" errored when trying to init')
+        expect(error.cause.message).to.equal('Cannot register handler for unknown event "unknown"')
       }
     })
 
@@ -201,9 +195,7 @@ describe('PluginManager', () => {
         })
         expect.fail('Expected error to be thrown')
       } catch (error) {
-        expect(error.message).to.equal(
-          'Cucumber errored when trying to handle a "message" event'
-        )
+        expect(error.message).to.equal('Cucumber errored when trying to handle a "message" event')
         expect(error.cause).to.equal(originalError)
       }
     })
@@ -218,17 +210,14 @@ describe('PluginManager', () => {
           'runCucumber',
           {
             type: 'plugin',
-            coordinator: ({ transform }) =>
-              transform('unknown' as any, (x) => x),
+            coordinator: ({ transform }) => transform('unknown' as any, (x) => x),
           },
           {},
           './my-plugin.mjs'
         )
         expect.fail('Expected error to be thrown')
       } catch (error) {
-        expect(error.message).to.equal(
-          'Plugin "./my-plugin.mjs" errored when trying to init'
-        )
+        expect(error.message).to.equal('Plugin "./my-plugin.mjs" errored when trying to init')
         expect(error.cause.message).to.equal(
           'Cannot register transformer for unknown event "unknown"'
         )
@@ -261,9 +250,7 @@ describe('PluginManager', () => {
           type: 'plugin',
           coordinator: ({ transform }) => {
             // removes last item
-            transform('pickles:filter', async (pickles) =>
-              pickles.slice(0, pickles.length - 1)
-            )
+            transform('pickles:filter', async (pickles) => pickles.slice(0, pickles.length - 1))
           },
         },
         {}
@@ -282,10 +269,7 @@ describe('PluginManager', () => {
         {}
       )
 
-      const result = await pluginManager.transform(
-        'pickles:filter',
-        filterablePickles
-      )
+      const result = await pluginManager.transform('pickles:filter', filterablePickles)
       expect(result).to.have.length(2)
     })
 
@@ -296,16 +280,12 @@ describe('PluginManager', () => {
         {
           type: 'plugin',
           // bail, nothing to be done
-          coordinator: ({ transform }) =>
-            transform('pickles:filter', (): undefined => undefined),
+          coordinator: ({ transform }) => transform('pickles:filter', (): undefined => undefined),
         },
         {}
       )
 
-      const result = await pluginManager.transform(
-        'pickles:filter',
-        filterablePickles
-      )
+      const result = await pluginManager.transform('pickles:filter', filterablePickles)
       expect(result).to.eq(filterablePickles)
     })
 
@@ -407,14 +387,9 @@ describe('PluginManager', () => {
       )
       const internalPlugin: InternalPlugin = {
         type: 'plugin',
-        coordinator: ({ emit }) =>
-          emit('publish:url', 'https://example.com/report'),
+        coordinator: ({ emit }) => emit('publish:url', 'https://example.com/report'),
       }
-      await pluginManager.initCoordinatorInternal(
-        'runCucumber',
-        internalPlugin,
-        {}
-      )
+      await pluginManager.initCoordinatorInternal('runCucumber', internalPlugin, {})
 
       expect(handler).to.have.been.calledOnceWith('https://example.com/report')
     })
@@ -467,9 +442,7 @@ describe('PluginManager', () => {
         await pluginManager.cleanup()
         expect.fail('Expected error to be thrown')
       } catch (error) {
-        expect(error.message).to.equal(
-          'Plugin "./my-plugin.mjs" errored when trying to cleanup'
-        )
+        expect(error.message).to.equal('Plugin "./my-plugin.mjs" errored when trying to cleanup')
         expect(error.cause).to.equal(originalError)
       }
     })
@@ -492,9 +465,7 @@ describe('PluginManager', () => {
         await pluginManager.cleanup()
         expect.fail('Expected error to be thrown')
       } catch (error) {
-        expect(error.message).to.equal(
-          'Cucumber errored when trying to cleanup'
-        )
+        expect(error.message).to.equal('Cucumber errored when trying to cleanup')
         expect(error.cause).to.equal(originalError)
       }
     })

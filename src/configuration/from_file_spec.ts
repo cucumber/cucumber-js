@@ -1,9 +1,9 @@
-import { promisify } from 'node:util'
 import fs from 'node:fs'
 import path from 'node:path'
-import tmp, { DirOptions } from 'tmp'
+import { promisify } from 'node:util'
 import { expect } from 'chai'
 import semver from 'semver'
+import tmp, { type DirOptions } from 'tmp'
 import { FakeLogger } from '../../test/fake_logger'
 import { fromFile } from './from_file'
 
@@ -110,9 +110,7 @@ describe('fromFile', () => {
         };`
       )
 
-      const defaultResult = await fromFile(logger, cwd, 'cucumber.mjs', [
-        'default',
-      ])
+      const defaultResult = await fromFile(logger, cwd, 'cucumber.mjs', ['default'])
       expect(defaultResult).to.deep.eq({ paths: ['default/path/*.feature'] })
     })
 
@@ -227,9 +225,7 @@ p1:
         await fromFile(logger, cwd, 'cucumber.foo', ['p1'])
         expect.fail('should have thrown')
       } catch (error) {
-        expect(error.message).to.eq(
-          'Unsupported configuration file extension ".foo"'
-        )
+        expect(error.message).to.eq('Unsupported configuration file extension ".foo"')
       }
     })
 
@@ -239,13 +235,11 @@ p1:
         await fromFile(logger, cwd, 'cucumber.js', ['p1'])
         expect.fail('should have thrown')
       } catch (error) {
-        expect(error.message).to.eq(
-          'Configuration file "cucumber.js" failed to load/parse'
-        )
+        expect(error.message).to.eq('Configuration file "cucumber.js" failed to load/parse')
       }
     })
 
-    describe('typescript', function () {
+    describe('typescript', () => {
       if (!semver.satisfies(process.version, '>=22.0.0')) {
         return
       }

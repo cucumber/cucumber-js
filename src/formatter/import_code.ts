@@ -1,5 +1,5 @@
-import { pathToFileURL } from 'node:url'
 import path from 'node:path'
+import { pathToFileURL } from 'node:url'
 
 export async function importCode(specifier: string, cwd: string): Promise<any> {
   try {

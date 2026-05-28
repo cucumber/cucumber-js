@@ -1,19 +1,16 @@
-import { URL } from 'node:url'
 import assert from 'node:assert'
+import { URL } from 'node:url'
 import { gunzipSync } from 'node:zlib'
 import { expect } from 'chai'
-import { Given, Then, DataTable } from '../..'
-import { World } from '../support/world'
+import { type DataTable, Given, Then } from '../..'
 import FakeReportServer from '../../test/fake_report_server'
+import type { World } from '../support/world'
 
-Given(
-  'a report server is running on {string}',
-  async function (this: World, url: string) {
-    const port = parseInt(new URL(url).port)
-    this.reportServer = new FakeReportServer(port)
-    await this.reportServer.start()
-  }
-)
+Given('a report server is running on {string}', async function (this: World, url: string) {
+  const port = parseInt(new URL(url).port, 10)
+  this.reportServer = new FakeReportServer(port)
+  await this.reportServer.start()
+})
 
 Given('report publishing is not working', async function (this: World) {
   this.reportServer.failOnTouch = true
@@ -26,9 +23,7 @@ Given('report uploads are not working', async function (this: World) {
 Then(
   'the server should receive the following message types:',
   async function (this: World, expectedMessageTypesTable: DataTable) {
-    const expectedMessageTypes = expectedMessageTypesTable
-      .raw()
-      .map((row) => row[0])
+    const expectedMessageTypes = expectedMessageTypesTable.raw().map((row) => row[0])
 
     const receivedBodies = await this.reportServer.stop()
     const ndjson = gunzipSync(receivedBodies).toString('utf-8').trim()

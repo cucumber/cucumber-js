@@ -1,11 +1,11 @@
-import { EventEmitter } from 'node:events'
+import type { EventEmitter } from 'node:events'
 import os from 'node:os'
-import * as messages from '@cucumber/messages'
-import { Envelope, HookType, IdGenerator } from '@cucumber/messages'
 import detectCiEnvironment from '@cucumber/ci-environment'
-import { SupportCodeLibrary } from '../support_code_library_builder/types'
+import * as messages from '@cucumber/messages'
+import { type Envelope, HookType, type IdGenerator } from '@cucumber/messages'
+import type { SupportCodeLibrary } from '../support_code_library_builder/types'
+import type { ILineAndUri } from '../types'
 import { version } from '../version'
-import { ILineAndUri } from '../types'
 
 interface OrderedEnvelope {
   order: number
@@ -61,13 +61,11 @@ function collectParameterTypeEnvelopes(
   newId: IdGenerator.NewId
 ): ReadonlyArray<OrderedEnvelope> {
   const ordered: Array<OrderedEnvelope> = []
-  for (const parameterType of supportCodeLibrary.parameterTypeRegistry
-    .parameterTypes) {
+  for (const parameterType of supportCodeLibrary.parameterTypeRegistry.parameterTypes) {
     if (parameterType.builtin) {
       continue
     }
-    const source =
-      supportCodeLibrary.parameterTypeRegistry.lookupSource(parameterType)
+    const source = supportCodeLibrary.parameterTypeRegistry.lookupSource(parameterType)
     ordered.push({
       order: source.order,
       envelope: {
@@ -110,22 +108,10 @@ function collectHookEnvelopes(
   supportCodeLibrary: SupportCodeLibrary
 ): ReadonlyArray<OrderedEnvelope> {
   const allHooks = [
-    [
-      supportCodeLibrary.beforeTestCaseHookDefinitions,
-      HookType.BEFORE_TEST_CASE,
-    ] as const,
-    [
-      supportCodeLibrary.afterTestCaseHookDefinitions,
-      HookType.AFTER_TEST_CASE,
-    ] as const,
-    [
-      supportCodeLibrary.beforeTestRunHookDefinitions,
-      HookType.BEFORE_TEST_RUN,
-    ] as const,
-    [
-      supportCodeLibrary.afterTestRunHookDefinitions,
-      HookType.AFTER_TEST_RUN,
-    ] as const,
+    [supportCodeLibrary.beforeTestCaseHookDefinitions, HookType.BEFORE_TEST_CASE] as const,
+    [supportCodeLibrary.afterTestCaseHookDefinitions, HookType.AFTER_TEST_CASE] as const,
+    [supportCodeLibrary.beforeTestRunHookDefinitions, HookType.BEFORE_TEST_RUN] as const,
+    [supportCodeLibrary.afterTestRunHookDefinitions, HookType.AFTER_TEST_RUN] as const,
   ]
   const ordered: Array<OrderedEnvelope> = []
   allHooks.forEach(([hooks, type]) => {
@@ -163,13 +149,11 @@ export function emitSupportCodeMessages({
     ...collectStepDefinitionEnvelopes(supportCodeLibrary),
     ...collectHookEnvelopes(supportCodeLibrary),
   ]
-  orderedEnvelopes
-    .sort((a, b) => a.order - b.order)
-    .forEach(({ envelope }) => eventBroadcaster.emit('envelope', envelope))
+  for (const { envelope } of orderedEnvelopes.sort((a, b) => a.order - b.order)) {
+    eventBroadcaster.emit('envelope', envelope)
+  }
 
-  supportCodeLibrary.undefinedParameterTypes
-    .map((undefinedParameterType) => ({
-      undefinedParameterType,
-    }))
-    .forEach((envelope) => eventBroadcaster.emit('envelope', envelope))
+  for (const undefinedParameterType of supportCodeLibrary.undefinedParameterTypes) {
+    eventBroadcaster.emit('envelope', { undefinedParameterType })
+  }
 }

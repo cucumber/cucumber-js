@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { Given, defineParameterType } from '../../../src'
+import { defineParameterType, Given } from '../../../src'
 
 class Flight {
   constructor(
@@ -16,7 +16,7 @@ defineParameterType({
   },
 })
 
-Given('{flight} has been delayed', function (flight: Flight) {
+Given('{flight} has been delayed', (flight: Flight) => {
   assert.strictEqual(flight.from, 'LHR')
   assert.strictEqual(flight.to, 'CDG')
 })

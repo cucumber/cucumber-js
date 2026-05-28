@@ -1,9 +1,9 @@
 import { IdGenerator } from '@cucumber/messages'
+import { type IRunEnvironment, makeEnvironment } from '../environment'
 import { resolvePaths } from '../paths'
-import { IRunEnvironment, makeEnvironment } from '../environment'
-import { ILoadSupportOptions, ISupportCodeLibrary } from './types'
-import { getSupportCodeLibrary } from './support'
 import { initializeForLoadSupport } from './plugins'
+import { getSupportCodeLibrary } from './support'
+import type { ILoadSupportOptions, ISupportCodeLibrary } from './types'
 
 /**
  * Load support code for use in test runs
@@ -29,12 +29,7 @@ export async function loadSupport(
     options.support
   )
   const pluginManager = await initializeForLoadSupport(mergedEnvironment)
-  const resolvedPaths = await resolvePaths(
-    logger,
-    cwd,
-    options.sources,
-    supportCoordinates
-  )
+  const resolvedPaths = await resolvePaths(logger, cwd, options.sources, supportCoordinates)
   pluginManager.emit('paths:resolve', resolvedPaths)
   const { requirePaths, importPaths } = resolvedPaths
   const supportCodeLibrary = await getSupportCodeLibrary({

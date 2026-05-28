@@ -46,10 +46,7 @@ function getAsTable(header: string[], rows: string[][]): string {
 }
 
 function capitalizeKeyword(word: string): string {
-  return (
-    word[0].toUpperCase() +
-    word.substring(1).replace(/([A-Z])/g, (char) => ` ${char}`)
-  )
+  return word[0].toUpperCase() + word.substring(1).replace(/([A-Z])/g, (char) => ` ${char}`)
 }
 
 export function getLanguages(): string {

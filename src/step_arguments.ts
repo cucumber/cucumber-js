@@ -1,5 +1,5 @@
 import util from 'node:util'
-import * as messages from '@cucumber/messages'
+import type * as messages from '@cucumber/messages'
 import { doesHaveValue } from './value_checker'
 
 export interface IPickleStepArgumentFunctionMap<T> {

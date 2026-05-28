@@ -1,8 +1,8 @@
 import stringArgv from 'string-argv'
-import { ILogger } from '../environment'
-import { IConfiguration } from './types'
+import type { ILogger } from '../environment'
 import ArgvParser from './argv_parser'
 import { checkSchema } from './check_schema'
+import type { IConfiguration } from './types'
 
 export function parseConfiguration(
   logger: ILogger,
@@ -14,29 +14,19 @@ export function parseConfiguration(
   }
   if (Array.isArray(definition)) {
     logger.debug(`${source} configuration value is an array; parsing as argv`)
-    const { configuration } = ArgvParser.parse([
-      'node',
-      'cucumber-js',
-      ...definition,
-    ])
+    const { configuration } = ArgvParser.parse(['node', 'cucumber-js', ...definition])
     return configuration
   }
   if (typeof definition === 'string') {
     logger.debug(`${source} configuration value is a string; parsing as argv`)
-    const { configuration } = ArgvParser.parse([
-      'node',
-      'cucumber-js',
-      ...stringArgv(definition),
-    ])
+    const { configuration } = ArgvParser.parse(['node', 'cucumber-js', ...stringArgv(definition)])
     return configuration
   }
   try {
     return checkSchema(definition)
   } catch (error) {
     throw new Error(
-      `${source} configuration value failed schema validation: ${error.errors.join(
-        ' '
-      )}`
+      `${source} configuration value failed schema validation: ${error.errors.join(' ')}`
     )
   }
 }

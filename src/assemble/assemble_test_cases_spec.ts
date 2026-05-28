@@ -1,20 +1,20 @@
 import { EventEmitter } from 'node:events'
 import {
-  Envelope,
-  GherkinDocument,
+  type Envelope,
+  type GherkinDocument,
   IdGenerator,
-  Pickle,
-  TestCase,
+  type Pickle,
+  type TestCase,
 } from '@cucumber/messages'
-import { afterEach, beforeEach, describe, it } from 'mocha'
-import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
+import FakeTimers, { type InstalledClock } from '@sinonjs/fake-timers'
 import { expect } from 'chai'
-import timeMethods from '../time'
-import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
+import { afterEach, beforeEach, describe, it } from 'mocha'
 import { parse } from '../../test/gherkin_helpers'
-import { SupportCodeLibrary } from '../support_code_library_builder/types'
+import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
+import type { SupportCodeLibrary } from '../support_code_library_builder/types'
+import timeMethods from '../time'
 import { assembleTestCases } from './assemble_test_cases'
-import { AssembledTestCase } from './types'
+import type { AssembledTestCase } from './types'
 
 async function testAssembleTestCases({
   gherkinDocument,
@@ -60,18 +60,14 @@ describe('assembleTestCases', () => {
     it('emits testCase messages', async () => {
       // Arrange
       const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-        Given('a step', function () {
+        Given('a step', () => {
           clock.tick(1)
         })
       })
       const { gherkinDocument, pickles } = await parse({
-        data: [
-          'Feature: a',
-          'Scenario: b',
-          'Given a step',
-          'Scenario: c',
-          'Given a step',
-        ].join('\n'),
+        data: ['Feature: a', 'Scenario: b', 'Given a step', 'Scenario: c', 'Given a step'].join(
+          '\n'
+        ),
         uri: 'a.feature',
       })
 
@@ -146,16 +142,14 @@ describe('assembleTestCases', () => {
       it('emits stepMatchArgumentLists correctly within the testCase message', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step with {int} and {string} parameters', function () {
+          Given('a step with {int} and {string} parameters', () => {
             clock.tick(1)
           })
         })
         const { gherkinDocument, pickles } = await parse({
-          data: [
-            'Feature: a',
-            'Scenario: b',
-            'Given a step with 1 and "foo" parameters',
-          ].join('\n'),
+          data: ['Feature: a', 'Scenario: b', 'Given a step with 1 and "foo" parameters'].join(
+            '\n'
+          ),
           uri: 'a.feature',
         })
 
@@ -166,9 +160,7 @@ describe('assembleTestCases', () => {
           supportCodeLibrary,
         })
 
-        expect(
-          envelopes[0].testCase.testSteps[0].stepMatchArgumentsLists
-        ).to.deep.eq([
+        expect(envelopes[0].testCase.testSteps[0].stepMatchArgumentsLists).to.deep.eq([
           {
             stepMatchArguments: [
               {
@@ -219,15 +211,13 @@ describe('assembleTestCases', () => {
     describe('with test case hooks', () => {
       it('emits the expected envelopes and returns a skipped result', async () => {
         // Arrange
-        const supportCodeLibrary = buildSupportCodeLibrary(
-          ({ Given, Before, After }) => {
-            Given('a step', function () {
-              clock.tick(1)
-            })
-            Before(function () {})
-            After(function () {})
-          }
-        )
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given, Before, After }) => {
+          Given('a step', () => {
+            clock.tick(1)
+          })
+          Before(() => {})
+          After(() => {})
+        })
         const { gherkinDocument, pickles } = await parse({
           data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
           uri: 'a.feature',
@@ -274,15 +264,13 @@ describe('assembleTestCases', () => {
     describe('with step hooks', () => {
       it('emits the expected envelopes and returns a skipped result', async () => {
         // Arrange
-        const supportCodeLibrary = buildSupportCodeLibrary(
-          ({ Given, BeforeStep, AfterStep }) => {
-            Given('a step', function () {
-              clock.tick(1)
-            })
-            BeforeStep(function () {})
-            AfterStep(function () {})
-          }
-        )
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given, BeforeStep, AfterStep }) => {
+          Given('a step', () => {
+            clock.tick(1)
+          })
+          BeforeStep(() => {})
+          AfterStep(() => {})
+        })
         const { gherkinDocument, pickles } = await parse({
           data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
           uri: 'a.feature',
