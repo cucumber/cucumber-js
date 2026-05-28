@@ -1,6 +1,6 @@
 import { JsonObject } from 'type-fest'
 import { IPublishConfig } from '../publish'
-import { IConfiguration } from '../configuration'
+import { IConfiguration, IWorkerOptions } from '../configuration'
 import { IPickleOrder } from '../filter'
 
 /**
@@ -195,7 +195,7 @@ export interface IRunOptionsRuntime {
    */
   filterStacktraces: boolean
   /**
-   * Run tests in parallel with the given number of worker processes
+   * Run tests in parallel with the given number of worker threads
    */
   parallel: number
   /**
@@ -210,6 +210,10 @@ export interface IRunOptionsRuntime {
    * Fail the test run if there are pending steps
    */
   strict: boolean
+  /**
+   * Options applied to each worker thread when running in parallel mode
+   */
+  workerOptions?: IWorkerOptions
   /**
    * Parameters to be passed to the World
    * @remarks
@@ -251,6 +255,30 @@ export interface IRunOptionsFormats {
 }
 
 /**
+ * Options relating to plugins - which ones to use and how they should behave
+ * @public
+ */
+export interface IRunOptionsPlugins {
+  /**
+   * Specifiers of plugins to load
+   * @example
+   * [
+   *   "\@cucumber/my-plugin",
+   *   "./custom-plugin.js"
+   * ]
+   * @remarks
+   * Each item is a module specifier for a plugin to be loaded.
+   */
+  specifiers: string[]
+  /**
+   * Options to be provided to plugins
+   * @remarks
+   * The value must be a JSON-serializable object.
+   */
+  options: JsonObject
+}
+
+/**
  * Structured configuration object suitable for passing to {@link runCucumber}
  * @public
  */
@@ -259,6 +287,7 @@ export interface IRunConfiguration {
   support: Partial<ISupportCodeCoordinates>
   runtime: IRunOptionsRuntime
   formats: IRunOptionsFormats
+  plugins?: IRunOptionsPlugins
 }
 
 /**
@@ -299,6 +328,7 @@ export interface IRunOptions {
   support: ISupportCodeCoordinatesOrLibrary
   runtime: IRunOptionsRuntime
   formats: IRunOptionsFormats
+  plugins?: IRunOptionsPlugins
 }
 
 /**

@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { PassThrough } from 'node:stream'
-import fs from 'mz/fs'
+import fs from 'node:fs/promises'
 import { reindent } from 'reindent-template-literals'
 import { IdGenerator } from '@cucumber/messages'
 import { IRunEnvironment } from '../environment'
@@ -32,9 +32,7 @@ export async function setupEnvironment(): Promise<Partial<IRunEnvironment>> {
 }
 
 export async function teardownEnvironment(environment: IRunEnvironment) {
-  return new Promise((resolve) => {
-    fs.rm(environment.cwd, { recursive: true }, resolve)
-  }).then(() => {
+  return fs.rm(environment.cwd, { recursive: true }).then(() => {
     environment.stdout.end()
   })
 }

@@ -121,18 +121,13 @@ Feature: Rule keyword
     """
     ...F-...
 
-    Failures:
+    Failed scenarios:
+    1) Only One -- More than one alive # features/highlander.feature:7
+         Then one ninja dies # features/step_definitions/cucumber_steps.js:20
+             Error: fail
 
-    1) Scenario: Only One -- More than one alive # features/highlander.feature:7
-    ✔ Given there are 3 ninjas # features/step_definitions/cucumber_steps.js:3
-    ✔ Given there are more than one ninja alive # features/step_definitions/cucumber_steps.js:11
-    ✔ When 2 ninjas meet, they will fight # features/step_definitions/cucumber_steps.js:15
-    ✖ Then one ninja dies # features/step_definitions/cucumber_steps.js:20
-        fail
-    - And there is one ninja less alive # features/step_definitions/cucumber_steps.js:24
-
-    2 scenarios (1 failed, 1 passed)
-    8 steps (1 failed, 1 skipped, 6 passed)
+    2 scenarios (1 passed, 1 failed)
+    8 steps (6 passed, 1 skipped, 1 failed)
     <duration-stat>
     """
 
@@ -159,7 +154,7 @@ Feature: Rule keyword
     """
     .
 
-    1 scenario (1 passed)
-    1 step (1 passed)
+    1 scenarios (1 passed)
+    1 steps (1 passed)
     <duration-stat>
     """

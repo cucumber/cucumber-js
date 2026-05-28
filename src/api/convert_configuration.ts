@@ -4,11 +4,9 @@ import {
   splitFormatDescriptor,
 } from '../configuration'
 import { IPublishConfig } from '../publish'
-import { ILogger } from '../environment'
 import { IRunConfiguration } from './types'
 
 export async function convertConfiguration(
-  logger: ILogger,
   flatConfiguration: IConfiguration,
   env: NodeJS.ProcessEnv
 ): Promise<IRunConfiguration> {
@@ -35,19 +33,23 @@ export async function convertConfiguration(
       retry: flatConfiguration.retry,
       retryTagFilter: flatConfiguration.retryTagFilter,
       strict: flatConfiguration.strict,
+      workerOptions: flatConfiguration.workerOptions,
       worldParameters: flatConfiguration.worldParameters,
     },
-    formats: convertFormats(logger, flatConfiguration, env),
+    formats: convertFormats(flatConfiguration, env),
+    plugins: {
+      specifiers: flatConfiguration.plugin,
+      options: flatConfiguration.pluginOptions,
+    },
   }
 }
 
 function convertFormats(
-  logger: ILogger,
   flatConfiguration: IConfiguration,
   env: NodeJS.ProcessEnv
 ) {
   const splitFormats: string[][] = flatConfiguration.format.map((item) =>
-    Array.isArray(item) ? item : splitFormatDescriptor(logger, item)
+    Array.isArray(item) ? item : splitFormatDescriptor(item)
   )
   return {
     stdout:

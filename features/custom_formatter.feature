@@ -98,7 +98,7 @@ Feature: custom formatter
       """
     When I run cucumber-js with `--format ./simple_formatter.js`
     Then it fails
-    And it outputs the text:
+    And the output contains the text:
       """
       a feature / a scenario
         Given an undefined step - UNDEFINED
@@ -113,11 +113,6 @@ Feature: custom formatter
                  // Write code here that turns the phrase above into concrete actions
                  return 'pending';
                });
-
-
-      1 scenario (1 undefined)
-      1 step (1 undefined)
-      <duration-stat>
       """
 
   Scenario: formatter plugins

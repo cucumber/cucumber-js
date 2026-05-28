@@ -173,7 +173,7 @@ describe('assembleTestCases', () => {
             stepMatchArguments: [
               {
                 group: {
-                  children: [],
+                  children: undefined,
                   start: 12,
                   value: '1',
                 },
@@ -187,7 +187,7 @@ describe('assembleTestCases', () => {
                         {
                           start: undefined,
                           value: undefined,
-                          children: [],
+                          children: undefined,
                         },
                       ],
                       start: 19,
@@ -200,7 +200,7 @@ describe('assembleTestCases', () => {
                         {
                           start: undefined,
                           value: undefined,
-                          children: [],
+                          children: undefined,
                         },
                       ],
                     },

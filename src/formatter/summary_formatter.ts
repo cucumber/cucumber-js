@@ -11,6 +11,9 @@ interface ILogIssuesRequest {
   title: string
 }
 
+/**
+ * @deprecated the built-in `summary` formatter is now plugin-based and no longer uses this class; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md
+ */
 export default class SummaryFormatter extends Formatter {
   public static readonly documentation: string =
     'Summary output of feature and scenarios'

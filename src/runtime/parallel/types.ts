@@ -1,53 +1,65 @@
+import { MessagePort, Worker } from 'node:worker_threads'
 import { Envelope } from '@cucumber/messages'
-import { RuntimeOptions } from '../index'
 import { ISupportCodeCoordinates } from '../../api'
-import { AssembledTestCase } from '../../assemble'
 import { CanonicalSupportCodeIds } from '../../support_code_library_builder/types'
+import { RuntimeOptions } from '../types'
 import { FormatOptions } from '../../formatter'
+import { AssembledTestCase } from '../../assemble'
 
-// Messages from Coordinator to Worker
+export type ManagedWorker = {
+  id: string
+  workerThread: Worker
+  port: MessagePort
+  ready: boolean
+}
 
-export type CoordinatorToWorkerCommand =
-  | InitializeCommand
-  | RunCommand
-  | FinalizeCommand
-
-export interface InitializeCommand {
-  type: 'INITIALIZE'
+export type WorkerData = {
+  cwd: string
   testRunStartedId: string
   supportCodeCoordinates: ISupportCodeCoordinates
   supportCodeIds: CanonicalSupportCodeIds
   options: RuntimeOptions
   snippetOptions: Pick<FormatOptions, 'snippetInterface' | 'snippetSyntax'>
+  port: MessagePort
 }
 
-export interface RunCommand {
-  type: 'RUN'
+export type RunBeforeAllHooksCommand = {
+  type: 'BEFOREALL_HOOKS'
+}
+
+export type RunTestCaseCommand = {
+  type: 'TEST_CASE'
   assembledTestCase: AssembledTestCase
   failing: boolean
 }
 
-export interface FinalizeCommand {
-  type: 'FINALIZE'
+export type RunAfterAllHooksCommand = {
+  type: 'AFTERALL_HOOKS'
 }
 
-// Messages from Worker to Coordinator
+export type WorkerCommand =
+  | RunBeforeAllHooksCommand
+  | RunTestCaseCommand
+  | RunAfterAllHooksCommand
 
-export type WorkerToCoordinatorEvent =
-  | ReadyEvent
-  | EnvelopeEvent
-  | FinishedEvent
-
-export interface ReadyEvent {
+export type ReadyEvent = {
   type: 'READY'
 }
 
-export interface EnvelopeEvent {
+export type EnvelopeEvent = {
   type: 'ENVELOPE'
   envelope: Envelope
 }
 
-export interface FinishedEvent {
+export type FinishedEvent = {
   type: 'FINISHED'
   success: boolean
+}
+
+export type WorkerEvent = ReadyEvent | EnvelopeEvent | FinishedEvent
+
+export interface Phase<T extends WorkerCommand = WorkerCommand> {
+  fill: () => T | undefined
+  next: (command: T, event: FinishedEvent) => T | undefined
+  reject: (reason: unknown) => void
 }

@@ -1,4 +1,4 @@
-@flaky
+@spawn @flaky
 Feature: Publish reports
 
   Background:
@@ -17,7 +17,6 @@ Feature: Publish reports
       Given(/^a step$/, function() {})
       """
 
-  @spawn
   Scenario: Report is published when --publish is specified
     When I run cucumber-js with arguments `--publish` and env ``
     Then it passes
@@ -35,7 +34,6 @@ Feature: Publish reports
       | testCaseFinished |
       | testRunFinished  |
 
-  @spawn
   Scenario: Report is published when CUCUMBER_PUBLISH_ENABLED is set
     When I run cucumber-js with arguments `` and env `CUCUMBER_PUBLISH_ENABLED=1`
     Then it passes
@@ -53,7 +51,6 @@ Feature: Publish reports
       | testCaseFinished |
       | testRunFinished  |
 
-  @spawn
   Scenario: Report is published when CUCUMBER_PUBLISH_TOKEN is set
     When I run cucumber-js with arguments `` and env `CUCUMBER_PUBLISH_TOKEN=f318d9ec-5a3d-4727-adec-bd7b69e2edd3`
     Then it passes
@@ -72,7 +69,6 @@ Feature: Publish reports
       | testRunFinished  |
     And the server should receive an "Authorization" header with value "Bearer f318d9ec-5a3d-4727-adec-bd7b69e2edd3"
 
-  @spawn
   Scenario: a banner is displayed after publication
     When I run cucumber-js with arguments `--publish` and env ``
     Then the error output contains the text:
@@ -85,7 +81,6 @@ Feature: Publish reports
       └──────────────────────────────────────────────────────────────────────────┘
       """
 
-  @spawn
   Scenario: results are not published due to a client error
     When I run cucumber-js with env `CUCUMBER_PUBLISH_TOKEN=keyboardcat`
     Then it passes
@@ -96,7 +91,6 @@ Feature: Publish reports
       └─────────────────────┘
       """
 
-  @spawn
   Scenario: results are not published due to a service error
     Given report publishing is not working
     When I run cucumber-js with arguments `--publish` and env ``
@@ -110,7 +104,6 @@ Feature: Publish reports
       Failed to publish report to http://localhost:9987 with status 500
       """
 
-  @spawn
   Scenario: results are not published due to an error on uploading
     Given report uploads are not working
     When I run cucumber-js with arguments `--publish` and env ``
@@ -122,4 +115,23 @@ Feature: Publish reports
     And the error output contains the text:
       """
       Failed to upload report to http://localhost:9987 with status 500
+      """
+
+  Scenario: a plugin can subscribe to the publish:url event
+    Given a file named "my_plugin.mjs" with:
+      """
+      export default {
+        type: 'plugin',
+        coordinator({ on, logger }) {
+          on('publish:url', (url) => {
+            logger.info(`Got report URL: ${url}`)
+          })
+        }
+      }
+      """
+    When I run cucumber-js with arguments `--publish --plugin ./my_plugin.mjs` and env ``
+    Then it passes
+    And the error output contains the text:
+      """
+      Got report URL: https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3
       """

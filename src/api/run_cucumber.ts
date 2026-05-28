@@ -1,18 +1,22 @@
 import { EventEmitter } from 'node:events'
 import { Envelope, IdGenerator, ParseError } from '@cucumber/messages'
+import { IRunEnvironment, makeEnvironment } from '../environment'
+import { IFilterablePickle } from '../filter'
 import { EventDataCollector } from '../formatter/helpers'
-import { emitMetaMessage, emitSupportCodeMessages } from '../cli/helpers'
 import { resolvePaths } from '../paths'
+import { makeRuntime } from '../runtime'
+import { timestamp } from '../runtime/stopwatch'
 import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { version } from '../version'
-import { IFilterablePickle } from '../filter'
-import { makeRuntime } from '../runtime'
-import { IRunEnvironment, makeEnvironment } from '../environment'
-import { IRunOptions, IRunResult } from './types'
+import {
+  emitMetaMessage,
+  emitSupportCodeMessages,
+} from './emit_support_code_messages'
 import { initializeFormatters } from './formatters'
-import { getSupportCodeLibrary } from './support'
 import { getPicklesAndErrors } from './gherkin'
 import { initializeForRunCucumber } from './plugins'
+import { getSupportCodeLibrary } from './support'
+import { IRunOptions, IRunResult } from './types'
 
 /**
  * Execute a Cucumber test run and return the overall result
@@ -145,8 +149,10 @@ Running from: ${__dirname}
     newId,
   })
 
+  const testRunStartedId = newId()
   const runtime = await makeRuntime({
-    environment,
+    testRunStartedId,
+    environment: mergedEnvironment,
     logger,
     eventBroadcaster,
     sourcedPickles: filteredPickles,
@@ -155,7 +161,20 @@ Running from: ${__dirname}
     options: options.runtime,
     snippetOptions: options.formats.options,
   })
+  eventBroadcaster.emit('envelope', {
+    testRunStarted: {
+      id: testRunStartedId,
+      timestamp: timestamp(),
+    },
+  } satisfies Envelope)
   const success = await runtime.run()
+  eventBroadcaster.emit('envelope', {
+    testRunFinished: {
+      testRunStartedId,
+      timestamp: timestamp(),
+      success,
+    },
+  } satisfies Envelope)
   await pluginManager.cleanup()
   await cleanupFormatters()
 

@@ -1,6 +1,6 @@
 # Parallel
 
-Cucumber supports running scenarios in parallel. The main process becomes a "coordinator" and spins up several separate Node.js processes to be the "workers". You can enable this with the `parallel` configuration option:
+Cucumber supports running scenarios in parallel. The main process becomes a "coordinator" and spins up several worker threads to be the "workers". You can enable this with the `parallel` configuration option:
 
 - In a configuration file `{ parallel: 3 }`
 - On the CLI `cucumber-js --parallel 3`
@@ -21,6 +21,21 @@ When using parallel mode, the last line of the summary output differentiates bet
 73 scenarios (73 passed)
 512 steps (512 passed)
 0m51.627s (executing steps: 4m51.228s)
+```
+
+### Worker options
+
+Workers run as threads inside the main process, so they share its resources. You can tune them via the `workerOptions` configuration option, which is passed through to the [`Worker` constructor](https://nodejs.org/api/worker_threads.html#new-workerfilename-options):
+
+```json
+{
+  "parallel": 4,
+  "workerOptions": {
+    "resourceLimits": {
+      "maxOldGenerationSizeMb": 2048
+    }
+  }
+}
 ```
 
 ### Hooks

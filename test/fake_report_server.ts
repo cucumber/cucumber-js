@@ -54,23 +54,26 @@ export default class FakeReportServer {
       this.receivedHeaders = { ...this.receivedHeaders, ...req.headers }
       const token = extractAuthorizationToken(req.headers.authorization)
       if (token && !isValidUUID(token)) {
-        res.status(401).end(`┌─────────────────────┐
+        res.status(401).json({
+          banner: `┌─────────────────────┐
 │ Error invalid token │
 └─────────────────────┘
-`)
+`,
+        })
         return
       }
 
       res.setHeader('Location', `http://localhost:${this.port}/s3`)
-      res.status(202)
-
-      res.end(`┌──────────────────────────────────────────────────────────────────────────┐
+      res.status(202).json({
+        banner: `┌──────────────────────────────────────────────────────────────────────────┐
 │ View your Cucumber Report at:                                            │
 │ https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3 │
 │                                                                          │
 │ This report will self-destruct in 24h unless it is claimed or deleted.   │
 └──────────────────────────────────────────────────────────────────────────┘
-`)
+`,
+        url: 'https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3',
+      })
     })
 
     this.server = http.createServer(app)

@@ -9,6 +9,63 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ## [Unreleased]
 ### Added
+- Add support for Node.js 26.x ([#2818](https://github.com/cucumber/cucumber-js/pull/2818))
+
+### Changed
+- BREAKING CHANGE: Reimplement parallel runtime with worker threads ([#2710](https://github.com/cucumber/cucumber-js/pull/2710))
+- BREAKING CHANGE: All `BeforeAll` and `AfterAll` hooks are always executed ([#2710](https://github.com/cucumber/cucumber-js/pull/2710))
+- BREAKING CHANGE: Set `FORCE_COLOR` based on deprecated format option ([#2769](https://github.com/cucumber/cucumber-js/pull/2769))
+- Redesigned output for summary, progress, progress bar and pretty formatters ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
+
+### Deprecated
+- Deprecate legacy `SummaryFormatter` and `ProgressFormatter` classes in favour of new formatter architecture ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
+- Deprecate `printAttachments` format option in favour of `includeAttachments` ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
+
+### Removed
+- BREAKING CHANGE: Drop support for Node.js 20.x ([#2818](https://github.com/cucumber/cucumber-js/pull/2818))
+- BREAKING CHANGE: Drop support for Node.js 25.x ([#2818](https://github.com/cucumber/cucumber-js/pull/2818))
+- BREAKING CHANGE: Remove deprecated handling of ambiguous formats ([#2819](https://github.com/cucumber/cucumber-js/pull/2819))
+
+## [12.9.0] - 2026-05-15
+### Added
+- Emit new `publish:url` event for plugins ([#2808](https://github.com/cucumber/cucumber-js/pull/2808))
+
+## [12.8.3] - 2026-05-09
+### Fixed
+- Handle thrown strings correctly ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
+- Include assertion info in stack trace ([#2803](https://github.com/cucumber/cucumber-js/pull/2803))
+
+## [12.8.2] - 2026-04-25
+### Changed
+- Various dependency updates
+
+## [12.8.1] - 2026-04-14
+### Fixed
+- Resolve dependency issue with `junit-xml-formatter` and `query` ([junit-xml-formatter#143](https://github.com/cucumber/junit-xml-formatter/pull/143))
+
+## [12.8.0] - 2026-04-12
+### Added
+- Support custom externalising option ([#2780](https://github.com/cucumber/cucumber-js/pull/2780))
+
+## [12.7.0] - 2026-02-25
+### Changed
+- Warn about merged paths from config and CLI ([#2759](https://github.com/cucumber/cucumber-js/pull/2759))
+
+### Fixed
+- Handle ESM when building source references ([#2740](https://github.com/cucumber/cucumber-js/pull/2740))
+- Fix error type resolution ([#2744](https://github.com/cucumber/cucumber-js/pull/2744))
+- Ensure that environment variables reach child processes in parallel mode ([#2752](https://github.com/cucumber/cucumber-js/pull/2752))
+
+## [12.6.0] - 2026-01-22
+### Deprecated
+- Deprecate colorsEnabled format option in favour of environment variables ([#2729](https://github.com/cucumber/cucumber-js/pull/2729))
+
+## [12.5.0] - 2025-12-26
+### Added
+- Allow external plugins (see [documentation](./docs/plugins.md)) ([#2715](https://github.com/cucumber/cucumber-js/pull/2715))
+
+## [12.4.0] - 2025-12-13
+### Added
 - Allow loading config files in TypeScript format ([#2709](https://github.com/cucumber/cucumber-js/pull/2709))
 
 ### Changed
@@ -1708,7 +1765,16 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 
 ## 0.0.1
 
-[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.3.0...HEAD
+[Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...HEAD
+[12.9.0]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...v12.9.0
+[12.8.3]: https://github.com/cucumber/cucumber-js/compare/v12.8.2...v12.8.3
+[12.8.2]: https://github.com/cucumber/cucumber-js/compare/v12.8.1...v12.8.2
+[12.8.1]: https://github.com/cucumber/cucumber-js/compare/v12.8.0...v12.8.1
+[12.8.0]: https://github.com/cucumber/cucumber-js/compare/v12.7.0...v12.8.0
+[12.7.0]: https://github.com/cucumber/cucumber-js/compare/v12.6.0...v12.7.0
+[12.6.0]: https://github.com/cucumber/cucumber-js/compare/v12.5.0...v12.6.0
+[12.5.0]: https://github.com/cucumber/cucumber-js/compare/v12.4.0...v12.5.0
+[12.4.0]: https://github.com/cucumber/cucumber-js/compare/v12.3.0...v12.4.0
 [12.3.0]: https://github.com/cucumber/cucumber-js/compare/v12.2.0...v12.3.0
 [12.2.0]: https://github.com/cucumber/cucumber-js/compare/v12.1.0...v12.2.0
 [12.1.0]: https://github.com/cucumber/cucumber-js/compare/v12.0.0...v12.1.0

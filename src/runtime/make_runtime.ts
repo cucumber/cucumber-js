@@ -7,11 +7,12 @@ import { SupportCodeLibrary } from '../support_code_library_builder/types'
 import FormatterBuilder from '../formatter/builder'
 import { FormatOptions } from '../formatter'
 import { Runtime } from './types'
-import { ChildProcessAdapter } from './parallel/adapter'
 import { InProcessAdapter } from './serial/adapter'
 import { Coordinator } from './coordinator'
+import { WorkerThreadsAdapter } from './parallel/adapter'
 
 export async function makeRuntime({
+  testRunStartedId,
   environment,
   logger,
   eventBroadcaster,
@@ -21,6 +22,7 @@ export async function makeRuntime({
   options,
   snippetOptions,
 }: {
+  testRunStartedId: string
   environment: IRunEnvironment
   logger: ILogger
   eventBroadcaster: EventEmitter
@@ -30,7 +32,6 @@ export async function makeRuntime({
   options: IRunOptionsRuntime
   snippetOptions: Pick<FormatOptions, 'snippetInterface' | 'snippetSyntax'>
 }): Promise<Runtime> {
-  const testRunStartedId = newId()
   const adapter = await makeAdapter(
     options,
     snippetOptions,
@@ -62,7 +63,7 @@ async function makeAdapter(
   newId: () => string
 ) {
   if (options.parallel > 0) {
-    return new ChildProcessAdapter(
+    return new WorkerThreadsAdapter(
       testRunStartedId,
       environment,
       logger,

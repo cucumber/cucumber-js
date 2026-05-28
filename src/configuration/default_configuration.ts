@@ -7,6 +7,8 @@ export const DEFAULT_CONFIGURATION: IConfiguration = {
   failFast: false,
   format: [],
   formatOptions: {},
+  plugin: [],
+  pluginOptions: {},
   import: [],
   language: 'en',
   loader: [],
@@ -22,5 +24,6 @@ export const DEFAULT_CONFIGURATION: IConfiguration = {
   shard: '',
   strict: true,
   tags: '',
+  workerOptions: {},
   worldParameters: {},
 }

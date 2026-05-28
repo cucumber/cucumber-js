@@ -86,14 +86,8 @@ Feature: Retry flaky tests
       """
       F.
 
-      Warnings:
-
-      1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
-         ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
-             fail
-
-      1 scenario (1 passed)
-      1 step (1 passed)
+      1 scenarios (1 passed)
+      1 steps (1 passed)
       <duration-stat>
       """
     And scenario "Flaky" attempt 0 step "Given a flaky step" has status "failed"
@@ -126,14 +120,8 @@ Feature: Retry flaky tests
       """
       F.
 
-      Warnings:
-
-      1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
-         ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
-             fail
-
-      1 scenario (1 passed)
-      1 step (1 passed)
+      1 scenarios (1 passed)
+      1 steps (1 passed)
       <duration-stat>
       """
     And scenario "Flaky" attempt 0 step "Given a flaky step" has status "failed"
@@ -171,12 +159,6 @@ Feature: Retry flaky tests
     Then the output contains the text:
       """
       F..
-
-      Warnings:
-
-      1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
-         ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
-            fail
 
       2 scenarios (2 passed)
       2 steps (2 passed)
@@ -219,13 +201,6 @@ Feature: Retry flaky tests
     Then it outputs the text:
       """
       F-...
-
-      Warnings:
-
-      1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
-         ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
-             fail
-         - And a good step # features/step_definitions/cucumber_steps.js:13
 
       2 scenarios (2 passed)
       3 steps (3 passed)
@@ -273,24 +248,13 @@ Feature: Retry flaky tests
       """
       F..FF
 
-      Failures:
+      Failed scenarios:
+      1) Bad, after 2 attempts # features/a.feature:6
+           Given a bad step # features/step_definitions/cucumber_steps.js:17
+               Error: fail
 
-      1) Scenario: Bad (attempt 2) # features/a.feature:6
-         ✖ Given a bad step # features/step_definitions/cucumber_steps.js:17
-             fail
-
-      Warnings:
-
-      1) Scenario: Flaky (attempt 1, retried) # features/a.feature:2
-         ✖ Given a flaky step # features/step_definitions/cucumber_steps.js:5
-             fail
-
-      2) Scenario: Bad (attempt 1, retried) # features/a.feature:6
-         ✖ Given a bad step # features/step_definitions/cucumber_steps.js:17
-             fail
-
-      3 scenarios (1 failed, 2 passed)
-      3 steps (1 failed, 2 passed)
+      3 scenarios (2 passed, 1 failed)
+      3 steps (2 passed, 1 failed)
       <duration-stat>
       """
     And scenario "Flaky" attempt 0 step "Given a flaky step" has status "failed"

@@ -43,7 +43,7 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1) Scenario: b # a.feature:2\n' +
             `   ${figures.cross} Given a failing step # steps.ts:9\n` +
-            '       error\n' +
+            '       Error: error\n' +
             '\n' +
             '1 scenario (1 failed)\n' +
             '1 step (1 failed)\n' +
@@ -76,7 +76,7 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1) Scenario: c # a.feature:3\n' +
             `   ${figures.cross} Given a failing step # steps.ts:9\n` +
-            '       error\n' +
+            '       Error: error\n' +
             '\n' +
             '1 scenario (1 failed)\n' +
             '1 step (1 failed)\n' +
@@ -109,9 +109,6 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1) Scenario: b # a.feature:2\n' +
             `   ${figures.cross} Given an ambiguous step\n` +
-            '       Multiple step definitions match:\n' +
-            '         an ambiguous step    - steps.ts:13\n' +
-            '         /an? ambiguous step/ - steps.ts:14\n' +
             '\n' +
             '1 scenario (1 ambiguous)\n' +
             '1 step (1 ambiguous)\n' +
@@ -215,7 +212,7 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1) Scenario: b (attempt 1, retried) # a.feature:2\n' +
             `   ${figures.cross} Given a flaky step # steps.ts:21\n` +
-            '       error\n' +
+            '       Error: error\n' +
             '\n' +
             '1 scenario (1 passed)\n' +
             '1 step (1 passed)\n' +
@@ -249,13 +246,13 @@ describe('SummaryFormatter', () => {
             '\n' +
             '1) Scenario: b (attempt 2) # a.feature:2\n' +
             `   ${figures.cross} Given a failing step # steps.ts:9\n` +
-            '       error\n' +
+            '       Error: error\n' +
             '\n' +
             'Warnings:\n' +
             '\n' +
             '1) Scenario: b (attempt 1, retried) # a.feature:2\n' +
             `   ${figures.cross} Given a failing step # steps.ts:9\n` +
-            '       error\n' +
+            '       Error: error\n' +
             '\n' +
             '1 scenario (1 failed)\n' +
             '1 step (1 failed)\n' +

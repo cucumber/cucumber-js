@@ -1,7 +1,7 @@
 import path from 'node:path'
+import fs from 'node:fs/promises'
 import { expect } from 'chai'
 import hasAnsi from 'has-ansi'
-import fs from 'mz/fs'
 import fsExtra from 'fs-extra'
 import Mustache from 'mustache'
 import { normalizeText } from '../support/helpers'
@@ -49,6 +49,30 @@ Then(
     const actualContent = normalizeText(content)
     const expectedContent = normalizeText(text)
     expect(actualContent).to.eql(expectedContent)
+  }
+)
+
+Then(
+  'the file {string} contains the text:',
+  async function (this: World, filePath: string, text: string) {
+    filePath = Mustache.render(filePath, this)
+    const absoluteFilePath = path.resolve(this.tmpDir, filePath)
+    const content = await fs.readFile(absoluteFilePath, 'utf8')
+    const actualContent = normalizeText(content)
+    const expectedContent = normalizeText(text)
+    expect(actualContent).to.include(expectedContent)
+  }
+)
+
+Then(
+  'the file {string} does not contain the text:',
+  async function (this: World, filePath: string, text: string) {
+    filePath = Mustache.render(filePath, this)
+    const absoluteFilePath = path.resolve(this.tmpDir, filePath)
+    const content = await fs.readFile(absoluteFilePath, 'utf8')
+    const actualContent = normalizeText(content)
+    const expectedContent = normalizeText(text)
+    expect(actualContent).not.to.include(expectedContent)
   }
 )
 

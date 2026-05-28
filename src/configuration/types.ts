@@ -1,3 +1,4 @@
+import { ResourceLimits } from 'node:worker_threads'
 import { JsonObject } from 'type-fest'
 import { IPickleOrder } from '../filter'
 
@@ -64,6 +65,26 @@ export interface IConfiguration {
    */
   formatOptions: JsonObject
   /**
+   * Name/path of each plugin to use
+   *
+   * @example
+   * [
+   *   "\@cucumber/my-plugin",
+   *   "./custom-plugin.js"
+   * ]
+   * @default []
+   * @remarks
+   * Each item is a module specifier for a plugin to be loaded.
+   */
+  plugin: string[]
+  /**
+   * Options to be provided to plugins
+   * @default \{\}
+   * @remarks
+   * The value must be a JSON-serializable object.
+   */
+  pluginOptions: JsonObject
+  /**
    * Paths to where your support code is
    * @default []
    * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/configuration.md#finding-your-code}
@@ -92,7 +113,7 @@ export interface IConfiguration {
    */
   order: IPickleOrder
   /**
-   * Run tests in parallel with the given number of worker processes
+   * Run tests in parallel with the given number of worker threads
    * @default 0
    * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/parallel.md}
    */
@@ -143,6 +164,14 @@ export interface IConfiguration {
    */
   tags: string
   /**
+   * Options applied to each worker thread when running in parallel mode
+   *
+   * @default \{\}
+   * @see {@link https://nodejs.org/api/worker_threads.html#new-workerfilename-options}
+   * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/parallel.md#worker-options}
+   */
+  workerOptions: IWorkerOptions
+  /**
    * Parameters to be passed to your World
    * @default \{\}
    * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/support_files/world.md}
@@ -157,3 +186,18 @@ export interface IConfiguration {
  * @public
  */
 export type IProfiles = Record<string, Partial<IConfiguration>>
+
+/**
+ * Options passed to each worker thread in parallel mode.
+ *
+ * Fields are forwarded to the Node.js `Worker` constructor with the same names
+ * and semantics — see {@link https://nodejs.org/api/worker_threads.html#new-workerfilename-options}.
+ *
+ * @public
+ */
+export interface IWorkerOptions {
+  /**
+   * V8 resource limits for each worker thread
+   */
+  resourceLimits?: ResourceLimits
+}

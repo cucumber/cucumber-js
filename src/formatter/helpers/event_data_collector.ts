@@ -100,7 +100,6 @@ export default class EventDataCollector {
 
   storeAttachment(attachment: messages.Attachment): void {
     const { testCaseStartedId, testStepId } = attachment
-    // TODO: we shouldn't have to check if these properties have values - they are non-nullable
     if (doesHaveValue(testCaseStartedId) && doesHaveValue(testStepId)) {
       const { stepAttachments } = this.testCaseAttemptDataMap[testCaseStartedId]
       if (doesNotHaveValue(stepAttachments[testStepId])) {

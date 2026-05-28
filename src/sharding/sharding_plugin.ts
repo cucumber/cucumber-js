@@ -1,10 +1,9 @@
 import { InternalPlugin } from '../plugin'
-import { ISourcesCoordinates } from '../api'
 
-export const shardingPlugin: InternalPlugin<ISourcesCoordinates> = {
+export const shardingPlugin: InternalPlugin = {
   type: 'plugin',
-  coordinator: async ({ on, options }) => {
-    on('pickles:filter', async (allPickles) => {
+  coordinator: async ({ transform, options }) => {
+    transform('pickles:filter', async (allPickles) => {
       if (!options.shard) {
         return allPickles
       }

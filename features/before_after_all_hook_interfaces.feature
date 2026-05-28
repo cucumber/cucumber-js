@@ -83,7 +83,7 @@ Feature: before / after all hook interfaces
       """
     When I run cucumber-js
     Then it fails
-    And the error output contains the text:
+    And the output contains the text:
       """
       my error
       """
@@ -107,7 +107,7 @@ Feature: before / after all hook interfaces
       """
     When I run cucumber-js
     Then it fails
-    And the error output contains the text:
+    And the output contains the text:
       """
       my error
       """
@@ -128,7 +128,7 @@ Feature: before / after all hook interfaces
       """
     When I run cucumber-js
     Then it fails
-    And the error output contains the text:
+    And the output contains the text:
       """
       function uses multiple asynchronous interfaces: callback and promise
       to use the callback interface: do not return a promise
@@ -168,7 +168,7 @@ Feature: before / after all hook interfaces
       """
     When I run cucumber-js
     Then it fails
-    And the error output contains the text:
+    And the output contains the text:
       """
       my error
       """
@@ -189,7 +189,7 @@ Feature: before / after all hook interfaces
       """
     When I run cucumber-js
     Then it fails
-    And the error output contains the text:
+    And the output contains the text:
       """
       Promise rejected without a reason
       """
@@ -215,7 +215,7 @@ Feature: before / after all hook interfaces
       """
     When I run cucumber-js
     Then it fails
-    And the error output contains the text:
+    And the output contains the text:
       """
       my error
       """

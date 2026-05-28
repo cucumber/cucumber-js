@@ -35,6 +35,13 @@ export async function initializeFormatters({
   supportCodeLibrary: SupportCodeLibrary
   pluginManager: PluginManager
 }): Promise<() => Promise<void>> {
+  if (
+    configuration.options.colorsEnabled !== undefined &&
+    !('FORCE_COLOR' in process.env)
+  ) {
+    process.env.FORCE_COLOR = configuration.options.colorsEnabled ? '1' : '0'
+  }
+
   const cleanupFns: Array<() => Promise<void>> = []
 
   async function initializeFormatter(

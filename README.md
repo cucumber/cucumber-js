@@ -9,11 +9,16 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@cucumber/cucumber" style="text-decoration: none"><img src="https://img.shields.io/npm/v/@cucumber/cucumber?style=flat&color=dark-green" alt="Latest version on npm"></a>
-  <a href="https://github.com/cucumber/cucumber-js/actions" style="text-decoration: none"><img src="https://github.com/cucumber/cucumber-js/actions/workflows/build.yml/badge.svg" alt="Build status"></a>
   <a href="https://coveralls.io/github/cucumber/cucumber-js?branch=master" style="text-decoration: none"><img src="https://coveralls.io/repos/github/cucumber/cucumber-js/badge.svg?branch=main" alt="Coverage"></a>
+  <a href="https://scorecard.dev/viewer/?uri=github.com/cucumber/cucumber-js"><img src="https://api.scorecard.dev/projects/github.com/cucumber/cucumber-js/badge" alt="OpenSSF Scorecard"></a>
   <a href="https://opencollective.com/cucumber"><img src="https://opencollective.com/cucumber/backers/badge.svg" alt="Backers"></a>
   <a href="https://opencollective.com/cucumber"><img src="https://opencollective.com/cucumber/sponsors/badge.svg" alt="Sponsors"></a>
   <a href="https://vshymanskyy.github.io/StandWithUkraine"><img src="https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg" alt="Ukraine solidarity"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/cucumber/cucumber-js/actions" style="text-decoration: none"><img src="https://github.com/cucumber/cucumber-js/actions/workflows/build.yml/badge.svg" alt="Build status"></a>
+  <a href="https://github.com/cucumber/cucumber-js/actions" style="text-decoration: none"><img src="https://github.com/cucumber/cucumber-js/actions/workflows/release-npm.yml/badge.svg" alt="Release status"></a>
 </p>
 
 [Cucumber](https://github.com/cucumber) is a tool for running automated tests written in plain language. Because they're
@@ -71,11 +76,11 @@ const { Greeter } = require('../../src')
 
 When('the greeter says hello', function () {
   this.whatIHeard = new Greeter().sayHello()
-});
+})
 
 Then('I should have heard {string}', function (expectedResponse) {
   assert.equal(this.whatIHeard, expectedResponse)
-});
+})
 ```
 
 Finally, run Cucumber:
@@ -113,9 +118,11 @@ The following documentation is for `main`, which might contain some unreleased f
   * [Filtering which scenarios run](./docs/filtering.md)
   * [Formatters for feedback and reporting](./docs/formatters.md)
   * [Parallel running for speed](./docs/parallel.md)
+  * [Plugins for extending functionality](./docs/plugins.md)
   * [Profiles for composable configuration](./docs/profiles.md)
   * [Rerunning just failures](./docs/rerun.md)
   * [Retrying flaky scenarios](./docs/retry.md)
+  * [Sharding to split tests across machines](./docs/sharding.md)
   * [JavaScript API for running programmatically](./docs/javascript_api.md)
   * [Snippets for undefined steps](./docs/snippets.md)
   * [Transpiling (from TypeScript etc)](./docs/transpiling.md)

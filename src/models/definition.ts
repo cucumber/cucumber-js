@@ -30,6 +30,7 @@ export interface IDefinitionParameters<T extends IDefinitionOptions> {
   id: string
   line: number
   options: T
+  order: number
   unwrappedCode?: Function
   uri: string
 }
@@ -46,6 +47,7 @@ export interface IDefinition {
   readonly id: string
   readonly line: number
   readonly options: IDefinitionOptions
+  readonly order: number
   readonly unwrappedCode: Function
   readonly uri: string
 
@@ -59,6 +61,7 @@ export default abstract class Definition {
   public readonly id: string
   public readonly line: number
   public readonly options: IDefinitionOptions
+  public readonly order: number
   public readonly unwrappedCode: Function
   public readonly uri: string
 
@@ -67,6 +70,7 @@ export default abstract class Definition {
     id,
     line,
     options,
+    order,
     unwrappedCode,
     uri,
   }: IDefinitionParameters<IDefinitionOptions>) {
@@ -74,6 +78,7 @@ export default abstract class Definition {
     this.id = id
     this.line = line
     this.options = options
+    this.order = order
     this.unwrappedCode = unwrappedCode
     this.uri = uri
   }

@@ -24,15 +24,13 @@ Feature: Error formatting
       """
       F-
 
-      Failures:
+      Failed scenarios:
+      1) some scenario # features/a.feature:2
+           Before # features/support/hooks.js:3
+               Error: Fail
 
-      1) Scenario: some scenario # features/a.feature:2
-         ✖ Before # features/support/hooks.js:3
-            Fail
-         - Given a passing step # features/step_definitions/cucumber_steps.js:3
-
-      1 scenario (1 failed)
-      1 step (1 skipped)
+      1 scenarios (1 failed)
+      2 steps (1 skipped, 1 failed)
       <duration-stat>
       """
 
@@ -60,18 +58,9 @@ Feature: Error formatting
     When I run cucumber-js
     Then the output contains the text:
       """
-      Warnings:
-
-      1) Scenario: some scenario # features/a.feature:3
-         ✔ Given a basic step # features/step_definitions/cucumber_steps.js:3
-             Attachment (text/plain): Some info.
-         ✔ And a step with a doc string # features/step_definitions/cucumber_steps.js:4
-             \"\"\"
-             my doc string
-             \"\"\"
-             Attachment (application/json)
-         ? And a pending step # features/step_definitions/cucumber_steps.js:5
-             Pending
+      Pending scenarios:
+        1) some scenario # features/a.feature:3
+            And a pending step # features/step_definitions/cucumber_steps.js:5
       """
     And it fails
 
@@ -96,14 +85,9 @@ Feature: Error formatting
     When I run cucumber-js
     Then the output contains the text:
       """
-      Warnings:
-
-      1) Scenario: some scenario # features/a.feature:3
-         ✔ Given a table: # features/step_definitions/cucumber_steps.js:3
-             | foo\nbar               | bar | baz      |
-             | foo\nbar\n\nbaz\n\\boo | bar | baz\nfoo |
-         ? And a pending step # features/step_definitions/cucumber_steps.js:4
-             Pending
+      Pending scenarios:
+      1) some scenario # features/a.feature:3
+           And a pending step # features/step_definitions/cucumber_steps.js:4
       """
     And it fails
 
@@ -126,11 +110,8 @@ Feature: Error formatting
     When I run cucumber-js with `--format-options '{"printAttachments": false}'`
     Then the output contains the text:
       """
-      Warnings:
-
-      1) Scenario: some scenario # features/a.feature:3
-         ✔ Given a basic step # features/step_definitions/cucumber_steps.js:3
-         ? And a pending step # features/step_definitions/cucumber_steps.js:4
-             Pending
+      Pending scenarios:
+      1) some scenario # features/a.feature:3
+           And a pending step # features/step_definitions/cucumber_steps.js:4
       """
     And it fails

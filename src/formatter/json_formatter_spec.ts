@@ -171,7 +171,7 @@ describe('JsonFormatter', () => {
         const step = JSON.parse(output)[0].elements[0].steps[0]
         expect(step.result).to.eql({
           duration: 0,
-          error_message: 'error',
+          error_message: 'Error: error',
           status: 'failed',
         })
       })

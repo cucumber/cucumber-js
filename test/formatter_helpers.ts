@@ -4,12 +4,13 @@ import { promisify } from 'node:util'
 import { IdGenerator } from '@cucumber/messages'
 import * as messages from '@cucumber/messages'
 import { makeRuntime, RuntimeOptions } from '../src/runtime'
+import { timestamp } from '../src/runtime/stopwatch'
 import { EventDataCollector } from '../src/formatter/helpers'
 import FormatterBuilder from '../src/formatter/builder'
 import { SupportCodeLibrary } from '../src/support_code_library_builder/types'
 import { ITestCaseAttempt } from '../src/formatter/helpers/event_data_collector'
 import { doesNotHaveValue } from '../src/value_checker'
-import { emitSupportCodeMessages } from '../src/cli/helpers'
+import { emitSupportCodeMessages } from '../src/api/emit_support_code_messages'
 import { FormatOptions } from '../src/formatter'
 import { SourcedPickle } from '../src/assemble'
 import { IRunEnvironment } from '../src/api'
@@ -84,6 +85,7 @@ export async function testFormatter({
   }
 
   const runtime = await makeRuntime({
+    testRunStartedId: '1',
     environment: {} as IRunEnvironment,
     logger: new FakeLogger(),
     eventBroadcaster,
@@ -96,9 +98,19 @@ export async function testFormatter({
     },
     snippetOptions: {},
   })
-  await runtime.run()
+  eventBroadcaster.emit('envelope', {
+    testRunStarted: { id: '1', timestamp: timestamp() },
+  } satisfies messages.Envelope)
+  const success = await runtime.run()
+  eventBroadcaster.emit('envelope', {
+    testRunFinished: {
+      testRunStartedId: '1',
+      timestamp: timestamp(),
+      success,
+    },
+  } satisfies messages.Envelope)
 
-  return normalizeSummaryDuration(output)
+  return normalizeLegacySummaryDuration(output)
 }
 
 export async function getTestCaseAttempts({
@@ -146,6 +158,7 @@ export async function getEnvelopesAndEventDataCollector({
   }
 
   const runtime = await makeRuntime({
+    testRunStartedId: '1',
     environment: {} as IRunEnvironment,
     logger: new FakeLogger(),
     eventBroadcaster,
@@ -158,14 +171,31 @@ export async function getEnvelopesAndEventDataCollector({
     },
     snippetOptions: {},
   })
-  await runtime.run()
+  eventBroadcaster.emit('envelope', {
+    testRunStarted: { id: '1', timestamp: timestamp() },
+  } satisfies messages.Envelope)
+  const success = await runtime.run()
+  eventBroadcaster.emit('envelope', {
+    testRunFinished: {
+      testRunStartedId: '1',
+      timestamp: timestamp(),
+      success,
+    },
+  } satisfies messages.Envelope)
 
   return { envelopes, eventDataCollector }
 }
 
-export function normalizeSummaryDuration(output: string): string {
+export function normalizeLegacySummaryDuration(output: string): string {
   return output.replace(
     /\d+m\d{2}\.\d{3}s \(executing steps: \d+m\d{2}\.\d{3}s\)/,
+    '<duration-stat>'
+  )
+}
+
+export function normalizeSummaryDuration(output: string): string {
+  return output.replace(
+    /\d+m \d+\.\d+s \(\d+m \d+\.\d+s executing your code\)/,
     '<duration-stat>'
   )
 }

@@ -33,7 +33,7 @@ Feature: Summary Formatter
     When I run cucumber-js with `-f summary`
     Then it outputs the text:
       """
-      1 scenario (1 passed)
+      1 scenarios (1 passed)
       2 steps (2 passed)
       <duration-stat>
       """

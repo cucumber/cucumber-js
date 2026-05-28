@@ -15,6 +15,9 @@ const STATUS_CHARACTER_MAPPING: Map<messages.TestStepResultStatus, string> =
     [messages.TestStepResultStatus.UNDEFINED, 'U'],
   ])
 
+/**
+ * @deprecated the built-in `progress` formatter is now plugin-based and no longer uses this class; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md
+ */
 export default class ProgressFormatter extends SummaryFormatter {
   public static readonly documentation: string =
     'Prints one character per scenario.'
