@@ -39,6 +39,3 @@ export const context = cucumber.context
 export const parallelCanAssignHelpers = cucumber.parallelCanAssignHelpers
 
 export const wrapPromiseWithTimeout = cucumber.wrapPromiseWithTimeout
-
-// Deprecated
-export const Cli = cucumber.Cli

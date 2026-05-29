@@ -1,6 +1,6 @@
 import type { Readable } from 'node:stream'
 import * as messages from '@cucumber/messages'
-import isStream from 'is-stream'
+import { isReadableStream } from 'is-stream'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 
 export interface IAttachmentMedia {
@@ -70,7 +70,7 @@ export default class AttachmentManager {
         throw Error('Buffer attachments must specify a media type')
       }
       this.createBufferAttachment(data, options.mediaType, options.fileName)
-    } else if (isStream.readable(data)) {
+    } else if (isReadableStream(data)) {
       if (doesNotHaveValue(options.mediaType)) {
         throw Error('Stream attachments must specify a media type')
       }

@@ -19,7 +19,7 @@ describe('loadSupport', function () {
     const support = await loadSupport(runConfiguration, environment)
 
     expect(support.originalCoordinates).to.deep.eq({
-      requireModules: ['ts-node/register'],
+      requireModules: ['tsx/cjs'],
       requirePaths: [path.join(environment.cwd, 'features', 'steps.ts')],
       importPaths: [],
       loaders: [],

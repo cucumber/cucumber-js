@@ -1,4 +1,4 @@
-import chalk from 'chalk'
+import { styleText } from 'node:util'
 import { reindent } from 'reindent-template-literals'
 
 export function warnUserAboutEnablingDeveloperMode(error: any): void {
@@ -11,7 +11,8 @@ export function warnUserAboutEnablingDeveloperMode(error: any): void {
 
   // biome-ignore lint/suspicious/noConsole: this is the user-facing warning
   console.error(
-    chalk.red(
+    styleText(
+      'red',
       reindent(`
         Error: Unable to run feature tests!
 

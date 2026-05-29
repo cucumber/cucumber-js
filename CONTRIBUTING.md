@@ -28,7 +28,6 @@ Type `npm run` or see the `package.json` scripts section for how to run each cat
 
 * lint - `npm run lint`
   * [biome](https://biomejs.dev)
-  * [dependency-lint](https://github.com/charlierudolph/dependency-lint)
 * typescript tests - `npm run types-test`
   * [tsd](https://github.com/SamVerschueren/tsd)
 * unit tests - `npm run unit-test`

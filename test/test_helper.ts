@@ -1,6 +1,6 @@
-import chai from 'chai'
+import { use } from 'chai'
 import dirtyChai from 'dirty-chai'
 import sinonChai from 'sinon-chai'
 
-chai.use(sinonChai)
-chai.use(dirtyChai)
+use(sinonChai)
+use(dirtyChai)

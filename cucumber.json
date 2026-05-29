@@ -1,6 +1,6 @@
 {
   "default": {
-    "requireModule": ["ts-node/register"],
+    "requireModule": ["tsx/cjs"],
     "require": ["features/**/*.ts"],
     "format": [
       "progress-bar",
