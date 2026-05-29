@@ -17,13 +17,13 @@ export interface IColorFns {
 }
 
 const colorByStatus: Record<TestStepResultStatus, Format> = {
-  AMBIGUOUS: 'red',
+  AMBIGUOUS: 'magenta',
   FAILED: 'red',
   PASSED: 'green',
-  PENDING: 'yellow',
-  SKIPPED: 'cyan',
-  UNDEFINED: 'yellow',
-  UNKNOWN: 'yellow',
+  PENDING: 'cyan',
+  SKIPPED: 'yellow',
+  UNDEFINED: 'blue',
+  UNKNOWN: 'gray',
 }
 
 export default function getColorFns(stream: Writable): IColorFns {
