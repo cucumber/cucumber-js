@@ -1,8 +1,8 @@
 import type { Writable } from 'node:stream'
+import { styleText } from 'node:util'
 import type { TestStepResultStatus } from '@cucumber/messages'
-import chalk from 'chalk'
-import { type ColorInfo, supportsColor } from 'supports-color'
-import { doesNotHaveValue } from '../value_checker'
+
+type Format = Parameters<typeof styleText>[0]
 
 export type IColorFn = (text: string) => string
 
@@ -16,53 +16,30 @@ export interface IColorFns {
   errorStack: IColorFn
 }
 
-export default function getColorFns(
-  stream: Writable,
-  env: NodeJS.ProcessEnv,
-  enabled?: boolean
-): IColorFns {
-  const support: ColorInfo = detectSupport(stream, env, enabled)
-  if (support) {
-    const chalkInstance = new chalk.Instance(support)
-    return {
-      forStatus(status: TestStepResultStatus) {
-        return {
-          AMBIGUOUS: chalkInstance.red.bind(chalk),
-          FAILED: chalkInstance.red.bind(chalk),
-          PASSED: chalkInstance.green.bind(chalk),
-          PENDING: chalkInstance.yellow.bind(chalk),
-          SKIPPED: chalkInstance.cyan.bind(chalk),
-          UNDEFINED: chalkInstance.yellow.bind(chalk),
-          UNKNOWN: chalkInstance.yellow.bind(chalk),
-        }[status]
-      },
-      location: chalkInstance.gray.bind(chalk),
-      tag: chalkInstance.cyan.bind(chalk),
-      diffAdded: chalkInstance.green.bind(chalk),
-      diffRemoved: chalkInstance.red.bind(chalk),
-      errorMessage: chalkInstance.red.bind(chalk),
-      errorStack: chalkInstance.grey.bind(chalk),
-    }
-  } else {
-    return {
-      forStatus(_status: TestStepResultStatus) {
-        return (x) => x
-      },
-      location: (x) => x,
-      tag: (x) => x,
-      diffAdded: (x) => x,
-      diffRemoved: (x) => x,
-      errorMessage: (x) => x,
-      errorStack: (x) => x,
-    }
-  }
+const colorByStatus: Record<TestStepResultStatus, Format> = {
+  AMBIGUOUS: 'red',
+  FAILED: 'red',
+  PASSED: 'green',
+  PENDING: 'yellow',
+  SKIPPED: 'cyan',
+  UNDEFINED: 'yellow',
+  UNKNOWN: 'yellow',
 }
 
-function detectSupport(stream: Writable, env: NodeJS.ProcessEnv, enabled?: boolean): ColorInfo {
-  const support: ColorInfo = supportsColor(stream)
-  // if we find FORCE_COLOR, we can let the supports-color library handle that
-  if ('FORCE_COLOR' in env || doesNotHaveValue(enabled)) {
-    return support
+export default function getColorFns(stream: Writable): IColorFns {
+  // styleText validates the stream itself, honoring FORCE_COLOR / NO_COLOR / TTY detection
+  const fn =
+    (format: Format): IColorFn =>
+    (text) =>
+      styleText(format, text, { stream })
+
+  return {
+    forStatus: (status: TestStepResultStatus) => fn(colorByStatus[status]),
+    location: fn('gray'),
+    tag: fn('cyan'),
+    diffAdded: fn('green'),
+    diffRemoved: fn('red'),
+    errorMessage: fn('red'),
+    errorStack: fn('grey'),
   }
-  return enabled ? support || { level: 1 } : false
 }
