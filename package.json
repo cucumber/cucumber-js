@@ -301,7 +301,7 @@
     "typescript": "^6.0.0"
   },
   "overrides": {
-    "ansi-regex": "^5.0.1"
+    "ansi-regex": "^6.0.0"
   },
   "scripts": {
     "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.build.json && shx cp src/wrapper.mjs lib/ && shx cp src/api/wrapper.mjs lib/api/",
