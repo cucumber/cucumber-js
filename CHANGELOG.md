@@ -21,6 +21,9 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 - Deprecate legacy `SummaryFormatter` and `ProgressFormatter` classes in favour of new formatter architecture ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
 - Deprecate `printAttachments` format option in favour of `includeAttachments` ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
 
+### Fixed
+- Update status colors to match other formatters ([#2828](https://github.com/cucumber/cucumber-js/pull/2828))
+
 ### Removed
 - BREAKING CHANGE: Drop support for Node.js 20.x ([#2818](https://github.com/cucumber/cucumber-js/pull/2818))
 - BREAKING CHANGE: Drop support for Node.js 25.x ([#2818](https://github.com/cucumber/cucumber-js/pull/2818))

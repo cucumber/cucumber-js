@@ -106,7 +106,7 @@ Every key is optional; provide only the ones you want to override.
 
 ## Colored output
 
-Many formatters, including the built-in ones, emit some colored output. By default, Cucumber will automatically detect the colors support of the output stream and decide whether to emit colors accordingly. This check comes via the [supports-colors](https://github.com/chalk/supports-color) library and is pretty comprehensive, including awareness of commonly-used operating systems and CI platforms that represent edge cases.
+Many formatters, including the built-in ones, emit some colored output. Node.js will check the underlying stream for color support before deciding whether to emit colors.
 
 If you'd like to override the auto-detection behaviour, set the `FORCE_COLOR` environment variable to `1` to forcibly enable colors, or `0` to forcibly disable them. This is a cross-tool standard that will also influence other tools in your stack such as assertion libraries.
 
