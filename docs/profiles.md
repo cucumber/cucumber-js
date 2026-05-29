@@ -22,7 +22,7 @@ Let's take the common case of having some things a bit different locally than on
 module.exports = {
   default: {
     format: ['progress-bar', 'html:cucumber-report.html'],
-    requireModule: ['ts-node/register'],
+    requireModule: ['tsx/cjs'],
     require: ['support/**/*.ts'],
     worldParameters: {
       appUrl: 'http://localhost:3000/'
@@ -99,7 +99,7 @@ If you need to define your profiles dynamically (including asynchronously), you 
 ```javascript
 export default function() {
   const common = {
-    requireModule: ['ts-node/register'],
+    requireModule: ['tsx/cjs'],
     require: ['support/**/*.ts'],
     worldParameters: {
       appUrl: process.env.MY_APP_URL || 'http://localhost:3000/'
