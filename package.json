@@ -305,7 +305,7 @@
     "ansi-regex": "^5.0.1"
   },
   "scripts": {
-    "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.node.json && shx cp src/wrapper.mjs lib/ && shx cp src/api/wrapper.mjs lib/api/",
+    "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.build.json && shx cp src/wrapper.mjs lib/ && shx cp src/api/wrapper.mjs lib/api/",
     "cck-test": "mocha \"compatibility/**/*_spec.ts\"",
     "exports-generate-docs": "typedoc",
     "exports-test": "api-extractor run --config exports/api/api-extractor.json --verbose && api-extractor run --config exports/root/api-extractor.json --verbose",
