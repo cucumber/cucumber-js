@@ -233,7 +233,7 @@
     "assertion-error-formatter": "^3.0.0",
     "chalk": "^4.1.2",
     "cli-table3": "0.6.5",
-    "commander": "^14.0.0",
+    "commander": "^15.0.0",
     "debug": "^4.3.4",
     "error-stack-parser": "^2.1.4",
     "figures": "^6.0.0",
