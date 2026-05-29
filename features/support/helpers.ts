@@ -1,9 +1,9 @@
 import path from 'node:path'
-import figures from 'figures'
+import { replaceSymbols } from 'figures'
 import { normalizeSummaryDuration } from '../../test/formatter_helpers'
 
 export function normalizeText(text: string): string {
-  const normalized = figures(text)
+  const normalized = replaceSymbols(text)
     .replace(/\r\n|\r/g, '\n')
     .trim()
     .replace(/[ \t]+\n/g, '\n')
