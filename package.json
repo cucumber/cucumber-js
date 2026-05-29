@@ -274,7 +274,7 @@
     "@types/luxon": "3.7.1",
     "@types/mocha": "10.0.10",
     "@types/mustache": "4.2.6",
-    "@types/node": "^22.19.19",
+    "@types/node": "^24.0.0",
     "@types/semver": "7.7.1",
     "@types/sinon-chai": "4.0.0",
     "@types/stream-buffers": "3.0.8",
