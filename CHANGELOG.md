@@ -23,14 +23,13 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ### Fixed
 - Update status colors to match other formatters ([#2828](https://github.com/cucumber/cucumber-js/pull/2828))
+- Surface `Error.cause` chain (with stack frames) in output ([#2813](https://github.com/cucumber/cucumber-js/pull/2813))
 
 ### Removed
 - BREAKING CHANGE: Drop support for Node.js 20.x ([#2818](https://github.com/cucumber/cucumber-js/pull/2818))
 - BREAKING CHANGE: Drop support for Node.js 25.x ([#2818](https://github.com/cucumber/cucumber-js/pull/2818))
 - BREAKING CHANGE: Remove deprecated Cli export ([#2820](https://github.com/cucumber/cucumber-js/pull/2820))
 - BREAKING CHANGE: Remove deprecated handling of ambiguous formats ([#2819](https://github.com/cucumber/cucumber-js/pull/2819))
-### Fixed
-- Surface `Error.cause` chain (with stack frames) in formatted error output ([#2813](https://github.com/cucumber/cucumber-js/pull/2813))
 
 ## [12.9.0] - 2026-05-15
 ### Added
