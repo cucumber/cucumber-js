@@ -2,6 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "declaration": true,
+    "rootDir": "src",
     "outDir": "lib"
   },
   "include": ["src/**/*.ts", "src/**/*.mts"],
