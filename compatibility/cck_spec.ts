@@ -60,7 +60,7 @@ describe('Cucumber Compatibility Kit', () => {
           shard: '',
         },
         support: {
-          requireModules: ['ts-node/register'],
+          requireModules: ['tsx/cjs'],
           requirePaths: [`${CCK_IMPLEMENTATIONS_PATH}/${suite}/*.ts`],
         },
         runtime: {
