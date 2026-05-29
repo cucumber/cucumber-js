@@ -1,18 +1,18 @@
 {
+  "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
-    "esModuleInterop": true,
-    "lib": ["es2022", "ESNext.Array"],
-    "module": "node16",
+    "lib": ["es2024", "esnext.array"],
+    "target": "es2024",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "resolveJsonModule": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "declaration": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "strict": false,
     "noImplicitAny": true,
     "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "resolveJsonModule": true,
-    "sourceMap": true,
-    "inlineSources": true,
-    "target": "es2022",
-    "typeRoots": ["./node_modules/@types", "./src/types"],
-    "paths": {
-      "@sinonjs/fake-timers": ["./node_modules/@types/sinonjs__fake-timers"]
-    }
+    "noImplicitThis": true
   }
 }

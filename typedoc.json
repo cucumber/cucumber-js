@@ -8,5 +8,5 @@
   "out": "./_site",
   "readme": "none",
   "sort": ["alphabetical"],
-  "tsconfig": "tsconfig.node.json"
+  "tsconfig": "tsconfig.build.json"
 }
