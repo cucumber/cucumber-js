@@ -30,7 +30,7 @@ Feature: Colors
     Then the file "summary.out" contains colors
     And the error output contains the text:
       """
-      The 'colorsEnabled' format option is deprecated
+      The 'colorsEnabled' format option is deprecated and will be removed in a future major version. Setting FORCE_COLOR=1 based on the provided value.
       """
 
   Scenario: colored output can be activated with FORCE_COLOR

@@ -1,10 +1,10 @@
-import { EventEmitter } from 'node:events'
-import * as messages from '@cucumber/messages'
-import { SourceMediaType } from '@cucumber/messages'
-import { IGherkinOptions } from '@cucumber/gherkin'
+import type { EventEmitter } from 'node:events'
+import type { IGherkinOptions } from '@cucumber/gherkin'
 import { GherkinStreams } from '@cucumber/gherkin-streams'
+import type * as messages from '@cucumber/messages'
+import { SourceMediaType } from '@cucumber/messages'
+import type { SourcedPickle } from '../src/assemble'
 import { doesHaveValue } from '../src/value_checker'
-import { SourcedPickle } from '../src/assemble'
 
 export interface IParsedSource {
   pickles: messages.Pickle[]
@@ -54,9 +54,7 @@ export async function parse({
         pickles.push(envelope.pickle)
       }
       if (doesHaveValue(envelope.attachment)) {
-        reject(
-          new Error(`Parse error in '${uri}': ${envelope.attachment.body}`)
-        )
+        reject(new Error(`Parse error in '${uri}': ${envelope.attachment.body}`))
       }
     })
     messageStream.on('end', () => {
@@ -86,7 +84,9 @@ export async function generatePickles({
     data,
     uri,
   })
-  envelopes.forEach((envelope) => eventBroadcaster.emit('envelope', envelope))
+  for (const envelope of envelopes) {
+    eventBroadcaster.emit('envelope', envelope)
+  }
   return pickles.map((pickle) => {
     return {
       gherkinDocument,
@@ -95,9 +95,7 @@ export async function generatePickles({
   })
 }
 
-export async function getPickleWithTags(
-  tags: string[]
-): Promise<messages.Pickle> {
+export async function getPickleWithTags(tags: string[]): Promise<messages.Pickle> {
   const {
     pickles: [pickle],
   } = await parse({
@@ -112,9 +110,7 @@ Feature: a
   return pickle
 }
 
-export async function getPickleStepWithText(
-  text: string
-): Promise<messages.PickleStep> {
+export async function getPickleStepWithText(text: string): Promise<messages.PickleStep> {
   const {
     pickles: [pickle],
   } = await parse({

@@ -1,21 +1,21 @@
-import { Before, When, After } from '../../../src'
+import { After, Before, When } from '../../../src'
 
-Before('@passing-hook', async function () {
+Before('@passing-hook', async () => {
   // no-op
 })
 
-Before('@fail-before', function () {
+Before('@fail-before', () => {
   throw new Error('Exception in conditional hook')
 })
 
-When('a step passes', function () {
+When('a step passes', () => {
   // no-op
 })
 
-After('@fail-after', function () {
+After('@fail-after', () => {
   throw new Error('Exception in conditional hook')
 })
 
-After('@passing-hook', async function () {
+After('@passing-hook', async () => {
   // no-op
 })

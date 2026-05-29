@@ -1,11 +1,11 @@
 import assert from 'node:assert'
-import { Given, DataTable, Then, When, World } from '../../../src'
+import { type DataTable, Given, Then, When, type World } from '../../../src'
 
-Given('some TypeScript code:', function (dataTable: DataTable) {
+Given('some TypeScript code:', (dataTable: DataTable) => {
   assert(dataTable)
 })
 
-Given('some classic Gherkin:', function (gherkin: string) {
+Given('some classic Gherkin:', (gherkin: string) => {
   assert(gherkin)
 })
 
@@ -20,6 +20,6 @@ When(
   }
 )
 
-Then('this might or might not run', function () {
+Then('this might or might not run', () => {
   // no-op
 })

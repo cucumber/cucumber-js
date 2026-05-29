@@ -1,11 +1,8 @@
-import { describe, it } from 'mocha'
+import type { GherkinDocument } from '@cucumber/messages'
 import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { reindent } from 'reindent-template-literals'
-import { GherkinDocument } from '@cucumber/messages'
-import {
-  IParsedSourceWithEnvelopes,
-  parse,
-} from '../../../test/gherkin_helpers'
+import { type IParsedSourceWithEnvelopes, parse } from '../../../test/gherkin_helpers'
 import {
   getGherkinExampleRuleMap,
   getGherkinScenarioLocationMap,
@@ -23,8 +20,7 @@ describe('GherkinDocumentParser', () => {
       const output = getGherkinStepMap(gherkinDocument)
 
       // Assert
-      const backgroundStep =
-        gherkinDocument.feature.children[0].background.steps[0]
+      const backgroundStep = gherkinDocument.feature.children[0].background.steps[0]
       const scenarioStep = gherkinDocument.feature.children[1].scenario.steps[0]
       expect(output).to.eql({
         [backgroundStep.id]: backgroundStep,
@@ -40,8 +36,7 @@ describe('GherkinDocumentParser', () => {
       const output = getGherkinStepMap(gherkinDocument)
 
       // Assert
-      const backgroundStep =
-        gherkinDocument.feature.children[0].background.steps[0]
+      const backgroundStep = gherkinDocument.feature.children[0].background.steps[0]
       const outlineStep = gherkinDocument.feature.children[1].scenario.steps[0]
       expect(output).to.eql({
         [backgroundStep.id]: backgroundStep,
@@ -57,16 +52,11 @@ describe('GherkinDocumentParser', () => {
       const output = getGherkinStepMap(gherkinDocument)
 
       // Assert
-      const backgroundStep =
-        gherkinDocument.feature.children[0].background.steps[0]
-      const example1When =
-        gherkinDocument.feature.children[1].rule.children[0].scenario.steps[0]
-      const example1Then =
-        gherkinDocument.feature.children[1].rule.children[0].scenario.steps[1]
-      const example2When =
-        gherkinDocument.feature.children[1].rule.children[1].scenario.steps[0]
-      const example2Then =
-        gherkinDocument.feature.children[1].rule.children[1].scenario.steps[1]
+      const backgroundStep = gherkinDocument.feature.children[0].background.steps[0]
+      const example1When = gherkinDocument.feature.children[1].rule.children[0].scenario.steps[0]
+      const example1Then = gherkinDocument.feature.children[1].rule.children[0].scenario.steps[1]
+      const example2When = gherkinDocument.feature.children[1].rule.children[1].scenario.steps[0]
+      const example2Then = gherkinDocument.feature.children[1].rule.children[1].scenario.steps[1]
       expect(output).to.eql({
         [backgroundStep.id]: backgroundStep,
         [example1When.id]: example1When,
@@ -78,25 +68,19 @@ describe('GherkinDocumentParser', () => {
 
     it('works for a Background and Rule with its own Background and Examples', async () => {
       // Arrange
-      const gherkinDocument =
-        await withBackgroundAndRuleWithBackgroundAndExamples()
+      const gherkinDocument = await withBackgroundAndRuleWithBackgroundAndExamples()
 
       // Act
       const output = getGherkinStepMap(gherkinDocument)
 
       // Assert
-      const featureBackgroundStep =
-        gherkinDocument.feature.children[0].background.steps[0]
+      const featureBackgroundStep = gherkinDocument.feature.children[0].background.steps[0]
       const ruleBackgroundStep =
         gherkinDocument.feature.children[1].rule.children[0].background.steps[0]
-      const example1When =
-        gherkinDocument.feature.children[1].rule.children[1].scenario.steps[0]
-      const example1Then =
-        gherkinDocument.feature.children[1].rule.children[1].scenario.steps[1]
-      const example2When =
-        gherkinDocument.feature.children[1].rule.children[2].scenario.steps[0]
-      const example2Then =
-        gherkinDocument.feature.children[1].rule.children[2].scenario.steps[1]
+      const example1When = gherkinDocument.feature.children[1].rule.children[1].scenario.steps[0]
+      const example1Then = gherkinDocument.feature.children[1].rule.children[1].scenario.steps[1]
+      const example2When = gherkinDocument.feature.children[1].rule.children[2].scenario.steps[0]
+      const example2Then = gherkinDocument.feature.children[1].rule.children[2].scenario.steps[1]
       expect(output).to.eql({
         [featureBackgroundStep.id]: featureBackgroundStep,
         [ruleBackgroundStep.id]: ruleBackgroundStep,
@@ -145,10 +129,8 @@ describe('GherkinDocumentParser', () => {
       const output = getGherkinScenarioMap(gherkinDocument)
 
       // Assert
-      const example1 =
-        gherkinDocument.feature.children[1].rule.children[0].scenario
-      const example2 =
-        gherkinDocument.feature.children[1].rule.children[1].scenario
+      const example1 = gherkinDocument.feature.children[1].rule.children[0].scenario
+      const example2 = gherkinDocument.feature.children[1].rule.children[1].scenario
       expect(output).to.eql({
         [example1.id]: example1,
         [example2.id]: example2,
@@ -157,17 +139,14 @@ describe('GherkinDocumentParser', () => {
 
     it('works for a Background and Rule with its own Background and Examples', async () => {
       // Arrange
-      const gherkinDocument =
-        await withBackgroundAndRuleWithBackgroundAndExamples()
+      const gherkinDocument = await withBackgroundAndRuleWithBackgroundAndExamples()
 
       // Act
       const output = getGherkinScenarioMap(gherkinDocument)
 
       // Assert
-      const example1 =
-        gherkinDocument.feature.children[1].rule.children[1].scenario
-      const example2 =
-        gherkinDocument.feature.children[1].rule.children[2].scenario
+      const example1 = gherkinDocument.feature.children[1].rule.children[1].scenario
+      const example2 = gherkinDocument.feature.children[1].rule.children[2].scenario
       expect(output).to.eql({
         [example1.id]: example1,
         [example2.id]: example2,
@@ -217,8 +196,7 @@ describe('GherkinDocumentParser', () => {
 
     it('works for a Background and Rule with its own Background and Examples', async () => {
       // Arrange
-      const gherkinDocument =
-        await withBackgroundAndRuleWithBackgroundAndExamples()
+      const gherkinDocument = await withBackgroundAndRuleWithBackgroundAndExamples()
 
       // Act
       const output = await getGherkinExampleRuleMap(gherkinDocument)
@@ -275,10 +253,8 @@ describe('GherkinDocumentParser', () => {
       const output = await getGherkinScenarioLocationMap(gherkinDocument)
 
       // Assert
-      const example1 =
-        gherkinDocument.feature.children[1].rule.children[0].scenario
-      const example2 =
-        gherkinDocument.feature.children[1].rule.children[1].scenario
+      const example1 = gherkinDocument.feature.children[1].rule.children[0].scenario
+      const example2 = gherkinDocument.feature.children[1].rule.children[1].scenario
       expect(output).to.eql({
         [example1.id]: example1.location,
         [example2.id]: example2.location,
@@ -287,17 +263,14 @@ describe('GherkinDocumentParser', () => {
 
     it('works for a Background and Rule with its own Background and Examples', async () => {
       // Arrange
-      const gherkinDocument =
-        await withBackgroundAndRuleWithBackgroundAndExamples()
+      const gherkinDocument = await withBackgroundAndRuleWithBackgroundAndExamples()
 
       // Act
       const output = await getGherkinScenarioLocationMap(gherkinDocument)
 
       // Assert
-      const example1 =
-        gherkinDocument.feature.children[1].rule.children[1].scenario
-      const example2 =
-        gherkinDocument.feature.children[1].rule.children[2].scenario
+      const example1 = gherkinDocument.feature.children[1].rule.children[1].scenario
+      const example2 = gherkinDocument.feature.children[1].rule.children[2].scenario
       expect(output).to.eql({
         [example1.id]: example1.location,
         [example2.id]: example2.location,

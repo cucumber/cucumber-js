@@ -1,5 +1,5 @@
-import { describe, it } from 'mocha'
 import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { getPickleWithTags } from '../../test/gherkin_helpers'
 import TestCaseHookDefinition from './test_case_hook_definition'
 

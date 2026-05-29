@@ -1,7 +1,4 @@
-import Definition, {
-  IDefinitionParameters,
-  IDefinitionOptions,
-} from './definition'
+import Definition, { type IDefinitionOptions, type IDefinitionParameters } from './definition'
 
 export interface ITestRunHookDefinitionOptions extends IDefinitionOptions {
   name?: string

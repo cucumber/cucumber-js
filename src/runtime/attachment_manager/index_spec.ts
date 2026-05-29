@@ -1,24 +1,19 @@
-import stream, { Readable } from 'node:stream'
-import { describe, it } from 'mocha'
+import stream, { type Readable } from 'node:stream'
 import { expect } from 'chai'
-import AttachmentManager, { IAttachment } from './'
+import { describe, it } from 'mocha'
+import AttachmentManager, { type IAttachment } from './'
 
 describe('AttachmentManager', () => {
   describe('create()', () => {
     describe('buffer', () => {
       describe('with mime type', () => {
-        it('adds the data and media', function () {
+        it('adds the data and media', () => {
           // Arrange
           const attachments: IAttachment[] = []
-          const attachmentManager = new AttachmentManager((x) =>
-            attachments.push(x)
-          )
+          const attachmentManager = new AttachmentManager((x) => attachments.push(x))
 
           // Act
-          const result = attachmentManager.create(
-            Buffer.from('my string'),
-            'text/special'
-          )
+          const result = attachmentManager.create(Buffer.from('my string'), 'text/special')
 
           // Assert
           expect(result).to.eql(undefined)
@@ -31,21 +26,16 @@ describe('AttachmentManager', () => {
               },
             },
           ])
-          const decodedData = Buffer.from(
-            attachments[0].data,
-            'base64'
-          ).toString()
+          const decodedData = Buffer.from(attachments[0].data, 'base64').toString()
           expect(decodedData).to.eql('my string')
         })
       })
 
       describe('without media type', () => {
-        it('throws', function () {
+        it('throws', () => {
           // Arrange
           const attachments: IAttachment[] = []
-          const attachmentManager = new AttachmentManager((x) =>
-            attachments.push(x)
-          )
+          const attachmentManager = new AttachmentManager((x) => attachments.push(x))
           let error: Error
           let result: any
 
@@ -59,19 +49,15 @@ describe('AttachmentManager', () => {
           // Assert
           expect(result).to.eql(undefined)
           expect(error).to.exist()
-          expect(error.message).to.eql(
-            'Buffer attachments must specify a media type'
-          )
+          expect(error.message).to.eql('Buffer attachments must specify a media type')
         })
       })
 
       describe('with mime type and filename', () => {
-        it('adds the data and media and filename', function () {
+        it('adds the data and media and filename', () => {
           // Arrange
           const attachments: IAttachment[] = []
-          const attachmentManager = new AttachmentManager((x) =>
-            attachments.push(x)
-          )
+          const attachmentManager = new AttachmentManager((x) => attachments.push(x))
 
           // Act
           const result = attachmentManager.create(Buffer.from('my string'), {
@@ -91,10 +77,7 @@ describe('AttachmentManager', () => {
               fileName: 'foo.txt',
             },
           ])
-          const decodedData = Buffer.from(
-            attachments[0].data,
-            'base64'
-          ).toString()
+          const decodedData = Buffer.from(attachments[0].data, 'base64').toString()
           expect(decodedData).to.eql('my string')
         })
       })
@@ -103,22 +86,16 @@ describe('AttachmentManager', () => {
     describe('readable stream', () => {
       describe('with mime type', () => {
         describe('with callback', () => {
-          it('does not return a promise and adds the data and media', async function () {
+          it('does not return a promise and adds the data and media', async () => {
             // Arrange
             const attachments: IAttachment[] = []
-            const attachmentManager = new AttachmentManager((x) =>
-              attachments.push(x)
-            )
+            const attachmentManager = new AttachmentManager((x) => attachments.push(x))
             const readableStream = new stream.PassThrough()
             let result: any
 
             // Act
             await new Promise<void>((resolve) => {
-              result = attachmentManager.create(
-                readableStream,
-                'text/special',
-                resolve
-              )
+              result = attachmentManager.create(readableStream, 'text/special', resolve)
               setTimeout(() => {
                 readableStream.write('my string')
                 readableStream.end()
@@ -136,28 +113,20 @@ describe('AttachmentManager', () => {
                 },
               },
             ])
-            const decodedData = Buffer.from(
-              attachments[0].data,
-              'base64'
-            ).toString()
+            const decodedData = Buffer.from(attachments[0].data, 'base64').toString()
             expect(decodedData).to.eql('my string')
           })
         })
 
         describe('without callback', () => {
-          it('returns a promise and adds the data and media', async function () {
+          it('returns a promise and adds the data and media', async () => {
             // Arrange
             const attachments: IAttachment[] = []
-            const attachmentManager = new AttachmentManager((x) =>
-              attachments.push(x)
-            )
+            const attachmentManager = new AttachmentManager((x) => attachments.push(x))
             const readableStream = new stream.PassThrough()
 
             // Act
-            const result = attachmentManager.create(
-              readableStream,
-              'text/special'
-            )
+            const result = attachmentManager.create(readableStream, 'text/special')
             setTimeout(() => {
               readableStream.write('my string')
               readableStream.end()
@@ -174,10 +143,7 @@ describe('AttachmentManager', () => {
                 },
               },
             ])
-            const decodedData = Buffer.from(
-              attachments[0].data,
-              'base64'
-            ).toString()
+            const decodedData = Buffer.from(attachments[0].data, 'base64').toString()
             expect(decodedData).to.eql('my string')
           })
         })
@@ -185,12 +151,10 @@ describe('AttachmentManager', () => {
 
       describe('with mime type and filename', () => {
         describe('with callback', () => {
-          it('does not return a promise and adds the data and media and filename', async function () {
+          it('does not return a promise and adds the data and media and filename', async () => {
             // Arrange
             const attachments: IAttachment[] = []
-            const attachmentManager = new AttachmentManager((x) =>
-              attachments.push(x)
-            )
+            const attachmentManager = new AttachmentManager((x) => attachments.push(x))
             const readableStream = new stream.PassThrough()
             let result: any
 
@@ -222,21 +186,16 @@ describe('AttachmentManager', () => {
                 fileName: 'foo.txt',
               },
             ])
-            const decodedData = Buffer.from(
-              attachments[0].data,
-              'base64'
-            ).toString()
+            const decodedData = Buffer.from(attachments[0].data, 'base64').toString()
             expect(decodedData).to.eql('my string')
           })
         })
 
         describe('without callback', () => {
-          it('returns a promise and adds the data and media and filename', async function () {
+          it('returns a promise and adds the data and media and filename', async () => {
             // Arrange
             const attachments: IAttachment[] = []
-            const attachmentManager = new AttachmentManager((x) =>
-              attachments.push(x)
-            )
+            const attachmentManager = new AttachmentManager((x) => attachments.push(x))
             const readableStream = new stream.PassThrough()
 
             // Act
@@ -261,22 +220,17 @@ describe('AttachmentManager', () => {
                 fileName: 'foo.txt',
               },
             ])
-            const decodedData = Buffer.from(
-              attachments[0].data,
-              'base64'
-            ).toString()
+            const decodedData = Buffer.from(attachments[0].data, 'base64').toString()
             expect(decodedData).to.eql('my string')
           })
         })
       })
 
       describe('without media type', () => {
-        it('throws', function () {
+        it('throws', () => {
           // Arrange
           const attachments: IAttachment[] = []
-          const attachmentManager = new AttachmentManager((x) =>
-            attachments.push(x)
-          )
+          const attachmentManager = new AttachmentManager((x) => attachments.push(x))
           const readableStream = new stream.PassThrough()
           let error: Error
           let result: any
@@ -291,21 +245,17 @@ describe('AttachmentManager', () => {
           // Assert
           expect(result).to.eql(undefined)
           expect(error).to.exist()
-          expect(error.message).to.eql(
-            'Stream attachments must specify a media type'
-          )
+          expect(error.message).to.eql('Stream attachments must specify a media type')
         })
       })
     })
 
     describe('string', () => {
       describe('with media type', () => {
-        it('adds the data and media', function () {
+        it('adds the data and media', () => {
           // Arrange
           const attachments: IAttachment[] = []
-          const attachmentManager = new AttachmentManager((x) =>
-            attachments.push(x)
-          )
+          const attachmentManager = new AttachmentManager((x) => attachments.push(x))
 
           // Act
           const result = attachmentManager.create('my string', 'text/special')
@@ -325,12 +275,10 @@ describe('AttachmentManager', () => {
       })
 
       describe('with media type, already base64 encoded', () => {
-        it('adds the data and media', function () {
+        it('adds the data and media', () => {
           // Arrange
           const attachments: IAttachment[] = []
-          const attachmentManager = new AttachmentManager((x) =>
-            attachments.push(x)
-          )
+          const attachmentManager = new AttachmentManager((x) => attachments.push(x))
 
           // Act
           const result = attachmentManager.create(
@@ -353,12 +301,10 @@ describe('AttachmentManager', () => {
       })
 
       describe('without mime type', () => {
-        it('adds the data with the default mime type', function () {
+        it('adds the data with the default mime type', () => {
           // Arrange
           const attachments: IAttachment[] = []
-          const attachmentManager = new AttachmentManager((x) =>
-            attachments.push(x)
-          )
+          const attachmentManager = new AttachmentManager((x) => attachments.push(x))
 
           // Act
           const result = attachmentManager.create('my string')
@@ -378,12 +324,10 @@ describe('AttachmentManager', () => {
       })
 
       describe('with media type and filename', () => {
-        it('adds the data and media and filename', function () {
+        it('adds the data and media and filename', () => {
           // Arrange
           const attachments: IAttachment[] = []
-          const attachmentManager = new AttachmentManager((x) =>
-            attachments.push(x)
-          )
+          const attachmentManager = new AttachmentManager((x) => attachments.push(x))
 
           // Act
           const result = attachmentManager.create('my string', {
@@ -408,12 +352,10 @@ describe('AttachmentManager', () => {
     })
 
     describe('log', () => {
-      it('adds a string attachment with the appropriate mime type', function () {
+      it('adds a string attachment with the appropriate mime type', () => {
         // Arrange
         const attachments: IAttachment[] = []
-        const attachmentManager = new AttachmentManager((x) =>
-          attachments.push(x)
-        )
+        const attachmentManager = new AttachmentManager((x) => attachments.push(x))
 
         // Act
         const result = attachmentManager.log('stuff happened')
@@ -433,17 +375,13 @@ describe('AttachmentManager', () => {
     })
 
     describe('link', () => {
-      it('adds a string attachment with the appropriate mime type', function () {
+      it('adds a string attachment with the appropriate mime type', () => {
         // Arrange
         const attachments: IAttachment[] = []
-        const attachmentManager = new AttachmentManager((x) =>
-          attachments.push(x)
-        )
+        const attachmentManager = new AttachmentManager((x) => attachments.push(x))
 
         // Act
-        const result = attachmentManager.link(
-          'https://github.com/cucumber/cucumber-js'
-        )
+        const result = attachmentManager.link('https://github.com/cucumber/cucumber-js')
 
         // Assert
         expect(result).to.eql(undefined)
@@ -458,12 +396,10 @@ describe('AttachmentManager', () => {
         ])
       })
 
-      it('adds multiple urls delimited by newlines', function () {
+      it('adds multiple urls delimited by newlines', () => {
         // Arrange
         const attachments: IAttachment[] = []
-        const attachmentManager = new AttachmentManager((x) =>
-          attachments.push(x)
-        )
+        const attachmentManager = new AttachmentManager((x) => attachments.push(x))
 
         // Act
         const result = attachmentManager.link(
@@ -487,12 +423,10 @@ describe('AttachmentManager', () => {
     })
 
     describe('unsupported data type', () => {
-      it('throws', function () {
+      it('throws', () => {
         // Arrange
         const attachments: IAttachment[] = []
-        const attachmentManager = new AttachmentManager((x) =>
-          attachments.push(x)
-        )
+        const attachmentManager = new AttachmentManager((x) => attachments.push(x))
         let error: Error
         let result: any
 

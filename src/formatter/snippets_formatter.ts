@@ -1,7 +1,8 @@
 import * as messages from '@cucumber/messages'
 import { doesHaveValue } from '../value_checker'
+import Formatter, { type IFormatterOptions } from './'
 import { parseTestCaseAttempt } from './helpers'
-import Formatter, { IFormatterOptions } from './'
+
 import IEnvelope = messages.Envelope
 
 export default class SnippetsFormatter extends Formatter {
@@ -26,9 +27,7 @@ export default class SnippetsFormatter extends Formatter {
         testCaseAttempt,
       })
       parsed.testSteps.forEach((testStep) => {
-        if (
-          testStep.result.status === messages.TestStepResultStatus.UNDEFINED
-        ) {
+        if (testStep.result.status === messages.TestStepResultStatus.UNDEFINED) {
           snippets.push(testStep.snippet)
         }
       })

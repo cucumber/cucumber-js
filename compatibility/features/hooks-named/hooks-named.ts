@@ -1,13 +1,13 @@
-import { Before, When, After } from '../../../src'
+import { After, Before, When } from '../../../src'
 
-Before({ name: 'A named before hook' }, function () {
+Before({ name: 'A named before hook' }, () => {
   // no-op
 })
 
-When('a step passes', function () {
+When('a step passes', () => {
   // no-op
 })
 
-After({ name: 'A named after hook' }, function () {
+After({ name: 'A named after hook' }, () => {
   // no-op
 })

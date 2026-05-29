@@ -1,11 +1,9 @@
-import { describe, it } from 'mocha'
 import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import semver from 'semver'
-import UserCodeRunner, { IRunRequest, IRunResponse } from './user_code_runner'
+import UserCodeRunner, { type IRunRequest, type IRunResponse } from './user_code_runner'
 
-async function testUserCodeRunner(
-  opts: Partial<IRunRequest>
-): Promise<IRunResponse> {
+async function testUserCodeRunner(opts: Partial<IRunRequest>): Promise<IRunResponse> {
   return await UserCodeRunner.run({
     argsArray: [],
     fn: () => 'result',
@@ -21,9 +19,9 @@ describe('UserCodeRunner', () => {
   describe('run()', () => {
     describe('function uses synchronous interface', () => {
       describe('function throws serializable error', () => {
-        it('returns the error', async function () {
+        it('returns the error', async () => {
           // Arrange
-          const fn = function (): void {
+          const fn = (): void => {
             throw 'error'
           }
 
@@ -37,9 +35,9 @@ describe('UserCodeRunner', () => {
       })
 
       describe('function throws non-serializable error', () => {
-        it('returns the error', async function () {
+        it('returns the error', async () => {
           // Arrange
-          const fn = function (): void {
+          const fn = (): void => {
             const error: any = {}
             error.loop = error
             throw error
@@ -59,11 +57,9 @@ describe('UserCodeRunner', () => {
       })
 
       describe('function returns', () => {
-        it('returns the return value of the function', async function () {
+        it('returns the return value of the function', async () => {
           // Arrange
-          const fn = function (): string {
-            return 'result'
-          }
+          const fn = (): string => 'result'
 
           // Act
           const { error, result } = await testUserCodeRunner({ fn })
@@ -81,9 +77,9 @@ describe('UserCodeRunner', () => {
       })
 
       describe('function calls back with serializable error', () => {
-        it('returns the error', async function () {
+        it('returns the error', async () => {
           // Arrange
-          const fn = function (callback: CallbackFn): void {
+          const fn = (callback: CallbackFn): void => {
             setTimeout(() => {
               callback('error')
             }, 25)
@@ -99,9 +95,9 @@ describe('UserCodeRunner', () => {
       })
 
       describe('function calls back with non-serializable error', () => {
-        it('returns the error', async function () {
+        it('returns the error', async () => {
           // Arrange
-          const fn = function (callback: CallbackFn): void {
+          const fn = (callback: CallbackFn): void => {
             const error: any = {}
             error.loop = error
             setTimeout(() => {
@@ -123,9 +119,9 @@ describe('UserCodeRunner', () => {
       })
 
       describe('function calls back with result', () => {
-        it('returns the what the function calls back with', async function () {
+        it('returns the what the function calls back with', async () => {
           // Arrange
-          const fn = function (callback: CallbackFn): void {
+          const fn = (callback: CallbackFn): void => {
             setTimeout(() => {
               callback(null, 'result')
             }, 25)
@@ -141,9 +137,9 @@ describe('UserCodeRunner', () => {
       })
 
       describe('function times out', () => {
-        it('returns timeout as an error', async function () {
+        it('returns timeout as an error', async () => {
           // Arrange
-          const fn = function (callback: CallbackFn): void {
+          const fn = (callback: CallbackFn): void => {
             setTimeout(() => {
               callback(null, 'result')
             }, 200)
@@ -162,9 +158,9 @@ describe('UserCodeRunner', () => {
       })
 
       describe('timeout of -1', () => {
-        it('disables timeout protection', async function () {
+        it('disables timeout protection', async () => {
           // Arrange
-          const fn = function (callback: CallbackFn): void {
+          const fn = (callback: CallbackFn): void => {
             setTimeout(() => {
               callback(null, 'result')
             }, 200)
@@ -189,11 +185,9 @@ describe('UserCodeRunner', () => {
       })
 
       describe('promise resolves', () => {
-        it('returns what the promise resolves to', async function () {
+        it('returns what the promise resolves to', async () => {
           // Arrange
-          const fn = async function (): Promise<string> {
-            return 'result'
-          }
+          const fn = async (): Promise<string> => 'result'
 
           // Act
           const { error, result } = await testUserCodeRunner({ fn })
@@ -205,9 +199,9 @@ describe('UserCodeRunner', () => {
       })
 
       describe('promise rejects with reason', () => {
-        it('returns what the promise rejects as an error', async function () {
+        it('returns what the promise rejects as an error', async () => {
           // Arrange
-          const fn = async function (): Promise<void> {
+          const fn = async (): Promise<void> => {
             throw 'error'
           }
 
@@ -221,11 +215,9 @@ describe('UserCodeRunner', () => {
       })
 
       describe('promise rejects without reason', () => {
-        it('returns a helpful error message', async function () {
+        it('returns a helpful error message', async () => {
           // Arrange
-          const fn = async function (): Promise<void> {
-            return await Promise.reject()
-          }
+          const fn = async (): Promise<void> => await Promise.reject()
 
           // Act
           const { error, result } = await testUserCodeRunner({ fn })
@@ -237,14 +229,13 @@ describe('UserCodeRunner', () => {
         })
       })
 
-      describe('promise times out', function () {
-        it('returns timeout as an error', async function () {
+      describe('promise times out', () => {
+        it('returns timeout as an error', async () => {
           // Arrange
-          const fn = async function (): Promise<string> {
-            return await new Promise((resolve) => {
+          const fn = async (): Promise<string> =>
+            await new Promise((resolve) => {
               setTimeout(() => resolve('result'), 200)
             })
-          }
 
           // Act
           const { error, result } = await testUserCodeRunner({ fn })
@@ -259,13 +250,12 @@ describe('UserCodeRunner', () => {
       })
 
       describe('timeout of -1', () => {
-        it('disables timeout protection', async function () {
+        it('disables timeout protection', async () => {
           // Arrange
-          const fn = async function (): Promise<string> {
-            return await new Promise((resolve) => {
+          const fn = async (): Promise<string> =>
+            await new Promise((resolve) => {
               setTimeout(() => resolve('result'), 200)
             })
-          }
 
           // Act
           const { error, result } = await testUserCodeRunner({
@@ -281,9 +271,9 @@ describe('UserCodeRunner', () => {
     })
 
     describe('function uses multiple asynchronous interfaces: callback and promise', () => {
-      it('returns an error that multiple interface are used', async function () {
+      it('returns an error that multiple interface are used', async () => {
         // Arrange
-        const fn = async function (callback: CallbackFn): Promise<void> {
+        const fn = async (callback: CallbackFn): Promise<void> => {
           callback()
           return await Promise.resolve()
         }

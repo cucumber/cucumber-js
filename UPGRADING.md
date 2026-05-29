@@ -2,6 +2,23 @@
 
 This document describes breaking changes and how to upgrade. For a complete list of changes including minor and patch releases, please refer to the [changelog](./CHANGELOG.md).
 
+## 13.0.0
+
+### `Cli`
+
+The `Cli` class is no longer exported from the package. It was used internally to represent an instance of the command-line program invoked via `cucumber-js`, and could be used to run Cucumber programmatically, but is poorly suited for this. To adapt, pivot to the `runCucumber` function from the [JavaScript API](./docs/javascript_api.md), or raise an issue if you feel your use case isn't catered for.
+
+### Ambiguous colons in formats
+
+A user-specified format supplied via the CLI is made up of a formatter descriptor and an optional target path, separated by a colon. Previously, when either part contained colons of its own - like Windows drives or `file://` URLs - Cucumber tried to detect and handle that on a best-effort basis. That logic has been removed.
+
+A colon now always delimits the two parts, so any part that itself contains a colon must be wrapped in double quotes. A format that can't be parsed unambiguously (i.e. more than two parts once quotes are taken into account) will now throw an error. To adapt, ensure you use double quotes appropriately:
+
+| Before                                       | After                                            |
+|----------------------------------------------|--------------------------------------------------|
+| `html:file://hostname/formatter/report.html` | `"html":"file://hostname/formatter/report.html"` |
+| `file://C:\custom\formatter`                 | `"file://C:\custom\formatter"`                   |
+
 ## 12.0.0
 
 ### publishQuiet

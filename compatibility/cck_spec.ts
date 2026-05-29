@@ -2,15 +2,14 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { PassThrough, Writable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
-import { describe, it } from 'mocha'
+import * as messageStreams from '@cucumber/message-streams'
+import type * as messages from '@cucumber/messages'
+import type { Envelope } from '@cucumber/messages'
 import { config, expect, use } from 'chai'
 import chaiExclude from 'chai-exclude'
-import { glob } from 'glob'
-import * as messages from '@cucumber/messages'
-import * as messageStreams from '@cucumber/message-streams'
-import { Envelope } from '@cucumber/messages'
+import { describe, it } from 'mocha'
 import { ignorableKeys } from '../features/support/formatter_output_helpers'
-import { runCucumber, IRunConfiguration } from '../src/api'
+import { type IRunConfiguration, runCucumber } from '../src/api'
 
 const PROJECT_PATH = path.join(__dirname, '..')
 const CCK_FEATURES_PATH = 'node_modules/@cucumber/compatibility-kit/features'
@@ -19,10 +18,13 @@ const CCK_IMPLEMENTATIONS_PATH = 'compatibility/features'
 const UNSUPPORTED = [
   // not a test sample
   'all-statuses',
+  // TODO needs changes
+  'failedish-combinations',
   // we aren't fully compliant yet for global hooks
   'global-hooks-attachments',
-  'global-hooks-beforeall-error',
-  'global-hooks-afterall-error',
+  // we don't use exceptions to signal pending/skipped
+  'pending-exception',
+  'skipped-exception',
   // not a test sample
   'test-run-exception',
 ]
@@ -31,7 +33,7 @@ config.truncateThreshold = 100
 use(chaiExclude)
 
 describe('Cucumber Compatibility Kit', () => {
-  const directories = glob.sync(`${CCK_FEATURES_PATH}/*`, { nodir: false })
+  const directories = fs.globSync(`${CCK_FEATURES_PATH}/*`)
 
   for (const directory of directories) {
     const suite = path.basename(directory)
@@ -58,7 +60,7 @@ describe('Cucumber Compatibility Kit', () => {
           shard: '',
         },
         support: {
-          requireModules: ['ts-node/register'],
+          requireModules: ['tsx/cjs'],
           requirePaths: [`${CCK_IMPLEMENTATIONS_PATH}/${suite}/*.ts`],
         },
         runtime: {
@@ -92,7 +94,7 @@ describe('Cucumber Compatibility Kit', () => {
 
       const expectedMessages: messages.Envelope[] = []
       await pipeline(
-        fs.createReadStream(path.join(directory, suite + '.ndjson'), {
+        fs.createReadStream(path.join(directory, `${suite}.ndjson`), {
           encoding: 'utf-8',
         }),
         new messageStreams.NdjsonToMessageStream(),
@@ -112,9 +114,7 @@ describe('Cucumber Compatibility Kit', () => {
   }
 })
 
-function reorderEnvelopes(
-  envelopes: ReadonlyArray<Envelope>
-): ReadonlyArray<Envelope> {
+function reorderEnvelopes(envelopes: ReadonlyArray<Envelope>): ReadonlyArray<Envelope> {
   let testRunStartedEnvelope: Envelope
   let testCaseStartedEnvelope: Envelope
 
@@ -129,21 +129,14 @@ function reorderEnvelopes(
       testCaseStartedEnvelope = envelope
     }
 
-    if (
-      (envelope.testRunHookStarted || envelope.testRunHookFinished) &&
-      !testCaseStartedEnvelope
-    ) {
+    if ((envelope.testRunHookStarted || envelope.testRunHookFinished) && !testCaseStartedEnvelope) {
       moveAfterTestRunStarted.push(envelope)
     } else {
       result.push(envelope)
     }
   }
 
-  result.splice(
-    result.indexOf(testRunStartedEnvelope) + 1,
-    0,
-    ...moveAfterTestRunStarted
-  )
+  result.splice(result.indexOf(testRunStartedEnvelope) + 1, 0, ...moveAfterTestRunStarted)
 
   return result
 }

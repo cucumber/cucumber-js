@@ -1,11 +1,11 @@
 import {
-  IdGenerator,
-  PickleStep,
+  type IdGenerator,
+  type PickleStep,
   PickleStepType,
-  Suggestion,
+  type Suggestion,
 } from '@cucumber/messages'
-import StepDefinitionSnippetBuilder from '../formatter/step_definition_snippet_builder'
 import { KeywordType } from '../formatter/helpers'
+import type StepDefinitionSnippetBuilder from '../formatter/step_definition_snippet_builder'
 
 function mapPickleStepTypeToKeywordType(type?: PickleStepType): KeywordType {
   switch (type) {

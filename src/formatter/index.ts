@@ -1,16 +1,15 @@
-import { Writable } from 'node:stream'
-import { EventEmitter } from 'node:events'
-import { SupportCodeLibrary } from '../support_code_library_builder/types'
+import type { EventEmitter } from 'node:events'
+import type { Writable } from 'node:stream'
+import type { FormatCodeFunction, Theme } from '@cucumber/pretty-formatter'
+import type { FormatterPlugin } from '../plugin'
+import type { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { valueOrDefault } from '../value_checker'
-import { FormatterPlugin } from '../plugin'
-import { IColorFns } from './get_color_fns'
-import { EventDataCollector } from './helpers'
-import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
-import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
+import type { IColorFns } from './get_color_fns'
+import type { EventDataCollector } from './helpers'
+import type StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
+import type { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 
-export interface FormatRerunOptions {
-  separator?: string
-}
+export type { FormatCodeFunction, Theme } from '@cucumber/pretty-formatter'
 
 export interface FormatOptions {
   /**
@@ -18,12 +17,25 @@ export interface FormatOptions {
    */
   colorsEnabled?: boolean
   html?: {
-    externalAttachments?: boolean
+    externalAttachments?: boolean | ReadonlyArray<string>
   }
-  rerun?: FormatRerunOptions
+  includeAttachments?: boolean
+  pretty?: {
+    includeFeatureLine?: boolean
+    includeRuleLine?: boolean
+    useStatusIcon?: boolean
+    formatCode?: FormatCodeFunction
+  }
+  /**
+   * @deprecated alias for `includeAttachments`; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md
+   */
+  printAttachments?: boolean
+  rerun?: {
+    separator?: string
+  }
   snippetInterface?: SnippetInterface
   snippetSyntax?: string
-  printAttachments?: boolean
+  theme?: Theme
   [customKey: string]: any
 }
 
@@ -67,7 +79,7 @@ export default class Formatter {
     this.supportCodeLibrary = options.supportCodeLibrary
     this.cleanup = options.cleanup
     this.printAttachments = valueOrDefault(
-      options.parsedArgvOptions.printAttachments,
+      options.parsedArgvOptions.includeAttachments ?? options.parsedArgvOptions.printAttachments,
       true
     )
   }

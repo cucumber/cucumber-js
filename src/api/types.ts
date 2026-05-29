@@ -1,7 +1,7 @@
-import { JsonObject } from 'type-fest'
-import { IPublishConfig } from '../publish'
-import { IConfiguration } from '../configuration'
-import { IPickleOrder } from '../filter'
+import type { JsonObject } from 'type-fest'
+import type { IConfiguration, IWorkerOptions } from '../configuration'
+import type { IPickleOrder } from '../filter'
+import type { IPublishConfig } from '../publish'
 
 /**
  * Options for {@link loadConfiguration}
@@ -195,7 +195,7 @@ export interface IRunOptionsRuntime {
    */
   filterStacktraces: boolean
   /**
-   * Run tests in parallel with the given number of worker processes
+   * Run tests in parallel with the given number of worker threads
    */
   parallel: number
   /**
@@ -210,6 +210,10 @@ export interface IRunOptionsRuntime {
    * Fail the test run if there are pending steps
    */
   strict: boolean
+  /**
+   * Options applied to each worker thread when running in parallel mode
+   */
+  workerOptions?: IWorkerOptions
   /**
    * Parameters to be passed to the World
    * @remarks

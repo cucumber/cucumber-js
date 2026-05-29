@@ -5,11 +5,12 @@
 ```ts
 
 import { Envelope } from '@cucumber/messages';
-import { GherkinDocument } from '@cucumber/messages';
-import { JsonObject } from 'type-fest';
-import { Location } from '@cucumber/messages';
-import { Pickle } from '@cucumber/messages';
-import { Writable } from 'node:stream';
+import type { GherkinDocument } from '@cucumber/messages';
+import type { JsonObject } from 'type-fest';
+import type { Location } from '@cucumber/messages';
+import type { Pickle } from '@cucumber/messages';
+import type { ResourceLimits } from 'node:worker_threads';
+import type { Writable } from 'node:stream';
 
 // @public
 export type CoordinatorContext<OptionsType> = {
@@ -32,12 +33,13 @@ export type CoordinatorEnvironment = {
 export type CoordinatorEventHandler<K extends CoordinatorEventKey> = (value: CoordinatorEventValues[K]) => void;
 
 // @public
-export type CoordinatorEventKey = 'message' | 'paths:resolve';
+export type CoordinatorEventKey = 'message' | 'paths:resolve' | 'publish:url';
 
 // @public
 export type CoordinatorEventValues = {
     message: Readonly<Envelope>;
     'paths:resolve': Readonly<IResolvedPaths>;
+    'publish:url': string;
 };
 
 // @public
@@ -50,6 +52,23 @@ export type CoordinatorTransformKey = 'pickles:filter' | 'pickles:order';
 export type CoordinatorTransformValues = {
     'pickles:filter': Readonly<Array<IFilterablePickle>>;
     'pickles:order': Readonly<Array<IFilterablePickle>>;
+};
+
+// @public
+export type FormatterPlugin<OptionsType = any> = {
+    type: 'formatter';
+    formatter: (context: FormatterPluginContext<OptionsType>) => PromiseLike<PluginCleanup | void> | PluginCleanup | void;
+    optionsKey?: string;
+};
+
+// @public
+export type FormatterPluginContext<OptionsType> = {
+    on: (key: 'message', handler: (value: Envelope) => void) => void;
+    options: OptionsType;
+    logger: ILogger;
+    stream: NodeJS.WritableStream;
+    write: (buffer: string | Uint8Array) => void;
+    directory?: string;
 };
 
 // @public
@@ -77,6 +96,7 @@ export interface IConfiguration {
     shard: string;
     strict: boolean;
     tags: string;
+    workerOptions: IWorkerOptions;
     worldParameters: JsonObject;
 }
 
@@ -222,6 +242,7 @@ export interface IRunOptionsRuntime {
     retry: number;
     retryTagFilter: string;
     strict: boolean;
+    workerOptions?: IWorkerOptions;
     worldParameters: JsonObject;
 }
 
@@ -268,6 +289,11 @@ export type ISupportCodeCoordinatesOrLibrary = Partial<ISupportCodeCoordinates> 
 export interface ISupportCodeLibrary {
     // (undocumented)
     readonly originalCoordinates: ISupportCodeCoordinates;
+}
+
+// @public
+export interface IWorkerOptions {
+    resourceLimits?: ResourceLimits;
 }
 
 // @public

@@ -1,6 +1,6 @@
-import { After } from '../'
+import { PassThrough } from 'node:stream'
 import { expectError, expectType } from 'tsd'
-import { PassThrough } from 'stream'
+import { After } from '../'
 
 After(async function () {
   // log
@@ -12,9 +12,7 @@ After(async function () {
   expectType<void>(this.attach(Buffer.from('{}'), 'application/json'))
   // stream
   expectType<Promise<void>>(this.attach(new PassThrough(), 'application/json'))
-  expectType<void>(
-    this.attach(new PassThrough(), 'application/json', () => undefined)
-  )
+  expectType<void>(this.attach(new PassThrough(), 'application/json', () => undefined))
   // buffer and stream flavours must specify media type
   expectError(this.attach(Buffer.from('{}')))
   expectError(this.attach(new PassThrough()))

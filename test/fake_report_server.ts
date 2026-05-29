@@ -1,6 +1,6 @@
-import { Server } from 'node:net'
-import { pipeline, Writable } from 'node:stream'
 import http from 'node:http'
+import type { Server } from 'node:net'
+import { pipeline, Writable } from 'node:stream'
 import express from 'express'
 import { doesHaveValue } from '../src/value_checker'
 
@@ -29,7 +29,7 @@ export default class FakeReportServer {
       this.receivedHeaders = { ...this.receivedHeaders, ...req.headers }
 
       const captureBodyStream = new Writable({
-        write: (chunk: Buffer, encoding: string, callback: Callback) => {
+        write: (chunk: Buffer, _encoding: string, callback: Callback) => {
           this.receivedBodies = Buffer.concat([this.receivedBodies, chunk])
           callback()
         },
@@ -54,32 +54,33 @@ export default class FakeReportServer {
       this.receivedHeaders = { ...this.receivedHeaders, ...req.headers }
       const token = extractAuthorizationToken(req.headers.authorization)
       if (token && !isValidUUID(token)) {
-        res.status(401).end(`┌─────────────────────┐
+        res.status(401).json({
+          banner: `┌─────────────────────┐
 │ Error invalid token │
 └─────────────────────┘
-`)
+`,
+        })
         return
       }
 
       res.setHeader('Location', `http://localhost:${this.port}/s3`)
-      res.status(202)
-
-      res.end(`┌──────────────────────────────────────────────────────────────────────────┐
+      res.status(202).json({
+        banner: `┌──────────────────────────────────────────────────────────────────────────┐
 │ View your Cucumber Report at:                                            │
 │ https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3 │
 │                                                                          │
 │ This report will self-destruct in 24h unless it is claimed or deleted.   │
 └──────────────────────────────────────────────────────────────────────────┘
-`)
+`,
+        url: 'https://reports.cucumber.io/reports/f318d9ec-5a3d-4727-adec-bd7b69e2edd3',
+      })
     })
 
     this.server = http.createServer(app)
   }
 
   async start(): Promise<void> {
-    return new Promise((resolve) =>
-      this.server.listen(this.port, () => resolve())
-    )
+    return new Promise((resolve) => this.server.listen(this.port, () => resolve()))
   }
 
   /**
@@ -99,9 +100,7 @@ export default class FakeReportServer {
   }
 }
 
-function extractAuthorizationToken(
-  authorizationHeader: string | undefined
-): string | null {
+function extractAuthorizationToken(authorizationHeader: string | undefined): string | null {
   if (!authorizationHeader) return null
 
   const tokenMatch = authorizationHeader.match(/Bearer (.*)/)
@@ -109,7 +108,6 @@ function extractAuthorizationToken(
 }
 
 function isValidUUID(token: string): boolean {
-  const v4 =
-    /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
+  const v4 = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
   return v4.test(token)
 }

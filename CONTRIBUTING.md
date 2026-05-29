@@ -27,9 +27,7 @@ If everything passes, you're ready to hack! ⛏
 Type `npm run` or see the `package.json` scripts section for how to run each category of tests.
 
 * lint - `npm run lint`
-  * [prettier](https://github.com/prettier/prettier)
-  * [eslint](https://eslint.org/)
-  * [dependency-lint](https://github.com/charlierudolph/dependency-lint)
+  * [biome](https://biomejs.dev)
 * typescript tests - `npm run types-test`
   * [tsd](https://github.com/SamVerschueren/tsd)
 * unit tests - `npm run unit-test`

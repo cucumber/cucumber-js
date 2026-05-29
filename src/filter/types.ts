@@ -1,4 +1,4 @@
-import { GherkinDocument, Location, Pickle } from '@cucumber/messages'
+import type { GherkinDocument, Location, Pickle } from '@cucumber/messages'
 
 /**
  * The ordering strategy for pickles

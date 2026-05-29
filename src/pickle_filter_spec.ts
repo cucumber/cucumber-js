@@ -1,6 +1,6 @@
 import path from 'node:path'
-import { beforeEach, describe, it } from 'mocha'
 import { expect } from 'chai'
+import { beforeEach, describe, it } from 'mocha'
 import { parse } from '../test/gherkin_helpers'
 import PickleFilter from './pickle_filter'
 
@@ -10,7 +10,7 @@ describe('PickleFilter', () => {
 
   describe('matches', () => {
     describe('no filters', () => {
-      beforeEach(function () {
+      beforeEach(() => {
         pickleFilter = new PickleFilter({
           cwd,
           featurePaths: ['features'],
@@ -19,7 +19,7 @@ describe('PickleFilter', () => {
         })
       })
 
-      it('returns true', async function () {
+      it('returns true', async () => {
         // Arrange
         const {
           pickles: [pickle],
@@ -54,7 +54,7 @@ describe('PickleFilter', () => {
 
       variants.forEach(({ name, featurePaths }) => {
         describe(name, () => {
-          beforeEach(function () {
+          beforeEach(() => {
             pickleFilter = new PickleFilter({
               cwd,
               featurePaths,
@@ -64,7 +64,7 @@ describe('PickleFilter', () => {
           })
 
           describe('pickle in feature without line specified', () => {
-            it('returns true', async function () {
+            it('returns true', async () => {
               // Arrange
               const {
                 pickles: [pickle],
@@ -83,7 +83,7 @@ describe('PickleFilter', () => {
           })
 
           describe('pickle in feature with line specified', () => {
-            it('returns true if pickle line matches', async function () {
+            it('returns true if pickle line matches', async () => {
               // Arrange
               const {
                 pickles: [pickle],
@@ -100,15 +100,13 @@ describe('PickleFilter', () => {
               expect(result).to.eql(true)
             })
 
-            it('returns false if pickle line does not match', async function () {
+            it('returns false if pickle line does not match', async () => {
               // Arrange
               const {
                 pickles: [pickle],
                 gherkinDocument,
               } = await parse({
-                data: ['Feature: a', '', 'Scenario: b', 'Given a step'].join(
-                  '\n'
-                ),
+                data: ['Feature: a', '', 'Scenario: b', 'Given a step'].join('\n'),
                 uri: 'features/b.feature',
               })
 
@@ -125,7 +123,7 @@ describe('PickleFilter', () => {
 
     describe('name filters', () => {
       describe('should match name A', () => {
-        beforeEach(function () {
+        beforeEach(() => {
           pickleFilter = new PickleFilter({
             cwd,
             featurePaths: ['features'],
@@ -134,17 +132,13 @@ describe('PickleFilter', () => {
           })
         })
 
-        it('returns true if pickle name matches from scenario', async function () {
+        it('returns true if pickle name matches from scenario', async () => {
           // Arrange
           const {
             pickles: [pickle],
             gherkinDocument,
           } = await parse({
-            data: [
-              'Feature: a',
-              'Scenario: nameA descriptionA',
-              'Given a step',
-            ].join('\n'),
+            data: ['Feature: a', 'Scenario: nameA descriptionA', 'Given a step'].join('\n'),
             uri: 'features/a.feature',
           })
 
@@ -155,7 +149,7 @@ describe('PickleFilter', () => {
           expect(result).to.eql(true)
         })
 
-        it('returns true if pickle name matches from rule -> example', async function () {
+        it('returns true if pickle name matches from rule -> example', async () => {
           // Arrange
           const {
             pickles: [pickle],
@@ -177,17 +171,13 @@ describe('PickleFilter', () => {
           expect(result).to.eql(true)
         })
 
-        it('returns false if pickle name does not match', async function () {
+        it('returns false if pickle name does not match', async () => {
           // Arrange
           const {
             pickles: [pickle],
             gherkinDocument,
           } = await parse({
-            data: [
-              'Feature: a',
-              'Scenario: nameB descriptionB',
-              'Given a step',
-            ].join('\n'),
+            data: ['Feature: a', 'Scenario: nameB descriptionB', 'Given a step'].join('\n'),
             uri: 'features/a.feature',
           })
 
@@ -200,7 +190,7 @@ describe('PickleFilter', () => {
       })
 
       describe('should match name with regex', () => {
-        beforeEach(function () {
+        beforeEach(() => {
           pickleFilter = new PickleFilter({
             cwd,
             featurePaths: ['features'],
@@ -209,17 +199,13 @@ describe('PickleFilter', () => {
           })
         })
 
-        it('returns true if regex matches', async function () {
+        it('returns true if regex matches', async () => {
           // Arrange
           const {
             pickles: [pickle],
             gherkinDocument,
           } = await parse({
-            data: [
-              'Feature: a',
-              'Scenario: startA descriptionA endA',
-              'Given a step',
-            ].join('\n'),
+            data: ['Feature: a', 'Scenario: startA descriptionA endA', 'Given a step'].join('\n'),
             uri: 'features/a.feature',
           })
 
@@ -232,7 +218,7 @@ describe('PickleFilter', () => {
       })
 
       describe('should match name A or B', () => {
-        beforeEach(function () {
+        beforeEach(() => {
           pickleFilter = new PickleFilter({
             cwd,
             featurePaths: ['features'],
@@ -241,17 +227,13 @@ describe('PickleFilter', () => {
           })
         })
 
-        it('returns true if pickle name matches A', async function () {
+        it('returns true if pickle name matches A', async () => {
           // Arrange
           const {
             pickles: [pickle],
             gherkinDocument,
           } = await parse({
-            data: [
-              'Feature: a',
-              'Scenario: nameA descriptionA',
-              'Given a step',
-            ].join('\n'),
+            data: ['Feature: a', 'Scenario: nameA descriptionA', 'Given a step'].join('\n'),
             uri: 'features/a.feature',
           })
 
@@ -262,17 +244,13 @@ describe('PickleFilter', () => {
           expect(result).to.eql(true)
         })
 
-        it('returns true if pickle name matches B', async function () {
+        it('returns true if pickle name matches B', async () => {
           // Arrange
           const {
             pickles: [pickle],
             gherkinDocument,
           } = await parse({
-            data: [
-              'Feature: a',
-              'Scenario: nameB descriptionB',
-              'Given a step',
-            ].join('\n'),
+            data: ['Feature: a', 'Scenario: nameB descriptionB', 'Given a step'].join('\n'),
             uri: 'features/a.feature',
           })
 
@@ -283,17 +261,13 @@ describe('PickleFilter', () => {
           expect(result).to.eql(true)
         })
 
-        it('returns false if pickle name does not match A nor B', async function () {
+        it('returns false if pickle name does not match A nor B', async () => {
           // Arrange
           const {
             pickles: [pickle],
             gherkinDocument,
           } = await parse({
-            data: [
-              'Feature: a',
-              'Scenario: nameC descriptionC',
-              'Given a step',
-            ].join('\n'),
+            data: ['Feature: a', 'Scenario: nameC descriptionC', 'Given a step'].join('\n'),
             uri: 'features/a.feature',
           })
 
@@ -308,7 +282,7 @@ describe('PickleFilter', () => {
 
     describe('tag filters', () => {
       describe('should have tag A', () => {
-        beforeEach(function () {
+        beforeEach(() => {
           pickleFilter = new PickleFilter({
             cwd: cwd,
             featurePaths: ['features'],
@@ -317,15 +291,13 @@ describe('PickleFilter', () => {
           })
         })
 
-        it('returns true if pickle has tag A', async function () {
+        it('returns true if pickle has tag A', async () => {
           // Arrange
           const {
             pickles: [pickle],
             gherkinDocument,
           } = await parse({
-            data: ['Feature: a', '@tagA', 'Scenario: a', 'Given a step'].join(
-              '\n'
-            ),
+            data: ['Feature: a', '@tagA', 'Scenario: a', 'Given a step'].join('\n'),
             uri: 'features/a.feature',
           })
 
@@ -336,7 +308,7 @@ describe('PickleFilter', () => {
           expect(result).to.eql(true)
         })
 
-        it('returns false if pickle does not have tag A', async function () {
+        it('returns false if pickle does not have tag A', async () => {
           // Arrange
           const {
             pickles: [pickle],
@@ -355,7 +327,7 @@ describe('PickleFilter', () => {
       })
 
       describe('should not have tag A', () => {
-        beforeEach(function () {
+        beforeEach(() => {
           pickleFilter = new PickleFilter({
             cwd,
             featurePaths: ['features'],
@@ -364,15 +336,13 @@ describe('PickleFilter', () => {
           })
         })
 
-        it('returns false if pickle has tag A', async function () {
+        it('returns false if pickle has tag A', async () => {
           // Arrange
           const {
             pickles: [pickle],
             gherkinDocument,
           } = await parse({
-            data: ['Feature: a', '@tagA', 'Scenario: a', 'Given a step'].join(
-              '\n'
-            ),
+            data: ['Feature: a', '@tagA', 'Scenario: a', 'Given a step'].join('\n'),
             uri: 'features/a.feature',
           })
 
@@ -383,7 +353,7 @@ describe('PickleFilter', () => {
           expect(result).to.eql(false)
         })
 
-        it('returns true if pickle does not have tag A', async function () {
+        it('returns true if pickle does not have tag A', async () => {
           // Arrange
           const {
             pickles: [pickle],
@@ -402,7 +372,7 @@ describe('PickleFilter', () => {
       })
 
       describe('should have tag A and B', () => {
-        beforeEach(function () {
+        beforeEach(() => {
           pickleFilter = new PickleFilter({
             cwd,
             featurePaths: ['features'],
@@ -411,18 +381,13 @@ describe('PickleFilter', () => {
           })
         })
 
-        it('returns true if pickle has tag A and B', async function () {
+        it('returns true if pickle has tag A and B', async () => {
           // Arrange
           const {
             pickles: [pickle],
             gherkinDocument,
           } = await parse({
-            data: [
-              'Feature: a',
-              '@tagA @tagB',
-              'Scenario: a',
-              'Given a step',
-            ].join('\n'),
+            data: ['Feature: a', '@tagA @tagB', 'Scenario: a', 'Given a step'].join('\n'),
             uri: 'features/a.feature',
           })
 
@@ -433,15 +398,13 @@ describe('PickleFilter', () => {
           expect(result).to.eql(true)
         })
 
-        it('returns false if pickle has tag A but not B', async function () {
+        it('returns false if pickle has tag A but not B', async () => {
           // Arrange
           const {
             pickles: [pickle],
             gherkinDocument,
           } = await parse({
-            data: ['Feature: a', '@tagA', 'Scenario: a', 'Given a step'].join(
-              '\n'
-            ),
+            data: ['Feature: a', '@tagA', 'Scenario: a', 'Given a step'].join('\n'),
             uri: 'features/a.feature',
           })
 
@@ -452,15 +415,13 @@ describe('PickleFilter', () => {
           expect(result).to.eql(false)
         })
 
-        it('returns false if pickle has tag B but not A', async function () {
+        it('returns false if pickle has tag B but not A', async () => {
           // Arrange
           const {
             pickles: [pickle],
             gherkinDocument,
           } = await parse({
-            data: ['Feature: a', '@tagB', 'Scenario: a', 'Given a step'].join(
-              '\n'
-            ),
+            data: ['Feature: a', '@tagB', 'Scenario: a', 'Given a step'].join('\n'),
             uri: 'features/a.feature',
           })
 
@@ -471,7 +432,7 @@ describe('PickleFilter', () => {
           expect(result).to.eql(false)
         })
 
-        it('returns false if pickle has neither tag A nor B', async function () {
+        it('returns false if pickle has neither tag A nor B', async () => {
           // Arrange
           const {
             pickles: [pickle],
@@ -490,7 +451,7 @@ describe('PickleFilter', () => {
       })
 
       describe('should have tag A or B', () => {
-        beforeEach(function () {
+        beforeEach(() => {
           pickleFilter = new PickleFilter({
             cwd: cwd,
             featurePaths: ['features'],
@@ -499,18 +460,13 @@ describe('PickleFilter', () => {
           })
         })
 
-        it('returns true if pickle has tag A and B', async function () {
+        it('returns true if pickle has tag A and B', async () => {
           // Arrange
           const {
             pickles: [pickle],
             gherkinDocument,
           } = await parse({
-            data: [
-              'Feature: a',
-              '@tagA @tagB',
-              'Scenario: a',
-              'Given a step',
-            ].join('\n'),
+            data: ['Feature: a', '@tagA @tagB', 'Scenario: a', 'Given a step'].join('\n'),
             uri: 'features/a.feature',
           })
 
@@ -521,15 +477,13 @@ describe('PickleFilter', () => {
           expect(result).to.eql(true)
         })
 
-        it('returns true if pickle has tag A but not B', async function () {
+        it('returns true if pickle has tag A but not B', async () => {
           // Arrange
           const {
             pickles: [pickle],
             gherkinDocument,
           } = await parse({
-            data: ['Feature: a', '@tagA', 'Scenario: a', 'Given a step'].join(
-              '\n'
-            ),
+            data: ['Feature: a', '@tagA', 'Scenario: a', 'Given a step'].join('\n'),
             uri: 'features/a.feature',
           })
 
@@ -540,15 +494,13 @@ describe('PickleFilter', () => {
           expect(result).to.eql(true)
         })
 
-        it('returns true if pickle has tag B but not A', async function () {
+        it('returns true if pickle has tag B but not A', async () => {
           // Arrange
           const {
             pickles: [pickle],
             gherkinDocument,
           } = await parse({
-            data: ['Feature: a', '@tagB', 'Scenario: a', 'Given a step'].join(
-              '\n'
-            ),
+            data: ['Feature: a', '@tagB', 'Scenario: a', 'Given a step'].join('\n'),
             uri: 'features/a.feature',
           })
 
@@ -559,7 +511,7 @@ describe('PickleFilter', () => {
           expect(result).to.eql(true)
         })
 
-        it('returns false if pickle has neither tag A nor B', async function () {
+        it('returns false if pickle has neither tag A nor B', async () => {
           // Arrange
           const {
             pickles: [pickle],
@@ -579,7 +531,7 @@ describe('PickleFilter', () => {
     })
 
     describe('line, name, and tag filters', () => {
-      beforeEach(function () {
+      beforeEach(() => {
         pickleFilter = new PickleFilter({
           cwd: cwd,
           featurePaths: ['features/b.feature:3'],
@@ -588,18 +540,13 @@ describe('PickleFilter', () => {
         })
       })
 
-      it('returns true if pickle matches all filters', async function () {
+      it('returns true if pickle matches all filters', async () => {
         // Arrange
         const {
           pickles: [pickle],
           gherkinDocument,
         } = await parse({
-          data: [
-            'Feature: a',
-            '@tagA',
-            'Scenario: nameA descriptionA',
-            'Given a step',
-          ].join('\n'),
+          data: ['Feature: a', '@tagA', 'Scenario: nameA descriptionA', 'Given a step'].join('\n'),
           uri: 'features/b.feature',
         })
 
@@ -610,18 +557,13 @@ describe('PickleFilter', () => {
         expect(result).to.eql(true)
       })
 
-      it('returns false if pickle matches some filters but not others', async function () {
+      it('returns false if pickle matches some filters but not others', async () => {
         // Arrange
         const {
           pickles: [pickle],
           gherkinDocument,
         } = await parse({
-          data: [
-            'Feature: a',
-            '',
-            'Scenario: nameA descriptionA',
-            'Given a step',
-          ].join('\n'),
+          data: ['Feature: a', '', 'Scenario: nameA descriptionA', 'Given a step'].join('\n'),
           uri: 'features/b.feature',
         })
 
@@ -632,7 +574,7 @@ describe('PickleFilter', () => {
         expect(result).to.eql(false)
       })
 
-      it('returns false if pickle matches no filters', async function () {
+      it('returns false if pickle matches no filters', async () => {
         // Arrange
         const {
           pickles: [pickle],

@@ -1,8 +1,9 @@
 import path from 'node:path'
-import { Node, parse } from '@cucumber/tag-expressions'
 import * as messages from '@cucumber/messages'
+import { type Node, parse } from '@cucumber/tag-expressions'
 import { getGherkinScenarioLocationMap } from './formatter/helpers/gherkin_document_parser'
 import { doesHaveValue, doesNotHaveValue } from './value_checker'
+
 import IGherkinDocument = messages.GherkinDocument
 import IPickle = messages.Pickle
 
@@ -25,12 +26,7 @@ export default class PickleFilter {
   private readonly nameFilter: PickleNameFilter
   private readonly tagFilter: PickleTagFilter
 
-  constructor({
-    cwd,
-    featurePaths,
-    names,
-    tagExpression,
-  }: IPickleFilterOptions) {
+  constructor({ cwd, featurePaths, names, tagExpression }: IPickleFilterOptions) {
     this.lineFilter = new PickleLineFilter(cwd, featurePaths)
     this.nameFilter = new PickleNameFilter(names)
     this.tagFilter = new PickleTagFilter(tagExpression)
@@ -87,7 +83,7 @@ export class PickleLineFilter {
             .slice(1)
             .split(':')
             .forEach((line) => {
-              mapping[uri].push(parseInt(line))
+              mapping[uri].push(parseInt(line, 10))
             })
         }
       }
@@ -99,12 +95,9 @@ export class PickleLineFilter {
     const uri = path.normalize(pickle.uri)
     const linesToMatch = this.featureUriToLinesMapping[uri]
     if (doesHaveValue(linesToMatch)) {
-      const gherkinScenarioLocationMap =
-        getGherkinScenarioLocationMap(gherkinDocument)
+      const gherkinScenarioLocationMap = getGherkinScenarioLocationMap(gherkinDocument)
       const pickleLines = new Set(
-        pickle.astNodeIds.map(
-          (sourceId) => gherkinScenarioLocationMap[sourceId].line
-        )
+        pickle.astNodeIds.map((sourceId) => gherkinScenarioLocationMap[sourceId].line)
       )
       const linesIntersection = linesToMatch.filter((x) => pickleLines.has(x))
       return linesIntersection.length > 0

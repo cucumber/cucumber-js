@@ -1,5 +1,5 @@
+import fs from 'node:fs'
 import path from 'node:path'
-import fs from 'mz/fs'
 
 const DEFAULT_FILENAMES = [
   'cucumber.js',
@@ -11,7 +11,5 @@ const DEFAULT_FILENAMES = [
 ]
 
 export function locateFile(cwd: string): string | undefined {
-  return DEFAULT_FILENAMES.find((filename) =>
-    fs.existsSync(path.join(cwd, filename))
-  )
+  return DEFAULT_FILENAMES.find((filename) => fs.existsSync(path.join(cwd, filename)))
 }

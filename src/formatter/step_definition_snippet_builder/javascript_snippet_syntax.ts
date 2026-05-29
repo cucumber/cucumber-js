@@ -1,7 +1,7 @@
-import { GeneratedExpression } from '@cucumber/cucumber-expressions'
+import type { GeneratedExpression } from '@cucumber/cucumber-expressions'
 import {
-  ISnippetSnytax,
-  ISnippetSyntaxBuildOptions,
+  type ISnippetSnytax,
+  type ISnippetSyntaxBuildOptions,
   SnippetInterface,
 } from './snippet_syntax'
 
@@ -22,7 +22,7 @@ export default class JavaScriptSnippetSyntax implements ISnippetSnytax {
   }: ISnippetSyntaxBuildOptions): string {
     let functionKeyword = 'function '
     if (this.snippetInterface === SnippetInterface.AsyncAwait) {
-      functionKeyword = 'async ' + functionKeyword
+      functionKeyword = `async ${functionKeyword}`
     }
 
     let implementation: string
@@ -34,25 +34,18 @@ export default class JavaScriptSnippetSyntax implements ISnippetSnytax {
       implementation = "return 'pending';"
     }
 
-    const definitionChoices = generatedExpressions.map(
-      (generatedExpression, index) => {
-        const prefix = index === 0 ? '' : '// '
-        const allParameterNames =
-          generatedExpression.parameterNames.concat(stepParameterNames)
-        if (this.snippetInterface === SnippetInterface.Callback) {
-          allParameterNames.push(CALLBACK_NAME)
-        }
-        return `${prefix + functionName}('${this.escapeSpecialCharacters(
-          generatedExpression
-        )}', ${functionKeyword}(${allParameterNames.join(', ')}) {\n`
+    const definitionChoices = generatedExpressions.map((generatedExpression, index) => {
+      const prefix = index === 0 ? '' : '// '
+      const allParameterNames = generatedExpression.parameterNames.concat(stepParameterNames)
+      if (this.snippetInterface === SnippetInterface.Callback) {
+        allParameterNames.push(CALLBACK_NAME)
       }
-    )
+      return `${prefix + functionName}('${this.escapeSpecialCharacters(
+        generatedExpression
+      )}', ${functionKeyword}(${allParameterNames.join(', ')}) {\n`
+    })
 
-    return (
-      `${definitionChoices.join('')}  // ${comment}\n` +
-      `  ${implementation}\n` +
-      '});'
-    )
+    return `${definitionChoices.join('')}  // ${comment}\n  ${implementation}\n});`
   }
 
   private escapeSpecialCharacters(generatedExpression: GeneratedExpression) {

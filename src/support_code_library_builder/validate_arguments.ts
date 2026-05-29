@@ -1,4 +1,4 @@
-import { DefineStepPattern, IDefineStepOptions } from './types'
+import type { DefineStepPattern, IDefineStepOptions } from './types'
 
 interface IValidation {
   identifier: string
@@ -89,9 +89,7 @@ export default function validateArguments({
 }): void {
   validations[fnName].forEach(({ identifier, expectedType, predicate }) => {
     if (!predicate(args)) {
-      throw new Error(
-        `${location}: Invalid ${identifier}: should be a ${expectedType}`
-      )
+      throw new Error(`${location}: Invalid ${identifier}: should be a ${expectedType}`)
     }
   })
 }

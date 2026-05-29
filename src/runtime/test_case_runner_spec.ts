@@ -1,18 +1,18 @@
 import { EventEmitter } from 'node:events'
-import sinon from 'sinon'
+import * as messages from '@cucumber/messages'
+import { type Envelope, IdGenerator } from '@cucumber/messages'
+import FakeTimers, { type InstalledClock } from '@sinonjs/fake-timers'
 import { expect } from 'chai'
 import { afterEach, beforeEach, describe, it } from 'mocha'
-import * as messages from '@cucumber/messages'
-import { Envelope, IdGenerator } from '@cucumber/messages'
-import FakeTimers, { InstalledClock } from '@sinonjs/fake-timers'
-import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
-import { parse } from '../../test/gherkin_helpers'
-import timeMethods from '../time'
+import sinon from 'sinon'
 import { getBaseSupportCodeLibrary } from '../../test/fixtures/steps'
-import { SupportCodeLibrary } from '../support_code_library_builder/types'
-import { valueOrDefault } from '../value_checker'
-import FormatterBuilder from '../formatter/builder'
+import { parse } from '../../test/gherkin_helpers'
+import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
 import { assembleTestCases } from '../assemble'
+import FormatterBuilder from '../formatter/builder'
+import type { SupportCodeLibrary } from '../support_code_library_builder/types'
+import timeMethods from '../time'
+import { valueOrDefault } from '../value_checker'
 import TestCaseRunner from './test_case_runner'
 
 async function testRunner(options: {
@@ -46,12 +46,10 @@ async function testRunner(options: {
 
   // listen for envelopers _after_ we've assembled test cases
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
-  const snippetBuilder = await FormatterBuilder.getStepDefinitionSnippetBuilder(
-    {
-      cwd: process.cwd(),
-      supportCodeLibrary: options.supportCodeLibrary,
-    }
-  )
+  const snippetBuilder = await FormatterBuilder.getStepDefinitionSnippetBuilder({
+    cwd: process.cwd(),
+    supportCodeLibrary: options.supportCodeLibrary,
+  })
   const runner = new TestCaseRunner({
     workerId: options.workerId,
     eventBroadcaster,
@@ -93,7 +91,7 @@ describe('TestCaseRunner', () => {
       it('emits testCase / testCaseStarted / testStepStarted / testStepFinished / testCaseFinished envelopes and returns the result', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function () {
+          Given('a step', () => {
             clock.tick(1)
           })
         })
@@ -158,7 +156,7 @@ describe('TestCaseRunner', () => {
       it('emits and returns failing results', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function () {
+          Given('a step', () => {
             throw 'fail'
           })
         })
@@ -172,11 +170,11 @@ describe('TestCaseRunner', () => {
         const failingTestResult: messages.TestStepResult = {
           duration: messages.TimeConversion.millisecondsToDuration(0),
           status: messages.TestStepResultStatus.FAILED,
-          message: 'fail',
+          message: 'Error: fail',
           exception: {
-            type: 'String',
+            type: 'Error',
             message: 'fail',
-            stackTrace: undefined,
+            stackTrace: 'Error: fail',
           },
         }
 
@@ -189,9 +187,7 @@ describe('TestCaseRunner', () => {
 
         // Assert
         expect(envelopes).to.have.lengthOf(4)
-        expect(envelopes[2].testStepFinished.testStepResult).to.eql(
-          failingTestResult
-        )
+        expect(envelopes[2].testStepFinished.testStepResult).to.eql(failingTestResult)
         expect(result).to.eql(messages.TestStepResultStatus.FAILED)
       })
 
@@ -200,15 +196,13 @@ describe('TestCaseRunner', () => {
         const error = new Error('fail')
         const afterStepStub = sinon.stub()
         const afterStub = sinon.stub()
-        const supportCodeLibrary = buildSupportCodeLibrary(
-          ({ Given, AfterStep, After }) => {
-            Given('a step', function () {
-              throw error
-            })
-            AfterStep(afterStepStub)
-            After(afterStub)
-          }
-        )
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given, AfterStep, After }) => {
+          Given('a step', () => {
+            throw error
+          })
+          AfterStep(afterStepStub)
+          After(afterStub)
+        })
         const {
           gherkinDocument,
           pickles: [pickle],
@@ -240,16 +234,9 @@ describe('TestCaseRunner', () => {
           gherkinDocument,
           pickles: [pickle],
         } = await parse({
-          data: ['Feature: a', 'Scenario: b', 'Given an ambiguous step'].join(
-            '\n'
-          ),
+          data: ['Feature: a', 'Scenario: b', 'Given an ambiguous step'].join('\n'),
           uri: 'a.feature',
         })
-        const message = [
-          'Multiple step definitions match:',
-          '  an ambiguous step    - steps.ts:13',
-          '  /an? ambiguous step/ - steps.ts:14',
-        ].join('\n')
 
         // Act
         const { envelopes, result } = await testRunner({
@@ -261,14 +248,11 @@ describe('TestCaseRunner', () => {
         // Assert
         expect(envelopes).to.have.lengthOf(4)
         const expected: messages.TestStepResult = {
-          message,
           status: messages.TestStepResultStatus.AMBIGUOUS,
           duration: messages.TimeConversion.millisecondsToDuration(0),
         }
         expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
-        expect(result).to.eql(
-          envelopes[2].testStepFinished.testStepResult.status
-        )
+        expect(result).to.eql(envelopes[2].testStepFinished.testStepResult.status)
       })
     })
 
@@ -298,9 +282,7 @@ describe('TestCaseRunner', () => {
           status: messages.TestStepResultStatus.UNDEFINED,
           duration: messages.TimeConversion.millisecondsToDuration(0),
         })
-        expect(result).to.eql(
-          envelopes[3].testStepFinished.testStepResult.status
-        )
+        expect(result).to.eql(envelopes[3].testStepFinished.testStepResult.status)
       })
     })
 
@@ -309,7 +291,7 @@ describe('TestCaseRunner', () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
           let willPass = false
-          Given('a step', function () {
+          Given('a step', () => {
             clock.tick(1)
             if (willPass) {
               return
@@ -356,11 +338,11 @@ describe('TestCaseRunner', () => {
               testCaseStartedId: '3',
               testStepResult: {
                 duration: messages.TimeConversion.millisecondsToDuration(1),
-                message: 'Oh no!',
+                message: 'Error: Oh no!',
                 exception: {
-                  type: 'String',
+                  type: 'Error',
                   message: 'Oh no!',
-                  stackTrace: undefined,
+                  stackTrace: 'Error: Oh no!',
                 },
                 status: messages.TestStepResultStatus.FAILED,
               },
@@ -416,19 +398,17 @@ describe('TestCaseRunner', () => {
       it('should provide the correctly willBeRetried value to the hook', async () => {
         // Arrange
         const hookStub = sinon.stub()
-        const supportCodeLibrary = buildSupportCodeLibrary(
-          ({ Given, After }) => {
-            let willPass = false
-            Given('a step', function () {
-              if (willPass) {
-                return
-              }
-              willPass = true
-              throw 'error'
-            })
-            After(hookStub)
-          }
-        )
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given, After }) => {
+          let willPass = false
+          Given('a step', () => {
+            if (willPass) {
+              return
+            }
+            willPass = true
+            throw 'error'
+          })
+          After(hookStub)
+        })
         const {
           gherkinDocument,
           pickles: [pickle],
@@ -456,7 +436,7 @@ describe('TestCaseRunner', () => {
       it('emits the expected envelopes and returns a skipped result', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          Given('a step', function () {
+          Given('a step', () => {
             clock.tick(1)
           })
         })
@@ -483,24 +463,20 @@ describe('TestCaseRunner', () => {
           duration: messages.TimeConversion.millisecondsToDuration(0),
         }
         expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
-        expect(result).to.eql(
-          envelopes[2].testStepFinished.testStepResult.status
-        )
+        expect(result).to.eql(envelopes[2].testStepFinished.testStepResult.status)
       })
     })
 
     describe('with test case hooks', () => {
       it('emits the expected envelopes and returns a skipped result', async () => {
         // Arrange
-        const supportCodeLibrary = buildSupportCodeLibrary(
-          ({ Given, Before, After }) => {
-            Given('a step', function () {
-              clock.tick(1)
-            })
-            Before(function () {})
-            After(function () {})
-          }
-        )
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given, Before, After }) => {
+          Given('a step', () => {
+            clock.tick(1)
+          })
+          Before(() => {})
+          After(() => {})
+        })
         const {
           gherkinDocument,
           pickles: [pickle],
@@ -518,9 +494,7 @@ describe('TestCaseRunner', () => {
 
         // Assert
         expect(envelopes).to.have.lengthOf(8)
-        expect(result).to.eql(
-          envelopes[6].testStepFinished.testStepResult.status
-        )
+        expect(result).to.eql(envelopes[6].testStepFinished.testStepResult.status)
       })
     })
 
@@ -530,15 +504,13 @@ describe('TestCaseRunner', () => {
         const afterStep = sinon.stub()
 
         // Arrange
-        const supportCodeLibrary = buildSupportCodeLibrary(
-          ({ Given, BeforeStep, AfterStep }) => {
-            Given('a step', function () {
-              clock.tick(1)
-            })
-            BeforeStep(beforeStep)
-            AfterStep(afterStep)
-          }
-        )
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given, BeforeStep, AfterStep }) => {
+          Given('a step', () => {
+            clock.tick(1)
+          })
+          BeforeStep(beforeStep)
+          AfterStep(afterStep)
+        })
         const {
           gherkinDocument,
           pickles: [pickle],
@@ -556,9 +528,7 @@ describe('TestCaseRunner', () => {
 
         // Assert
         expect(envelopes).to.have.lengthOf(4)
-        expect(result).to.eql(
-          envelopes[2].testStepFinished.testStepResult.status
-        )
+        expect(result).to.eql(envelopes[2].testStepFinished.testStepResult.status)
         expect(beforeStep).to.have.been.calledOnceWith({
           gherkinDocument,
           pickle,
@@ -583,7 +553,7 @@ describe('TestCaseRunner', () => {
     it('emits workerId on testCaseStarted when provided', async () => {
       // Arrange
       const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-        Given('a step', function () {
+        Given('a step', () => {
           clock.tick(1)
         })
       })

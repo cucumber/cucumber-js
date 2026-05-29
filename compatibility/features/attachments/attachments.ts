@@ -2,12 +2,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { When } from '../../../src'
 
-When(
-  'the string {string} is attached as {string}',
-  function (text: string, mediaType: string) {
-    this.attach(text, mediaType)
-  }
-)
+When('the string {string} is attached as {string}', function (text: string, mediaType: string) {
+  this.attach(text, mediaType)
+})
 
 When('the string {string} is logged', function (text: string) {
   this.log(text)
@@ -19,12 +16,9 @@ When('text with ANSI escapes is logged', function () {
   )
 })
 
-When(
-  'the following string is attached as {string}:',
-  function (mediaType: string, text: string) {
-    this.attach(text, mediaType)
-  }
-)
+When('the following string is attached as {string}:', function (mediaType: string, text: string) {
+  this.attach(text, mediaType)
+})
 
 When(
   'an array with {int} bytes is attached as {string}',

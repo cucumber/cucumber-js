@@ -65,11 +65,7 @@ describe('mergeConfigurations', () => {
     })
 
     it('should merge three tag expressions correctly', () => {
-      const result = mergeConfigurations(
-        { tags: '@foo' },
-        { tags: '@bar' },
-        { tags: '@baz' }
-      )
+      const result = mergeConfigurations({ tags: '@foo' }, { tags: '@bar' }, { tags: '@baz' })
       expect(result).to.deep.eq({
         tags: '(@foo) and (@bar) and (@baz)',
       })

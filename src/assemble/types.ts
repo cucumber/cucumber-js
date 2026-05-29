@@ -1,4 +1,4 @@
-import { GherkinDocument, Pickle, TestCase } from '@cucumber/messages'
+import type { GherkinDocument, Pickle, TestCase } from '@cucumber/messages'
 
 export interface SourcedPickle {
   gherkinDocument: GherkinDocument

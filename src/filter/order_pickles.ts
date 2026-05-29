@@ -1,6 +1,6 @@
 import shuffle from 'knuth-shuffle-seeded'
-import { ILogger } from '../environment'
-import { IPickleOrder } from './types'
+import type { ILogger } from '../environment'
+import type { IPickleOrder } from './types'
 
 // Orders the pickleIds in place - morphs input
 export function orderPickles<T = string>(
@@ -25,9 +25,7 @@ export function orderPickles<T = string>(
       }
       break
     default:
-      throw new Error(
-        'Unrecognized order type. Should be `defined` or `random`'
-      )
+      throw new Error('Unrecognized order type. Should be `defined` or `random`')
   }
 }
 

@@ -17,9 +17,7 @@ describe(getDefinitionLineAndUri.name, () => {
     const { uri, line } = wrap(() => getDefinitionLineAndUri('.', isExcluded))
     assert.strictEqual(
       path.normalize(uri),
-      path.normalize(
-        'src/support_code_library_builder/get_definition_line_and_uri_sample.cjs'
-      )
+      path.normalize('src/support_code_library_builder/get_definition_line_and_uri_sample.cjs')
     )
     assert.strictEqual(line, 3)
   })
@@ -34,9 +32,7 @@ describe(getDefinitionLineAndUri.name, () => {
     const { uri, line } = wrap(() => getDefinitionLineAndUri('.', isExcluded))
     assert.strictEqual(
       path.normalize(uri),
-      path.normalize(
-        'src/support_code_library_builder/get_definition_line_and_uri_sample.mjs'
-      )
+      path.normalize('src/support_code_library_builder/get_definition_line_and_uri_sample.mjs')
     )
     assert.strictEqual(line, 3)
   })

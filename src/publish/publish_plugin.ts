@@ -1,57 +1,66 @@
-import { Writable } from 'node:stream'
+import { createReadStream, createWriteStream } from 'node:fs'
+import { mkdtemp, stat } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
+import type { Writable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 import { stripVTControlCharacters } from 'node:util'
-import { mkdtemp, stat } from 'node:fs/promises'
-import path from 'node:path'
-import { tmpdir } from 'node:os'
-import { createReadStream, createWriteStream } from 'node:fs'
 import { createGzip } from 'node:zlib'
-import { supportsColor } from 'supports-color'
 import hasAnsi from 'has-ansi'
-import { Plugin } from '../plugin'
+import { createSupportsColor } from 'supports-color'
+import type { InternalPlugin } from '../plugin'
 
-const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://messages.cucumber.io/api/reports'
+type TouchResult = {
+  banner: string
+  url?: string
+}
 
-export const publishPlugin: Plugin = {
+const DEFAULT_CUCUMBER_PUBLISH_URL = 'https://reports.cucumber.io/api/reports'
+
+export const publishPlugin: InternalPlugin = {
   type: 'plugin',
-  coordinator: async ({ on, logger, options, environment }) => {
+  coordinator: async ({ on, emit, logger, options, environment }) => {
     if (!options) {
       return undefined
     }
     const { url = DEFAULT_CUCUMBER_PUBLISH_URL, token } = options
-    const headers: { [key: string]: string } = {}
+    const headers: { [key: string]: string } = {
+      Accept: 'application/json',
+    }
     if (token !== undefined) {
       headers.Authorization = `Bearer ${token}`
     }
     const touchResponse = await fetch(url, { headers })
-    const banner = await touchResponse.text()
+
+    if (touchResponse.status >= 500) {
+      return () => {
+        logger.error(
+          `Failed to publish report to ${new URL(url).origin} with status ${touchResponse.status}`
+        )
+        logger.debug(touchResponse)
+      }
+    }
+
+    const touchResult = (await touchResponse.json()) as TouchResult
 
     if (!touchResponse.ok) {
       return () => {
-        if (touchResponse.status < 500) {
-          environment.stderr.write(
-            sanitisePublishOutput(banner, environment.stderr) + '\n'
-          )
-        } else {
-          logger.error(
-            `Failed to publish report to ${new URL(url).origin} with status ${
-              touchResponse.status
-            }`
-          )
-          logger.debug(touchResponse)
-        }
+        environment.stderr.write(
+          `${sanitisePublishOutput(touchResult.banner, environment.stderr)}\n`
+        )
       }
+    }
+
+    if (touchResult.url) {
+      emit('publish:url', touchResult.url)
     }
 
     const uploadUrl = touchResponse.headers.get('Location')
     const tempDir = await mkdtemp(path.join(tmpdir(), `cucumber-js-publish-`))
     const tempFilePath = path.join(tempDir, 'envelopes.jsonl.gz')
     const writeStream = createGzip()
-    const finishedWriting = pipeline(
-      writeStream,
-      createWriteStream(tempFilePath)
-    )
-    on('message', (value) => writeStream.write(JSON.stringify(value) + '\n'))
+    const finishedWriting = pipeline(writeStream, createWriteStream(tempFilePath))
+    on('message', (value) => writeStream.write(`${JSON.stringify(value)}\n`))
 
     return () => {
       return new Promise<void>((resolve) => {
@@ -75,7 +84,7 @@ export const publishPlugin: Plugin = {
           })
           if (uploadResponse.ok) {
             environment.stderr.write(
-              sanitisePublishOutput(banner, environment.stderr) + '\n'
+              `${sanitisePublishOutput(touchResult.banner, environment.stderr)}\n`
             )
           } else {
             logger.error(
@@ -99,7 +108,7 @@ strip them back out. Ideally we should get structured data from the service and
 compose the console message on this end.
  */
 function sanitisePublishOutput(raw: string, stderr: Writable) {
-  if (!supportsColor(stderr) && hasAnsi(raw)) {
+  if (!createSupportsColor(stderr) && hasAnsi(raw)) {
     return stripVTControlCharacters(raw)
   }
   return raw

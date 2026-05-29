@@ -5,25 +5,25 @@ import {
   Before,
   BeforeAll,
   BeforeStep,
-  ITestCaseHookParameter,
-  ITestStepHookParameter,
+  type ITestCaseHookParameter,
+  type ITestStepHookParameter,
 } from '../'
 
 // should allow argument-less hooks
-BeforeAll(function () {})
-AfterAll(function () {})
-Before(function () {})
-After(function () {})
-BeforeStep(function () {})
-AfterStep(function () {})
+BeforeAll(() => {})
+AfterAll(() => {})
+Before(() => {})
+After(() => {})
+BeforeStep(() => {})
+AfterStep(() => {})
 
 // should allow hook functions to be async
-BeforeAll(async function () {})
-AfterAll(async function () {})
-Before(async function () {})
-After(async function () {})
-BeforeStep(async function () {})
-AfterStep(async function () {})
+BeforeAll(async () => {})
+AfterAll(async () => {})
+Before(async () => {})
+After(async () => {})
+BeforeStep(async () => {})
+AfterStep(async () => {})
 
 // should allow accessing world parameters in global hooks
 BeforeAll(function () {
@@ -34,25 +34,21 @@ AfterAll(function () {
 })
 
 // should allow typed arguments in hooks
-Before(function (param: ITestCaseHookParameter) {})
-After(function (param: ITestCaseHookParameter) {})
-BeforeStep(function (param: ITestStepHookParameter) {})
-AfterStep(function (param: ITestStepHookParameter) {})
+Before((_param: ITestCaseHookParameter) => {})
+After((_param: ITestCaseHookParameter) => {})
+BeforeStep((_param: ITestStepHookParameter) => {})
+AfterStep((_param: ITestStepHookParameter) => {})
 
 // should allow an object with tags and/or name in hooks
-Before({ tags: '@foo', name: 'before hook' }, function () {})
-After({ tags: '@foo', name: 'after hook' }, function () {})
+Before({ tags: '@foo', name: 'before hook' }, () => {})
+After({ tags: '@foo', name: 'after hook' }, () => {})
 
 // should allow us to return 'skipped' from a test case hook
-Before(async function () {
-  return 'skipped'
-})
-After(async function () {
-  return 'skipped'
-})
+Before(async () => 'skipped')
+After(async () => 'skipped')
 
 // should allow named hooks
-BeforeAll({ name: 'before test run' }, function () {})
-AfterAll({ name: 'after test run' }, function () {})
-Before({ name: 'before test case' }, function () {})
-After({ name: 'after test case' }, function () {})
+BeforeAll({ name: 'before test run' }, () => {})
+AfterAll({ name: 'after test run' }, () => {})
+Before({ name: 'before test case' }, () => {})
+After({ name: 'after test case' }, () => {})

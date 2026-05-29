@@ -1,12 +1,12 @@
-import { describe, it } from 'mocha'
-import { expect } from 'chai'
 import {
   CucumberExpressionGenerator,
-  GeneratedExpression,
+  type GeneratedExpression,
   ParameterTypeRegistry,
 } from '@cucumber/cucumber-expressions'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { reindent } from 'reindent-template-literals'
-import { ISnippetSyntaxBuildOptions } from '../../../lib/formatter/step_definition_snippet_builder/snippet_syntax'
+import type { ISnippetSyntaxBuildOptions } from '../../../lib/formatter/step_definition_snippet_builder/snippet_syntax'
 import JavascriptSnippetSyntax from './javascript_snippet_syntax'
 import { SnippetInterface } from './snippet_syntax'
 
@@ -21,7 +21,7 @@ function generateExpressions(text: string): readonly GeneratedExpression[] {
 describe('JavascriptSnippetSyntax', () => {
   describe('build()', () => {
     describe('callback interface', () => {
-      it('returns the proper snippet', function () {
+      it('returns the proper snippet', () => {
         // Arrange
         const syntax = new JavascriptSnippetSyntax(SnippetInterface.Callback)
         const buildOptions: ISnippetSyntaxBuildOptions = {
@@ -46,7 +46,7 @@ describe('JavascriptSnippetSyntax', () => {
     })
 
     describe('promise interface', () => {
-      it('returns the proper snippet', function () {
+      it('returns the proper snippet', () => {
         // Arrange
         const syntax = new JavascriptSnippetSyntax(SnippetInterface.Promise)
         const buildOptions: ISnippetSyntaxBuildOptions = {
@@ -71,7 +71,7 @@ describe('JavascriptSnippetSyntax', () => {
     })
 
     describe('synchronous interface', () => {
-      it('returns the proper snippet', function () {
+      it('returns the proper snippet', () => {
         // Arrange
         const syntax = new JavascriptSnippetSyntax(SnippetInterface.Synchronous)
         const buildOptions: ISnippetSyntaxBuildOptions = {
@@ -96,7 +96,7 @@ describe('JavascriptSnippetSyntax', () => {
     })
 
     describe('pattern contains single quote', () => {
-      it('returns the proper snippet', function () {
+      it('returns the proper snippet', () => {
         // Arrange
         const syntax = new JavascriptSnippetSyntax(SnippetInterface.Synchronous)
         const buildOptions: ISnippetSyntaxBuildOptions = {
@@ -148,7 +148,7 @@ describe('JavascriptSnippetSyntax', () => {
     })
 
     describe('multiple patterns', () => {
-      it('returns the snippet with the other choices commented out', function () {
+      it('returns the snippet with the other choices commented out', () => {
         // Arrange
         const syntax = new JavascriptSnippetSyntax(SnippetInterface.Synchronous)
         const buildOptions: ISnippetSyntaxBuildOptions = {

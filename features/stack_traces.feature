@@ -12,7 +12,7 @@ Feature: Stack traces
 
   Rule: Source maps are respected when dealing with transpiled support code
 
-    Just-in-time transpilers like `@babel/register` and `ts-node` emit source maps with
+    Just-in-time transpilers like `@babel/register` and `tsx` emit source maps with
     the transpiled code. Cucumber users expect stack traces to point to the line and column
     in the original source file when there is an error.
 
@@ -34,7 +34,7 @@ Feature: Stack traces
       """
 
     Scenario: commonjs
-      When I run cucumber-js with `--require-module ts-node/register --require features/steps.ts`
+      When I run cucumber-js with `--require-module tsx/cjs --require features/steps.ts`
       Then the output contains the text:
       """
       /features/steps.ts:11:9
@@ -52,7 +52,7 @@ Feature: Stack traces
         }
       }
       """
-      Given my env includes "{\"NODE_OPTIONS\":\"--loader ts-node/esm --enable-source-maps\"}"
+      Given my env includes "{\"NODE_OPTIONS\":\"--import tsx --enable-source-maps\"}"
       When I run cucumber-js with `--import features/steps.ts`
       Then the output contains the text:
       """

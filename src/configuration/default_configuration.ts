@@ -1,4 +1,4 @@
-import { IConfiguration } from './types'
+import type { IConfiguration } from './types'
 
 export const DEFAULT_CONFIGURATION: IConfiguration = {
   backtrace: false,
@@ -24,5 +24,6 @@ export const DEFAULT_CONFIGURATION: IConfiguration = {
   shard: '',
   strict: true,
   tags: '',
+  workerOptions: {},
   worldParameters: {},
 }

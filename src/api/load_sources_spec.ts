@@ -1,9 +1,9 @@
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import { PassThrough } from 'node:stream'
-import { expect } from 'chai'
-import fs from 'mz/fs'
 import { IdGenerator } from '@cucumber/messages'
-import { IRunEnvironment } from '../environment'
+import { expect } from 'chai'
+import type { IRunEnvironment } from '../environment'
 import { loadSources } from './load_sources'
 
 const newId = IdGenerator.uuid()

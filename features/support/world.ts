@@ -1,18 +1,18 @@
 import { execFile } from 'node:child_process'
-import { PassThrough, pipeline, Writable } from 'node:stream'
+import { Console } from 'node:console'
 import fs from 'node:fs'
 import path from 'node:path'
+import { PassThrough, pipeline, Writable } from 'node:stream'
 import util from 'node:util'
-import { Console } from 'node:console'
-import { expect } from 'chai'
-import toString from 'stream-to-string'
-import * as messages from '@cucumber/messages'
 import * as messageStreams from '@cucumber/message-streams'
-import FakeReportServer from '../../test/fake_report_server'
-import { doesHaveValue } from '../../src/value_checker'
+import type * as messages from '@cucumber/messages'
+import { expect } from 'chai'
+import streamToString from 'stream-to-string'
 import { setWorldConstructor } from '../../'
-import { IRunEnvironment, loadConfiguration, runCucumber } from '../../lib/api'
+import { type IRunEnvironment, loadConfiguration, runCucumber } from '../../lib/api'
 import { ArgvParser } from '../../lib/configuration'
+import { doesHaveValue } from '../../src/value_checker'
+import type FakeReportServer from '../../test/fake_report_server'
 
 const asyncPipeline = util.promisify(pipeline)
 
@@ -45,10 +45,9 @@ export class World {
       try {
         Object.assign(result, JSON.parse(str))
       } catch {
-        str
-          .split(/\s+/)
-          .map((keyValue) => keyValue.split('='))
-          .forEach((pair) => (result[pair[0]] = pair[1]))
+        for (const pair of str.split(/\s+/).map((keyValue) => keyValue.split('='))) {
+          result[pair[0]] = pair[1]
+        }
       }
     }
     return result
@@ -72,14 +71,9 @@ export class World {
     if (this.spawn) {
       const env = { ...process.env, ...this.sharedEnv, ...envOverride }
       result = await new Promise((resolve) => {
-        execFile(
-          args[0],
-          args.slice(1),
-          { cwd, env },
-          (error, stdout, stderr) => {
-            resolve({ error, stdout, stderr })
-          }
-        )
+        execFile(args[0], args.slice(1), { cwd, env }, (error, stdout, stderr) => {
+          resolve({ error, stdout, stderr })
+        })
       })
     } else {
       const stdout = new PassThrough()
@@ -90,8 +84,7 @@ export class World {
         process.env[key] = envOverride[key]
       }
       try {
-        const { options, configuration: argvConfiguration } =
-          ArgvParser.parse(args)
+        const { options, configuration: argvConfiguration } = ArgvParser.parse(args)
         const { runConfiguration } = await loadConfiguration(
           {
             file: options.config,
@@ -119,8 +112,8 @@ export class World {
       stderr.end()
       result = {
         error,
-        stdout: await toString(stdout),
-        stderr: await toString(stderr),
+        stdout: await streamToString(stdout),
+        stderr: await streamToString(stderr),
       }
     }
     const envelopes: messages.Envelope[] = []
@@ -139,7 +132,8 @@ export class World {
       )
     }
     if (this.debug) {
-      console.log(result.stdout + result.stderr) // eslint-disable-line no-console
+      // biome-ignore lint/suspicious/noConsole: debug output for the test runner
+      console.log(result.stdout + result.stderr)
     }
     this.lastRun = {
       error: result.error,

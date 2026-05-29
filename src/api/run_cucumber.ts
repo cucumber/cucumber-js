@@ -1,21 +1,19 @@
 import { EventEmitter } from 'node:events'
-import { Envelope, IdGenerator, ParseError } from '@cucumber/messages'
-import { IRunEnvironment, makeEnvironment } from '../environment'
-import { IFilterablePickle } from '../filter'
+import { type Envelope, IdGenerator, type ParseError } from '@cucumber/messages'
+import { type IRunEnvironment, makeEnvironment } from '../environment'
+import type { IFilterablePickle } from '../filter'
 import { EventDataCollector } from '../formatter/helpers'
 import { resolvePaths } from '../paths'
 import { makeRuntime } from '../runtime'
-import { SupportCodeLibrary } from '../support_code_library_builder/types'
+import { timestamp } from '../runtime/stopwatch'
+import type { SupportCodeLibrary } from '../support_code_library_builder/types'
 import { version } from '../version'
-import {
-  emitMetaMessage,
-  emitSupportCodeMessages,
-} from './emit_support_code_messages'
+import { emitMetaMessage, emitSupportCodeMessages } from './emit_support_code_messages'
 import { initializeFormatters } from './formatters'
 import { getPicklesAndErrors } from './gherkin'
 import { initializeForRunCucumber } from './plugins'
 import { getSupportCodeLibrary } from './support'
-import { IRunOptions, IRunResult } from './types'
+import type { IRunOptions, IRunResult } from './types'
 
 /**
  * Execute a Cucumber test run and return the overall result
@@ -61,12 +59,7 @@ Running from: ${__dirname}
     mergedEnvironment
   )
 
-  const resolvedPaths = await resolvePaths(
-    logger,
-    cwd,
-    options.sources,
-    supportCoordinates
-  )
+  const resolvedPaths = await resolvePaths(logger, cwd, options.sources, supportCoordinates)
   pluginManager.emit('paths:resolve', resolvedPaths)
   const { sourcePaths, requirePaths, importPaths } = resolvedPaths
 
@@ -87,9 +80,7 @@ Running from: ${__dirname}
   if (onMessage) {
     eventBroadcaster.on('envelope', onMessage)
   }
-  eventBroadcaster.on('envelope', (value) =>
-    pluginManager.emit('message', value)
-  )
+  eventBroadcaster.on('envelope', (value) => pluginManager.emit('message', value))
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
 
   let formatterStreamError = false
@@ -122,17 +113,12 @@ Running from: ${__dirname}
       'pickles:filter',
       gherkinResult.filterablePickles
     )
-    filteredPickles = await pluginManager.transform(
-      'pickles:order',
-      filteredPickles
-    )
+    filteredPickles = await pluginManager.transform('pickles:order', filteredPickles)
     parseErrors = gherkinResult.parseErrors
   }
   if (parseErrors.length) {
     parseErrors.forEach((parseError) => {
-      logger.error(
-        `Parse error in "${parseError.source.uri}" ${parseError.message}`
-      )
+      logger.error(`Parse error in "${parseError.source.uri}" ${parseError.message}`)
     })
     await cleanupFormatters()
     await pluginManager.cleanup()
@@ -148,7 +134,9 @@ Running from: ${__dirname}
     newId,
   })
 
+  const testRunStartedId = newId()
   const runtime = await makeRuntime({
+    testRunStartedId,
     environment: mergedEnvironment,
     logger,
     eventBroadcaster,
@@ -158,7 +146,20 @@ Running from: ${__dirname}
     options: options.runtime,
     snippetOptions: options.formats.options,
   })
+  eventBroadcaster.emit('envelope', {
+    testRunStarted: {
+      id: testRunStartedId,
+      timestamp: timestamp(),
+    },
+  } satisfies Envelope)
   const success = await runtime.run()
+  eventBroadcaster.emit('envelope', {
+    testRunFinished: {
+      testRunStartedId,
+      timestamp: timestamp(),
+      success,
+    },
+  } satisfies Envelope)
   await pluginManager.cleanup()
   await cleanupFormatters()
 

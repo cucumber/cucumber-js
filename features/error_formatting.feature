@@ -24,15 +24,13 @@ Feature: Error formatting
       """
       F-
 
-      Failures:
-
-      1) Scenario: some scenario # features/a.feature:2
-         ✖ Before # features/support/hooks.js:3
-            Fail
-         - Given a passing step # features/step_definitions/cucumber_steps.js:3
+      Failed scenarios:
+      1) some scenario # features/a.feature:2
+           Before # features/support/hooks.js:3
+               Error: Fail
 
       1 scenario (1 failed)
-      1 step (1 skipped)
+      2 steps (1 skipped, 1 failed)
       <duration-stat>
       """
 
@@ -60,18 +58,9 @@ Feature: Error formatting
     When I run cucumber-js
     Then the output contains the text:
       """
-      Warnings:
-
-      1) Scenario: some scenario # features/a.feature:3
-         ✔ Given a basic step # features/step_definitions/cucumber_steps.js:3
-             Attachment (text/plain): Some info.
-         ✔ And a step with a doc string # features/step_definitions/cucumber_steps.js:4
-             \"\"\"
-             my doc string
-             \"\"\"
-             Attachment (application/json)
-         ? And a pending step # features/step_definitions/cucumber_steps.js:5
-             Pending
+      Pending scenarios:
+        1) some scenario # features/a.feature:3
+            And a pending step # features/step_definitions/cucumber_steps.js:5
       """
     And it fails
 
@@ -96,16 +85,45 @@ Feature: Error formatting
     When I run cucumber-js
     Then the output contains the text:
       """
-      Warnings:
-
-      1) Scenario: some scenario # features/a.feature:3
-         ✔ Given a table: # features/step_definitions/cucumber_steps.js:3
-             | foo\nbar               | bar | baz      |
-             | foo\nbar\n\nbaz\n\\boo | bar | baz\nfoo |
-         ? And a pending step # features/step_definitions/cucumber_steps.js:4
-             Pending
+      Pending scenarios:
+      1) some scenario # features/a.feature:3
+           And a pending step # features/step_definitions/cucumber_steps.js:4
       """
     And it fails
+
+  Scenario: failing step error surfaces nested Error.cause chain
+    Given a file named "features/a.feature" with:
+      """
+      Feature: some feature
+        Scenario: some scenario
+          Given a step with a wrapped error
+      """
+    And a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+
+      Given('a step with a wrapped error', function() {
+        try {
+          try {
+            throw new Error('root cause')
+          } catch (cause) {
+            throw new Error('intermediate failure', { cause })
+          }
+        } catch (cause) {
+          throw new Error('wrapped failure', { cause })
+        }
+      })
+      """
+    When I run cucumber-js
+    Then it fails
+    And the output contains the text:
+      """
+      Caused by: Error: intermediate failure
+      """
+    And the output contains the text:
+      """
+      Caused by: Error: root cause
+      """
 
   Scenario: failing scenario when requested to not print step attachments
     Given a file named "features/a.feature" with:
@@ -126,11 +144,8 @@ Feature: Error formatting
     When I run cucumber-js with `--format-options '{"printAttachments": false}'`
     Then the output contains the text:
       """
-      Warnings:
-
-      1) Scenario: some scenario # features/a.feature:3
-         ✔ Given a basic step # features/step_definitions/cucumber_steps.js:3
-         ? And a pending step # features/step_definitions/cucumber_steps.js:4
-             Pending
+      Pending scenarios:
+      1) some scenario # features/a.feature:3
+           And a pending step # features/step_definitions/cucumber_steps.js:4
       """
     And it fails

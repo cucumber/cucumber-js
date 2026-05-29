@@ -1,12 +1,12 @@
 import {
   CucumberExpressionGenerator,
-  ParameterTypeRegistry,
+  type ParameterTypeRegistry,
 } from '@cucumber/cucumber-expressions'
-import * as messages from '@cucumber/messages'
-import { KeywordType } from '../helpers'
+import type * as messages from '@cucumber/messages'
 import { parseStepArgument } from '../../step_arguments'
 import { doesHaveValue } from '../../value_checker'
-import { ISnippetSnytax } from './snippet_syntax'
+import { KeywordType } from '../helpers'
+import type { ISnippetSnytax } from './snippet_syntax'
 
 export interface INewStepDefinitionSnippetBuilderOptions {
   snippetSyntax: ISnippetSnytax
@@ -22,10 +22,7 @@ export default class StepDefinitionSnippetBuilder {
   private readonly snippetSyntax: ISnippetSnytax
   private readonly cucumberExpressionGenerator: CucumberExpressionGenerator
 
-  constructor({
-    snippetSyntax,
-    parameterTypeRegistry,
-  }: INewStepDefinitionSnippetBuilderOptions) {
+  constructor({ snippetSyntax, parameterTypeRegistry }: INewStepDefinitionSnippetBuilderOptions) {
     this.snippetSyntax = snippetSyntax
     this.cucumberExpressionGenerator = new CucumberExpressionGenerator(
       () => parameterTypeRegistry.parameterTypes
@@ -33,11 +30,11 @@ export default class StepDefinitionSnippetBuilder {
   }
 
   build({ keywordType, pickleStep }: IBuildRequest): string {
-    const comment =
-      'Write code here that turns the phrase above into concrete actions'
+    const comment = 'Write code here that turns the phrase above into concrete actions'
     const functionName = this.getFunctionName(keywordType)
-    const generatedExpressions =
-      this.cucumberExpressionGenerator.generateExpressions(pickleStep.text)
+    const generatedExpressions = this.cucumberExpressionGenerator.generateExpressions(
+      pickleStep.text
+    )
     const stepParameterNames = this.getStepParameterNames(pickleStep)
     return this.snippetSyntax.build({
       comment,
@@ -48,11 +45,11 @@ export default class StepDefinitionSnippetBuilder {
   }
 
   buildMultiple({ keywordType, pickleStep }: IBuildRequest): string[] {
-    const comment =
-      'Write code here that turns the phrase above into concrete actions'
+    const comment = 'Write code here that turns the phrase above into concrete actions'
     const functionName = this.getFunctionName(keywordType)
-    const generatedExpressions =
-      this.cucumberExpressionGenerator.generateExpressions(pickleStep.text)
+    const generatedExpressions = this.cucumberExpressionGenerator.generateExpressions(
+      pickleStep.text
+    )
     const stepParameterNames = this.getStepParameterNames(pickleStep)
     return generatedExpressions.map((generatedExpression) => {
       return this.snippetSyntax.build({

@@ -1,9 +1,9 @@
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import { PassThrough } from 'node:stream'
-import fs from 'mz/fs'
-import { reindent } from 'reindent-template-literals'
 import { IdGenerator } from '@cucumber/messages'
-import { IRunEnvironment } from '../environment'
+import { reindent } from 'reindent-template-literals'
+import type { IRunEnvironment } from '../environment'
 
 const newId = IdGenerator.uuid()
 
@@ -25,16 +25,14 @@ export async function setupEnvironment(): Promise<Partial<IRunEnvironment>> {
   )
   await fs.writeFile(
     path.join(cwd, 'cucumber.mjs'),
-    `export default {paths: ['features/test.feature'], requireModule: ['ts-node/register'], require: ['features/steps.ts']}`
+    `export default {paths: ['features/test.feature'], requireModule: ['tsx/cjs'], require: ['features/steps.ts']}`
   )
   const stdout = new PassThrough()
   return { cwd, stdout }
 }
 
 export async function teardownEnvironment(environment: IRunEnvironment) {
-  return new Promise((resolve) => {
-    fs.rm(environment.cwd, { recursive: true }, resolve)
-  }).then(() => {
+  return fs.rm(environment.cwd, { recursive: true }).then(() => {
     environment.stdout.end()
   })
 }

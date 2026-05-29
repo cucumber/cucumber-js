@@ -1,28 +1,23 @@
-import { EventEmitter } from 'node:events'
+import type { EventEmitter } from 'node:events'
 import * as messages from '@cucumber/messages'
-import {
-  Envelope,
-  getWorstTestStepResult,
-  IdGenerator,
-} from '@cucumber/messages'
-import { JsonObject } from 'type-fest'
-import {
+import { type Envelope, getWorstTestStepResult, type IdGenerator } from '@cucumber/messages'
+import type { JsonObject } from 'type-fest'
+import type StepDefinitionSnippetBuilder from '../formatter/step_definition_snippet_builder'
+import type { IDefinition } from '../models/definition'
+import type StepDefinition from '../models/step_definition'
+import type TestCaseHookDefinition from '../models/test_case_hook_definition'
+import type TestStepHookDefinition from '../models/test_step_hook_definition'
+import type {
   ITestCaseHookParameter,
   ITestStepHookParameter,
   SupportCodeLibrary,
 } from '../support_code_library_builder/types'
-import TestCaseHookDefinition from '../models/test_case_hook_definition'
-import TestStepHookDefinition from '../models/test_step_hook_definition'
-import { IDefinition } from '../models/definition'
+import type { IWorldOptions } from '../support_code_library_builder/world'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
-import StepDefinition from '../models/step_definition'
-import { IWorldOptions } from '../support_code_library_builder/world'
-import StepDefinitionSnippetBuilder from '../formatter/step_definition_snippet_builder'
-import { timestamp } from './stopwatch'
-import StepRunner, { RunStepResult } from './step_runner'
 import AttachmentManager from './attachment_manager'
-import { getAmbiguousStepException } from './helpers'
 import { makeSuggestion } from './make_suggestion'
+import StepRunner, { type RunStepResult } from './step_runner'
+import { timestamp } from './stopwatch'
 
 export interface INewTestCaseRunnerOptions {
   workerId?: string
@@ -73,27 +68,25 @@ export default class TestCaseRunner {
     snippetBuilder,
   }: INewTestCaseRunnerOptions) {
     this.workerId = workerId
-    this.attachmentManager = new AttachmentManager(
-      ({ data, media, fileName }) => {
-        if (doesNotHaveValue(this.currentTestStepId)) {
-          throw new Error(
-            'Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.'
-          )
-        }
-        const attachment: messages.Envelope = {
-          attachment: {
-            body: data,
-            contentEncoding: media.encoding,
-            mediaType: media.contentType,
-            fileName,
-            testCaseStartedId: this.currentTestCaseStartedId,
-            testStepId: this.currentTestStepId,
-            timestamp: timestamp(),
-          },
-        }
-        this.eventBroadcaster.emit('envelope', attachment)
+    this.attachmentManager = new AttachmentManager(({ data, media, fileName }) => {
+      if (doesNotHaveValue(this.currentTestStepId)) {
+        throw new Error(
+          'Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.'
+        )
       }
-    )
+      const attachment: messages.Envelope = {
+        attachment: {
+          body: data,
+          contentEncoding: media.encoding,
+          mediaType: media.contentType,
+          fileName,
+          testCaseStartedId: this.currentTestCaseStartedId,
+          testStepId: this.currentTestStepId,
+          timestamp: timestamp(),
+        },
+      }
+      this.eventBroadcaster.emit('envelope', attachment)
+    })
     this.eventBroadcaster = eventBroadcaster
     this.gherkinDocument = gherkinDocument
     this.maxAttempts = 1 + (skip ? 0 : retries)
@@ -119,8 +112,8 @@ export default class TestCaseRunner {
   }
 
   getBeforeStepHookDefinitions(): TestStepHookDefinition[] {
-    return this.supportCodeLibrary.beforeTestStepHookDefinitions.filter(
-      (hookDefinition) => hookDefinition.appliesToTestCase(this.pickle)
+    return this.supportCodeLibrary.beforeTestStepHookDefinitions.filter((hookDefinition) =>
+      hookDefinition.appliesToTestCase(this.pickle)
     )
   }
 
@@ -159,9 +152,7 @@ export default class TestCaseRunner {
   }
 
   isSkippingSteps(): boolean {
-    return (
-      this.getWorstStepResult().status !== messages.TestStepResultStatus.PASSED
-    )
+    return this.getWorstStepResult().status !== messages.TestStepResultStatus.PASSED
   }
 
   shouldSkipHook(isBeforeHook: boolean): boolean {
@@ -199,10 +190,7 @@ export default class TestCaseRunner {
     for (let attempt = 0; attempt < this.maxAttempts; attempt++) {
       const moreAttemptsRemaining = attempt + 1 < this.maxAttempts
 
-      const willBeRetried = await this.runAttempt(
-        attempt,
-        moreAttemptsRemaining
-      )
+      const willBeRetried = await this.runAttempt(attempt, moreAttemptsRemaining)
 
       if (!willBeRetried) {
         break
@@ -212,10 +200,7 @@ export default class TestCaseRunner {
     return this.getWorstStepResult().status
   }
 
-  async runAttempt(
-    attempt: number,
-    moreAttemptsRemaining: boolean
-  ): Promise<boolean> {
+  async runAttempt(attempt: number, moreAttemptsRemaining: boolean): Promise<boolean> {
     this.currentTestCaseStartedId = this.newId()
     const testCaseStarted: messages.Envelope = {
       testCaseStarted: {
@@ -244,8 +229,8 @@ export default class TestCaseRunner {
             hookParameter.result = this.getWorstStepResult()
             hookParameter.error = error
             hookParameter.willBeRetried =
-              this.getWorstStepResult().status ===
-                messages.TestStepResultStatus.FAILED && moreAttemptsRemaining
+              this.getWorstStepResult().status === messages.TestStepResultStatus.FAILED &&
+              moreAttemptsRemaining
           }
           return await this.runHook(
             findHookDefinition(testStep.hookId, this.supportCodeLibrary),
@@ -265,8 +250,8 @@ export default class TestCaseRunner {
     }
 
     const willBeRetried =
-      this.getWorstStepResult().status ===
-        messages.TestStepResultStatus.FAILED && moreAttemptsRemaining
+      this.getWorstStepResult().status === messages.TestStepResultStatus.FAILED &&
+      moreAttemptsRemaining
     const testCaseFinished: messages.Envelope = {
       testCaseFinished: {
         testCaseStartedId: this.currentTestCaseStartedId,
@@ -290,11 +275,7 @@ export default class TestCaseRunner {
         duration: messages.TimeConversion.millisecondsToDuration(0),
       }
     }
-    const { result } = await this.invokeStep(
-      null,
-      hookDefinition,
-      hookParameter
-    )
+    const { result } = await this.invokeStep(null, hookDefinition, hookParameter)
     return result
   }
 
@@ -314,11 +295,7 @@ export default class TestCaseRunner {
       error: stepResult?.error,
     }
     for (const stepHookDefinition of stepHooks) {
-      const { result } = await this.invokeStep(
-        null,
-        stepHookDefinition,
-        hookParameter
-      )
+      const { result } = await this.invokeStep(null, stepHookDefinition, hookParameter)
       stepHooksResult.push(result)
     }
     return stepHooksResult
@@ -328,11 +305,9 @@ export default class TestCaseRunner {
     pickleStep: messages.PickleStep,
     testStep: messages.TestStep
   ): Promise<RunStepResult> {
-    const stepDefinitions = testStep.stepDefinitionIds.map(
-      (stepDefinitionId) => {
-        return findStepDefinition(stepDefinitionId, this.supportCodeLibrary)
-      }
-    )
+    const stepDefinitions = testStep.stepDefinitionIds.map((stepDefinitionId) => {
+      return findStepDefinition(stepDefinitionId, this.supportCodeLibrary)
+    })
     if (stepDefinitions.length === 0) {
       this.eventBroadcaster.emit('envelope', {
         suggestion: makeSuggestion({
@@ -350,7 +325,6 @@ export default class TestCaseRunner {
     } else if (stepDefinitions.length > 1) {
       return {
         result: {
-          message: getAmbiguousStepException(stepDefinitions),
           status: messages.TestStepResultStatus.AMBIGUOUS,
           duration: messages.TimeConversion.millisecondsToDuration(0),
         },
@@ -364,16 +338,10 @@ export default class TestCaseRunner {
       }
     }
 
-    let stepResult
-    let error
-    let stepResults = await this.runStepHooks(
-      this.getBeforeStepHookDefinitions(),
-      pickleStep
-    )
-    if (
-      getWorstTestStepResult(stepResults).status !==
-      messages.TestStepResultStatus.FAILED
-    ) {
+    let stepResult: any
+    let error: any
+    let stepResults = await this.runStepHooks(this.getBeforeStepHookDefinitions(), pickleStep)
+    if (getWorstTestStepResult(stepResults).status !== messages.TestStepResultStatus.FAILED) {
       stepResult = await this.invokeStep(pickleStep, stepDefinitions[0])
       stepResults.push(stepResult.result)
       error = stepResult.error
@@ -388,10 +356,7 @@ export default class TestCaseRunner {
     const finalStepResult = getWorstTestStepResult(stepResults)
     let finalDuration = messages.TimeConversion.millisecondsToDuration(0)
     for (const result of stepResults) {
-      finalDuration = messages.TimeConversion.addDurations(
-        finalDuration,
-        result.duration
-      )
+      finalDuration = messages.TimeConversion.addDurations(finalDuration, result.duration)
     }
     finalStepResult.duration = finalDuration
     return {
@@ -411,11 +376,6 @@ function findHookDefinition(
   ].find((definition) => definition.id === id)
 }
 
-function findStepDefinition(
-  id: string,
-  supportCodeLibrary: SupportCodeLibrary
-): StepDefinition {
-  return supportCodeLibrary.stepDefinitions.find(
-    (definition) => definition.id === id
-  )
+function findStepDefinition(id: string, supportCodeLibrary: SupportCodeLibrary): StepDefinition {
+  return supportCodeLibrary.stepDefinitions.find((definition) => definition.id === id)
 }

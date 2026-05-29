@@ -1,4 +1,4 @@
-import { GeneratedExpression } from '@cucumber/cucumber-expressions'
+import type { GeneratedExpression } from '@cucumber/cucumber-expressions'
 
 export enum SnippetInterface {
   AsyncAwait = 'async-await',

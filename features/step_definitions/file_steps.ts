@@ -1,12 +1,12 @@
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import { expect } from 'chai'
-import hasAnsi from 'has-ansi'
-import fs from 'mz/fs'
 import fsExtra from 'fs-extra'
+import hasAnsi from 'has-ansi'
 import Mustache from 'mustache'
-import { normalizeText } from '../support/helpers'
 import { Given, Then } from '../../'
-import { World } from '../support/world'
+import { normalizeText } from '../support/helpers'
+import type { World } from '../support/world'
 
 Given(
   'a file named {string} with:',
@@ -19,21 +19,15 @@ Given(
   }
 )
 
-Given(
-  'an empty file named {string}',
-  async function (this: World, filePath: string) {
-    const absoluteFilePath = path.join(this.tmpDir, filePath)
-    await fsExtra.outputFile(absoluteFilePath, '')
-  }
-)
+Given('an empty file named {string}', async function (this: World, filePath: string) {
+  const absoluteFilePath = path.join(this.tmpDir, filePath)
+  await fsExtra.outputFile(absoluteFilePath, '')
+})
 
-Given(
-  'a directory named {string}',
-  async function (this: World, filePath: string) {
-    const absoluteFilePath = path.join(this.tmpDir, filePath)
-    await fsExtra.mkdirp(absoluteFilePath)
-  }
-)
+Given('a directory named {string}', async function (this: World, filePath: string) {
+  const absoluteFilePath = path.join(this.tmpDir, filePath)
+  await fsExtra.mkdirp(absoluteFilePath)
+})
 
 Given('{string} is an absolute path', function (this: World, filePath: string) {
   filePath = Mustache.render(filePath, this)
@@ -53,21 +47,39 @@ Then(
 )
 
 Then(
-  'the file {string} contains colors',
-  async function (this: World, filePath: string) {
+  'the file {string} contains the text:',
+  async function (this: World, filePath: string, text: string) {
     filePath = Mustache.render(filePath, this)
     const absoluteFilePath = path.resolve(this.tmpDir, filePath)
     const content = await fs.readFile(absoluteFilePath, 'utf8')
-    expect(hasAnsi(content)).to.be.true
+    const actualContent = normalizeText(content)
+    const expectedContent = normalizeText(text)
+    expect(actualContent).to.include(expectedContent)
   }
 )
 
 Then(
-  "the file {string} doesn't contain colors",
-  async function (this: World, filePath: string) {
+  'the file {string} does not contain the text:',
+  async function (this: World, filePath: string, text: string) {
     filePath = Mustache.render(filePath, this)
     const absoluteFilePath = path.resolve(this.tmpDir, filePath)
     const content = await fs.readFile(absoluteFilePath, 'utf8')
-    expect(hasAnsi(content)).to.be.false
+    const actualContent = normalizeText(content)
+    const expectedContent = normalizeText(text)
+    expect(actualContent).not.to.include(expectedContent)
   }
 )
+
+Then('the file {string} contains colors', async function (this: World, filePath: string) {
+  filePath = Mustache.render(filePath, this)
+  const absoluteFilePath = path.resolve(this.tmpDir, filePath)
+  const content = await fs.readFile(absoluteFilePath, 'utf8')
+  expect(hasAnsi(content)).to.be.true
+})
+
+Then("the file {string} doesn't contain colors", async function (this: World, filePath: string) {
+  filePath = Mustache.render(filePath, this)
+  const absoluteFilePath = path.resolve(this.tmpDir, filePath)
+  const content = await fs.readFile(absoluteFilePath, 'utf8')
+  expect(hasAnsi(content)).to.be.false
+})

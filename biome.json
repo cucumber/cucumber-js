@@ -1,0 +1,39 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["./node_modules/@cucumber/biome-config/base.json"],
+  "files": {
+    "includes": ["!features/fixtures", "!test/fixtures"]
+  },
+  "linter": {
+    "rules": {
+      "complexity": {
+        "noBannedTypes": "off"
+      },
+      "style": {
+        "noCommonJs": "error"
+      },
+      "suspicious": {
+        "noConfusingVoidType": "off",
+        "noConsole": "error",
+        "noExplicitAny": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "compatibility/features/**/*.ts",
+        "features/**/*.ts",
+        "test/**/*.ts",
+        "**/*_spec.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noNonNullAssertion": "off"
+          }
+        }
+      }
+    }
+  ]
+}

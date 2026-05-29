@@ -4,17 +4,20 @@
 
 ```ts
 
-import { EventEmitter } from 'node:events';
-import { Expression } from '@cucumber/cucumber-expressions';
-import { GeneratedExpression } from '@cucumber/cucumber-expressions';
-import { IdGenerator } from '@cucumber/messages';
-import { JsonObject } from 'type-fest';
+import type { EventEmitter } from 'node:events';
+import type { Expression } from '@cucumber/cucumber-expressions';
+import type { FormatCodeFunction } from '@cucumber/pretty-formatter';
+import type { GeneratedExpression } from '@cucumber/cucumber-expressions';
+import type { IdGenerator } from '@cucumber/messages';
+import type { JsonObject } from 'type-fest';
 import * as messages from '@cucumber/messages';
 import { ParameterType } from '@cucumber/cucumber-expressions';
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions';
-import { Readable } from 'node:stream';
-import { TestStepResultStatus } from '@cucumber/messages';
-import { Writable } from 'node:stream';
+import type { Readable } from 'node:stream';
+import type { ResourceLimits } from 'node:worker_threads';
+import type { TestStepResultStatus } from '@cucumber/messages';
+import type { Theme } from '@cucumber/pretty-formatter';
+import type { Writable } from 'node:stream';
 
 // @public (undocumented)
 export const After: (<WorldType = IWorld<any>>(code: TestCaseHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(tags: string, code: TestCaseHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(options: IDefineTestCaseHookOptions, code: TestCaseHookFunction<WorldType>) => void);
@@ -36,9 +39,6 @@ export const BeforeAll: ((code: TestRunHookFunction) => void) & ((options: IDefi
 
 // @public (undocumented)
 export const BeforeStep: (<WorldType = IWorld<any>>(code: TestStepHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(tags: string, code: TestStepHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(options: IDefineTestStepHookOptions, code: TestStepHookFunction<WorldType>) => void);
-
-// @public @deprecated (undocumented)
-export const Cli: typeof Cli_2;
 
 // @beta
 const context_2: IContext<any>;
@@ -134,16 +134,16 @@ export const FormatterBuilder: {
 
 declare namespace formatterHelpers {
     export {
-        parseTestCaseAttempt,
         EventDataCollector,
-        KeywordType,
-        getStepKeywordType,
         formatIssue,
-        isWarning,
         isFailure,
         isIssue,
+        isWarning,
+        getStepKeywordType,
+        KeywordType,
         formatLocation,
         formatSummary,
+        parseTestCaseAttempt,
         getUsage,
         GherkinDocumentParser,
         PickleParser
@@ -218,6 +218,7 @@ export interface IConfiguration {
     shard: string;
     strict: boolean;
     tags: string;
+    workerOptions: IWorkerOptions;
     worldParameters: JsonObject;
 }
 
@@ -410,7 +411,7 @@ declare namespace PickleParser {
     }
 }
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export class ProgressFormatter extends SummaryFormatter {
     constructor(options: IFormatterOptions);
     // (undocumented)
@@ -458,7 +459,7 @@ export class SnippetsFormatter extends Formatter {
 // @public (undocumented)
 export const Status: typeof messages.TestStepResultStatus;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export class SummaryFormatter extends Formatter {
     constructor(options: IFormatterOptions);
     // (undocumented)

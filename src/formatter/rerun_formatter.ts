@@ -1,11 +1,7 @@
 import * as messages from '@cucumber/messages'
-import {
-  doesHaveValue,
-  doesNotHaveValue,
-  valueOrDefault,
-} from '../value_checker'
+import { doesHaveValue, doesNotHaveValue, valueOrDefault } from '../value_checker'
+import Formatter, { type IFormatterOptions } from './'
 import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser'
-import Formatter, { IFormatterOptions } from './'
 
 const DEFAULT_SEPARATOR = '\n'
 
@@ -19,8 +15,7 @@ function isFailedAttempt(worstTestStepResult: messages.TestStepResult) {
 
 export default class RerunFormatter extends Formatter {
   protected readonly separator: string
-  public static readonly documentation: string =
-    'Prints failing files with line numbers.'
+  public static readonly documentation: string = 'Prints failing files with line numbers.'
 
   constructor(options: IFormatterOptions) {
     super(options)
@@ -37,21 +32,19 @@ export default class RerunFormatter extends Formatter {
     const mapping: UriToLinesMap = {}
     this.eventDataCollector
       .getTestCaseAttempts()
-      .forEach(
-        ({ gherkinDocument, pickle, worstTestStepResult, willBeRetried }) => {
-          if (isFailedAttempt(worstTestStepResult) && !willBeRetried) {
-            const relativeUri = pickle.uri
-            const line =
-              getGherkinScenarioLocationMap(gherkinDocument)[
-                pickle.astNodeIds[pickle.astNodeIds.length - 1]
-              ].line
-            if (doesNotHaveValue(mapping[relativeUri])) {
-              mapping[relativeUri] = []
-            }
-            mapping[relativeUri].push(line)
+      .forEach(({ gherkinDocument, pickle, worstTestStepResult, willBeRetried }) => {
+        if (isFailedAttempt(worstTestStepResult) && !willBeRetried) {
+          const relativeUri = pickle.uri
+          const line =
+            getGherkinScenarioLocationMap(gherkinDocument)[
+              pickle.astNodeIds[pickle.astNodeIds.length - 1]
+            ].line
+          if (doesNotHaveValue(mapping[relativeUri])) {
+            mapping[relativeUri] = []
           }
+          mapping[relativeUri].push(line)
         }
-      )
+      })
 
     return mapping
   }

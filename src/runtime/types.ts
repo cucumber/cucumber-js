@@ -1,5 +1,5 @@
-import { JsonObject } from 'type-fest'
-import { AssembledTestCase } from '../assemble'
+import type { JsonObject } from 'type-fest'
+import type { AssembledTestCase } from '../assemble'
 
 export interface RuntimeOptions {
   dryRun: boolean
@@ -16,5 +16,9 @@ export interface Runtime {
 }
 
 export interface RuntimeAdapter {
-  run(assembledTestCases: ReadonlyArray<AssembledTestCase>): Promise<boolean>
+  setup(): Promise<void>
+  runBeforeAllHooks(): Promise<boolean>
+  runTestCases(assembledTestCases: ReadonlyArray<AssembledTestCase>): Promise<boolean>
+  runAfterAllHooks(): Promise<boolean>
+  teardown(): Promise<void>
 }

@@ -1,11 +1,11 @@
 import { Given } from '../../../src'
 
-Given('a step that always passes', function () {
+Given('a step that always passes', () => {
   // no-op
 })
 
 let secondTimePass = 0
-Given('a step that passes the second time', function () {
+Given('a step that passes the second time', () => {
   secondTimePass++
   if (secondTimePass < 2) {
     throw new Error('Exception in step')
@@ -13,13 +13,13 @@ Given('a step that passes the second time', function () {
 })
 
 let thirdTimePass = 0
-Given('a step that passes the third time', function () {
+Given('a step that passes the third time', () => {
   thirdTimePass++
   if (thirdTimePass < 3) {
     throw new Error('Exception in step')
   }
 })
 
-Given('a step that always fails', function () {
+Given('a step that always fails', () => {
   throw new Error('Exception in step')
 })

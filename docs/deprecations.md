@@ -53,32 +53,13 @@ In a future release, we'll change it so that the command line argument(s) _overr
 
 This will be unlike all other configuration options - no others are changing. However, in the case of paths we think this makes the most sense.
 
-### `Cli`
-
-Deprecated in `8.7.0`, will be removed in `10.0.0` or later.
-
-The `Cli` class is used internally to represent an instance of the command-line program invoked via `cucumber-js`. It can be used to run Cucumber programmatically, but is poorly suited for this.
-
-To adapt, pivot to the `runCucumber` function from the [JavaScript API](./javascript_api.md), or raise an issue if you feel your use case isn't catered for.
-
-### Ambiguous colons in formats
-
-Deprecated in `9.6.0`. Will be removed in `11.0.0` or later.
-
-User-specified formats where either the formatter name/path or the target path (or both) contains colon(s) are ambiguous because the separator between the two parts is also a colon. Cucumber tries to detect and handle things like Windows drives and `file://` URLs on a best-effort basis, but this logic is being removed in favour of wrapping values in double-quotes.
-
-| Before                                       | After                                            |
-|----------------------------------------------|--------------------------------------------------|
-| `html:file://hostname/formatter/report.html` | `"html":"file://hostname/formatter/report.html"` |
-| `file://C:\custom\formatter`                 | `"file://C:\custom\formatter"`                   |
-
 ### `colorsEnabled` format option
 
 Deprecated in `12.6.0`, will be removed in `14.0.0` or later.
 
 The `colorsEnabled` format option allows you to forcibly enable or disable colored output from formatters. This is being removed in favour of using the `FORCE_COLOR` environment variable, which is a cross-tool standard that will also influence other tools in your stack such as assertion libraries.
 
-In `13.0.0`, the option's behaviour will change to set the `FORCE_COLOR` environment variable under the hood. In `14.0.0`, the option will be removed entirely.
+In `13.0.0`, the option's behaviour changed to set the `FORCE_COLOR` environment variable under the hood. In `14.0.0` or later, the option will be removed entirely.
 
 To adapt:
 
@@ -86,6 +67,26 @@ To adapt:
 |--------|-------|
 | `--format-options '{"colorsEnabled":true}'` | `FORCE_COLOR=1` |
 | `--format-options '{"colorsEnabled":false}'` | `FORCE_COLOR=0` |
+
+### `printAttachments` format option
+
+Deprecated in `13.0.0`, will be removed in `14.0.0` or later.
+
+The `printAttachments` format option has been renamed to `includeAttachments`. The behaviour is unchanged - if set to `false`, attachments won't be included in the output of the terminal formatters.
+
+To adapt:
+
+| Before | After |
+|--------|-------|
+| `--format-options '{"printAttachments":false}'` | `--format-options '{"includeAttachments":false}'` |
+
+### `SummaryFormatter` and `ProgressFormatter` classes
+
+Deprecated in `13.0.0`, will be removed in `15.0.0` or later.
+
+The built-in `summary` and `progress` formatters are now implemented as formatter plugins and no longer use the legacy `SummaryFormatter` and `ProgressFormatter` classes. The classes themselves are still exported for now, but will be removed in a future major version.
+
+If you've been extending these classes to build a custom formatter, migrate to the [formatter plugin architecture](./custom_formatters.md) instead.
 
 ## Previous deprecations
 

@@ -1,14 +1,12 @@
 import path from 'node:path'
-import { StackFrame } from 'error-stack-parser'
+import type { StackFrame } from 'error-stack-parser'
 import { valueOrDefault } from './value_checker'
 
 const projectRootPath = path.join(__dirname, '..')
 const projectChildDirs = ['src', 'lib', 'node_modules']
 
 export function isFileNameInCucumber(fileName: string): boolean {
-  return projectChildDirs.some((dir) =>
-    fileName.startsWith(path.join(projectRootPath, dir))
-  )
+  return projectChildDirs.some((dir) => fileName.startsWith(path.join(projectRootPath, dir)))
 }
 
 export function filterStackTrace(frames: StackFrame[]): StackFrame[] {

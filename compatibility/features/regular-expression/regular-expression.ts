@@ -2,7 +2,7 @@ import { Given } from '../../../src'
 
 Given(
   /^a (.*?)(?: and a (.*?))?(?: and a (.*?))?$/,
-  function (vegtable1: string, vegtable2: string, vegtable3: string) {
+  (_vegtable1: string, _vegtable2: string, _vegtable3: string) => {
     // no-op
   }
 )

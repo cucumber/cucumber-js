@@ -1,9 +1,9 @@
+import { dialects } from '@cucumber/gherkin'
 import { Command } from 'commander'
 import merge from 'lodash.merge'
-import { dialects } from '@cucumber/gherkin'
-import { version } from '../version'
 import { documentation } from '../formatter/builtin'
-import { IConfiguration } from './types'
+import { version } from '../version'
+import type { IConfiguration } from './types'
 
 export interface IParsedArgvOptions {
   config?: string
@@ -19,8 +19,7 @@ export interface IParsedArgv {
   configuration: Partial<IConfiguration>
 }
 
-type IRawArgvOptions = Partial<Omit<IConfiguration, 'paths'>> &
-  IParsedArgvOptions
+type IRawArgvOptions = Partial<Omit<IConfiguration, 'paths'>> & IParsedArgvOptions
 
 const ArgvParser = {
   collect<T>(val: T, memo: T[] = []): T[] {
@@ -31,7 +30,7 @@ const ArgvParser = {
   },
 
   mergeJson(option: string): (str: string, memo?: object) => object {
-    return function (str: string, memo: object = {}) {
+    return (str: string, memo: object = {}) => {
       let val: object
       try {
         val = JSON.parse(str)
@@ -51,8 +50,8 @@ const ArgvParser = {
   },
 
   validateCountOption(value: string, optionName: string): number {
-    const numericValue = parseInt(value)
-    if (isNaN(numericValue) || numericValue < 0) {
+    const numericValue = parseInt(value, 10)
+    if (Number.isNaN(numericValue) || numericValue < 0) {
       throw new Error(`${optionName} must be a non negative integer`)
     }
     return numericValue
@@ -85,8 +84,7 @@ const ArgvParser = {
         '-f, --format <TYPE[:PATH]>',
         'specify the output format, optionally supply PATH to redirect formatter output (repeatable).  Available formats:\n' +
           Object.entries(documentation).reduce(
-            (previous, [key, description]) =>
-              previous + `    ${key}: ${description}\n`,
+            (previous, [key, description]) => `${previous}    ${key}: ${description}\n`,
             ''
           ),
         ArgvParser.collect
@@ -96,11 +94,7 @@ const ArgvParser = {
         'provide options for formatters (repeatable)',
         ArgvParser.mergeJson('--format-options')
       )
-      .option(
-        '--i18n-keywords <ISO 639-1>',
-        'list language keywords',
-        ArgvParser.validateLanguage
-      )
+      .option('--i18n-keywords <ISO 639-1>', 'list language keywords', ArgvParser.validateLanguage)
       .option('--i18n-languages', 'list languages')
       .option(
         '-i, --import <GLOB|DIR|FILE>',
@@ -112,10 +106,7 @@ const ArgvParser = {
         'module specifier(s) for loaders to be registered ahead of loading support code',
         ArgvParser.collect
       )
-      .option(
-        '--language <ISO 639-1>',
-        'provide the default language for feature files'
-      )
+      .option('--language <ISO 639-1>', 'provide the default language for feature files')
       .option(
         '--name <REGEXP>',
         'only execute the scenarios with name matching the expression (repeatable)',
@@ -136,11 +127,7 @@ const ArgvParser = {
         'run in parallel with the given number of workers',
         (val) => ArgvParser.validateCountOption(val, '--parallel')
       )
-      .option(
-        '--plugin <SPECIFIER>',
-        'load a plugin (repeatable)',
-        ArgvParser.collect
-      )
+      .option('--plugin <SPECIFIER>', 'load a plugin (repeatable)', ArgvParser.collect)
       .option(
         '--plugin-options <JSON>',
         'provide options for plugins (repeatable)',
@@ -168,10 +155,7 @@ const ArgvParser = {
         This option requires '--retry' to be specified.`,
         ArgvParser.mergeTags
       )
-      .option(
-        '--shard <INDEX/TOTAL>',
-        'run shard INDEX of TOTAL shards. The index starts at 1'
-      )
+      .option('--shard <INDEX/TOTAL>', 'run shard INDEX of TOTAL shards. The index starts at 1')
       .option('--strict', 'fail if there are pending steps')
       .option('--no-strict', 'succeed even if there are pending steps')
       .option(
@@ -191,13 +175,8 @@ const ArgvParser = {
     )
 
     program.parse(argv)
-    const {
-      config,
-      i18nKeywords,
-      i18nLanguages,
-      profile,
-      ...regularStuff
-    }: IRawArgvOptions = program.opts()
+    const { config, i18nKeywords, i18nLanguages, profile, ...regularStuff }: IRawArgvOptions =
+      program.opts()
     const configuration: Partial<IConfiguration> = regularStuff
     if (program.args.length > 0) {
       configuration.paths = program.args

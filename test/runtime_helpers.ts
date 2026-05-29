@@ -1,15 +1,13 @@
 import { IdGenerator } from '@cucumber/messages'
+import type { RuntimeOptions } from '../src/runtime'
 import { SupportCodeLibraryBuilder } from '../src/support_code_library_builder'
-import { RuntimeOptions } from '../src/runtime'
-import {
+import type {
   IDefineSupportCodeMethods,
   SupportCodeLibrary,
 } from '../src/support_code_library_builder/types'
 import { doesHaveValue } from '../src/value_checker'
 
-export function buildOptions(
-  overrides: Partial<RuntimeOptions>
-): RuntimeOptions {
+export function buildOptions(overrides: Partial<RuntimeOptions>): RuntimeOptions {
   return {
     dryRun: false,
     failFast: false,

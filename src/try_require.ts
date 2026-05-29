@@ -6,7 +6,8 @@
  */
 export default function tryRequire(path: string) {
   try {
-    return require(path) // eslint-disable-line @typescript-eslint/no-require-imports
+    // biome-ignore lint/style/noCommonJs: this wrapper exists to provide sync require with custom error mapping
+    return require(path)
   } catch (error) {
     if (error.code === 'ERR_REQUIRE_ESM') {
       throw Error(

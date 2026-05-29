@@ -1,14 +1,10 @@
-import { pathToFileURL } from 'node:url'
 import path from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { expect } from 'chai'
 import { resolveImplementation } from './resolve_implementation'
 
 describe('resolveImplementation', () => {
-  const varieties = [
-    'esm.mjs',
-    'exports_dot_default.cjs',
-    'module_dot_exports.cjs',
-  ]
+  const varieties = ['esm.mjs', 'exports_dot_default.cjs', 'module_dot_exports.cjs']
 
   describe('legacy classes', () => {
     varieties.forEach((filename) => {
@@ -38,10 +34,7 @@ describe('resolveImplementation', () => {
     varieties.forEach((filename) => {
       describe(filename, () => {
         it('should handle a relative path', async () => {
-          const plugin = await resolveImplementation(
-            `./fixtures/plugin_${filename}`,
-            __dirname
-          )
+          const plugin = await resolveImplementation(`./fixtures/plugin_${filename}`, __dirname)
 
           expect(typeof plugin).to.eq('object')
         })

@@ -28,8 +28,7 @@ export const defineStep = cucumber.defineStep
 export const defineParameterType = cucumber.defineParameterType
 export const Given = cucumber.Given
 export const setDefaultTimeout = cucumber.setDefaultTimeout
-export const setDefinitionFunctionWrapper =
-  cucumber.setDefinitionFunctionWrapper
+export const setDefinitionFunctionWrapper = cucumber.setDefinitionFunctionWrapper
 export const setWorldConstructor = cucumber.setWorldConstructor
 export const setParallelCanAssign = cucumber.setParallelCanAssign
 export const Then = cucumber.Then
@@ -40,6 +39,3 @@ export const context = cucumber.context
 export const parallelCanAssignHelpers = cucumber.parallelCanAssignHelpers
 
 export const wrapPromiseWithTimeout = cucumber.wrapPromiseWithTimeout
-
-// Deprecated
-export const Cli = cucumber.Cli

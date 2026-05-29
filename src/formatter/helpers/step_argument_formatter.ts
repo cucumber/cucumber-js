@@ -1,5 +1,5 @@
+import type * as messages from '@cucumber/messages'
 import Table from 'cli-table3'
-import * as messages from '@cucumber/messages'
 import { parseStepArgument } from '../../step_arguments'
 
 function formatDataTable(dataTable: messages.PickleTable): string {
@@ -28,9 +28,7 @@ function formatDataTable(dataTable: messages.PickleTable): string {
     },
   })
   const rows = dataTable.rows.map((row) =>
-    row.cells.map((cell) =>
-      cell.value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n')
-    )
+    row.cells.map((cell) => cell.value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n'))
   )
   table.push(...rows)
   return table.toString()

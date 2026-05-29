@@ -1,15 +1,13 @@
-import * as messages from '@cucumber/messages'
+import type * as messages from '@cucumber/messages'
 
 export default class DataTable {
   private readonly rawTable: string[][]
 
   constructor(sourceTable: messages.PickleTable | string[][]) {
-    if (sourceTable instanceof Array) {
+    if (Array.isArray(sourceTable)) {
       this.rawTable = sourceTable
     } else {
-      this.rawTable = sourceTable.rows.map((row) =>
-        row.cells.map((cell) => cell.value)
-      )
+      this.rawTable = sourceTable.rows.map((row) => row.cells.map((cell) => cell.value))
     }
   }
 
@@ -19,7 +17,9 @@ export default class DataTable {
     const valuesArray = copy.slice(1)
     return valuesArray.map((values) => {
       const rowObject: Record<string, string> = {}
-      keys.forEach((key, index) => (rowObject[key] = values[index]))
+      keys.forEach((key, index) => {
+        rowObject[key] = values[index]
+      })
       return rowObject
     })
   }
@@ -43,14 +43,14 @@ export default class DataTable {
       )
     }
     const result: Record<string, string> = {}
-    rows.forEach((x) => (result[x[0]] = x[1]))
+    for (const x of rows) {
+      result[x[0]] = x[1]
+    }
     return result
   }
 
   transpose(): DataTable {
-    const transposed = this.rawTable[0].map((x, i) =>
-      this.rawTable.map((y) => y[i])
-    )
+    const transposed = this.rawTable[0].map((_x, i) => this.rawTable.map((y) => y[i]))
     return new DataTable(transposed)
   }
 }

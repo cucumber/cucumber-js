@@ -1,14 +1,8 @@
-import {
-  IConfiguration,
-  isTruthyString,
-  splitFormatDescriptor,
-} from '../configuration'
-import { IPublishConfig } from '../publish'
-import { ILogger } from '../environment'
-import { IRunConfiguration } from './types'
+import { type IConfiguration, isTruthyString, splitFormatDescriptor } from '../configuration'
+import type { IPublishConfig } from '../publish'
+import type { IRunConfiguration } from './types'
 
 export async function convertConfiguration(
-  logger: ILogger,
   flatConfiguration: IConfiguration,
   env: NodeJS.ProcessEnv
 ): Promise<IRunConfiguration> {
@@ -35,9 +29,10 @@ export async function convertConfiguration(
       retry: flatConfiguration.retry,
       retryTagFilter: flatConfiguration.retryTagFilter,
       strict: flatConfiguration.strict,
+      workerOptions: flatConfiguration.workerOptions,
       worldParameters: flatConfiguration.worldParameters,
     },
-    formats: convertFormats(logger, flatConfiguration, env),
+    formats: convertFormats(flatConfiguration, env),
     plugins: {
       specifiers: flatConfiguration.plugin,
       options: flatConfiguration.pluginOptions,
@@ -45,25 +40,17 @@ export async function convertConfiguration(
   }
 }
 
-function convertFormats(
-  logger: ILogger,
-  flatConfiguration: IConfiguration,
-  env: NodeJS.ProcessEnv
-) {
+function convertFormats(flatConfiguration: IConfiguration, env: NodeJS.ProcessEnv) {
   const splitFormats: string[][] = flatConfiguration.format.map((item) =>
-    Array.isArray(item) ? item : splitFormatDescriptor(logger, item)
+    Array.isArray(item) ? item : splitFormatDescriptor(item)
   )
   return {
-    stdout:
-      [...splitFormats].reverse().find(([, target]) => !target)?.[0] ??
-      'progress',
+    stdout: [...splitFormats].reverse().find(([, target]) => !target)?.[0] ?? 'progress',
     files: splitFormats
       .filter(([, target]) => !!target)
-      .reduce((mapped, [type, target]) => {
-        return {
-          ...mapped,
-          [target]: type,
-        }
+      .reduce<Record<string, string>>((mapped, [type, target]) => {
+        mapped[target] = type
+        return mapped
       }, {}),
     publish: makePublishConfig(flatConfiguration, env),
     options: flatConfiguration.formatOptions,
@@ -84,10 +71,7 @@ function makePublishConfig(
   }
 }
 
-function isPublishing(
-  flatConfiguration: IConfiguration,
-  env: NodeJS.ProcessEnv
-): boolean {
+function isPublishing(flatConfiguration: IConfiguration, env: NodeJS.ProcessEnv): boolean {
   return (
     flatConfiguration.publish ||
     isTruthyString(env.CUCUMBER_PUBLISH_ENABLED) ||
