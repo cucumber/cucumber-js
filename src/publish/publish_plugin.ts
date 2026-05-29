@@ -7,7 +7,7 @@ import { pipeline } from 'node:stream/promises'
 import { stripVTControlCharacters } from 'node:util'
 import { createGzip } from 'node:zlib'
 import hasAnsi from 'has-ansi'
-import { supportsColor } from 'supports-color'
+import { createSupportsColor } from 'supports-color'
 import type { InternalPlugin } from '../plugin'
 
 type TouchResult = {
@@ -108,7 +108,7 @@ strip them back out. Ideally we should get structured data from the service and
 compose the console message on this end.
  */
 function sanitisePublishOutput(raw: string, stderr: Writable) {
-  if (!supportsColor(stderr) && hasAnsi(raw)) {
+  if (!createSupportsColor(stderr) && hasAnsi(raw)) {
     return stripVTControlCharacters(raw)
   }
   return raw

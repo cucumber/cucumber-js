@@ -13,5 +13,5 @@ declare module 'supports-color' {
 
   export type ColorInfo = ColorSupport | false
 
-  export function supportsColor(stream: Writable, options?: Options): ColorInfo
+  export function createSupportsColor(stream: Writable, options?: Options): ColorInfo
 }
