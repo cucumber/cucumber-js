@@ -1,7 +1,7 @@
 import isInstalledGlobally from 'is-installed-globally'
 
 export async function validateInstall(): Promise<void> {
-  if (isInstalledGlobally)
+  if (isInstalledGlobally) {
     // biome-ignore lint/suspicious/noConsole: this is a user-facing warning
     console.warn(
       `
@@ -10,4 +10,5 @@ export async function validateInstall(): Promise<void> {
       See https://github.com/cucumber/cucumber-js/blob/main/docs/installation.md#invalid-installations
       `
     )
+  }
 }

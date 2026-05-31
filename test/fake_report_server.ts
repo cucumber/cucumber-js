@@ -89,7 +89,9 @@ export default class FakeReportServer {
   async stop(): Promise<Buffer> {
     return new Promise((resolve, reject) => {
       this.server.close((err) => {
-        if (doesHaveValue(err)) return reject(err)
+        if (doesHaveValue(err)) {
+          return reject(err)
+        }
         resolve(this.receivedBodies)
       })
     })
@@ -101,7 +103,9 @@ export default class FakeReportServer {
 }
 
 function extractAuthorizationToken(authorizationHeader: string | undefined): string | null {
-  if (!authorizationHeader) return null
+  if (!authorizationHeader) {
+    return null
+  }
 
   const tokenMatch = authorizationHeader.match(/Bearer (.*)/)
   return tokenMatch ? tokenMatch[1] : null

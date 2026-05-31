@@ -8,7 +8,11 @@ export function buildParameterType({
   useForSnippets,
   preferForRegexpMatch,
 }: IParameterTypeDefinition<any>): ParameterType<any> {
-  if (typeof useForSnippets !== 'boolean') useForSnippets = true
-  if (typeof preferForRegexpMatch !== 'boolean') preferForRegexpMatch = false
+  if (typeof useForSnippets !== 'boolean') {
+    useForSnippets = true
+  }
+  if (typeof preferForRegexpMatch !== 'boolean') {
+    preferForRegexpMatch = false
+  }
   return new ParameterType(name, regexp, null, transformer, useForSnippets, preferForRegexpMatch)
 }

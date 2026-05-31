@@ -27,7 +27,9 @@ Then(
 
     const receivedBodies = await this.reportServer.stop()
     const ndjson = gunzipSync(receivedBodies).toString('utf-8').trim()
-    if (ndjson === '') assert.fail('Server received nothing')
+    if (ndjson === '') {
+      assert.fail('Server received nothing')
+    }
 
     const receivedMessageTypes = ndjson
       .split(/\n/)
