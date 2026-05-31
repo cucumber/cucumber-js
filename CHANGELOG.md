@@ -24,6 +24,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Fixed
 - Update status colors to match other formatters ([#2828](https://github.com/cucumber/cucumber-js/pull/2828))
 - Surface `Error.cause` chain (with stack frames) in output ([#2813](https://github.com/cucumber/cucumber-js/pull/2813))
+- Handle undefined/ambiguous correctly when skipped ([#2836](https://github.com/cucumber/cucumber-js/pull/2836))
 
 ### Removed
 - BREAKING CHANGE: Drop support for Node.js 20.x ([#2818](https://github.com/cucumber/cucumber-js/pull/2818))

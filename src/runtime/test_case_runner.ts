@@ -155,6 +155,10 @@ export default class TestCaseRunner {
     return this.getWorstStepResult().status !== messages.TestStepResultStatus.PASSED
   }
 
+  isExplicitlySkipped(): boolean {
+    return !this.skip && this.getWorstStepResult().status === messages.TestStepResultStatus.SKIPPED
+  }
+
   shouldSkipHook(isBeforeHook: boolean): boolean {
     return this.skip || (this.isSkippingSteps() && isBeforeHook)
   }
@@ -305,6 +309,14 @@ export default class TestCaseRunner {
     pickleStep: messages.PickleStep,
     testStep: messages.TestStep
   ): Promise<RunStepResult> {
+    if (this.isExplicitlySkipped()) {
+      return {
+        result: {
+          status: messages.TestStepResultStatus.SKIPPED,
+          duration: messages.TimeConversion.millisecondsToDuration(0),
+        },
+      }
+    }
     const stepDefinitions = testStep.stepDefinitionIds.map((stepDefinitionId) => {
       return findStepDefinition(stepDefinitionId, this.supportCodeLibrary)
     })

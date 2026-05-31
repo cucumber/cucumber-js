@@ -18,8 +18,6 @@ const CCK_IMPLEMENTATIONS_PATH = 'compatibility/features'
 const UNSUPPORTED = [
   // not a test sample
   'all-statuses',
-  // TODO needs changes
-  'failedish-combinations',
   // we aren't fully compliant yet for global hooks
   'global-hooks-attachments',
   // we don't use exceptions to signal pending/skipped
