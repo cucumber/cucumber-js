@@ -71,10 +71,11 @@ Tests often require configuration and environment information. One of the most f
 
 The `worldParameters` configuration option allows you to provide this information to Cucumber. It takes the data in the form of an object literal, like this:
 
-- In a configuration file, add it to the profile. For example, a CommonJS
-  configuration can use
+- In a configuration file, add it to the profile. The syntax depends on the
+  file format: a CommonJS configuration can put it in the `default` profile
+  with
   `{ default: { worldParameters: { appUrl: 'http://localhost:3000/' } } }`,
-  while an ESM configuration can use
+  while an ESM configuration can express the default profile with
   `export default { worldParameters: { appUrl: 'http://localhost:3000/' } }`.
   See [Configuration files](../configuration.md#files) and
   [Profiles](../profiles.md).
