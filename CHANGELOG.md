@@ -22,6 +22,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 - Deprecate `printAttachments` format option in favour of `includeAttachments` ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
 
 ### Fixed
+- Clarify how to configure world parameters in configuration files ([#2317](https://github.com/cucumber/cucumber-js/issues/2317))
 - Update status colors to match other formatters ([#2828](https://github.com/cucumber/cucumber-js/pull/2828))
 - Surface `Error.cause` chain (with stack frames) in output ([#2813](https://github.com/cucumber/cucumber-js/pull/2813))
 
