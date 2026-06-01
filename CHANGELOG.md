@@ -16,6 +16,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 - BREAKING CHANGE: All `BeforeAll` and `AfterAll` hooks are always executed ([#2710](https://github.com/cucumber/cucumber-js/pull/2710))
 - BREAKING CHANGE: Set `FORCE_COLOR` based on deprecated format option ([#2769](https://github.com/cucumber/cucumber-js/pull/2769))
 - Redesigned output for summary, progress, progress bar and pretty formatters ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
+- Reduce transitive dependencies ([#2800](https://github.com/cucumber/cucumber-js/issues/2800))
 
 ### Deprecated
 - Deprecate legacy `SummaryFormatter` and `ProgressFormatter` classes in favour of new formatter architecture ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
