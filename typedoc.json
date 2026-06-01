@@ -2,6 +2,7 @@
   "entryPoints": ["src/index.ts", "src/api/index.ts"],
   "favicon": "./docs/images/logo.svg",
   "groupReferencesByType": true,
+  "includeVersion": true,
   "navigationLinks": {
     "GitHub": "https://github.com/cucumber/cucumber-js"
   },
