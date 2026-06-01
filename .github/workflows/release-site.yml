@@ -1,11 +1,10 @@
-name: Site
+name: Release Site
 
 permissions: {}
 
 on:
   push:
-    branches:
-      - main
+    branches: [release/*]
 
 jobs:
   upload-artifact:
