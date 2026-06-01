@@ -6,18 +6,20 @@ This document describes breaking changes and how to upgrade. For a complete list
 
 ### `Cli`
 
-The `Cli` class is no longer exported from the package. It was used internally to represent an instance of the command-line program invoked via `cucumber-js`, and could be used to run Cucumber programmatically, but is poorly suited for this. To adapt, pivot to the `runCucumber` function from the [JavaScript API](./docs/javascript_api.md), or raise an issue if you feel your use case isn't catered for.
+The `Cli` class is no longer exported from the package. It was used internally to represent an instance of the command-line program invoked via `cucumber-js`, and could be used to run Cucumber programmatically, but was poorly suited for this. To adapt, pivot to the `runCucumber` function from the [JavaScript API](./docs/javascript_api.md).
 
 ### Ambiguous colons in formats
 
-A user-specified format supplied via the CLI is made up of a formatter descriptor and an optional target path, separated by a colon. Previously, when either part contained colons of its own - like Windows drives or `file://` URLs - Cucumber tried to detect and handle that on a best-effort basis. That logic has been removed.
-
-A colon now always delimits the two parts, so any part that itself contains a colon must be wrapped in double quotes. A format that can't be parsed unambiguously (i.e. more than two parts once quotes are taken into account) will now throw an error. To adapt, ensure you use double quotes appropriately:
+When parsing a format specified via the CLI, where the formatter and the destination are delimited by a colon, Cucumber no longer tries to handle additional colons in paths on a best-effort basis. To adapt, use double quotes on both sides of the delimiter so there's no ambiguity:
 
 | Before                                       | After                                            |
 |----------------------------------------------|--------------------------------------------------|
 | `html:file://hostname/formatter/report.html` | `"html":"file://hostname/formatter/report.html"` |
 | `file://C:\custom\formatter`                 | `"file://C:\custom\formatter"`                   |
+
+### Parallel runtime
+
+The parallel runtime has been [reimplemented](https://github.com/cucumber/cucumber-js/pull/2710) and now uses worker threads instead of child processes for the parallel workers. This doesn't change any documented behaviour, but it does mean that where each worker used to get its own memory allocation, they now all share with the main thread. If you run into memory issues after upgrading, consider giving Node.js more memory or [tuning other settings](https://nodejs.org/learn/diagnostics/memory/understanding-and-tuning-memory#command-line-flags-for-memory-tuning).
 
 ## 12.0.0
 
