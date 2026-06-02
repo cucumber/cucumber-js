@@ -21,6 +21,10 @@ When parsing a format specified via the CLI, where the formatter and the destina
 
 The parallel runtime has been [reimplemented](https://github.com/cucumber/cucumber-js/pull/2710) and now uses worker threads instead of child processes for the parallel workers. This doesn't change any documented behaviour, but it does mean that where each worker used to get its own memory allocation, they now all share with the main thread. If you run into memory issues after upgrading, consider giving Node.js more memory or [tuning other settings](https://nodejs.org/learn/diagnostics/memory/understanding-and-tuning-memory#command-line-flags-for-memory-tuning).
 
+### Global hooks
+
+`BeforeAll` and `AfterAll` hooks are now _always_ executed, even if other hooks have failed, instead of failing fast on the first hook failure. To adapt, ensure your hooks will still work with potentially incomplete state from previous hook failures.
+
 ## 12.0.0
 
 ### publishQuiet

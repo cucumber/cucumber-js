@@ -16,7 +16,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 - BREAKING CHANGE: All `BeforeAll` and `AfterAll` hooks are always executed ([#2710](https://github.com/cucumber/cucumber-js/pull/2710))
 - BREAKING CHANGE: Set `FORCE_COLOR` based on deprecated format option ([#2769](https://github.com/cucumber/cucumber-js/pull/2769))
 - Redesigned output for summary, progress, progress bar and pretty formatters ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
-- Reduce transitive dependencies ([#2800](https://github.com/cucumber/cucumber-js/issues/2800))
+- Reduce transitive dependencies ([#2800](https://github.com/cucumber/cucumber-js/issues/2800)) by [@m-basov](https://github.com/m-basov)
 
 ### Deprecated
 - Deprecate legacy `SummaryFormatter` and `ProgressFormatter` classes in favour of new formatter architecture ([#2708](https://github.com/cucumber/cucumber-js/pull/2708))
@@ -24,7 +24,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ### Fixed
 - Update status colors to match other formatters ([#2828](https://github.com/cucumber/cucumber-js/pull/2828))
-- Surface `Error.cause` chain (with stack frames) in output ([#2813](https://github.com/cucumber/cucumber-js/pull/2813))
+- Surface `Error.cause` chain (with stack frames) in output ([#2813](https://github.com/cucumber/cucumber-js/pull/2813)) by [@rkdfx](https://github.com/rkdfx)
 - Handle undefined/ambiguous correctly when skipped ([#2836](https://github.com/cucumber/cucumber-js/pull/2836))
 
 ### Removed
@@ -61,7 +61,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Fixed
 - Handle ESM when building source references ([#2740](https://github.com/cucumber/cucumber-js/pull/2740))
 - Fix error type resolution ([#2744](https://github.com/cucumber/cucumber-js/pull/2744))
-- Ensure that environment variables reach child processes in parallel mode ([#2752](https://github.com/cucumber/cucumber-js/pull/2752))
+- Ensure that environment variables reach child processes in parallel mode ([#2752](https://github.com/cucumber/cucumber-js/pull/2752)) by [@rtpg](https://github.com/rtpg)
 
 ## [12.6.0] - 2026-01-22
 ### Deprecated
