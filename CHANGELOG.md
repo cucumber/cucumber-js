@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [13.0.0] - 2026-06-02
 ### Added
 - Add support for Node.js 26.x ([#2818](https://github.com/cucumber/cucumber-js/pull/2818))
 
@@ -1773,6 +1775,7 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 ## 0.0.1
 
 [Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...HEAD
+[13.0.0]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...v13.0.0
 [12.9.0]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...v12.9.0
 [12.8.3]: https://github.com/cucumber/cucumber-js/compare/v12.8.2...v12.8.3
 [12.8.2]: https://github.com/cucumber/cucumber-js/compare/v12.8.1...v12.8.2
