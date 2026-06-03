@@ -258,7 +258,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.16",
-    "@cucumber/biome-config": "github:cucumber/biome-config#v0.2.0",
+    "@cucumber/biome-config": "github:cucumber/biome-config#v0.2.1",
     "@cucumber/compatibility-kit": "^29.0.0",
     "@cucumber/query": "^15.0.1",
     "@microsoft/api-extractor": "7.58.7",
