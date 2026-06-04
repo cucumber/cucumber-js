@@ -301,7 +301,7 @@
     "typescript": "^6.0.0"
   },
   "scripts": {
-    "build-local": "tsc --build tsconfig.build.json && shx cp src/wrapper.mjs lib/ && shx cp src/api/wrapper.mjs lib/api/",
+    "build-local": "tsc --p tsconfig.build.json",
     "cck-test": "mocha \"compatibility/**/*_spec.ts\"",
     "exports-generate-docs": "typedoc",
     "exports-test": "api-extractor run --config exports/api/api-extractor.json --verbose && api-extractor run --config exports/root/api-extractor.json --verbose",

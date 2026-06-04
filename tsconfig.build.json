@@ -1,9 +1,10 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["src/**/*.ts", "src/**/*.mts"],
+  "include": ["src/**/*.ts", "src/**/*.mts", "src/**/wrapper.mjs"],
   "exclude": ["**/*_spec.ts"],
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "lib"
+    "outDir": "lib",
+    "allowJs": true
   }
 }

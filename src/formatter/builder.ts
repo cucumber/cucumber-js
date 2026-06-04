@@ -12,7 +12,7 @@ import StepDefinitionSnippetBuilder from './step_definition_snippet_builder'
 import JavascriptSnippetSyntax from './step_definition_snippet_builder/javascript_snippet_syntax'
 import { SnippetInterface } from './step_definition_snippet_builder/snippet_syntax'
 
-interface IGetStepDefinitionSnippetBuilderOptions {
+export interface IGetStepDefinitionSnippetBuilderOptions {
   cwd: string
   snippetInterface?: SnippetInterface
   snippetSyntax?: string
