@@ -11,10 +11,6 @@ import * as messages from '@cucumber/messages'
 import * as formatterHelpers from './formatter/helpers'
 import supportCodeLibraryBuilder from './support_code_library_builder'
 import * as parallelCanAssignHelpers from './support_code_library_builder/parallel_can_assign_helpers'
-import { version as _version } from './version'
-
-// type version as string to avoid tripping api-extractor every release
-export const version = _version as string
 
 // Configuration
 export { IConfiguration, IProfiles } from './configuration'
@@ -32,6 +28,7 @@ export { default as DataTable } from './models/data_table'
 export { default as TestCaseHookDefinition } from './models/test_case_hook_definition'
 // Top level
 export { default as supportCodeLibraryBuilder } from './support_code_library_builder'
+export { version } from './version'
 export { formatterHelpers }
 
 // Support Code Functions
