@@ -286,7 +286,6 @@
     "dirty-chai": "3.0.0",
     "express": "^5.0.0",
     "fs-extra": "11.3.5",
-    "genversion": "3.2.0",
     "mocha": "^11.0.1",
     "mustache": "4.2.0",
     "nyc": "18.0.0",
@@ -302,7 +301,7 @@
     "typescript": "^6.0.0"
   },
   "scripts": {
-    "build-local": "genversion --es6 src/version.ts && tsc --build tsconfig.build.json && shx cp src/wrapper.mjs lib/ && shx cp src/api/wrapper.mjs lib/api/",
+    "build-local": "tsc --build tsconfig.build.json && shx cp src/wrapper.mjs lib/ && shx cp src/api/wrapper.mjs lib/api/",
     "cck-test": "mocha \"compatibility/**/*_spec.ts\"",
     "exports-generate-docs": "typedoc",
     "exports-test": "api-extractor run --config exports/api/api-extractor.json --verbose && api-extractor run --config exports/root/api-extractor.json --verbose",
