@@ -1,5 +1,5 @@
 import * as messages from '@cucumber/messages'
-import { TestStepResult } from '@cucumber/messages'
+import { type TestStepResult, TestStepResultStatus } from '@cucumber/messages'
 import type TestCaseHookDefinition from '../../models/test_case_hook_definition'
 import type { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import type { ILineAndUri } from '../../types'
@@ -140,7 +140,13 @@ export function parseTestCaseAttempt({
   let previousKeywordType = KeywordType.Precondition
 
   testCase.testSteps.forEach((testStep) => {
-    const testStepResult = testCaseAttempt.stepResults[testStep.id] || new TestStepResult()
+    const testStepResult: TestStepResult = testCaseAttempt.stepResults[testStep.id] || {
+      duration: {
+        seconds: 0,
+        nanos: 0,
+      },
+      status: TestStepResultStatus.UNKNOWN,
+    }
 
     isBeforeHook = isBeforeHook && doesHaveValue(testStep.hookId)
 
