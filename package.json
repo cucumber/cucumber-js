@@ -261,7 +261,7 @@
     "@cucumber/biome-config": "github:cucumber/biome-config#v0.2.1",
     "@cucumber/compatibility-kit": "^29.0.0",
     "@cucumber/query": "^16.0.0",
-    "@microsoft/api-extractor": "7.58.8",
+    "@microsoft/api-extractor": "7.58.9",
     "@sinonjs/fake-timers": "15.4.0",
     "@tsconfig/recommended": "^1.0.13",
     "@types/chai": "5.2.3",
