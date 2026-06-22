@@ -1,5 +1,6 @@
 import {
   DEFAULT_CONFIGURATION,
+  fromEnv,
   fromFile,
   mergeConfigurations,
   parseConfiguration,
@@ -33,6 +34,7 @@ export async function loadConfiguration(
   const profileConfiguration = configFile
     ? await fromFile(logger, cwd, configFile, options.profiles)
     : {}
+  const environmentConfiguration = fromEnv(logger, env)
   const providedConfiguration = parseConfiguration(logger, 'Provided', options.provided)
   if (profileConfiguration.paths?.length > 0 && providedConfiguration.paths?.length > 0) {
     const configPaths = profileConfiguration.paths
@@ -49,6 +51,7 @@ export async function loadConfiguration(
   const original = mergeConfigurations(
     DEFAULT_CONFIGURATION,
     profileConfiguration,
+    environmentConfiguration,
     providedConfiguration
   )
   logger.debug('Resolved configuration:', original)
