@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+Corrected accessibility of the file /docs/images/logo.svg ([#2862](https://github.com/cucumber/cucumber-js/pull/2862))
 
 ## [13.0.0] - 2026-06-02
 ### Added
