@@ -71,7 +71,14 @@ Tests often require configuration and environment information. One of the most f
 
 The `worldParameters` configuration option allows you to provide this information to Cucumber. It takes the data in the form of an object literal, like this:
 
-- In a configuration file `{ worldParameters: { appUrl: 'http://localhost:3000/' } }`
+- In a configuration file, add it to the profile. The syntax depends on the
+  file format: a CommonJS configuration can put it in the `default` profile
+  with
+  `{ default: { worldParameters: { appUrl: 'http://localhost:3000/' } } }`,
+  while an ESM configuration can express the default profile with
+  `export default { worldParameters: { appUrl: 'http://localhost:3000/' } }`.
+  See [Configuration files](../configuration.md#files) and
+  [Profiles](../profiles.md).
 - On the CLI `$ cucumber-js --world-parameters '{"appUrl":"http://localhost:3000/"}'`
 
 This option is repeatable, so you can use it multiple times and the objects will be merged with the later ones taking precedence.
