@@ -73,6 +73,16 @@ Then('it fails', function (this: World) {
   this.verifiedLastRunError = true
 })
 
+Then('it fails with exit code {int}', function (this: World, expectedCode: number) {
+  const actualCode: number = doesHaveValue(this.lastRun.error) ? this.lastRun.error.code : 0
+
+  expect(actualCode).to.eql(
+    expectedCode,
+    `Expected exit status ${expectedCode}, but got ${actualCode}`
+  )
+  this.verifiedLastRunError = true
+})
+
 Then('it outputs the text:', function (this: World, text: string) {
   const actualOutput = normalizeText(this.lastRun.output)
   const expectedOutput = normalizeText(text)

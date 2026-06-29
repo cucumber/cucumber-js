@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- Exit with code `2` (rather than `1`) when Cucumber itself fails to run, e.g. an invalid invocation, configuration or unexpected error, so CI can distinguish this from genuine test failures (which still exit with code `1`) ([#2646](https://github.com/cucumber/cucumber-js/issues/2646))
 
 ## [13.0.0] - 2026-06-02
 ### Added

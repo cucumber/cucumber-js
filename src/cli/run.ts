@@ -1,10 +1,23 @@
 import Cli, { type ICliRunResult } from './'
 import { validateNodeEngineVersion } from './validate_node_engine_version'
 
-function logErrorMessageAndExit(message: string): void {
+/**
+ * Exit code used when test scenarios were run but at least one failed.
+ */
+const EXIT_CODE_TEST_FAILURES = 1
+
+/**
+ * Exit code used when Cucumber itself failed to run, e.g. an invalid
+ * invocation, configuration or an unexpected error. This is distinct from
+ * {@link EXIT_CODE_TEST_FAILURES} so that CI can tell genuine test failures
+ * apart from a broken command.
+ */
+const EXIT_CODE_CUCUMBER_ERROR = 2
+
+function logErrorMessageAndExit(message: unknown): void {
   // biome-ignore lint/suspicious/noConsole: cli entrypoint, other code abstracts console for testability
   console.error(message)
-  process.exit(1)
+  process.exit(EXIT_CODE_CUCUMBER_ERROR)
 }
 
 export default async function run(): Promise<void> {
@@ -13,7 +26,7 @@ export default async function run(): Promise<void> {
     (error) => {
       // biome-ignore lint/suspicious/noConsole: cli entrypoint, other code abstracts console for testability
       console.error(error)
-      process.exit(1)
+      process.exit(EXIT_CODE_CUCUMBER_ERROR)
     },
     // biome-ignore lint/suspicious/noConsole: cli entrypoint, other code abstracts console for testability
     console.warn
@@ -34,7 +47,7 @@ export default async function run(): Promise<void> {
     logErrorMessageAndExit(error)
   }
 
-  const exitCode = result.success ? 0 : 1
+  const exitCode = result.success ? 0 : EXIT_CODE_TEST_FAILURES
   if (result.shouldExitImmediately) {
     process.exit(exitCode)
   } else {
