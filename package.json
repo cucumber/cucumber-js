@@ -285,7 +285,7 @@
     "coffeescript": "2.7.0",
     "dirty-chai": "3.0.0",
     "express": "^5.0.0",
-    "fs-extra": "11.3.5",
+    "fs-extra": "11.3.6",
     "mocha": "^11.0.1",
     "mustache": "4.2.0",
     "nyc": "18.0.0",
