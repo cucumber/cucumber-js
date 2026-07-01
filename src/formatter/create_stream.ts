@@ -1,7 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import type { Writable } from 'node:stream'
-import { mkdirp } from 'mkdirp'
 import type { ILogger } from '../environment'
 
 export async function createStream(
@@ -14,7 +13,7 @@ export async function createStream(
   const directory = path.dirname(absoluteTarget)
 
   try {
-    await mkdirp(directory)
+    await fs.promises.mkdir(directory, { recursive: true })
   } catch (e) {
     logger.warn('Failed to ensure directory for formatter target exists', e)
   }
