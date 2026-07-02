@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Allow configuration via `CUCUMBER_OPTION_*` environment variables ([#2347](https://github.com/cucumber/cucumber-js/issues/2347))
 
 ## [13.0.0] - 2026-06-02
 ### Added
