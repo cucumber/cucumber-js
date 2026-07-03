@@ -9,7 +9,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ## [Unreleased]
 ### Added
-- Allow configuration via `CUCUMBER_OPTION_*` environment variables ([#2347](https://github.com/cucumber/cucumber-js/issues/2347))
+- Allow configuration via `CUCUMBER_OPTION_*` environment variables ([#2860](https://github.com/cucumber/cucumber-js/pull/2860))
 
 ## [13.0.0] - 2026-06-02
 ### Added
