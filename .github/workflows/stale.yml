@@ -23,3 +23,19 @@ jobs:
           days-before-close: 5
           days-before-pr-stale: -1
           days-before-pr-close: -1
+
+  driveby-prs:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/stale@eb5cf3af3ac0a1aa4c9c45633dd1ae542a27a899 # v10
+        with:
+          only-pr-labels: ':car: driveby'
+          stale-pr-message: 'This pull request is stale because its description is still incomplete. It will be closed in two days if the description is not completed following the template.'
+          close-pr-message: 'This pull request was closed because its description was still incomplete a week after an update was requested.'
+          days-before-pr-stale: 5
+          days-before-pr-close: 2
+          days-before-issue-stale: -1
+          days-before-issue-close: -1
