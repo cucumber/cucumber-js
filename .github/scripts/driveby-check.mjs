@@ -4,6 +4,8 @@ import { readFile } from 'node:fs/promises'
 
 const templateMarkers = ["what's changed", 'checklist', '[x] I agree to respect and uphold the']
 
+const exemptAuthors = ['renovate[bot]', 'dependabot[bot]']
+
 const driveByLabel = ':car: driveby'
 
 /**
@@ -14,6 +16,9 @@ const driveByLabel = ':car: driveby'
 export default async function ({ github, context }) {
   const pr = context.payload.pull_request
   if (!pr) {
+    return
+  }
+  if (exemptAuthors.includes(pr.user?.login)) {
     return
   }
   const { owner, repo } = context.repo
