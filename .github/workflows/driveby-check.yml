@@ -1,0 +1,29 @@
+name: 'Check for drive-by contributions'
+
+permissions: {}
+
+on:
+  pull_request_target:
+    types: [opened, ready_for_review, edited]
+
+concurrency:
+  group: driveby-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  check-description:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # checkout
+      pull-requests: write # create review
+      issues: write # add/remove label
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        with:
+          script: |
+            const { default: run } = await import('${{ github.workspace }}/.github/scripts/driveby-check.mjs')
+            await run({ github, context })
