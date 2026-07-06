@@ -2,7 +2,7 @@
 
 import { readFile } from 'node:fs/promises'
 
-const templateMarkers = ["what's changed", 'checklist', '[x] I agree to respect and uphold the']
+const templateMarkers = ["what's changed", 'checklist', '[x] i agree to respect and uphold the']
 
 const driveByLabel = ':car: driveby'
 
