@@ -41,8 +41,7 @@ export const BeforeAll: ((code: TestRunHookFunction) => void) & ((options: IDefi
 export const BeforeStep: (<WorldType = IWorld<any>>(code: TestStepHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(tags: string, code: TestStepHookFunction<WorldType>) => void) & (<WorldType = IWorld<any>>(options: IDefineTestStepHookOptions, code: TestStepHookFunction<WorldType>) => void);
 
 // @beta
-const context_2: IContext<any>;
-export { context_2 as context }
+export const context: IContext<any>;
 
 // @public (undocumented)
 export class DataTable {
