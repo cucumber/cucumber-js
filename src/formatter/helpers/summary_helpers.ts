@@ -1,23 +1,28 @@
-import * as messages from '@cucumber/messages'
+import {
+  type Duration,
+  type TestStepResult,
+  TestStepResultStatus,
+  TimeConversion,
+} from '@cucumber/messages'
 import { Interval } from 'luxon'
 import { doesHaveValue } from '../../value_checker'
 import type { IColorFns } from '../get_color_fns'
 import type { ITestCaseAttempt } from './event_data_collector'
 
 const STATUS_REPORT_ORDER = [
-  messages.TestStepResultStatus.FAILED,
-  messages.TestStepResultStatus.AMBIGUOUS,
-  messages.TestStepResultStatus.UNDEFINED,
-  messages.TestStepResultStatus.PENDING,
-  messages.TestStepResultStatus.SKIPPED,
-  messages.TestStepResultStatus.PASSED,
-  messages.TestStepResultStatus.UNKNOWN,
+  TestStepResultStatus.FAILED,
+  TestStepResultStatus.AMBIGUOUS,
+  TestStepResultStatus.UNDEFINED,
+  TestStepResultStatus.PENDING,
+  TestStepResultStatus.SKIPPED,
+  TestStepResultStatus.PASSED,
+  TestStepResultStatus.UNKNOWN,
 ]
 
 export interface IFormatSummaryRequest {
   colorFns: IColorFns
   testCaseAttempts: ITestCaseAttempt[]
-  testRunDuration: messages.Duration
+  testRunDuration: Duration
 }
 
 export function formatSummary({
@@ -25,15 +30,12 @@ export function formatSummary({
   testCaseAttempts,
   testRunDuration,
 }: IFormatSummaryRequest): string {
-  const testCaseResults: messages.TestStepResult[] = []
-  const testStepResults: messages.TestStepResult[] = []
-  let totalStepDuration = messages.TimeConversion.millisecondsToDuration(0)
+  const testCaseResults: TestStepResult[] = []
+  const testStepResults: TestStepResult[] = []
+  let totalStepDuration = TimeConversion.millisecondsToDuration(0)
   testCaseAttempts.forEach(({ testCase, willBeRetried, worstTestStepResult, stepResults }) => {
     Object.values(stepResults).forEach((stepResult) => {
-      totalStepDuration = messages.TimeConversion.addDurations(
-        totalStepDuration,
-        stepResult.duration
-      )
+      totalStepDuration = TimeConversion.addDurations(totalStepDuration, stepResult.duration)
     })
     if (!willBeRetried) {
       testCaseResults.push(worstTestStepResult)
@@ -62,7 +64,7 @@ export function formatSummary({
 
 interface IGetCountSummaryRequest {
   colorFns: IColorFns
-  objects: messages.TestStepResult[]
+  objects: TestStepResult[]
   type: string
 }
 
@@ -90,9 +92,9 @@ function getCountSummary({ colorFns, objects, type }: IGetCountSummaryRequest): 
   return text
 }
 
-function getDurationSummary(durationMsg: messages.Duration): string {
+function getDurationSummary(durationMsg: Duration): string {
   const start = new Date(0)
-  const end = new Date(messages.TimeConversion.durationToMilliseconds(durationMsg))
+  const end = new Date(TimeConversion.durationToMilliseconds(durationMsg))
   const duration = Interval.fromDateTimes(start, end).toDuration([
     'minutes',
     'seconds',

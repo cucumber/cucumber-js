@@ -1,5 +1,12 @@
-import * as messages from '@cucumber/messages'
-import { type TestStepResult, TestStepResultStatus } from '@cucumber/messages'
+import {
+  type Attachment,
+  type PickleStep,
+  type PickleStepArgument,
+  type Step,
+  type TestStep,
+  type TestStepResult,
+  TestStepResultStatus,
+} from '@cucumber/messages'
 import type TestCaseHookDefinition from '../../models/test_case_hook_definition'
 import type { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import type { ILineAndUri } from '../../types'
@@ -12,11 +19,11 @@ import { getPickleStepMap, getStepKeyword } from './pickle_parser'
 
 export interface IParsedTestStep {
   actionLocation?: ILineAndUri
-  argument?: messages.PickleStepArgument
-  attachments: messages.Attachment[]
+  argument?: PickleStepArgument
+  attachments: Attachment[]
   keyword: string
   name?: string
-  result: messages.TestStepResult
+  result: TestStepResult
   snippet?: string
   sourceLocation?: ILineAndUri
   text?: string
@@ -26,7 +33,7 @@ export interface IParsedTestCase {
   attempt: number
   name: string
   sourceLocation?: ILineAndUri
-  worstTestStepResult: messages.TestStepResult
+  worstTestStepResult: TestStepResult
 }
 
 export interface IParsedTestCaseAttempt {
@@ -36,16 +43,16 @@ export interface IParsedTestCaseAttempt {
 
 interface IParseStepRequest {
   isBeforeHook: boolean
-  gherkinStepMap: Record<string, messages.Step>
+  gherkinStepMap: Record<string, Step>
   keyword: string
   keywordType: KeywordType
-  pickleStep: messages.PickleStep
+  pickleStep: PickleStep
   pickleUri: string
   snippetBuilder: StepDefinitionSnippetBuilder
   supportCodeLibrary: SupportCodeLibrary
-  testStep: messages.TestStep
-  testStepResult: messages.TestStepResult
-  testStepAttachments: messages.Attachment[]
+  testStep: TestStep
+  testStepResult: TestStepResult
+  testStepAttachments: Attachment[]
 }
 
 function parseStep({
@@ -102,7 +109,7 @@ function parseStep({
       out.argument = pickleStep.argument
     }
   }
-  if (testStepResult.status === messages.TestStepResultStatus.UNDEFINED) {
+  if (testStepResult.status === TestStepResultStatus.UNDEFINED) {
     out.snippet = snippetBuilder.build({ keywordType, pickleStep })
   }
   return out

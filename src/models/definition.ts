@@ -1,11 +1,11 @@
 import type { Expression } from '@cucumber/cucumber-expressions'
-import type * as messages from '@cucumber/messages'
+import type { PickleStep } from '@cucumber/messages'
 import type { ITestCaseHookParameter } from '../support_code_library_builder/types'
 import type { GherkinStepKeyword } from './gherkin_step_keyword'
 
 export interface IGetInvocationDataRequest {
   hookParameter: ITestCaseHookParameter
-  step: messages.PickleStep
+  step: PickleStep
   world: any
 }
 

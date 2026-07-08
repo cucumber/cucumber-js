@@ -1,5 +1,5 @@
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions'
-import * as messages from '@cucumber/messages'
+import { TestStepResultStatus } from '@cucumber/messages'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { reindent } from 'reindent-template-literals'
@@ -47,7 +47,7 @@ describe('TestCaseAttemptParser', () => {
         })
 
         // Assert
-        expect(output.testSteps[0].result.status).to.eq(messages.TestStepResultStatus.UNKNOWN)
+        expect(output.testSteps[0].result.status).to.eq(TestStepResultStatus.UNKNOWN)
       })
     })
 
@@ -67,7 +67,7 @@ describe('TestCaseAttemptParser', () => {
         })
 
         // Assert
-        expect(output.testSteps[0].result.status).to.eq(messages.TestStepResultStatus.PASSED)
+        expect(output.testSteps[0].result.status).to.eq(TestStepResultStatus.PASSED)
       })
     })
   })

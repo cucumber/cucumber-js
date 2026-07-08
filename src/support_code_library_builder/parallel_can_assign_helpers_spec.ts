@@ -1,8 +1,8 @@
-import type * as messages from '@cucumber/messages'
+import type { Pickle } from '@cucumber/messages'
 import { expect } from 'chai'
 import { atMostOnePicklePerTag } from './parallel_can_assign_helpers'
 
-function pickleWithTags(tagNames: string[]): messages.Pickle {
+function pickleWithTags(tagNames: string[]): Pickle {
   return {
     id: 'test',
     name: '',
@@ -21,7 +21,7 @@ describe('parallel can assign helpers', () => {
     it('returns true if no pickles in progress', () => {
       // Arrange
       const inQuestion = pickleWithTags(['@complex'])
-      const inProgress: messages.Pickle[] = []
+      const inProgress: Pickle[] = []
 
       // Act
       const result = testCanAssignFn(inQuestion, inProgress)
@@ -33,10 +33,7 @@ describe('parallel can assign helpers', () => {
     it('returns true if pickle in question does not any of the given tags', () => {
       // Arrange
       const inQuestion = pickleWithTags([])
-      const inProgress: messages.Pickle[] = [
-        pickleWithTags(['@complex']),
-        pickleWithTags(['@simple']),
-      ]
+      const inProgress: Pickle[] = [pickleWithTags(['@complex']), pickleWithTags(['@simple'])]
 
       // Act
       const result = testCanAssignFn(inQuestion, inProgress)
@@ -48,7 +45,7 @@ describe('parallel can assign helpers', () => {
     it('returns true if pickle in question has one of the given tags but no other pickles in progress do', () => {
       // Arrange
       const inQuestion = pickleWithTags(['@complex'])
-      const inProgress: messages.Pickle[] = [pickleWithTags(['@simple'])]
+      const inProgress: Pickle[] = [pickleWithTags(['@simple'])]
 
       // Act
       const result = testCanAssignFn(inQuestion, inProgress)
@@ -60,7 +57,7 @@ describe('parallel can assign helpers', () => {
     it('returns false if pickle in question has one of the given tags and a pickle in progress also has that tag', () => {
       // Arrange
       const inQuestion = pickleWithTags(['@complex'])
-      const inProgress: messages.Pickle[] = [pickleWithTags(['@complex'])]
+      const inProgress: Pickle[] = [pickleWithTags(['@complex'])]
 
       // Act
       const result = testCanAssignFn(inQuestion, inProgress)

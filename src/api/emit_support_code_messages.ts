@@ -1,23 +1,29 @@
 import type { EventEmitter } from 'node:events'
 import os from 'node:os'
 import detectCiEnvironment from '@cucumber/ci-environment'
-import * as messages from '@cucumber/messages'
-import { type Envelope, HookType, type IdGenerator } from '@cucumber/messages'
+import {
+  type Envelope,
+  HookType,
+  type IdGenerator,
+  type Meta,
+  version as messagesVersion,
+  StepDefinitionPatternType,
+} from '@cucumber/messages'
 import type { SupportCodeLibrary } from '../support_code_library_builder/types'
 import type { ILineAndUri } from '../types'
 import { version } from '../version'
 
 interface OrderedEnvelope {
   order: number
-  envelope: messages.Envelope
+  envelope: Envelope
 }
 
 export async function emitMetaMessage(
   eventBroadcaster: EventEmitter,
   env: NodeJS.ProcessEnv
 ): Promise<void> {
-  const meta: messages.Meta = {
-    protocolVersion: messages.version,
+  const meta: Meta = {
+    protocolVersion: messagesVersion,
     implementation: {
       version,
       name: 'cucumber-js',
@@ -95,8 +101,8 @@ function collectStepDefinitionEnvelopes(
           source: extractPatternSource(stepDefinition.pattern),
           type:
             typeof stepDefinition.pattern === 'string'
-              ? messages.StepDefinitionPatternType.CUCUMBER_EXPRESSION
-              : messages.StepDefinitionPatternType.REGULAR_EXPRESSION,
+              ? StepDefinitionPatternType.CUCUMBER_EXPRESSION
+              : StepDefinitionPatternType.REGULAR_EXPRESSION,
         },
         sourceReference: makeSourceReference(stepDefinition),
       },

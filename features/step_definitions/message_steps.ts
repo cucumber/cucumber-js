@@ -1,4 +1,8 @@
-import * as messages from '@cucumber/messages'
+import {
+  type Attachment,
+  AttachmentContentEncoding,
+  TestStepResultStatus,
+} from '@cucumber/messages'
 import { expect } from 'chai'
 import semver from 'semver'
 import { Then } from '../../'
@@ -13,9 +17,9 @@ import {
 } from '../support/message_helpers'
 import type { World } from '../support/world'
 
-const ENCODING_MAP: { [key: string]: messages.AttachmentContentEncoding } = {
-  IDENTITY: messages.AttachmentContentEncoding.IDENTITY,
-  BASE64: messages.AttachmentContentEncoding.BASE64,
+const ENCODING_MAP: { [key: string]: AttachmentContentEncoding } = {
+  IDENTITY: AttachmentContentEncoding.IDENTITY,
+  BASE64: AttachmentContentEncoding.BASE64,
 }
 
 Then('it runs {int} scenarios', function (this: World, expectedCount: number) {
@@ -44,7 +48,7 @@ Then('it runs the scenarios:', function (this: World, table: DataTable) {
 
 Then('scenario {string} has status {string}', function (this: World, name: string, status: string) {
   const result = getTestCaseResult(this.lastRun.envelopes, name)
-  expect(result.status).to.eql(status.toUpperCase() as messages.TestStepResultStatus)
+  expect(result.status).to.eql(status.toUpperCase() as TestStepResultStatus)
 })
 
 Then(
@@ -61,9 +65,7 @@ Then(
   function (this: World, pickleName: string, stepText: string, status: string) {
     const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
     const testStepResult = testStepResults.find((x) => x.text === stepText)
-    expect(testStepResult.result.status).to.eql(
-      status.toUpperCase() as messages.TestStepResultStatus
-    )
+    expect(testStepResult.result.status).to.eql(status.toUpperCase() as TestStepResultStatus)
   }
 )
 
@@ -72,9 +74,7 @@ Then(
   function (this: World, pickleName: string, attempt: number, stepText: string, status: string) {
     const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName, attempt)
     const testStepResult = testStepResults.find((x) => x.text === stepText)
-    expect(testStepResult.result.status).to.eql(
-      status.toUpperCase() as messages.TestStepResultStatus
-    )
+    expect(testStepResult.result.status).to.eql(status.toUpperCase() as TestStepResultStatus)
   }
 )
 
@@ -83,9 +83,7 @@ Then(
   function (this: World, pickleName: string, hookKeyword: string, status: string) {
     const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName)
     const testStepResult = testStepResults.find((x) => x.text === hookKeyword)
-    expect(testStepResult.result.status).to.eql(
-      status.toUpperCase() as messages.TestStepResultStatus
-    )
+    expect(testStepResult.result.status).to.eql(status.toUpperCase() as TestStepResultStatus)
   }
 )
 
@@ -100,7 +98,7 @@ Then(
         '<ref *1> { member: [Circular *1] }'
       )
     }
-    expect(testStepResult.result.status).to.eql(messages.TestStepResultStatus.FAILED)
+    expect(testStepResult.result.status).to.eql(TestStepResultStatus.FAILED)
     expect(testStepResult.result.message).to.include(errorMessage)
   }
 )
@@ -116,7 +114,7 @@ Then(
   ) {
     const testStepResults = getTestStepResults(this.lastRun.envelopes, pickleName, attempt)
     const testStepResult = testStepResults.find((x) => x.text === stepText)
-    expect(testStepResult.result.status).to.eql(messages.TestStepResultStatus.FAILED)
+    expect(testStepResult.result.status).to.eql(TestStepResultStatus.FAILED)
     expect(testStepResult.result.message).to.include(errorMessage)
   }
 )
@@ -166,7 +164,7 @@ Then(
 Then(
   'scenario {string} {string} hook has the attachments:',
   function (this: World, pickleName: string, hookKeyword: string, table: DataTable) {
-    const expectedAttachments: messages.Attachment[] = table.hashes().map((x) => {
+    const expectedAttachments: Attachment[] = table.hashes().map((x) => {
       return {
         body: x.DATA,
         mediaType: x['MEDIA TYPE'],

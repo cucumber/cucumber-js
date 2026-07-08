@@ -1,10 +1,16 @@
-import type * as messages from '@cucumber/messages'
+import type {
+  Background,
+  FeatureChild,
+  GherkinDocument,
+  Location,
+  Rule,
+  Scenario,
+  Step,
+} from '@cucumber/messages'
 import { doesHaveValue } from '../../value_checker'
 
-export function getGherkinStepMap(
-  gherkinDocument: messages.GherkinDocument
-): Record<string, messages.Step> {
-  const result: Record<string, messages.Step> = {}
+export function getGherkinStepMap(gherkinDocument: GherkinDocument): Record<string, Step> {
+  const result: Record<string, Step> = {}
   for (const container of gherkinDocument.feature.children.flatMap(extractStepContainers)) {
     for (const step of container.steps) {
       result[step.id] = step
@@ -13,9 +19,7 @@ export function getGherkinStepMap(
   return result
 }
 
-function extractStepContainers(
-  child: messages.FeatureChild
-): Array<messages.Scenario | messages.Background> {
+function extractStepContainers(child: FeatureChild): Array<Scenario | Background> {
   if (doesHaveValue(child.background)) {
     return [child.background]
   } else if (doesHaveValue(child.rule)) {
@@ -26,12 +30,10 @@ function extractStepContainers(
   return [child.scenario]
 }
 
-export function getGherkinScenarioMap(
-  gherkinDocument: messages.GherkinDocument
-): Record<string, messages.Scenario> {
-  const result: Record<string, messages.Scenario> = {}
+export function getGherkinScenarioMap(gherkinDocument: GherkinDocument): Record<string, Scenario> {
+  const result: Record<string, Scenario> = {}
   gherkinDocument.feature.children
-    .flatMap((child: messages.FeatureChild) => {
+    .flatMap((child: FeatureChild) => {
       if (doesHaveValue(child.rule)) {
         return child.rule.children
       }
@@ -45,10 +47,8 @@ export function getGherkinScenarioMap(
   return result
 }
 
-export function getGherkinExampleRuleMap(
-  gherkinDocument: messages.GherkinDocument
-): Record<string, messages.Rule> {
-  const result: Record<string, messages.Rule> = {}
+export function getGherkinExampleRuleMap(gherkinDocument: GherkinDocument): Record<string, Rule> {
+  const result: Record<string, Rule> = {}
   for (const x of gherkinDocument.feature.children.filter((x) => x.rule != null)) {
     for (const child of x.rule.children.filter((child) => doesHaveValue(child.scenario))) {
       result[child.scenario.id] = x.rule
@@ -58,10 +58,10 @@ export function getGherkinExampleRuleMap(
 }
 
 export function getGherkinScenarioLocationMap(
-  gherkinDocument: messages.GherkinDocument
-): Record<string, messages.Location> {
-  const locationMap: Record<string, messages.Location> = {}
-  const scenarioMap: Record<string, messages.Scenario> = getGherkinScenarioMap(gherkinDocument)
+  gherkinDocument: GherkinDocument
+): Record<string, Location> {
+  const locationMap: Record<string, Location> = {}
+  const scenarioMap: Record<string, Scenario> = getGherkinScenarioMap(gherkinDocument)
   for (const id of Object.keys(scenarioMap)) {
     const scenario = scenarioMap[id]
     locationMap[id] = scenario.location

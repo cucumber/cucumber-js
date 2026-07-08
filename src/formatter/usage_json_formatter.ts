@@ -1,9 +1,9 @@
-import * as messages from '@cucumber/messages'
+import type { Envelope } from '@cucumber/messages'
 import { doesHaveValue } from '../value_checker'
 import Formatter, { type IFormatterOptions } from './'
 import { getUsage } from './helpers'
 
-import IEnvelope = messages.Envelope
+type IEnvelope = Envelope
 
 export default class UsageJsonFormatter extends Formatter {
   public static readonly documentation: string =

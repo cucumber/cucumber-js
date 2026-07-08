@@ -1,4 +1,4 @@
-import type * as messages from '@cucumber/messages'
+import type { TestStepResult, UndefinedParameterType } from '@cucumber/messages'
 import indentString from 'indent-string'
 import type { SupportCodeLibrary } from '../../support_code_library_builder/types'
 import type { IColorFns } from '../get_color_fns'
@@ -6,10 +6,7 @@ import type StepDefinitionSnippetBuilder from '../step_definition_snippet_builde
 import type { ITestCaseAttempt } from './event_data_collector'
 import { formatTestCaseAttempt } from './test_case_attempt_formatter'
 
-export function isFailure(
-  result: messages.TestStepResult,
-  willBeRetried: boolean = false
-): boolean {
+export function isFailure(result: TestStepResult, willBeRetried: boolean = false): boolean {
   return (
     result.status === 'AMBIGUOUS' ||
     result.status === 'UNDEFINED' ||
@@ -17,14 +14,11 @@ export function isFailure(
   )
 }
 
-export function isWarning(
-  result: messages.TestStepResult,
-  willBeRetried: boolean = false
-): boolean {
+export function isWarning(result: TestStepResult, willBeRetried: boolean = false): boolean {
   return result.status === 'PENDING' || (result.status === 'FAILED' && willBeRetried)
 }
 
-export function isIssue(result: messages.TestStepResult): boolean {
+export function isIssue(result: TestStepResult): boolean {
   return isFailure(result) || isWarning(result)
 }
 
@@ -64,10 +58,10 @@ export function formatIssue({
 }
 
 export function formatUndefinedParameterTypes(
-  undefinedParameterTypes: messages.UndefinedParameterType[]
+  undefinedParameterTypes: UndefinedParameterType[]
 ): string {
   const output = [`Undefined parameter types:\n\n`]
-  const withLatest: Record<string, messages.UndefinedParameterType> = {}
+  const withLatest: Record<string, UndefinedParameterType> = {}
   undefinedParameterTypes.forEach((parameterType) => {
     withLatest[parameterType.name] = parameterType
   })
@@ -80,8 +74,6 @@ export function formatUndefinedParameterTypes(
   return output.join('')
 }
 
-export function formatUndefinedParameterType(
-  parameterType: messages.UndefinedParameterType
-): string {
+export function formatUndefinedParameterType(parameterType: UndefinedParameterType): string {
   return `"${parameterType.name}" e.g. \`${parameterType.expression}\``
 }

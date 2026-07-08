@@ -2,7 +2,7 @@ import {
   CucumberExpressionGenerator,
   type ParameterTypeRegistry,
 } from '@cucumber/cucumber-expressions'
-import type * as messages from '@cucumber/messages'
+import type { PickleStep } from '@cucumber/messages'
 import { parseStepArgument } from '../../step_arguments'
 import { doesHaveValue } from '../../value_checker'
 import { KeywordType } from '../helpers'
@@ -15,7 +15,7 @@ export interface INewStepDefinitionSnippetBuilderOptions {
 
 export interface IBuildRequest {
   keywordType: KeywordType
-  pickleStep: messages.PickleStep
+  pickleStep: PickleStep
 }
 
 export default class StepDefinitionSnippetBuilder {
@@ -72,7 +72,7 @@ export default class StepDefinitionSnippetBuilder {
     }
   }
 
-  getStepParameterNames(step: messages.PickleStep): string[] {
+  getStepParameterNames(step: PickleStep): string[] {
     if (doesHaveValue(step.argument)) {
       const argumentName = parseStepArgument(step.argument, {
         dataTable: () => 'dataTable',

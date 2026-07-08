@@ -1,6 +1,5 @@
 import { CucumberExpression, RegularExpression } from '@cucumber/cucumber-expressions'
-import type * as messages from '@cucumber/messages'
-import type { IdGenerator } from '@cucumber/messages'
+import type { IdGenerator, UndefinedParameterType } from '@cucumber/messages'
 import arity from 'util-arity'
 import { formatLocation } from '../formatter/helpers'
 import type { GherkinStepKeyword } from '../models/gherkin_step_keyword'
@@ -343,10 +342,10 @@ export class SupportCodeLibraryBuilder {
 
   buildStepDefinitions(canonicalIds?: string[]): {
     stepDefinitions: StepDefinition[]
-    undefinedParameterTypes: messages.UndefinedParameterType[]
+    undefinedParameterTypes: UndefinedParameterType[]
   } {
     const stepDefinitions: StepDefinition[] = []
-    const undefinedParameterTypes: messages.UndefinedParameterType[] = []
+    const undefinedParameterTypes: UndefinedParameterType[] = []
     this.stepDefinitionConfigs.forEach(
       ({ code, line, options, order, keyword, pattern, uri }, index) => {
         let expression: any

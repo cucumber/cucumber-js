@@ -4,8 +4,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { PassThrough, pipeline, Writable } from 'node:stream'
 import util from 'node:util'
-import * as messageStreams from '@cucumber/message-streams'
-import type * as messages from '@cucumber/messages'
+import { NdjsonToMessageStream } from '@cucumber/message-streams'
+import type { Envelope } from '@cucumber/messages'
 import { expect } from 'chai'
 import streamToString from 'stream-to-string'
 import { setWorldConstructor } from '../../'
@@ -19,7 +19,7 @@ const asyncPipeline = util.promisify(pipeline)
 interface ILastRun {
   error: any
   errorOutput: string
-  envelopes: messages.Envelope[]
+  envelopes: Envelope[]
   output: string
 }
 
@@ -116,15 +116,15 @@ export class World {
         stderr: await streamToString(stderr),
       }
     }
-    const envelopes: messages.Envelope[] = []
+    const envelopes: Envelope[] = []
     const messageOutputPath = path.join(cwd, messageFilename)
     if (fs.existsSync(messageOutputPath)) {
       await asyncPipeline(
         fs.createReadStream(messageOutputPath, { encoding: 'utf-8' }),
-        new messageStreams.NdjsonToMessageStream(),
+        new NdjsonToMessageStream(),
         new Writable({
           objectMode: true,
-          write(envelope: messages.Envelope, _: BufferEncoding, callback) {
+          write(envelope: Envelope, _: BufferEncoding, callback) {
             envelopes.push(envelope)
             callback()
           },

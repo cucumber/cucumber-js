@@ -1,6 +1,14 @@
 import { EventEmitter } from 'node:events'
-import * as messages from '@cucumber/messages'
-import { type Envelope, IdGenerator } from '@cucumber/messages'
+import {
+  type Envelope,
+  type GherkinDocument,
+  IdGenerator,
+  type Pickle,
+  type TestStepResult,
+  TestStepResultStatus,
+  TimeConversion,
+  type Timestamp,
+} from '@cucumber/messages'
 import FakeTimers, { type InstalledClock } from '@sinonjs/fake-timers'
 import { expect } from 'chai'
 import { afterEach, beforeEach, describe, it } from 'mocha'
@@ -17,14 +25,14 @@ import TestCaseRunner from './test_case_runner'
 
 async function testRunner(options: {
   workerId?: string
-  gherkinDocument: messages.GherkinDocument
-  pickle: messages.Pickle
+  gherkinDocument: GherkinDocument
+  pickle: Pickle
   retries?: number
   skip?: boolean
   supportCodeLibrary: SupportCodeLibrary
 }): Promise<{
-  envelopes: messages.Envelope[]
-  result: messages.TestStepResultStatus
+  envelopes: Envelope[]
+  result: TestStepResultStatus
 }> {
   const envelopes: Envelope[] = []
   const eventBroadcaster = new EventEmitter()
@@ -68,7 +76,7 @@ async function testRunner(options: {
   return { envelopes, result }
 }
 
-function predictableTimestamp(counter: number): messages.Timestamp {
+function predictableTimestamp(counter: number): Timestamp {
   return {
     nanos: 1000000 * counter,
     seconds: 0,
@@ -102,9 +110,9 @@ describe('TestCaseRunner', () => {
           data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
           uri: 'a.feature',
         })
-        const passedTestResult: messages.TestStepResult = {
-          duration: messages.TimeConversion.millisecondsToDuration(1),
-          status: messages.TestStepResultStatus.PASSED,
+        const passedTestResult: TestStepResult = {
+          duration: TimeConversion.millisecondsToDuration(1),
+          status: TestStepResultStatus.PASSED,
         }
 
         // Act
@@ -115,7 +123,7 @@ describe('TestCaseRunner', () => {
         })
 
         // Assert
-        const expectedEnvelopes: messages.Envelope[] = [
+        const expectedEnvelopes: Envelope[] = [
           {
             testCaseStarted: {
               attempt: 0,
@@ -148,7 +156,7 @@ describe('TestCaseRunner', () => {
           },
         ]
         expect(envelopes).to.eql(expectedEnvelopes)
-        expect(result).to.eql(messages.TestStepResultStatus.PASSED)
+        expect(result).to.eql(TestStepResultStatus.PASSED)
       })
     })
 
@@ -167,9 +175,9 @@ describe('TestCaseRunner', () => {
           data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
           uri: 'a.feature',
         })
-        const failingTestResult: messages.TestStepResult = {
-          duration: messages.TimeConversion.millisecondsToDuration(0),
-          status: messages.TestStepResultStatus.FAILED,
+        const failingTestResult: TestStepResult = {
+          duration: TimeConversion.millisecondsToDuration(0),
+          status: TestStepResultStatus.FAILED,
           message: 'Error: fail',
           exception: {
             type: 'Error',
@@ -188,7 +196,7 @@ describe('TestCaseRunner', () => {
         // Assert
         expect(envelopes).to.have.lengthOf(4)
         expect(envelopes[2].testStepFinished.testStepResult).to.eql(failingTestResult)
-        expect(result).to.eql(messages.TestStepResultStatus.FAILED)
+        expect(result).to.eql(TestStepResultStatus.FAILED)
       })
 
       it('should provide the error to AfterStep and After hooks', async () => {
@@ -247,9 +255,9 @@ describe('TestCaseRunner', () => {
 
         // Assert
         expect(envelopes).to.have.lengthOf(4)
-        const expected: messages.TestStepResult = {
-          status: messages.TestStepResultStatus.AMBIGUOUS,
-          duration: messages.TimeConversion.millisecondsToDuration(0),
+        const expected: TestStepResult = {
+          status: TestStepResultStatus.AMBIGUOUS,
+          duration: TimeConversion.millisecondsToDuration(0),
         }
         expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
         expect(result).to.eql(envelopes[2].testStepFinished.testStepResult.status)
@@ -279,8 +287,8 @@ describe('TestCaseRunner', () => {
         expect(envelopes).to.have.lengthOf(5)
         expect(envelopes[2].suggestion.snippets).to.have.lengthOf(1)
         expect(envelopes[3].testStepFinished.testStepResult).to.eql({
-          status: messages.TestStepResultStatus.UNDEFINED,
-          duration: messages.TimeConversion.millisecondsToDuration(0),
+          status: TestStepResultStatus.UNDEFINED,
+          duration: TimeConversion.millisecondsToDuration(0),
         })
         expect(result).to.eql(envelopes[3].testStepFinished.testStepResult.status)
       })
@@ -317,7 +325,7 @@ describe('TestCaseRunner', () => {
         })
 
         // Assert
-        const expected: messages.Envelope[] = [
+        const expected: Envelope[] = [
           {
             testCaseStarted: {
               attempt: 0,
@@ -337,14 +345,14 @@ describe('TestCaseRunner', () => {
             testStepFinished: {
               testCaseStartedId: '3',
               testStepResult: {
-                duration: messages.TimeConversion.millisecondsToDuration(1),
+                duration: TimeConversion.millisecondsToDuration(1),
                 message: 'Error: Oh no!',
                 exception: {
                   type: 'Error',
                   message: 'Oh no!',
                   stackTrace: 'Error: Oh no!',
                 },
-                status: messages.TestStepResultStatus.FAILED,
+                status: TestStepResultStatus.FAILED,
               },
               testStepId: '2',
               timestamp: predictableTimestamp(1),
@@ -376,8 +384,8 @@ describe('TestCaseRunner', () => {
             testStepFinished: {
               testCaseStartedId: '4',
               testStepResult: {
-                duration: messages.TimeConversion.millisecondsToDuration(1),
-                status: messages.TestStepResultStatus.PASSED,
+                duration: TimeConversion.millisecondsToDuration(1),
+                status: TestStepResultStatus.PASSED,
               },
               testStepId: '2',
               timestamp: predictableTimestamp(2),
@@ -392,7 +400,7 @@ describe('TestCaseRunner', () => {
           },
         ]
         expect(envelopes).to.eql(expected)
-        expect(result).to.eql(messages.TestStepResultStatus.PASSED)
+        expect(result).to.eql(TestStepResultStatus.PASSED)
       })
 
       it('should provide the correctly willBeRetried value to the hook', async () => {
@@ -458,9 +466,9 @@ describe('TestCaseRunner', () => {
 
         // Assert
         expect(envelopes).to.have.lengthOf(4)
-        const expected: messages.TestStepResult = {
-          status: messages.TestStepResultStatus.SKIPPED,
-          duration: messages.TimeConversion.millisecondsToDuration(0),
+        const expected: TestStepResult = {
+          status: TestStepResultStatus.SKIPPED,
+          duration: TimeConversion.millisecondsToDuration(0),
         }
         expect(envelopes[2].testStepFinished.testStepResult).to.eql(expected)
         expect(result).to.eql(envelopes[2].testStepFinished.testStepResult.status)

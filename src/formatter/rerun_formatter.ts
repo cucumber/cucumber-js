@@ -1,4 +1,4 @@
-import * as messages from '@cucumber/messages'
+import { type Envelope, type TestStepResult, TestStepResultStatus } from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue, valueOrDefault } from '../value_checker'
 import Formatter, { type IFormatterOptions } from './'
 import { getGherkinScenarioLocationMap } from './helpers/gherkin_document_parser'
@@ -9,8 +9,8 @@ interface UriToLinesMap {
   [uri: string]: number[]
 }
 
-function isFailedAttempt(worstTestStepResult: messages.TestStepResult) {
-  return worstTestStepResult.status !== messages.TestStepResultStatus.PASSED
+function isFailedAttempt(worstTestStepResult: TestStepResult) {
+  return worstTestStepResult.status !== TestStepResultStatus.PASSED
 }
 
 export default class RerunFormatter extends Formatter {
@@ -19,7 +19,7 @@ export default class RerunFormatter extends Formatter {
 
   constructor(options: IFormatterOptions) {
     super(options)
-    options.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
+    options.eventBroadcaster.on('envelope', (envelope: Envelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
         this.logFailedTestCases()
       }

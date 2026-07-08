@@ -1,5 +1,14 @@
 import util from 'node:util'
-import type * as messages from '@cucumber/messages'
+import type {
+  Attachment,
+  Envelope,
+  GherkinDocument,
+  Pickle,
+  PickleStep,
+  TestCase,
+  TestCaseStarted,
+  TestStepResult,
+} from '@cucumber/messages'
 import { Query } from '@cucumber/query'
 import { getGherkinStepMap } from '../../src/formatter/helpers/gherkin_document_parser'
 import { getPickleStepMap, getStepKeyword } from '../../src/formatter/helpers/pickle_parser'
@@ -7,10 +16,10 @@ import { doesHaveValue, doesNotHaveValue } from '../../src/value_checker'
 
 export interface IStepTextAndResult {
   text: string
-  result: messages.TestStepResult
+  result: TestStepResult
 }
 
-export function getPickleNamesInOrderOfExecution(envelopes: messages.Envelope[]): string[] {
+export function getPickleNamesInOrderOfExecution(envelopes: Envelope[]): string[] {
   const pickleNameMap: Record<string, string> = {}
   const testCaseToPickleNameMap: Record<string, string> = {}
   const result: string[] = []
@@ -27,19 +36,16 @@ export function getPickleNamesInOrderOfExecution(envelopes: messages.Envelope[])
 }
 
 export function getPickleStep(
-  envelopes: messages.Envelope[],
+  envelopes: Envelope[],
   pickleName: string,
   stepText: string
-): messages.PickleStep {
+): PickleStep {
   const pickle = getAcceptedPickle(envelopes, pickleName)
   const gherkinDocument = getGherkinDocument(envelopes, pickle.uri)
   return getPickleStepByStepText(pickle, gherkinDocument, stepText)
 }
 
-export function getTestCaseResult(
-  envelopes: messages.Envelope[],
-  pickleName: string
-): messages.TestStepResult {
+export function getTestCaseResult(envelopes: Envelope[], pickleName: string): TestStepResult {
   const query = new Query()
   for (const envelope of envelopes) {
     query.update(envelope)
@@ -51,7 +57,7 @@ export function getTestCaseResult(
 }
 
 export function getTestStepResults(
-  envelopes: messages.Envelope[],
+  envelopes: Envelope[],
   pickleName: string,
   attempt = 0
 ): IStepTextAndResult[] {
@@ -59,7 +65,7 @@ export function getTestStepResults(
   const gherkinDocument = getGherkinDocument(envelopes, pickle.uri)
   const testCase = getTestCase(envelopes, pickle.id)
   const testCaseStarted = getTestCaseStarted(envelopes, testCase.id, attempt)
-  const testStepIdToResultMap: Record<string, messages.TestStepResult> = {}
+  const testStepIdToResultMap: Record<string, TestStepResult> = {}
   envelopes.forEach((e) => {
     if (e.testStepFinished != null && e.testStepFinished.testCaseStartedId === testCaseStarted.id) {
       testStepIdToResultMap[e.testStepFinished.testStepId] = e.testStepFinished.testStepResult
@@ -83,10 +89,10 @@ export function getTestStepResults(
 }
 
 export function getTestStepAttachmentsForStep(
-  envelopes: messages.Envelope[],
+  envelopes: Envelope[],
   pickleName: string,
   stepText: string
-): messages.Attachment[] {
+): Attachment[] {
   const pickle = getAcceptedPickle(envelopes, pickleName)
   const gherkinDocument = getGherkinDocument(envelopes, pickle.uri)
   const testCase = getTestCase(envelopes, pickle.id)
@@ -97,10 +103,10 @@ export function getTestStepAttachmentsForStep(
 }
 
 export function getTestStepAttachmentsForHook(
-  envelopes: messages.Envelope[],
+  envelopes: Envelope[],
   pickleName: string,
   isBeforeHook: boolean
-): messages.Attachment[] {
+): Attachment[] {
   const pickle = getAcceptedPickle(envelopes, pickleName)
   const testCase = getTestCase(envelopes, pickle.id)
   const testStepIndex = isBeforeHook ? 0 : testCase.testSteps.length - 1
@@ -109,7 +115,7 @@ export function getTestStepAttachmentsForHook(
   return getTestStepAttachments(envelopes, testCaseStarted.id, testStep.id)
 }
 
-function getAcceptedPickle(envelopes: messages.Envelope[], pickleName: string): messages.Pickle {
+function getAcceptedPickle(envelopes: Envelope[], pickleName: string): Pickle {
   const pickleEnvelope = envelopes.find(
     (e) => doesHaveValue(e.pickle) && e.pickle.name === pickleName
   )
@@ -121,7 +127,7 @@ function getAcceptedPickle(envelopes: messages.Envelope[], pickleName: string): 
   return pickleEnvelope.pickle
 }
 
-function getGherkinDocument(envelopes: messages.Envelope[], uri: string): messages.GherkinDocument {
+function getGherkinDocument(envelopes: Envelope[], uri: string): GherkinDocument {
   const gherkinDocumentEnvelope = envelopes.find(
     (e) => doesHaveValue(e.gherkinDocument) && e.gherkinDocument.uri === uri
   )
@@ -133,7 +139,7 @@ function getGherkinDocument(envelopes: messages.Envelope[], uri: string): messag
   return gherkinDocumentEnvelope.gherkinDocument
 }
 
-function getTestCase(envelopes: messages.Envelope[], pickleId: string): messages.TestCase {
+function getTestCase(envelopes: Envelope[], pickleId: string): TestCase {
   const testCaseEnvelope = envelopes.find(
     (e) => doesHaveValue(e.testCase) && e.testCase.pickleId === pickleId
   )
@@ -146,10 +152,10 @@ function getTestCase(envelopes: messages.Envelope[], pickleId: string): messages
 }
 
 function getTestCaseStarted(
-  envelopes: messages.Envelope[],
+  envelopes: Envelope[],
   testCaseId: string,
   attempt = 0
-): messages.TestCaseStarted {
+): TestCaseStarted {
   const testCaseStartedEnvelope = envelopes.find(
     (e) =>
       doesHaveValue(e.testCaseStarted) &&
@@ -167,10 +173,10 @@ function getTestCaseStarted(
 }
 
 function getPickleStepByStepText(
-  pickle: messages.Pickle,
-  gherkinDocument: messages.GherkinDocument,
+  pickle: Pickle,
+  gherkinDocument: GherkinDocument,
   stepText: string
-): messages.PickleStep {
+): PickleStep {
   const gherkinStepMap = getGherkinStepMap(gherkinDocument)
   return pickle.steps.find((s) => {
     const keyword = getStepKeyword({ pickleStep: s, gherkinStepMap })
@@ -179,10 +185,10 @@ function getPickleStepByStepText(
 }
 
 function getTestStepAttachments(
-  envelopes: messages.Envelope[],
+  envelopes: Envelope[],
   testCaseStartedId: string,
   testStepId: string
-): messages.Attachment[] {
+): Attachment[] {
   return envelopes
     .filter(
       (e) =>

@@ -1,11 +1,11 @@
 import path from 'node:path'
-import * as messages from '@cucumber/messages'
+import type { GherkinDocument, Pickle } from '@cucumber/messages'
 import { type Node, parse } from '@cucumber/tag-expressions'
 import { getGherkinScenarioLocationMap } from './formatter/helpers/gherkin_document_parser'
 import { doesHaveValue, doesNotHaveValue } from './value_checker'
 
-import IGherkinDocument = messages.GherkinDocument
-import IPickle = messages.Pickle
+type IGherkinDocument = GherkinDocument
+type IPickle = Pickle
 
 const FEATURE_LINENUM_REGEXP = /^(.*?)((?::[\d]+)+)?$/
 
@@ -17,8 +17,8 @@ export interface IPickleFilterOptions {
 }
 
 export interface IMatchesAnyLineRequest {
-  gherkinDocument: messages.GherkinDocument
-  pickle: messages.Pickle
+  gherkinDocument: GherkinDocument
+  pickle: Pickle
 }
 
 export default class PickleFilter {
@@ -113,7 +113,7 @@ export class PickleNameFilter {
     this.names = names
   }
 
-  matchesAnyName(pickle: messages.Pickle): boolean {
+  matchesAnyName(pickle: Pickle): boolean {
     if (this.names.length === 0) {
       return true
     }
@@ -130,7 +130,7 @@ export class PickleTagFilter {
     }
   }
 
-  matchesAllTagExpressions(pickle: messages.Pickle): boolean {
+  matchesAllTagExpressions(pickle: Pickle): boolean {
     if (doesNotHaveValue(this.tagExpressionNode)) {
       return true
     }

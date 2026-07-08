@@ -7,7 +7,7 @@
  * These docs cover the functions and helpers for user code registration and test setup. The entry point is `@cucumber/cucumber`.
  */
 
-import * as messages from '@cucumber/messages'
+import { TestStepResultStatus } from '@cucumber/messages'
 import * as formatterHelpers from './formatter/helpers'
 import supportCodeLibraryBuilder from './support_code_library_builder'
 import * as parallelCanAssignHelpers from './support_code_library_builder/parallel_can_assign_helpers'
@@ -60,7 +60,7 @@ export {
   IWorldOptions,
 } from './support_code_library_builder/world'
 export { parallelCanAssignHelpers }
-export const Status = messages.TestStepResultStatus
+export const Status = TestStepResultStatus
 
 // Time helpers
 export { wrapPromiseWithTimeout } from './time'

@@ -1,8 +1,8 @@
-import type * as messages from '@cucumber/messages'
+import type { PickleDocString, PickleStepArgument, PickleTable } from '@cucumber/messages'
 import Table from 'cli-table3'
 import { parseStepArgument } from '../../step_arguments'
 
-function formatDataTable(dataTable: messages.PickleTable): string {
+function formatDataTable(dataTable: PickleTable): string {
   const table = new Table({
     chars: {
       bottom: '',
@@ -34,11 +34,11 @@ function formatDataTable(dataTable: messages.PickleTable): string {
   return table.toString()
 }
 
-function formatDocString(docString: messages.PickleDocString): string {
+function formatDocString(docString: PickleDocString): string {
   return `"""\n${docString.content}\n"""`
 }
 
-export function formatStepArgument(arg: messages.PickleStepArgument): string {
+export function formatStepArgument(arg: PickleStepArgument): string {
   return parseStepArgument(arg, {
     dataTable: formatDataTable,
     docString: formatDocString,

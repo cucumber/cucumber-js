@@ -4,8 +4,7 @@ import {
   ParameterType,
   RegularExpression,
 } from '@cucumber/cucumber-expressions'
-import * as messages from '@cucumber/messages'
-import { HookType, IdGenerator } from '@cucumber/messages'
+import { type Envelope, HookType, IdGenerator, StepDefinitionPatternType } from '@cucumber/messages'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import StepDefinition from '../models/step_definition'
@@ -19,10 +18,8 @@ const noopFunction = (): void => {
   // no code
 }
 
-function testEmitSupportCodeMessages(
-  supportCode: Partial<SupportCodeLibrary>
-): messages.Envelope[] {
-  const envelopes: messages.Envelope[] = []
+function testEmitSupportCodeMessages(supportCode: Partial<SupportCodeLibrary>): Envelope[] {
+  const envelopes: Envelope[] = []
   const eventBroadcaster = new EventEmitter()
   eventBroadcaster.on('envelope', (e) => envelopes.push(e))
   emitSupportCodeMessages({
@@ -57,7 +54,7 @@ function testEmitSupportCodeMessages(
 describe('emit_support_code_messages', () => {
   describe('emitMetaMessage', () => {
     it('emits a meta message', async () => {
-      const envelopes: messages.Envelope[] = []
+      const envelopes: Envelope[] = []
       const eventBroadcaster = new EventEmitter()
       eventBroadcaster.on('envelope', (e) => envelopes.push(e))
       await emitMetaMessage(eventBroadcaster, {})
@@ -90,7 +87,7 @@ describe('emit_support_code_messages', () => {
         parameterTypeRegistry,
       })
 
-      const expectedEnvelopes: messages.Envelope[] = [
+      const expectedEnvelopes: Envelope[] = [
         {
           parameterType: {
             id: '0',
@@ -131,13 +128,13 @@ describe('emit_support_code_messages', () => {
         ],
       })
 
-      const expectedEnvelopes: messages.Envelope[] = [
+      const expectedEnvelopes: Envelope[] = [
         {
           stepDefinition: {
             id: '0',
             pattern: {
               source: 'I have {int} cukes in my belly',
-              type: messages.StepDefinitionPatternType.CUCUMBER_EXPRESSION,
+              type: StepDefinitionPatternType.CUCUMBER_EXPRESSION,
             },
             sourceReference: {
               uri: 'features/support/cukes.js',
@@ -172,13 +169,13 @@ describe('emit_support_code_messages', () => {
         ],
       })
 
-      const expectedEnvelopes: messages.Envelope[] = [
+      const expectedEnvelopes: Envelope[] = [
         {
           stepDefinition: {
             id: '0',
             pattern: {
               source: 'I have (\\d+) cukes in my belly',
-              type: messages.StepDefinitionPatternType.REGULAR_EXPRESSION,
+              type: StepDefinitionPatternType.REGULAR_EXPRESSION,
             },
             sourceReference: {
               uri: 'features/support/cukes.js',
@@ -232,7 +229,7 @@ describe('emit_support_code_messages', () => {
         ],
       })
 
-      const expectedEnvelopes: messages.Envelope[] = [
+      const expectedEnvelopes: Envelope[] = [
         {
           hook: {
             id: '0',
@@ -316,7 +313,7 @@ describe('emit_support_code_messages', () => {
         ],
       })
 
-      const expectedEnvelopes: messages.Envelope[] = [
+      const expectedEnvelopes: Envelope[] = [
         {
           hook: {
             id: '0',
