@@ -13,7 +13,7 @@ import type { JsonObject } from 'type-fest';
 import * as messages from '@cucumber/messages';
 import { ParameterType } from '@cucumber/cucumber-expressions';
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions';
-import type { Readable } from 'node:stream';
+import { Readable } from 'node:stream';
 import type { ResourceLimits } from 'node:worker_threads';
 import type { TestStepResultStatus } from '@cucumber/messages';
 import type { Theme } from '@cucumber/pretty-formatter';
