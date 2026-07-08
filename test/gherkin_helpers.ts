@@ -1,19 +1,25 @@
 import type { EventEmitter } from 'node:events'
 import type { IGherkinOptions } from '@cucumber/gherkin'
 import { GherkinStreams } from '@cucumber/gherkin-streams'
-import type * as messages from '@cucumber/messages'
-import { SourceMediaType } from '@cucumber/messages'
+import {
+  type Envelope,
+  type GherkinDocument,
+  type Pickle,
+  type PickleStep,
+  type Source,
+  SourceMediaType,
+} from '@cucumber/messages'
 import type { SourcedPickle } from '../src/assemble'
 import { doesHaveValue } from '../src/value_checker'
 
 export interface IParsedSource {
-  pickles: messages.Pickle[]
-  source: messages.Source
-  gherkinDocument: messages.GherkinDocument
+  pickles: Pickle[]
+  source: Source
+  gherkinDocument: GherkinDocument
 }
 
 export interface IParsedSourceWithEnvelopes extends IParsedSource {
-  envelopes: messages.Envelope[]
+  envelopes: Envelope[]
 }
 
 export interface IParseRequest {
@@ -27,7 +33,7 @@ export async function parse({
   uri,
   options,
 }: IParseRequest): Promise<IParsedSourceWithEnvelopes> {
-  const sources: messages.Envelope[] = [
+  const sources: Envelope[] = [
     {
       source: {
         uri,
@@ -37,12 +43,12 @@ export async function parse({
     },
   ]
   return await new Promise<IParsedSourceWithEnvelopes>((resolve, reject) => {
-    let source: messages.Source
-    let gherkinDocument: messages.GherkinDocument
-    const pickles: messages.Pickle[] = []
-    const envelopes: messages.Envelope[] = []
+    let source: Source
+    let gherkinDocument: GherkinDocument
+    const pickles: Pickle[] = []
+    const envelopes: Envelope[] = []
     const messageStream = GherkinStreams.fromSources(sources, options)
-    messageStream.on('data', (envelope: messages.Envelope) => {
+    messageStream.on('data', (envelope: Envelope) => {
       envelopes.push(envelope)
       if (doesHaveValue(envelope.source)) {
         source = envelope.source
@@ -95,7 +101,7 @@ export async function generatePickles({
   })
 }
 
-export async function getPickleWithTags(tags: string[]): Promise<messages.Pickle> {
+export async function getPickleWithTags(tags: string[]): Promise<Pickle> {
   const {
     pickles: [pickle],
   } = await parse({
@@ -110,7 +116,7 @@ Feature: a
   return pickle
 }
 
-export async function getPickleStepWithText(text: string): Promise<messages.PickleStep> {
+export async function getPickleStepWithText(text: string): Promise<PickleStep> {
   const {
     pickles: [pickle],
   } = await parse({

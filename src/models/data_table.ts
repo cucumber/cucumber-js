@@ -1,9 +1,9 @@
-import type * as messages from '@cucumber/messages'
+import type { PickleTable } from '@cucumber/messages'
 
 export default class DataTable {
   private readonly rawTable: string[][]
 
-  constructor(sourceTable: messages.PickleTable | string[][]) {
+  constructor(sourceTable: PickleTable | string[][]) {
     if (Array.isArray(sourceTable)) {
       this.rawTable = sourceTable
     } else {

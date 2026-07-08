@@ -1,8 +1,7 @@
 import { EventEmitter } from 'node:events'
 import { PassThrough } from 'node:stream'
 import { promisify } from 'node:util'
-import type * as messages from '@cucumber/messages'
-import { IdGenerator } from '@cucumber/messages'
+import { type Envelope, IdGenerator, type Pickle } from '@cucumber/messages'
 import type { IRunEnvironment } from '../src/api'
 import { emitSupportCodeMessages } from '../src/api/emit_support_code_messages'
 import type { SourcedPickle } from '../src/assemble'
@@ -27,7 +26,7 @@ export interface ITestRunOptions {
   runtimeOptions?: Partial<RuntimeOptions>
   supportCodeLibrary?: SupportCodeLibrary
   sources?: ITestSource[]
-  pickleFilter?: (pickle: messages.Pickle) => boolean
+  pickleFilter?: (pickle: Pickle) => boolean
 }
 
 export interface ITestFormatterOptions extends ITestRunOptions {
@@ -36,7 +35,7 @@ export interface ITestFormatterOptions extends ITestRunOptions {
 }
 
 export interface IEnvelopesAndEventDataCollector {
-  envelopes: messages.Envelope[]
+  envelopes: Envelope[]
   eventDataCollector: EventDataCollector
 }
 
@@ -100,7 +99,7 @@ export async function testFormatter({
   })
   eventBroadcaster.emit('envelope', {
     testRunStarted: { id: '1', timestamp: timestamp() },
-  } satisfies messages.Envelope)
+  } satisfies Envelope)
   const success = await runtime.run()
   eventBroadcaster.emit('envelope', {
     testRunFinished: {
@@ -108,7 +107,7 @@ export async function testFormatter({
       timestamp: timestamp(),
       success,
     },
-  } satisfies messages.Envelope)
+  } satisfies Envelope)
 
   return normalizeLegacySummaryDuration(output)
 }
@@ -137,7 +136,7 @@ export async function getEnvelopesAndEventDataCollector({
   }
   const eventBroadcaster = new EventEmitter()
   const eventDataCollector = new EventDataCollector(eventBroadcaster)
-  const envelopes: messages.Envelope[] = []
+  const envelopes: Envelope[] = []
   eventBroadcaster.on('envelope', (envelope) => envelopes.push(envelope))
   emitSupportCodeMessages({
     supportCodeLibrary,
@@ -171,7 +170,7 @@ export async function getEnvelopesAndEventDataCollector({
   })
   eventBroadcaster.emit('envelope', {
     testRunStarted: { id: '1', timestamp: timestamp() },
-  } satisfies messages.Envelope)
+  } satisfies Envelope)
   const success = await runtime.run()
   eventBroadcaster.emit('envelope', {
     testRunFinished: {
@@ -179,7 +178,7 @@ export async function getEnvelopesAndEventDataCollector({
       timestamp: timestamp(),
       success,
     },
-  } satisfies messages.Envelope)
+  } satisfies Envelope)
 
   return { envelopes, eventDataCollector }
 }

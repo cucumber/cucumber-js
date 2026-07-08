@@ -1,5 +1,4 @@
-import * as messages from '@cucumber/messages'
-import { IdGenerator } from '@cucumber/messages'
+import { IdGenerator, type PickleStep, PickleStepType } from '@cucumber/messages'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { buildSupportCodeLibrary } from '../../test/runtime_helpers'
@@ -14,10 +13,10 @@ describe('makeSuggestion', () => {
       supportCodeLibrary,
     })
     const newId = IdGenerator.incrementing()
-    const pickleStep: messages.PickleStep = {
+    const pickleStep: PickleStep = {
       id: '1',
       text: 'I have 5 apples',
-      type: messages.PickleStepType.CONTEXT,
+      type: PickleStepType.CONTEXT,
       astNodeIds: [],
     }
 

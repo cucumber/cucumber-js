@@ -1,4 +1,10 @@
-import type * as messages from '@cucumber/messages'
+import type {
+  GherkinDocument,
+  Pickle,
+  PickleStep,
+  TestStepResult,
+  UndefinedParameterType,
+} from '@cucumber/messages'
 import type { JsonObject } from 'type-fest'
 import type StepDefinition from '../models/step_definition'
 import type TestCaseHookDefinition from '../models/test_case_hook_definition'
@@ -8,24 +14,21 @@ import type { SourcedParameterTypeRegistry } from './sourced_parameter_type_regi
 import type { IWorld } from './world'
 
 export type DefineStepPattern = string | RegExp
-export type ParallelAssignmentValidator = (
-  pickle: messages.Pickle,
-  runningPickles: messages.Pickle[]
-) => boolean
+export type ParallelAssignmentValidator = (pickle: Pickle, runningPickles: Pickle[]) => boolean
 export interface ITestCaseHookParameter {
-  gherkinDocument: messages.GherkinDocument
-  pickle: messages.Pickle
-  result?: messages.TestStepResult
+  gherkinDocument: GherkinDocument
+  pickle: Pickle
+  result?: TestStepResult
   error?: any
   willBeRetried?: boolean
   testCaseStartedId: string
 }
 
 export interface ITestStepHookParameter {
-  gherkinDocument: messages.GherkinDocument
-  pickle: messages.Pickle
-  pickleStep: messages.PickleStep
-  result: messages.TestStepResult
+  gherkinDocument: GherkinDocument
+  pickle: Pickle
+  pickleStep: PickleStep
+  result: TestStepResult
   error?: any
   testCaseStartedId: string
   testStepId: string
@@ -151,7 +154,7 @@ export interface SupportCodeLibrary {
   readonly beforeTestRunHookDefinitions: TestRunHookDefinition[]
   readonly defaultTimeout: number
   readonly stepDefinitions: StepDefinition[]
-  readonly undefinedParameterTypes: messages.UndefinedParameterType[]
+  readonly undefinedParameterTypes: UndefinedParameterType[]
   readonly parameterTypeRegistry: SourcedParameterTypeRegistry
   readonly World: any
   readonly parallelCanAssign: ParallelAssignmentValidator

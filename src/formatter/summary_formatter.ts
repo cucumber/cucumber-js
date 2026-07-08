@@ -1,4 +1,4 @@
-import type * as messages from '@cucumber/messages'
+import type { Duration, Envelope, Timestamp } from '@cucumber/messages'
 import { durationBetweenTimestamps } from '../time'
 import { doesHaveValue } from '../value_checker'
 import Formatter, { type IFormatterOptions } from './'
@@ -19,8 +19,8 @@ export default class SummaryFormatter extends Formatter {
 
   constructor(options: IFormatterOptions) {
     super(options)
-    let testRunStartedTimestamp: messages.Timestamp
-    options.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
+    let testRunStartedTimestamp: Timestamp
+    options.eventBroadcaster.on('envelope', (envelope: Envelope) => {
       if (doesHaveValue(envelope.testRunStarted)) {
         testRunStartedTimestamp = envelope.testRunStarted.timestamp
       }
@@ -33,7 +33,7 @@ export default class SummaryFormatter extends Formatter {
     })
   }
 
-  logSummary(testRunDuration: messages.Duration): void {
+  logSummary(testRunDuration: Duration): void {
     const failures: ITestCaseAttempt[] = []
     const warnings: ITestCaseAttempt[] = []
     const testCaseAttempts = this.eventDataCollector.getTestCaseAttempts()

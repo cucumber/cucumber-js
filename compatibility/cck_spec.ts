@@ -2,8 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { PassThrough, Writable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
-import * as messageStreams from '@cucumber/message-streams'
-import type * as messages from '@cucumber/messages'
+import { NdjsonToMessageStream } from '@cucumber/message-streams'
 import type { Envelope } from '@cucumber/messages'
 import { config, expect, use } from 'chai'
 import chaiExclude from 'chai-exclude'
@@ -90,15 +89,15 @@ describe('Cucumber Compatibility Kit', () => {
       stdout.end()
       stderr.end()
 
-      const expectedMessages: messages.Envelope[] = []
+      const expectedMessages: Envelope[] = []
       await pipeline(
         fs.createReadStream(path.join(directory, `${suite}.ndjson`), {
           encoding: 'utf-8',
         }),
-        new messageStreams.NdjsonToMessageStream(),
+        new NdjsonToMessageStream(),
         new Writable({
           objectMode: true,
-          write(envelope: messages.Envelope, _: BufferEncoding, callback) {
+          write(envelope: Envelope, _: BufferEncoding, callback) {
             expectedMessages.push(envelope)
             callback()
           },

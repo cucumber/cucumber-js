@@ -1,4 +1,23 @@
-import * as messages from '@cucumber/messages'
+import {
+  type Attachment,
+  AttachmentContentEncoding,
+  type Envelope,
+  type Feature,
+  type Location,
+  type Pickle,
+  type PickleDocString,
+  type PickleStep,
+  type PickleStepArgument,
+  type PickleTable,
+  type PickleTag,
+  type Rule,
+  type Scenario,
+  type Step,
+  type Tag,
+  type TestStep,
+  type TestStepResult,
+  TestStepResultStatus,
+} from '@cucumber/messages'
 import { parseStepArgument } from '../step_arguments'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import Formatter, { type IFormatterOptions } from './'
@@ -53,27 +72,27 @@ export interface IJsonTag {
 }
 
 interface IBuildJsonFeatureOptions {
-  feature: messages.Feature
+  feature: Feature
   elements: IJsonScenario[]
   uri: string
 }
 
 interface IBuildJsonScenarioOptions {
-  feature: messages.Feature
-  gherkinScenarioMap: Record<string, messages.Scenario>
-  gherkinExampleRuleMap: Record<string, messages.Rule>
-  gherkinScenarioLocationMap: Record<string, messages.Location>
-  pickle: messages.Pickle
+  feature: Feature
+  gherkinScenarioMap: Record<string, Scenario>
+  gherkinExampleRuleMap: Record<string, Rule>
+  gherkinScenarioLocationMap: Record<string, Location>
+  pickle: Pickle
   steps: IJsonStep[]
 }
 
 interface IBuildJsonStepOptions {
   isBeforeHook: boolean
-  gherkinStepMap: Record<string, messages.Step>
-  pickleStepMap: Record<string, messages.PickleStep>
-  testStep: messages.TestStep
-  testStepAttachments: messages.Attachment[]
-  testStepResult: messages.TestStepResult
+  gherkinStepMap: Record<string, Step>
+  pickleStepMap: Record<string, PickleStep>
+  testStep: TestStep
+  testStepAttachments: Attachment[]
+  testStepResult: TestStepResult
 }
 
 interface UriToTestCaseAttemptsMap {
@@ -86,18 +105,18 @@ export default class JsonFormatter extends Formatter {
 
   constructor(options: IFormatterOptions) {
     super(options)
-    options.eventBroadcaster.on('envelope', (envelope: messages.Envelope) => {
+    options.eventBroadcaster.on('envelope', (envelope: Envelope) => {
       if (doesHaveValue(envelope.testRunFinished)) {
         this.onTestRunFinished()
       }
     })
   }
 
-  convertNameToId(obj: messages.Feature | messages.Pickle): string {
+  convertNameToId(obj: Feature | Pickle): string {
     return obj.name.replace(/ /g, '-').toLowerCase()
   }
 
-  formatDataTable(dataTable: messages.PickleTable): any {
+  formatDataTable(dataTable: PickleTable): any {
     return {
       rows: dataTable.rows.map((row) => ({
         cells: row.cells.map((x) => x.value),
@@ -105,14 +124,14 @@ export default class JsonFormatter extends Formatter {
     }
   }
 
-  formatDocString(docString: messages.PickleDocString, gherkinStep: messages.Step): any {
+  formatDocString(docString: PickleDocString, gherkinStep: Step): any {
     return {
       content: docString.content,
       line: gherkinStep.docString.location.line,
     }
   }
 
-  formatStepArgument(stepArgument: messages.PickleStepArgument, gherkinStep: messages.Step): any {
+  formatStepArgument(stepArgument: PickleStepArgument, gherkinStep: Step): any {
     if (doesNotHaveValue(stepArgument)) {
       return []
     }
@@ -217,9 +236,9 @@ export default class JsonFormatter extends Formatter {
     pickle,
     gherkinExampleRuleMap,
   }: {
-    feature: messages.Feature
-    pickle: messages.Pickle
-    gherkinExampleRuleMap: Record<string, messages.Rule>
+    feature: Feature
+    pickle: Pickle
+    gherkinExampleRuleMap: Record<string, Rule>
   }): string {
     let parts: any[]
     const rule = gherkinExampleRuleMap[pickle.astNodeIds[0]]
@@ -261,18 +280,18 @@ export default class JsonFormatter extends Formatter {
     }
     const { message, status } = testStepResult
     data.result = {
-      status: messages.TestStepResultStatus[status].toLowerCase(),
+      status: TestStepResultStatus[status].toLowerCase(),
     }
     if (doesHaveValue(testStepResult.duration)) {
       data.result.duration = durationToNanoseconds(testStepResult.duration)
     }
-    if (status === messages.TestStepResultStatus.FAILED && doesHaveValue(message)) {
+    if (status === TestStepResultStatus.FAILED && doesHaveValue(message)) {
       data.result.error_message = message
     }
     if (testStepAttachments?.length > 0) {
       data.embeddings = testStepAttachments.map((attachment) => ({
         data:
-          attachment.contentEncoding === messages.AttachmentContentEncoding.IDENTITY
+          attachment.contentEncoding === AttachmentContentEncoding.IDENTITY
             ? Buffer.from(attachment.body).toString('base64')
             : attachment.body,
         mime_type: attachment.mediaType,
@@ -281,7 +300,7 @@ export default class JsonFormatter extends Formatter {
     return data
   }
 
-  getFeatureTags(feature: messages.Feature): IJsonTag[] {
+  getFeatureTags(feature: Feature): IJsonTag[] {
     return feature.tags.map((tagData) => ({
       name: tagData.name,
       line: tagData.location.line,
@@ -293,24 +312,20 @@ export default class JsonFormatter extends Formatter {
     pickle,
     gherkinScenarioMap,
   }: {
-    feature: messages.Feature
-    pickle: messages.Pickle
-    gherkinScenarioMap: Record<string, messages.Scenario>
+    feature: Feature
+    pickle: Pickle
+    gherkinScenarioMap: Record<string, Scenario>
   }): IJsonTag[] {
     const scenario = gherkinScenarioMap[pickle.astNodeIds[0]]
 
     return pickle.tags.map(
-      (tagData: messages.PickleTag): IJsonTag => this.getScenarioTag(tagData, feature, scenario)
+      (tagData: PickleTag): IJsonTag => this.getScenarioTag(tagData, feature, scenario)
     )
   }
 
-  private getScenarioTag(
-    tagData: messages.PickleTag,
-    feature: messages.Feature,
-    scenario: messages.Scenario
-  ): IJsonTag {
-    const byAstNodeId = (tag: messages.Tag): boolean => tag.id === tagData.astNodeId
-    const flatten = (acc: messages.Tag[], val: messages.Tag[]): messages.Tag[] => acc.concat(val)
+  private getScenarioTag(tagData: PickleTag, feature: Feature, scenario: Scenario): IJsonTag {
+    const byAstNodeId = (tag: Tag): boolean => tag.id === tagData.astNodeId
+    const flatten = (acc: Tag[], val: Tag[]): Tag[] => acc.concat(val)
 
     const tag =
       feature.tags.find(byAstNodeId) ||

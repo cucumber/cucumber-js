@@ -1,5 +1,5 @@
 import { PassThrough } from 'node:stream'
-import * as messages from '@cucumber/messages'
+import { type TestRunFinished, type TestRunStarted, TimeConversion } from '@cucumber/messages'
 import FakeTimers, { type InstalledClock } from '@sinonjs/fake-timers'
 import { expect } from 'chai'
 import { afterEach, beforeEach, describe, it } from 'mocha'
@@ -17,8 +17,8 @@ interface ITestFormatSummaryOptions {
   runtimeOptions?: Partial<RuntimeOptions>
   sourceData: string
   supportCodeLibrary?: SupportCodeLibrary
-  testRunStarted?: messages.TestRunStarted
-  testRunFinished?: messages.TestRunFinished
+  testRunStarted?: TestRunStarted
+  testRunFinished?: TestRunFinished
 }
 
 async function testFormatSummary({
@@ -39,12 +39,12 @@ async function testFormatSummary({
   }
   if (doesNotHaveValue(testRunStarted)) {
     testRunStarted = {
-      timestamp: messages.TimeConversion.millisecondsSinceEpochToTimestamp(0),
+      timestamp: TimeConversion.millisecondsSinceEpochToTimestamp(0),
     }
   }
   if (doesNotHaveValue(testRunFinished)) {
     testRunFinished = {
-      timestamp: messages.TimeConversion.millisecondsSinceEpochToTimestamp(0),
+      timestamp: TimeConversion.millisecondsSinceEpochToTimestamp(0),
       success: true,
     }
   }

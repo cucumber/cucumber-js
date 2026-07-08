@@ -1,4 +1,4 @@
-import type * as messages from '@cucumber/messages'
+import type { Envelope } from '@cucumber/messages'
 import type { IJsonFeature, IJsonScenario, IJsonStep } from '../../src/formatter/json_formatter'
 import { doesHaveValue, doesNotHaveValue, valueOrDefault } from '../../src/value_checker'
 
@@ -18,7 +18,7 @@ function normalizeExceptionAndUri(exception: string, cwd: string): string {
     .split('\n')[0]
 }
 
-function normalizeMessage(obj: messages.Envelope[keyof messages.Envelope], cwd: string): void {
+function normalizeMessage(obj: Envelope[keyof Envelope], cwd: string): void {
   if (isObject(obj)) {
     if (typeof obj.uri === 'string') {
       obj.uri = normalizeExceptionAndUri(obj.uri, cwd)
@@ -37,12 +37,9 @@ function normalizeMessage(obj: messages.Envelope[keyof messages.Envelope], cwd: 
   }
 }
 
-export function normalizeMessageOutput(
-  envelopeObjects: messages.Envelope[],
-  cwd: string
-): messages.Envelope[] {
-  envelopeObjects.forEach((e: messages.Envelope) => {
-    const keys = Object.keys(e) as (keyof messages.Envelope)[]
+export function normalizeMessageOutput(envelopeObjects: Envelope[], cwd: string): Envelope[] {
+  envelopeObjects.forEach((e: Envelope) => {
+    const keys = Object.keys(e) as (keyof Envelope)[]
     keys.forEach((key) => {
       normalizeMessage(e[key], cwd)
     })
@@ -50,7 +47,7 @@ export function normalizeMessageOutput(
   return envelopeObjects
 }
 
-export function stripMetaMessages(envelopeObjects: messages.Envelope[]): messages.Envelope[] {
+export function stripMetaMessages(envelopeObjects: Envelope[]): Envelope[] {
   return envelopeObjects.filter((e) => {
     // filter off meta objects, almost none of it predictable/useful for testing
     return doesNotHaveValue(e.meta)

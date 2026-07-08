@@ -1,5 +1,5 @@
 import { performance } from 'node:perf_hooks'
-import * as messages from '@cucumber/messages'
+import { type Duration, TimeConversion, type Timestamp } from '@cucumber/messages'
 
 interface ProtectedTimingBuiltins {
   clearImmediate: typeof clearImmediate
@@ -27,13 +27,13 @@ if (typeof setImmediate !== 'undefined') {
 }
 
 export function durationBetweenTimestamps(
-  startedTimestamp: messages.Timestamp,
-  finishedTimestamp: messages.Timestamp
-): messages.Duration {
+  startedTimestamp: Timestamp,
+  finishedTimestamp: Timestamp
+): Duration {
   const durationMillis =
-    messages.TimeConversion.timestampToMillisecondsSinceEpoch(finishedTimestamp) -
-    messages.TimeConversion.timestampToMillisecondsSinceEpoch(startedTimestamp)
-  return messages.TimeConversion.millisecondsToDuration(durationMillis)
+    TimeConversion.timestampToMillisecondsSinceEpoch(finishedTimestamp) -
+    TimeConversion.timestampToMillisecondsSinceEpoch(startedTimestamp)
+  return TimeConversion.millisecondsToDuration(durationMillis)
 }
 
 export async function wrapPromiseWithTimeout<T>(

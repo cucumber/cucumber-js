@@ -1,14 +1,14 @@
-import type * as messages from '@cucumber/messages'
+import type { Location, DataTable as RawDataTable } from '@cucumber/messages'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import DataTable from './data_table'
 
 const id = 'id'
-const location: messages.Location = { line: 0 }
+const location: Location = { line: 0 }
 
 describe('DataTable', () => {
   describe('table with headers', () => {
-    const dataTable: messages.DataTable = {
+    const dataTable: RawDataTable = {
       location,
       rows: [
         {
@@ -67,7 +67,7 @@ describe('DataTable', () => {
   })
 
   describe('table without headers', () => {
-    const dataTable: messages.DataTable = {
+    const dataTable: RawDataTable = {
       location,
       rows: [
         {
@@ -111,7 +111,7 @@ describe('DataTable', () => {
   describe('table with something other than 2 columns', () => {
     describe('rowsHash', () => {
       it('throws an error if not all rows have two columns', () => {
-        const dataTable: messages.DataTable = {
+        const dataTable: RawDataTable = {
           location,
           rows: [
             {

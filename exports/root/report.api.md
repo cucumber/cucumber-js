@@ -4,19 +4,38 @@
 
 ```ts
 
+import { Attachment } from '@cucumber/messages';
+import { Duration } from '@cucumber/messages';
+import { Envelope } from '@cucumber/messages';
 import type { EventEmitter } from 'node:events';
 import type { Expression } from '@cucumber/cucumber-expressions';
+import { Feature } from '@cucumber/messages';
 import type { FormatCodeFunction } from '@cucumber/pretty-formatter';
 import type { GeneratedExpression } from '@cucumber/cucumber-expressions';
+import { GherkinDocument } from '@cucumber/messages';
 import type { IdGenerator } from '@cucumber/messages';
 import type { JsonObject } from 'type-fest';
-import * as messages from '@cucumber/messages';
+import { Location } from '@cucumber/messages';
 import { ParameterType } from '@cucumber/cucumber-expressions';
 import { ParameterTypeRegistry } from '@cucumber/cucumber-expressions';
+import { Pickle } from '@cucumber/messages';
+import { PickleDocString } from '@cucumber/messages';
+import { PickleStep } from '@cucumber/messages';
+import { PickleStepArgument } from '@cucumber/messages';
+import { PickleTable } from '@cucumber/messages';
 import { Readable } from 'node:stream';
 import type { ResourceLimits } from 'node:worker_threads';
-import type { TestStepResultStatus } from '@cucumber/messages';
+import { Rule } from '@cucumber/messages';
+import { Scenario } from '@cucumber/messages';
+import { Step } from '@cucumber/messages';
+import { TestCase } from '@cucumber/messages';
+import { TestCaseFinished } from '@cucumber/messages';
+import { TestStep } from '@cucumber/messages';
+import { TestStepFinished } from '@cucumber/messages';
+import { TestStepResult } from '@cucumber/messages';
+import { TestStepResultStatus } from '@cucumber/messages';
 import type { Theme } from '@cucumber/pretty-formatter';
+import { UndefinedParameterType } from '@cucumber/messages';
 import type { Writable } from 'node:stream';
 
 // @public (undocumented)
@@ -45,7 +64,7 @@ export const context: IContext<any>;
 
 // @public (undocumented)
 export class DataTable {
-    constructor(sourceTable: messages.PickleTable | string[][]);
+    constructor(sourceTable: PickleTable | string[][]);
     // (undocumented)
     hashes(): Record<string, string>[];
     // (undocumented)
@@ -68,23 +87,23 @@ export const defineStep: IDefineStep;
 class EventDataCollector {
     constructor(eventBroadcaster: EventEmitter);
     // (undocumented)
-    getGherkinDocument(uri: string): messages.GherkinDocument;
+    getGherkinDocument(uri: string): GherkinDocument;
     // (undocumented)
-    getPickle(pickleId: string): messages.Pickle;
+    getPickle(pickleId: string): Pickle;
     // (undocumented)
     getTestCaseAttempt(testCaseStartedId: string): ITestCaseAttempt;
     // (undocumented)
     getTestCaseAttempts(): ITestCaseAttempt[];
     // (undocumented)
-    parseEnvelope(envelope: messages.Envelope): void;
+    parseEnvelope(envelope: Envelope): void;
     // (undocumented)
-    storeAttachment(attachment: messages.Attachment): void;
+    storeAttachment(attachment: Attachment): void;
     // (undocumented)
-    storeTestCaseResult(input: messages.TestCaseFinished): void;
+    storeTestCaseResult(input: TestCaseFinished): void;
     // (undocumented)
-    storeTestStepResult(input: messages.TestStepFinished): void;
+    storeTestStepResult(input: TestStepFinished): void;
     // (undocumented)
-    readonly undefinedParameterTypes: messages.UndefinedParameterType[];
+    readonly undefinedParameterTypes: UndefinedParameterType[];
 }
 
 // @public (undocumented)
@@ -151,22 +170,22 @@ declare namespace formatterHelpers {
 export { formatterHelpers }
 
 // @public (undocumented)
-function getGherkinExampleRuleMap(gherkinDocument: messages.GherkinDocument): Record<string, messages.Rule>;
+function getGherkinExampleRuleMap(gherkinDocument: GherkinDocument): Record<string, Rule>;
 
 // @public (undocumented)
-function getGherkinScenarioLocationMap(gherkinDocument: messages.GherkinDocument): Record<string, messages.Location>;
+function getGherkinScenarioLocationMap(gherkinDocument: GherkinDocument): Record<string, Location>;
 
 // @public (undocumented)
-function getGherkinScenarioMap(gherkinDocument: messages.GherkinDocument): Record<string, messages.Scenario>;
+function getGherkinScenarioMap(gherkinDocument: GherkinDocument): Record<string, Scenario>;
 
 // @public (undocumented)
-function getGherkinStepMap(gherkinDocument: messages.GherkinDocument): Record<string, messages.Step>;
+function getGherkinStepMap(gherkinDocument: GherkinDocument): Record<string, Step>;
 
 // @public (undocumented)
-function getPickleLocation(input: IGetPickleLocationRequest): messages.Location;
+function getPickleLocation(input: IGetPickleLocationRequest): Location;
 
 // @public (undocumented)
-function getPickleStepMap(pickle: messages.Pickle): Record<string, messages.PickleStep>;
+function getPickleStepMap(pickle: Pickle): Record<string, PickleStep>;
 
 // @public (undocumented)
 function getScenarioDescription(input: IGetScenarioDescriptionRequest): string;
@@ -254,49 +273,49 @@ export interface IFormatterOptions {
 // @public (undocumented)
 interface IGetPickleLocationRequest {
     // (undocumented)
-    gherkinDocument: messages.GherkinDocument;
+    gherkinDocument: GherkinDocument;
     // (undocumented)
-    pickle: messages.Pickle;
+    pickle: Pickle;
 }
 
 // @public (undocumented)
 interface IGetScenarioDescriptionRequest {
     // (undocumented)
-    gherkinScenarioMap: Record<string, messages.Scenario>;
+    gherkinScenarioMap: Record<string, Scenario>;
     // (undocumented)
-    pickle: messages.Pickle;
+    pickle: Pickle;
 }
 
 // @public (undocumented)
 interface IGetStepKeywordRequest {
     // (undocumented)
-    gherkinStepMap: Record<string, messages.Step>;
+    gherkinStepMap: Record<string, Step>;
     // (undocumented)
-    pickleStep: messages.PickleStep;
+    pickleStep: PickleStep;
 }
 
 // @public
 export type IProfiles = Record<string, Partial<IConfiguration>>;
 
 // @public (undocumented)
-function isFailure(result: messages.TestStepResult, willBeRetried?: boolean): boolean;
+function isFailure(result: TestStepResult, willBeRetried?: boolean): boolean;
 
 // @public (undocumented)
-function isIssue(result: messages.TestStepResult): boolean;
+function isIssue(result: TestStepResult): boolean;
 
 // @public (undocumented)
-function isWarning(result: messages.TestStepResult, willBeRetried?: boolean): boolean;
+function isWarning(result: TestStepResult, willBeRetried?: boolean): boolean;
 
 // @public (undocumented)
 export interface ITestCaseHookParameter {
     // (undocumented)
     error?: any;
     // (undocumented)
-    gherkinDocument: messages.GherkinDocument;
+    gherkinDocument: GherkinDocument;
     // (undocumented)
-    pickle: messages.Pickle;
+    pickle: Pickle;
     // (undocumented)
-    result?: messages.TestStepResult;
+    result?: TestStepResult;
     // (undocumented)
     testCaseStartedId: string;
     // (undocumented)
@@ -308,13 +327,13 @@ export interface ITestStepHookParameter {
     // (undocumented)
     error?: any;
     // (undocumented)
-    gherkinDocument: messages.GherkinDocument;
+    gherkinDocument: GherkinDocument;
     // (undocumented)
-    pickle: messages.Pickle;
+    pickle: Pickle;
     // (undocumented)
-    pickleStep: messages.PickleStep;
+    pickleStep: PickleStep;
     // (undocumented)
-    result: messages.TestStepResult;
+    result: TestStepResult;
     // (undocumented)
     testCaseStartedId: string;
     // (undocumented)
@@ -351,26 +370,26 @@ export interface IWorldOptions<ParametersType = any> {
 export class JsonFormatter extends Formatter {
     constructor(options: IFormatterOptions);
     // (undocumented)
-    convertNameToId(obj: messages.Feature | messages.Pickle): string;
+    convertNameToId(obj: Feature | Pickle): string;
     // (undocumented)
     static readonly documentation: string;
     // (undocumented)
-    formatDataTable(dataTable: messages.PickleTable): any;
+    formatDataTable(dataTable: PickleTable): any;
     // (undocumented)
-    formatDocString(docString: messages.PickleDocString, gherkinStep: messages.Step): any;
+    formatDocString(docString: PickleDocString, gherkinStep: Step): any;
     // (undocumented)
-    formatStepArgument(stepArgument: messages.PickleStepArgument, gherkinStep: messages.Step): any;
+    formatStepArgument(stepArgument: PickleStepArgument, gherkinStep: Step): any;
     // (undocumented)
     getFeatureData(input: IBuildJsonFeatureOptions): IJsonFeature;
     // (undocumented)
-    getFeatureTags(feature: messages.Feature): IJsonTag[];
+    getFeatureTags(feature: Feature): IJsonTag[];
     // (undocumented)
     getScenarioData(input: IBuildJsonScenarioOptions): IJsonScenario;
     // (undocumented)
     getScenarioTags(input: {
-        feature: messages.Feature;
-        pickle: messages.Pickle;
-        gherkinScenarioMap: Record<string, messages.Scenario>;
+        feature: Feature;
+        pickle: Pickle;
+        gherkinScenarioMap: Record<string, Scenario>;
     }): IJsonTag[];
     // (undocumented)
     getStepData(input: IBuildJsonStepOptions): IJsonStep;
@@ -416,7 +435,7 @@ export class ProgressFormatter extends SummaryFormatter {
     // (undocumented)
     static readonly documentation: string;
     // (undocumented)
-    logProgress(input: TestStepFinished): void;
+    logProgress(input: ITestStepFinished): void;
 }
 
 // @public (undocumented)
@@ -456,7 +475,7 @@ export class SnippetsFormatter extends Formatter {
 }
 
 // @public (undocumented)
-export const Status: typeof messages.TestStepResultStatus;
+export const Status: typeof TestStepResultStatus;
 
 // @public @deprecated (undocumented)
 export class SummaryFormatter extends Formatter {
@@ -466,7 +485,7 @@ export class SummaryFormatter extends Formatter {
     // (undocumented)
     logIssues(input: ILogIssuesRequest): void;
     // (undocumented)
-    logSummary(testRunDuration: messages.Duration): void;
+    logSummary(testRunDuration: Duration): void;
 }
 
 // @public (undocumented)
@@ -476,7 +495,7 @@ export const supportCodeLibraryBuilder: SupportCodeLibraryBuilder;
 export class TestCaseHookDefinition extends Definition implements IDefinition {
     constructor(data: IDefinitionParameters<IHookDefinitionOptions>);
     // (undocumented)
-    appliesToTestCase(pickle: messages.Pickle): boolean;
+    appliesToTestCase(pickle: Pickle): boolean;
     // (undocumented)
     getInvocationParameters(input: IGetInvocationDataRequest): Promise<IGetInvocationDataResponse>;
     // (undocumented)

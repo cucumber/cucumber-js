@@ -1,14 +1,14 @@
 import util from 'node:util'
-import type * as messages from '@cucumber/messages'
+import type { PickleDocString, PickleStepArgument, PickleTable } from '@cucumber/messages'
 import { doesHaveValue } from './value_checker'
 
 export interface IPickleStepArgumentFunctionMap<T> {
-  dataTable: (arg: messages.PickleTable) => T
-  docString: (arg: messages.PickleDocString) => T
+  dataTable: (arg: PickleTable) => T
+  docString: (arg: PickleDocString) => T
 }
 
 export function parseStepArgument<T>(
-  arg: messages.PickleStepArgument,
+  arg: PickleStepArgument,
   mapping: IPickleStepArgumentFunctionMap<T>
 ): T {
   if (doesHaveValue(arg.dataTable)) {

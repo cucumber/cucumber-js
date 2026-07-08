@@ -1,10 +1,10 @@
-import * as messages from '@cucumber/messages'
+import { type Envelope, TimeConversion } from '@cucumber/messages'
 import Table from 'cli-table3'
 import { doesHaveValue } from '../value_checker'
 import Formatter, { type IFormatterOptions } from './'
 import { formatLocation, getUsage } from './helpers'
 
-import IEnvelope = messages.Envelope
+type IEnvelope = Envelope
 
 export default class UsageFormatter extends Formatter {
   public static readonly documentation: string =
@@ -44,7 +44,7 @@ export default class UsageFormatter extends Formatter {
       const col2 = []
       if (matches.length > 0) {
         if (doesHaveValue(meanDuration)) {
-          col2.push(`${messages.TimeConversion.durationToMilliseconds(meanDuration).toFixed(2)}ms`)
+          col2.push(`${TimeConversion.durationToMilliseconds(meanDuration).toFixed(2)}ms`)
         } else {
           col2.push('-')
         }
@@ -55,9 +55,7 @@ export default class UsageFormatter extends Formatter {
       matches.slice(0, 5).forEach((match) => {
         col1.push(`  ${match.text}`)
         if (doesHaveValue(match.duration)) {
-          col2.push(
-            `${messages.TimeConversion.durationToMilliseconds(match.duration).toFixed(2)}ms`
-          )
+          col2.push(`${TimeConversion.durationToMilliseconds(match.duration).toFixed(2)}ms`)
         } else {
           col2.push('-')
         }

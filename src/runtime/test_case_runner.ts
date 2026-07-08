@@ -1,6 +1,17 @@
 import type { EventEmitter } from 'node:events'
-import * as messages from '@cucumber/messages'
-import { type Envelope, getWorstTestStepResult, type IdGenerator } from '@cucumber/messages'
+import {
+  type Envelope,
+  type GherkinDocument,
+  getWorstTestStepResult,
+  type IdGenerator,
+  type Pickle,
+  type PickleStep,
+  type TestCase,
+  type TestStep,
+  type TestStepResult,
+  TestStepResultStatus,
+  TimeConversion,
+} from '@cucumber/messages'
 import type { JsonObject } from 'type-fest'
 import type StepDefinitionSnippetBuilder from '../formatter/step_definition_snippet_builder'
 import type { IDefinition } from '../models/definition'
@@ -22,10 +33,10 @@ import { timestamp } from './stopwatch'
 export interface INewTestCaseRunnerOptions {
   workerId?: string
   eventBroadcaster: EventEmitter
-  gherkinDocument: messages.GherkinDocument
+  gherkinDocument: GherkinDocument
   newId: IdGenerator.NewId
-  pickle: messages.Pickle
-  testCase: messages.TestCase
+  pickle: Pickle
+  testCase: TestCase
   retries: number
   skip: boolean
   filterStackTraces: boolean
@@ -40,16 +51,16 @@ export default class TestCaseRunner {
   private currentTestCaseStartedId: string
   private currentTestStepId: string
   private readonly eventBroadcaster: EventEmitter
-  private readonly gherkinDocument: messages.GherkinDocument
+  private readonly gherkinDocument: GherkinDocument
   private readonly newId: IdGenerator.NewId
-  private readonly pickle: messages.Pickle
-  private readonly testCase: messages.TestCase
+  private readonly pickle: Pickle
+  private readonly testCase: TestCase
   private readonly maxAttempts: number
   private readonly skip: boolean
   private readonly filterStackTraces: boolean
   private readonly supportCodeLibrary: SupportCodeLibrary
   private readonly snippetBuilder: StepDefinitionSnippetBuilder
-  private testStepResults: messages.TestStepResult[]
+  private testStepResults: TestStepResult[]
   private world: any
   private readonly worldParameters: JsonObject
 
@@ -74,7 +85,7 @@ export default class TestCaseRunner {
           'Cannot attach when a step/hook is not running. Ensure your step/hook waits for the attach to finish.'
         )
       }
-      const attachment: messages.Envelope = {
+      const attachment: Envelope = {
         attachment: {
           body: data,
           contentEncoding: media.encoding,
@@ -124,20 +135,18 @@ export default class TestCaseRunner {
       .filter((hookDefinition) => hookDefinition.appliesToTestCase(this.pickle))
   }
 
-  getWorstStepResult(): messages.TestStepResult {
+  getWorstStepResult(): TestStepResult {
     if (this.testStepResults.length === 0) {
       return {
-        status: this.skip
-          ? messages.TestStepResultStatus.SKIPPED
-          : messages.TestStepResultStatus.PASSED,
-        duration: messages.TimeConversion.millisecondsToDuration(0),
+        status: this.skip ? TestStepResultStatus.SKIPPED : TestStepResultStatus.PASSED,
+        duration: TimeConversion.millisecondsToDuration(0),
       }
     }
     return getWorstTestStepResult(this.testStepResults)
   }
 
   async invokeStep(
-    step: messages.PickleStep,
+    step: PickleStep,
     stepDefinition: IDefinition,
     hookParameter?: ITestCaseHookParameter
   ): Promise<RunStepResult> {
@@ -152,11 +161,11 @@ export default class TestCaseRunner {
   }
 
   isSkippingSteps(): boolean {
-    return this.getWorstStepResult().status !== messages.TestStepResultStatus.PASSED
+    return this.getWorstStepResult().status !== TestStepResultStatus.PASSED
   }
 
   isExplicitlySkipped(): boolean {
-    return !this.skip && this.getWorstStepResult().status === messages.TestStepResultStatus.SKIPPED
+    return !this.skip && this.getWorstStepResult().status === TestStepResultStatus.SKIPPED
   }
 
   shouldSkipHook(isBeforeHook: boolean): boolean {
@@ -165,9 +174,9 @@ export default class TestCaseRunner {
 
   async aroundTestStep(
     testStepId: string,
-    runStepFn: () => Promise<messages.TestStepResult>
+    runStepFn: () => Promise<TestStepResult>
   ): Promise<void> {
-    const testStepStarted: messages.Envelope = {
+    const testStepStarted: Envelope = {
       testStepStarted: {
         testCaseStartedId: this.currentTestCaseStartedId,
         testStepId,
@@ -179,7 +188,7 @@ export default class TestCaseRunner {
     const testStepResult = await runStepFn()
     this.currentTestStepId = null
     this.testStepResults.push(testStepResult)
-    const testStepFinished: messages.Envelope = {
+    const testStepFinished: Envelope = {
       testStepFinished: {
         testCaseStartedId: this.currentTestCaseStartedId,
         testStepId,
@@ -190,7 +199,7 @@ export default class TestCaseRunner {
     this.eventBroadcaster.emit('envelope', testStepFinished)
   }
 
-  async run(): Promise<messages.TestStepResultStatus> {
+  async run(): Promise<TestStepResultStatus> {
     for (let attempt = 0; attempt < this.maxAttempts; attempt++) {
       const moreAttemptsRemaining = attempt + 1 < this.maxAttempts
 
@@ -206,7 +215,7 @@ export default class TestCaseRunner {
 
   async runAttempt(attempt: number, moreAttemptsRemaining: boolean): Promise<boolean> {
     this.currentTestCaseStartedId = this.newId()
-    const testCaseStarted: messages.Envelope = {
+    const testCaseStarted: Envelope = {
       testCaseStarted: {
         attempt,
         testCaseId: this.testCase.id,
@@ -233,7 +242,7 @@ export default class TestCaseRunner {
             hookParameter.result = this.getWorstStepResult()
             hookParameter.error = error
             hookParameter.willBeRetried =
-              this.getWorstStepResult().status === messages.TestStepResultStatus.FAILED &&
+              this.getWorstStepResult().status === TestStepResultStatus.FAILED &&
               moreAttemptsRemaining
           }
           return await this.runHook(
@@ -254,9 +263,8 @@ export default class TestCaseRunner {
     }
 
     const willBeRetried =
-      this.getWorstStepResult().status === messages.TestStepResultStatus.FAILED &&
-      moreAttemptsRemaining
-    const testCaseFinished: messages.Envelope = {
+      this.getWorstStepResult().status === TestStepResultStatus.FAILED && moreAttemptsRemaining
+    const testCaseFinished: Envelope = {
       testCaseFinished: {
         testCaseStartedId: this.currentTestCaseStartedId,
         timestamp: timestamp(),
@@ -272,11 +280,11 @@ export default class TestCaseRunner {
     hookDefinition: TestCaseHookDefinition,
     hookParameter: ITestCaseHookParameter,
     isBeforeHook: boolean
-  ): Promise<messages.TestStepResult> {
+  ): Promise<TestStepResult> {
     if (this.shouldSkipHook(isBeforeHook)) {
       return {
-        status: messages.TestStepResultStatus.SKIPPED,
-        duration: messages.TimeConversion.millisecondsToDuration(0),
+        status: TestStepResultStatus.SKIPPED,
+        duration: TimeConversion.millisecondsToDuration(0),
       }
     }
     const { result } = await this.invokeStep(null, hookDefinition, hookParameter)
@@ -285,9 +293,9 @@ export default class TestCaseRunner {
 
   async runStepHooks(
     stepHooks: TestStepHookDefinition[],
-    pickleStep: messages.PickleStep,
+    pickleStep: PickleStep,
     stepResult?: RunStepResult
-  ): Promise<messages.TestStepResult[]> {
+  ): Promise<TestStepResult[]> {
     const stepHooksResult = []
     const hookParameter: ITestStepHookParameter = {
       gherkinDocument: this.gherkinDocument,
@@ -305,15 +313,12 @@ export default class TestCaseRunner {
     return stepHooksResult
   }
 
-  async runStep(
-    pickleStep: messages.PickleStep,
-    testStep: messages.TestStep
-  ): Promise<RunStepResult> {
+  async runStep(pickleStep: PickleStep, testStep: TestStep): Promise<RunStepResult> {
     if (this.isExplicitlySkipped()) {
       return {
         result: {
-          status: messages.TestStepResultStatus.SKIPPED,
-          duration: messages.TimeConversion.millisecondsToDuration(0),
+          status: TestStepResultStatus.SKIPPED,
+          duration: TimeConversion.millisecondsToDuration(0),
         },
       }
     }
@@ -330,22 +335,22 @@ export default class TestCaseRunner {
       } satisfies Envelope)
       return {
         result: {
-          status: messages.TestStepResultStatus.UNDEFINED,
-          duration: messages.TimeConversion.millisecondsToDuration(0),
+          status: TestStepResultStatus.UNDEFINED,
+          duration: TimeConversion.millisecondsToDuration(0),
         },
       }
     } else if (stepDefinitions.length > 1) {
       return {
         result: {
-          status: messages.TestStepResultStatus.AMBIGUOUS,
-          duration: messages.TimeConversion.millisecondsToDuration(0),
+          status: TestStepResultStatus.AMBIGUOUS,
+          duration: TimeConversion.millisecondsToDuration(0),
         },
       }
     } else if (this.isSkippingSteps()) {
       return {
         result: {
-          status: messages.TestStepResultStatus.SKIPPED,
-          duration: messages.TimeConversion.millisecondsToDuration(0),
+          status: TestStepResultStatus.SKIPPED,
+          duration: TimeConversion.millisecondsToDuration(0),
         },
       }
     }
@@ -353,7 +358,7 @@ export default class TestCaseRunner {
     let stepResult: any
     let error: any
     let stepResults = await this.runStepHooks(this.getBeforeStepHookDefinitions(), pickleStep)
-    if (getWorstTestStepResult(stepResults).status !== messages.TestStepResultStatus.FAILED) {
+    if (getWorstTestStepResult(stepResults).status !== TestStepResultStatus.FAILED) {
       stepResult = await this.invokeStep(pickleStep, stepDefinitions[0])
       stepResults.push(stepResult.result)
       error = stepResult.error
@@ -366,9 +371,9 @@ export default class TestCaseRunner {
     stepResults = stepResults.concat(afterStepHookResults)
 
     const finalStepResult = getWorstTestStepResult(stepResults)
-    let finalDuration = messages.TimeConversion.millisecondsToDuration(0)
+    let finalDuration = TimeConversion.millisecondsToDuration(0)
     for (const result of stepResults) {
-      finalDuration = messages.TimeConversion.addDurations(finalDuration, result.duration)
+      finalDuration = TimeConversion.addDurations(finalDuration, result.duration)
     }
     finalStepResult.duration = finalDuration
     return {

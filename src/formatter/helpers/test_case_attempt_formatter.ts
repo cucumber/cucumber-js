@@ -1,4 +1,4 @@
-import * as messages from '@cucumber/messages'
+import { TestStepResultStatus } from '@cucumber/messages'
 import figures from 'figures'
 import indentString from 'indent-string'
 import type { SupportCodeLibrary } from '../../support_code_library_builder/types'
@@ -10,25 +10,25 @@ import { formatLocation } from './location_helpers'
 import { formatStepArgument } from './step_argument_formatter'
 import { type IParsedTestStep, parseTestCaseAttempt } from './test_case_attempt_parser'
 
-const CHARACTERS: Map<messages.TestStepResultStatus, string> = new Map([
-  [messages.TestStepResultStatus.AMBIGUOUS, figures.cross],
-  [messages.TestStepResultStatus.FAILED, figures.cross],
-  [messages.TestStepResultStatus.PASSED, figures.tick],
-  [messages.TestStepResultStatus.PENDING, '?'],
-  [messages.TestStepResultStatus.SKIPPED, '-'],
-  [messages.TestStepResultStatus.UNDEFINED, '?'],
+const CHARACTERS: Map<TestStepResultStatus, string> = new Map([
+  [TestStepResultStatus.AMBIGUOUS, figures.cross],
+  [TestStepResultStatus.FAILED, figures.cross],
+  [TestStepResultStatus.PASSED, figures.tick],
+  [TestStepResultStatus.PENDING, '?'],
+  [TestStepResultStatus.SKIPPED, '-'],
+  [TestStepResultStatus.UNDEFINED, '?'],
 ])
 
 function getStepMessage(testStep: IParsedTestStep): string | undefined {
   switch (testStep.result.status) {
-    case messages.TestStepResultStatus.AMBIGUOUS:
-    case messages.TestStepResultStatus.FAILED:
+    case TestStepResultStatus.AMBIGUOUS:
+    case TestStepResultStatus.FAILED:
       return testStep.result.message
-    case messages.TestStepResultStatus.UNDEFINED:
+    case TestStepResultStatus.UNDEFINED:
       return `${
         'Undefined. Implement with the following snippet:' + '\n\n'
       }${indentString(testStep.snippet, 2)}\n`
-    case messages.TestStepResultStatus.PENDING:
+    case TestStepResultStatus.PENDING:
       return 'Pending'
   }
   return ''

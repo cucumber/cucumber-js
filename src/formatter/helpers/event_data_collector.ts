@@ -1,43 +1,56 @@
 import type { EventEmitter } from 'node:events'
-import * as messages from '@cucumber/messages'
+import {
+  type Attachment,
+  type Envelope,
+  type GherkinDocument,
+  getWorstTestStepResult,
+  type Pickle,
+  type TestCase,
+  type TestCaseFinished,
+  type TestCaseStarted,
+  type TestStepFinished,
+  type TestStepResult,
+  TestStepResultStatus,
+  type UndefinedParameterType,
+} from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 
 interface ITestCaseAttemptData {
   attempt: number
   willBeRetried: boolean
   testCaseId: string
-  stepAttachments: Record<string, messages.Attachment[]>
-  stepResults: Record<string, messages.TestStepResult>
-  worstTestStepResult: messages.TestStepResult
+  stepAttachments: Record<string, Attachment[]>
+  stepResults: Record<string, TestStepResult>
+  worstTestStepResult: TestStepResult
 }
 
 export interface ITestCaseAttempt {
   attempt: number
   willBeRetried: boolean
-  gherkinDocument: messages.GherkinDocument
-  pickle: messages.Pickle
-  stepAttachments: Record<string, messages.Attachment[]>
-  stepResults: Record<string, messages.TestStepResult>
-  testCase: messages.TestCase
-  worstTestStepResult: messages.TestStepResult
+  gherkinDocument: GherkinDocument
+  pickle: Pickle
+  stepAttachments: Record<string, Attachment[]>
+  stepResults: Record<string, TestStepResult>
+  testCase: TestCase
+  worstTestStepResult: TestStepResult
 }
 
 export default class EventDataCollector {
-  private gherkinDocumentMap: Record<string, messages.GherkinDocument> = {}
-  private pickleMap: Record<string, messages.Pickle> = {}
-  private testCaseMap: Record<string, messages.TestCase> = {}
+  private gherkinDocumentMap: Record<string, GherkinDocument> = {}
+  private pickleMap: Record<string, Pickle> = {}
+  private testCaseMap: Record<string, TestCase> = {}
   private testCaseAttemptDataMap: Record<string, ITestCaseAttemptData> = {}
-  readonly undefinedParameterTypes: messages.UndefinedParameterType[] = []
+  readonly undefinedParameterTypes: UndefinedParameterType[] = []
 
   constructor(eventBroadcaster: EventEmitter) {
     eventBroadcaster.on('envelope', this.parseEnvelope.bind(this))
   }
 
-  getGherkinDocument(uri: string): messages.GherkinDocument {
+  getGherkinDocument(uri: string): GherkinDocument {
     return this.gherkinDocumentMap[uri]
   }
 
-  getPickle(pickleId: string): messages.Pickle {
+  getPickle(pickleId: string): Pickle {
     return this.pickleMap[pickleId]
   }
 
@@ -63,7 +76,7 @@ export default class EventDataCollector {
     }
   }
 
-  parseEnvelope(envelope: messages.Envelope): void {
+  parseEnvelope(envelope: Envelope): void {
     if (doesHaveValue(envelope.gherkinDocument)) {
       this.gherkinDocumentMap[envelope.gherkinDocument.uri] = envelope.gherkinDocument
     } else if (doesHaveValue(envelope.pickle)) {
@@ -83,7 +96,7 @@ export default class EventDataCollector {
     }
   }
 
-  private initTestCaseAttempt(testCaseStarted: messages.TestCaseStarted): void {
+  private initTestCaseAttempt(testCaseStarted: TestCaseStarted): void {
     this.testCaseAttemptDataMap[testCaseStarted.id] = {
       attempt: testCaseStarted.attempt,
       willBeRetried: false,
@@ -92,12 +105,12 @@ export default class EventDataCollector {
       stepResults: {},
       worstTestStepResult: {
         duration: { seconds: 0, nanos: 0 },
-        status: messages.TestStepResultStatus.UNKNOWN,
+        status: TestStepResultStatus.UNKNOWN,
       },
     }
   }
 
-  storeAttachment(attachment: messages.Attachment): void {
+  storeAttachment(attachment: Attachment): void {
     const { testCaseStartedId, testStepId } = attachment
     if (doesHaveValue(testCaseStartedId) && doesHaveValue(testStepId)) {
       const { stepAttachments } = this.testCaseAttemptDataMap[testCaseStartedId]
@@ -108,18 +121,14 @@ export default class EventDataCollector {
     }
   }
 
-  storeTestStepResult({
-    testCaseStartedId,
-    testStepId,
-    testStepResult,
-  }: messages.TestStepFinished): void {
+  storeTestStepResult({ testCaseStartedId, testStepId, testStepResult }: TestStepFinished): void {
     this.testCaseAttemptDataMap[testCaseStartedId].stepResults[testStepId] = testStepResult
   }
 
-  storeTestCaseResult({ testCaseStartedId, willBeRetried }: messages.TestCaseFinished): void {
+  storeTestCaseResult({ testCaseStartedId, willBeRetried }: TestCaseFinished): void {
     const stepResults = Object.values(this.testCaseAttemptDataMap[testCaseStartedId].stepResults)
     this.testCaseAttemptDataMap[testCaseStartedId].worstTestStepResult =
-      messages.getWorstTestStepResult(stepResults)
+      getWorstTestStepResult(stepResults)
     this.testCaseAttemptDataMap[testCaseStartedId].willBeRetried = willBeRetried
   }
 }

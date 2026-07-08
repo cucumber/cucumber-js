@@ -1,4 +1,4 @@
-import type * as messages from '@cucumber/messages'
+import type { Pickle } from '@cucumber/messages'
 import { PickleTagFilter } from '../pickle_filter'
 import Definition, {
   type IDefinition,
@@ -18,7 +18,7 @@ export default class TestStepHookDefinition extends Definition implements IDefin
     this.pickleTagFilter = new PickleTagFilter(data.options.tags)
   }
 
-  appliesToTestCase(pickle: messages.Pickle): boolean {
+  appliesToTestCase(pickle: Pickle): boolean {
     return this.pickleTagFilter.matchesAllTagExpressions(pickle)
   }
 

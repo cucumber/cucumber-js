@@ -1,4 +1,4 @@
-import * as messages from '@cucumber/messages'
+import { type Pickle, TestStepResultStatus } from '@cucumber/messages'
 import Table from 'cli-table3'
 import indentString from 'indent-string'
 import { formatLocation } from '../formatter/helpers/location_helpers'
@@ -40,7 +40,7 @@ export function getAmbiguousStepException(stepDefinitions: StepDefinition[]): st
   return `${'Multiple step definitions match:' + '\n'}${indentString(table.toString(), 2)}`
 }
 
-export function retriesForPickle(pickle: messages.Pickle, options: RuntimeOptions): number {
+export function retriesForPickle(pickle: Pickle, options: RuntimeOptions): number {
   if (!options.retry) {
     return 0
   }
@@ -59,20 +59,17 @@ export function retriesForPickle(pickle: messages.Pickle, options: RuntimeOption
   return 0
 }
 
-export function shouldCauseFailure(
-  status: messages.TestStepResultStatus,
-  options: RuntimeOptions
-): boolean {
+export function shouldCauseFailure(status: TestStepResultStatus, options: RuntimeOptions): boolean {
   if (options.dryRun) {
     return false
   }
-  const failureStatuses: messages.TestStepResultStatus[] = [
-    messages.TestStepResultStatus.AMBIGUOUS,
-    messages.TestStepResultStatus.FAILED,
-    messages.TestStepResultStatus.UNDEFINED,
+  const failureStatuses: TestStepResultStatus[] = [
+    TestStepResultStatus.AMBIGUOUS,
+    TestStepResultStatus.FAILED,
+    TestStepResultStatus.UNDEFINED,
   ]
   if (options.strict) {
-    failureStatuses.push(messages.TestStepResultStatus.PENDING)
+    failureStatuses.push(TestStepResultStatus.PENDING)
   }
   return failureStatuses.includes(status)
 }

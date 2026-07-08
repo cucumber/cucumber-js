@@ -1,18 +1,18 @@
-import * as messages from '@cucumber/messages'
+import { type Envelope, type TestStepFinished, TestStepResultStatus } from '@cucumber/messages'
 import { doesHaveValue } from '../value_checker'
 import type { IFormatterOptions } from './index'
 import SummaryFormatter from './summary_formatter'
 
-import IEnvelope = messages.Envelope
-import ITestStepFinished = messages.TestStepFinished
+type IEnvelope = Envelope
+type ITestStepFinished = TestStepFinished
 
-const STATUS_CHARACTER_MAPPING: Map<messages.TestStepResultStatus, string> = new Map([
-  [messages.TestStepResultStatus.AMBIGUOUS, 'A'],
-  [messages.TestStepResultStatus.FAILED, 'F'],
-  [messages.TestStepResultStatus.PASSED, '.'],
-  [messages.TestStepResultStatus.PENDING, 'P'],
-  [messages.TestStepResultStatus.SKIPPED, '-'],
-  [messages.TestStepResultStatus.UNDEFINED, 'U'],
+const STATUS_CHARACTER_MAPPING: Map<TestStepResultStatus, string> = new Map([
+  [TestStepResultStatus.AMBIGUOUS, 'A'],
+  [TestStepResultStatus.FAILED, 'F'],
+  [TestStepResultStatus.PASSED, '.'],
+  [TestStepResultStatus.PENDING, 'P'],
+  [TestStepResultStatus.SKIPPED, '-'],
+  [TestStepResultStatus.UNDEFINED, 'U'],
 ])
 
 /**

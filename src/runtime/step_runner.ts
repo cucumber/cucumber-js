@@ -1,4 +1,4 @@
-import * as messages from '@cucumber/messages'
+import { type PickleStep, type TestStepResult, TestStepResultStatus } from '@cucumber/messages'
 import type { IDefinition, IGetInvocationDataResponse } from '../models/definition'
 import type { ITestCaseHookParameter } from '../support_code_library_builder/types'
 import UserCodeRunner from '../user_code_runner'
@@ -11,13 +11,13 @@ export interface IRunOptions {
   defaultTimeout: number
   filterStackTraces: boolean
   hookParameter: ITestCaseHookParameter
-  step: messages.PickleStep
+  step: PickleStep
   stepDefinition: IDefinition
   world: any
 }
 
 export interface RunStepResult {
-  result: messages.TestStepResult
+  result: TestStepResult
   error?: any
 }
 
@@ -64,16 +64,16 @@ export async function run({
   }
 
   const duration = stopwatch.stop().duration()
-  let status: messages.TestStepResultStatus
+  let status: TestStepResultStatus
   let details = {}
   if (result === 'skipped') {
-    status = messages.TestStepResultStatus.SKIPPED
+    status = TestStepResultStatus.SKIPPED
   } else if (result === 'pending') {
-    status = messages.TestStepResultStatus.PENDING
+    status = TestStepResultStatus.PENDING
   } else if (doesHaveValue(error)) {
-    status = messages.TestStepResultStatus.FAILED
+    status = TestStepResultStatus.FAILED
   } else {
-    status = messages.TestStepResultStatus.PASSED
+    status = TestStepResultStatus.PASSED
   }
 
   if (doesHaveValue(error)) {

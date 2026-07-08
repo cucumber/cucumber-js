@@ -1,4 +1,4 @@
-import * as messages from '@cucumber/messages'
+import { type Duration, TestStepResultStatus, TimeConversion } from '@cucumber/messages'
 import type StepDefinition from '../../../models/step_definition'
 import { doesHaveValue } from '../../../value_checker'
 import type EventDataCollector from '../event_data_collector'
@@ -6,7 +6,7 @@ import { getGherkinStepMap } from '../gherkin_document_parser'
 import { getPickleStepMap } from '../pickle_parser'
 
 export interface IUsageMatch {
-  duration?: messages.Duration
+  duration?: Duration
   line: number
   text: string
   uri: string
@@ -16,7 +16,7 @@ export interface IUsage {
   code: string
   line: number
   matches: IUsageMatch[]
-  meanDuration?: messages.Duration
+  meanDuration?: Duration
   pattern: string
   patternType: string
   uri: string
@@ -42,10 +42,10 @@ function buildEmptyMapping(stepDefinitions: StepDefinition[]): Record<string, IU
   return mapping
 }
 
-const unexecutedStatuses: readonly messages.TestStepResultStatus[] = [
-  messages.TestStepResultStatus.AMBIGUOUS,
-  messages.TestStepResultStatus.SKIPPED,
-  messages.TestStepResultStatus.UNDEFINED,
+const unexecutedStatuses: readonly TestStepResultStatus[] = [
+  TestStepResultStatus.AMBIGUOUS,
+  TestStepResultStatus.SKIPPED,
+  TestStepResultStatus.UNDEFINED,
 ]
 
 function buildMapping({
@@ -79,11 +79,11 @@ function buildMapping({
   return mapping
 }
 
-function normalizeDuration(duration?: messages.Duration): number {
+function normalizeDuration(duration?: Duration): number {
   if (duration == null) {
     return Number.MIN_SAFE_INTEGER
   }
-  return messages.TimeConversion.durationToMilliseconds(duration)
+  return TimeConversion.durationToMilliseconds(duration)
 }
 
 function buildResult(mapping: Record<string, IUsage>): IUsage[] {
@@ -97,15 +97,13 @@ function buildResult(mapping: Record<string, IUsage>): IUsage[] {
         return normalizeDuration(b.duration) - normalizeDuration(a.duration)
       })
       const result = { matches: sortedMatches, ...rest }
-      const durations: messages.Duration[] = matches
-        .filter((m) => m.duration != null)
-        .map((m) => m.duration)
+      const durations: Duration[] = matches.filter((m) => m.duration != null).map((m) => m.duration)
       if (durations.length > 0) {
         const totalMilliseconds = durations.reduce(
-          (acc, x) => acc + messages.TimeConversion.durationToMilliseconds(x),
+          (acc, x) => acc + TimeConversion.durationToMilliseconds(x),
           0
         )
-        result.meanDuration = messages.TimeConversion.millisecondsToDuration(
+        result.meanDuration = TimeConversion.millisecondsToDuration(
           totalMilliseconds / durations.length
         )
       }

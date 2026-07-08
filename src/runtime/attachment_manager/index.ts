@@ -1,9 +1,9 @@
 import { isReadable, type Readable } from 'node:stream'
-import * as messages from '@cucumber/messages'
+import { AttachmentContentEncoding } from '@cucumber/messages'
 import { doesHaveValue, doesNotHaveValue } from '../../value_checker'
 
 export interface IAttachmentMedia {
-  encoding: messages.AttachmentContentEncoding
+  encoding: AttachmentContentEncoding
   contentType: string
 }
 
@@ -77,7 +77,7 @@ export default class AttachmentManager {
         this.createStringAttachment(
           data,
           {
-            encoding: messages.AttachmentContentEncoding.BASE64,
+            encoding: AttachmentContentEncoding.BASE64,
             contentType: options.mediaType.replace('base64:', ''),
           },
           options.fileName
@@ -86,7 +86,7 @@ export default class AttachmentManager {
         this.createStringAttachment(
           data,
           {
-            encoding: messages.AttachmentContentEncoding.IDENTITY,
+            encoding: AttachmentContentEncoding.IDENTITY,
             contentType: options.mediaType,
           },
           options.fileName
@@ -106,7 +106,7 @@ export default class AttachmentManager {
     this.createStringAttachment(
       data.toString('base64'),
       {
-        encoding: messages.AttachmentContentEncoding.BASE64,
+        encoding: AttachmentContentEncoding.BASE64,
         contentType: mediaType,
       },
       fileName
