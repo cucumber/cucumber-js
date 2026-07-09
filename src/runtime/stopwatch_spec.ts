@@ -1,40 +1,54 @@
 import { TimeConversion } from '@cucumber/messages'
+import FakeTimers, { type InstalledClock } from '@sinonjs/fake-timers'
 import { expect } from 'chai'
-import { describe, it } from 'mocha'
+import { afterEach, beforeEach, describe, it } from 'mocha'
+import timeMethods from '../time'
 import { create, timestamp } from './stopwatch'
 
 describe('stopwatch', () => {
-  it('returns a duration between the start and stop', async () => {
-    const stopwatch = create()
-    stopwatch.start()
-    await new Promise((resolve) => setTimeout(resolve, 1200))
-    stopwatch.stop()
-    expect(TimeConversion.durationToMilliseconds(stopwatch.duration())).to.be.closeTo(1200, 50)
-  })
+  describe('duration', () => {
+    let clock: InstalledClock
 
-  it('accounts for an initial duration', async () => {
-    const stopwatch = create(TimeConversion.millisecondsToDuration(300))
-    stopwatch.start()
-    await new Promise((resolve) => setTimeout(resolve, 200))
-    stopwatch.stop()
-    expect(TimeConversion.durationToMilliseconds(stopwatch.duration())).to.be.closeTo(500, 50)
-  })
+    beforeEach(() => {
+      clock = FakeTimers.withGlobal(timeMethods).install()
+    })
 
-  it('returns accurate durations ad-hoc if not stopped', async () => {
-    const stopwatch = create()
-    stopwatch.start()
-    await new Promise((resolve) => setTimeout(resolve, 200))
-    expect(TimeConversion.durationToMilliseconds(stopwatch.duration())).to.be.closeTo(200, 50)
-    await new Promise((resolve) => setTimeout(resolve, 200))
-    stopwatch.stop()
-    expect(TimeConversion.durationToMilliseconds(stopwatch.duration())).to.be.closeTo(400, 50)
-  })
+    afterEach(() => {
+      clock.uninstall()
+    })
 
-  it('returns 0 duration if never started', async () => {
-    const stopwatch = create()
-    await new Promise((resolve) => setTimeout(resolve, 200))
-    stopwatch.stop()
-    expect(TimeConversion.durationToMilliseconds(stopwatch.duration())).to.eq(0)
+    it('returns a duration between the start and stop', () => {
+      const stopwatch = create()
+      stopwatch.start()
+      clock.tick(1200)
+      stopwatch.stop()
+      expect(TimeConversion.durationToMilliseconds(stopwatch.duration())).to.eq(1200)
+    })
+
+    it('accounts for an initial duration', () => {
+      const stopwatch = create(TimeConversion.millisecondsToDuration(300))
+      stopwatch.start()
+      clock.tick(200)
+      stopwatch.stop()
+      expect(TimeConversion.durationToMilliseconds(stopwatch.duration())).to.eq(500)
+    })
+
+    it('returns accurate durations ad-hoc if not stopped', () => {
+      const stopwatch = create()
+      stopwatch.start()
+      clock.tick(200)
+      expect(TimeConversion.durationToMilliseconds(stopwatch.duration())).to.eq(200)
+      clock.tick(200)
+      stopwatch.stop()
+      expect(TimeConversion.durationToMilliseconds(stopwatch.duration())).to.eq(400)
+    })
+
+    it('returns 0 duration if never started', () => {
+      const stopwatch = create()
+      clock.tick(200)
+      stopwatch.stop()
+      expect(TimeConversion.durationToMilliseconds(stopwatch.duration())).to.eq(0)
+    })
   })
 
   it('returns a timestamp close to now', () => {
