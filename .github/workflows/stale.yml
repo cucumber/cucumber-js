@@ -13,7 +13,7 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - uses: actions/stale@eb5cf3af3ac0a1aa4c9c45633dd1ae542a27a899 # v10
+      - uses: actions/stale@1e223db275d687790206a7acac4d1a11bd6fe629 # v10
         with:
           stale-issue-label: ':hourglass: stale'
           stale-issue-message: 'This issue is stale because it has been open for 3 weeks with no activity. Remove the stale label or comment or this will be closed in another 5 days.'
@@ -30,7 +30,7 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - uses: actions/stale@eb5cf3af3ac0a1aa4c9c45633dd1ae542a27a899 # v10
+      - uses: actions/stale@1e223db275d687790206a7acac4d1a11bd6fe629 # v10
         with:
           only-pr-labels: ':car: driveby'
           stale-pr-message: 'This pull request is stale because its description is still incomplete. It will be closed in two days if the description is not completed following the template.'
