@@ -123,6 +123,42 @@ Feature: Running scenarios in parallel
     And the first two scenarios run in parallel while the last runs sequentially
     And the scenario 'fail_parallel' retried 3 times
 
+  Scenario: a worker exiting unexpectedly fails the run
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {Given} = require('@cucumber/cucumber')
+
+      Given(/^a passing step$/, function() {})
+
+      Given(/^a step that kills the worker$/, function(callback) {
+        setTimeout(() => process.exit(1), 500)
+      })
+      """
+    And a file named "features/a.feature" with:
+      """
+      Feature:
+        Scenario:
+          Given a step that kills the worker
+          And a passing step
+
+        Scenario:
+          Given a passing step
+      """
+    When I run cucumber-js with `--parallel 2 --format json:report.json`
+    Then it fails
+    And the output contains the text:
+      """
+      exited unexpectedly
+      """
+    And the file "report.json" contains the text:
+      """
+      "status": "unknown"
+      """
+    And the file "report.json" contains the text:
+      """
+      "status": "passed"
+      """
+
   Scenario: environment variables are passed to parallel workers
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """

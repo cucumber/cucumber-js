@@ -97,12 +97,20 @@ export default class EventDataCollector {
   }
 
   private initTestCaseAttempt(testCaseStarted: TestCaseStarted): void {
+    // pre-seed a fallback UNKNOWN result for every step
+    const stepResults: Record<string, TestStepResult> = {}
+    for (const testStep of this.testCaseMap[testCaseStarted.testCaseId].testSteps) {
+      stepResults[testStep.id] = {
+        duration: { seconds: 0, nanos: 0 },
+        status: TestStepResultStatus.UNKNOWN,
+      }
+    }
     this.testCaseAttemptDataMap[testCaseStarted.id] = {
       attempt: testCaseStarted.attempt,
       willBeRetried: false,
       testCaseId: testCaseStarted.testCaseId,
       stepAttachments: {},
-      stepResults: {},
+      stepResults,
       worstTestStepResult: {
         duration: { seconds: 0, nanos: 0 },
         status: TestStepResultStatus.UNKNOWN,
