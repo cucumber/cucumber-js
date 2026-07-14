@@ -20,6 +20,7 @@ export class Coordinator implements Runtime {
     private newId: IdGenerator.NewId,
     private sourcedPickles: ReadonlyArray<SourcedPickle>,
     private supportCodeLibrary: SupportCodeLibrary,
+    private filterStacktraces: boolean,
     private adapter: RuntimeAdapter
   ) {}
 
@@ -51,7 +52,7 @@ export class Coordinator implements Runtime {
     } catch (error: unknown) {
       return {
         success: false,
-        exception: formatError(error as Error, false).exception,
+        exception: formatError(error as Error, this.filterStacktraces).exception,
       }
     } finally {
       await this.adapter.teardown()

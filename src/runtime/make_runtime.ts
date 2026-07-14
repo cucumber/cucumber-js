@@ -48,6 +48,7 @@ export async function makeRuntime({
     newId,
     sourcedPickles,
     supportCodeLibrary,
+    options.filterStacktraces,
     adapter
   )
 }
