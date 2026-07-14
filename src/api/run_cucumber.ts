@@ -152,19 +152,19 @@ Running from: ${__dirname}
       timestamp: timestamp(),
     },
   } satisfies Envelope)
-  const success = await runtime.run()
+  const result = await runtime.run()
   eventBroadcaster.emit('envelope', {
     testRunFinished: {
       testRunStartedId,
       timestamp: timestamp(),
-      success,
+      ...result,
     },
   } satisfies Envelope)
   await pluginManager.cleanup()
   await cleanupFormatters()
 
   return {
-    success: success && !formatterStreamError,
+    success: result.success && !formatterStreamError,
     support: supportCodeLibrary,
   }
 }

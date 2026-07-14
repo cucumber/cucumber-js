@@ -1,3 +1,4 @@
+import type { Exception } from '@cucumber/messages'
 import type { JsonObject } from 'type-fest'
 import type { AssembledTestCase } from '../assemble'
 
@@ -11,8 +12,13 @@ export interface RuntimeOptions {
   worldParameters: JsonObject
 }
 
+export interface RuntimeResult {
+  success: boolean
+  exception?: Exception
+}
+
 export interface Runtime {
-  run: () => Promise<boolean>
+  run: () => Promise<RuntimeResult>
 }
 
 export interface RuntimeAdapter {

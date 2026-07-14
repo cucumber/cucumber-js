@@ -2,8 +2,9 @@ import type { EventEmitter } from 'node:events'
 import type { IdGenerator } from '@cucumber/messages'
 import { assembleTestCases, type SourcedPickle } from '../assemble'
 import type { SupportCodeLibrary } from '../support_code_library_builder/types'
+import { formatError } from './format_error'
 import type { Runtime } from './index'
-import type { RuntimeAdapter } from './types'
+import type { RuntimeAdapter, RuntimeResult } from './types'
 
 /**
  * Handles the high-level coordination of the test run on the main thread
@@ -22,7 +23,7 @@ export class Coordinator implements Runtime {
     private adapter: RuntimeAdapter
   ) {}
 
-  async run(): Promise<boolean> {
+  async run(): Promise<RuntimeResult> {
     try {
       await this.adapter.setup()
 
@@ -43,9 +44,15 @@ export class Coordinator implements Runtime {
         successByPhase.testCases = await this.adapter.runTestCases(assembledTestCases)
       }
       successByPhase.afterAllHooks = await this.adapter.runAfterAllHooks()
-      return (
-        successByPhase.beforeAllHooks && successByPhase.testCases && successByPhase.afterAllHooks
-      )
+      return {
+        success:
+          successByPhase.beforeAllHooks && successByPhase.testCases && successByPhase.afterAllHooks,
+      }
+    } catch (error: unknown) {
+      return {
+        success: false,
+        exception: formatError(error as Error, false).exception,
+      }
     } finally {
       await this.adapter.teardown()
     }

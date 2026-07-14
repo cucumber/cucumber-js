@@ -19,11 +19,12 @@ import type { ManagedWorker, Phase, WorkerCommand, WorkerData, WorkerEvent } fro
  * triggered or the phase to be settled.
  */
 export class WorkerThreadsAdapter implements RuntimeAdapter {
-  private readiness: {
+  private readiness?: {
     resolve: () => void
     reject: (reason: unknown) => void
   }
-  private phase: Phase
+  private phase?: Phase
+  private tearingDown = false
   private readonly workers: Set<ManagedWorker> = new Set()
   private readonly running: Map<ManagedWorker, WorkerCommand> = new Map()
 
@@ -87,6 +88,9 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
         workerThread.on('error', (error) => {
           this.handleErrorFromWorker(error, worker)
         })
+        workerThread.on('exit', (exitCode) => {
+          this.handleExitFromWorker(exitCode, worker)
+        })
       }
     })
     delete this.readiness
@@ -126,6 +130,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
   }
 
   async teardown(): Promise<void> {
+    this.tearingDown = true
     for (const worker of this.workers.values()) {
       await worker.workerThread.terminate()
       // close our end of the channel so it stops keeping the loop alive
@@ -171,7 +176,16 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
   }
 
   private handleErrorFromWorker(error: Error, worker: ManagedWorker) {
-    const reason = new Error(`Error on worker ${worker.id}`, { cause: error })
+    this.fail(new Error(`Error on worker ${worker.id}`, { cause: error }))
+  }
+
+  private handleExitFromWorker(exitCode: number, worker: ManagedWorker) {
+    if (!this.tearingDown) {
+      this.fail(new Error(`Worker ${worker.id} exited unexpectedly with code ${exitCode}`))
+    }
+  }
+
+  private fail(reason: Error) {
     this.readiness?.reject(reason)
     this.phase?.reject(reason)
     void this.teardown()
