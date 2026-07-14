@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- Handle unexpected exit from parallel worker ([#2878](https://github.com/cucumber/cucumber-js/pull/2878))
+
+### Fixed
+- Prevent formatter error when test step result is missing ([#2878](https://github.com/cucumber/cucumber-js/pull/2878))
 
 ## [13.0.0] - 2026-06-02
 ### Added
