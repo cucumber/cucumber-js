@@ -24,7 +24,7 @@ import type { RuntimeOptions } from './types'
  * Unaware of the overall test run scope, or whether it's on the main thread,
  * or whether any other workers are in play.
  */
-export class Worker {
+export class Executor {
   constructor(
     private readonly testRunStartedId: string,
     private readonly workerId: string | undefined,

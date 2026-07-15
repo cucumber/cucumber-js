@@ -8,8 +8,8 @@ import type { ILogger, IRunEnvironment } from '../../environment'
 import type { FormatOptions } from '../../formatter'
 import type StepDefinitionSnippetBuilder from '../../formatter/step_definition_snippet_builder'
 import { HookTarget, type SupportCodeLibrary } from '../../support_code_library_builder/types'
+import { Executor } from '../executor'
 import type { RuntimeAdapter } from '../types'
-import { Worker } from '../worker'
 import { TestCasesPhase } from './test_cases_phase'
 import { TestRunHooksPhase } from './test_run_hooks_phase'
 import type { ManagedWorker, Phase, WorkerCommand, WorkerData, WorkerEvent } from './types'
@@ -30,7 +30,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
   private tearingDown = false
   private readonly workers: Set<ManagedWorker> = new Set()
   private readonly running: Map<ManagedWorker, WorkerCommand> = new Map()
-  private readonly localWorker: Worker
+  private readonly executor: Executor
 
   constructor(
     private readonly testRunStartedId: string,
@@ -43,7 +43,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
     private readonly supportCodeLibrary: SupportCodeLibrary,
     snippetBuilder: StepDefinitionSnippetBuilder
   ) {
-    this.localWorker = new Worker(
+    this.executor = new Executor(
       testRunStartedId,
       undefined,
       eventBroadcaster,
@@ -113,7 +113,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
   }
 
   async runBeforeAllHooks(): Promise<boolean> {
-    const coordinatorSuccess = await this.localWorker.runBeforeAllHooks(
+    const coordinatorSuccess = await this.executor.runBeforeAllHooks(
       (hook) => hook.on === HookTarget.COORDINATOR
     )
     const workersSuccess = await new Promise<boolean>((resolve, reject) => {
@@ -145,7 +145,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
       this.startPhase()
     })
     delete this.phase
-    const coordinatorSuccess = await this.localWorker.runAfterAllHooks(
+    const coordinatorSuccess = await this.executor.runAfterAllHooks(
       (hook) => hook.on === HookTarget.COORDINATOR
     )
     return coordinatorSuccess && workersSuccess
