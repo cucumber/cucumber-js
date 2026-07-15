@@ -40,7 +40,7 @@ Workers run as threads inside the main process, so they share its resources. You
 
 ### Hooks
 
-When using parallel mode, any `BeforeAll` and `AfterAll` hooks you have defined will run _once per worker_.
+By default, any `BeforeAll` and `AfterAll` hooks you have defined will run _once per worker_. You can instead have a hook run just once on the coordinator - see [Running on the coordinator in parallel mode](./support_files/hooks.md#running-on-the-coordinator-in-parallel-mode).
 
 ### Custom work assignment
 
