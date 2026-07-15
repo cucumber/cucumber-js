@@ -97,9 +97,14 @@ export class Worker {
     return result.status !== TestStepResultStatus.FAILED
   }
 
-  async runBeforeAllHooks(): Promise<boolean> {
+  async runBeforeAllHooks(
+    predicate: (hookDefinition: TestRunHookDefinition) => boolean = () => true
+  ): Promise<boolean> {
     let success = true
     for (const hookDefinition of this.supportCodeLibrary.beforeTestRunHookDefinitions) {
+      if (!predicate(hookDefinition)) {
+        continue
+      }
       if (!(await this.runTestRunHook(hookDefinition))) {
         success = false
       }
@@ -131,10 +136,15 @@ export class Worker {
     return !shouldCauseFailure(status, this.options)
   }
 
-  async runAfterAllHooks(): Promise<boolean> {
+  async runAfterAllHooks(
+    predicate: (hookDefinition: TestRunHookDefinition) => boolean = () => true
+  ): Promise<boolean> {
     let success = true
     const reversed = [...this.supportCodeLibrary.afterTestRunHookDefinitions].reverse()
     for (const hookDefinition of reversed) {
+      if (!predicate(hookDefinition)) {
+        continue
+      }
       if (!(await this.runTestRunHook(hookDefinition))) {
         success = false
       }
