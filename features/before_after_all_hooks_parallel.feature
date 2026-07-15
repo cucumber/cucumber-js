@@ -55,16 +55,3 @@ Feature: BeforeAll/AfterAll hooks and the parallel runtime
     Then it passes
     And the global hook "Before test run" has 1 executions
     And the global hook "After test run" has 1 executions
-
-  Scenario: global hooks run on coordinator and worker when specified
-    Given a file named "features/support/hooks.js" with:
-      """
-      const {AfterAll, BeforeAll, HookTarget} = require('@cucumber/cucumber')
-
-      BeforeAll({name: 'Before test run', on: HookTarget.BOTH}, () => {})
-      AfterAll({name: 'After test run', on: HookTarget.BOTH}, () => {})
-      """
-    When I run cucumber-js with `--parallel 2`
-    Then it passes
-    And the global hook "Before test run" has 3 executions
-    And the global hook "After test run" has 3 executions

@@ -214,11 +214,9 @@ export const Given: IDefineStep;
 // @public (undocumented)
 export enum HookTarget {
     // (undocumented)
-    BOTH = "both",
+    COORDINATOR = "COORDINATOR",
     // (undocumented)
-    COORDINATOR = "coordinator",
-    // (undocumented)
-    WORKER = "worker"
+    WORKER = "WORKER"
 }
 
 // @public

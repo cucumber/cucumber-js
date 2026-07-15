@@ -16,7 +16,6 @@ import type { IWorld } from './world'
 export enum HookTarget {
   WORKER = 'WORKER',
   COORDINATOR = 'COORDINATOR',
-  BOTH = 'BOTH',
 }
 
 export type DefineStepPattern = string | RegExp
