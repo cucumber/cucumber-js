@@ -13,6 +13,12 @@ import type TestStepHookDefinition from '../models/test_step_hook_definition'
 import type { SourcedParameterTypeRegistry } from './sourced_parameter_type_registry'
 import type { IWorld } from './world'
 
+export enum HookTarget {
+  WORKER = 'WORKER',
+  COORDINATOR = 'COORDINATOR',
+  BOTH = 'BOTH',
+}
+
 export type DefineStepPattern = string | RegExp
 export type ParallelAssignmentValidator = (pickle: Pickle, runningPickles: Pickle[]) => boolean
 export interface ITestCaseHookParameter {
@@ -68,6 +74,7 @@ export interface IDefineTestStepHookOptions {
 
 export interface IDefineTestRunHookOptions {
   name?: string
+  on?: HookTarget
   timeout?: number
 }
 
