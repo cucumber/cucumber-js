@@ -22,7 +22,7 @@ import type { RuntimeOptions } from './types'
  * Runs individual units of work asynchronously
  * @remarks
  * Unaware of the overall test run scope, or whether it's on the main thread,
- * or whether any other workers are in play.
+ * or whether any other executors are in play.
  */
 export class Executor {
   constructor(
