@@ -33,9 +33,14 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install-ci-test
+      - run: npm ci
+      - run: npm run build
+      - parallel:
+          - run: npm run test:unit
+          - run: npm run test:cck
+          - run: npm run test:acceptance
 
-  docs:
+  quality:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -45,22 +50,12 @@ jobs:
         with:
           node-version: 22.x
       - run: npm ci
-      - run: npm run exports-generate-docs
-
-  coverage:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: 22.x
-      - run: npm ci
-      - run: npm run test-coverage
-      - uses: coverallsapp/github-action@648a8eb78e6d50909eff900e4ec85cab4524a45b #v2.3.6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - run: npm run build
+      - parallel:
+          - run: npm run exports:check
+          - run: npm run docs
+          - run: npm run lint
+          - run: npm run tsd
 
   audit-dependencies:
     runs-on: ubuntu-latest
