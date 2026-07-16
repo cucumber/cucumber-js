@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Ensure ESM entry point get all exported types ([#2881](https://github.com/cucumber/cucumber-js/pull/2881))
 
 ## [13.1.0] - 2026-07-14
 ### Changed
