@@ -17,7 +17,8 @@ jobs:
         with:
           node-version: 22.x
       - run: npm ci
-      - run: npm run exports-generate-docs
+      - run: npm run build
+      - run: npm run docs
       - run: |
           chmod -c -R +rX "_site/" | while read line; do
           echo "::warning title=Invalid file permissions automatically fixed::$line"
