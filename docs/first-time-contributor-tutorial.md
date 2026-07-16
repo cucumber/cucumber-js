@@ -66,7 +66,7 @@ print any info regarding the attachments anymore.
 
 Now execute the unit tests:
 
-    yarn run unit-test
+    yarn run test:unit
 
 As expected, our new test is failing. Now let's add a new parameter to
 `testFormatIssue`:
@@ -245,12 +245,12 @@ And, finally, in `issue_helpers_spec.ts`, within `testFormatIssue`:
 
 Now, all unit tests should pass:
 
-    yarn run unit-test
+    yarn run test:unit
 
 But, as expected, our acceptance test is still failing because we did not yet
 managed the cli options:
 
-    yarn run feature-test
+    yarn run test:acceptance
 
 # Make the feature test to pass
 
@@ -367,7 +367,7 @@ and in `summary_formatter.ts`. Let's update those two files:
 
 So, it should be working now
 
-    yarn run feature-test
+    yarn run test:acceptance
 
 # Finalizing the Pull Request
 
