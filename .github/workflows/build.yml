@@ -46,7 +46,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
-      - run: npm test
+      - run: npm run build
+      - parallel:
+          - run: npm run test:unit
+          - run: npm run test:cck
+          - run: npm run test:acceptance
 
   tsd:
     runs-on: ubuntu-latest

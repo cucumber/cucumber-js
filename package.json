@@ -309,8 +309,8 @@
     "lint": "biome check --error-on-warnings",
     "prepublishOnly": "rm -rf lib && npm run build",
     "test": "npm run test:unit && npm run test:cck && npm run test:acceptance",
-    "test:acceptance": "npm run build && node bin/cucumber.js",
-    "test:cck": "npm run build && mocha \"compatibility/**/*_spec.ts\"",
+    "test:acceptance": "node bin/cucumber.js",
+    "test:cck": "mocha \"compatibility/**/*_spec.ts\"",
     "test:unit": "mocha \"src/**/*_spec.ts\"",
     "tsd": "npm run build && tsd --files 'test-d/**/*.{ts,mts}'"
   },
