@@ -108,7 +108,7 @@ These options can be used in a configuration file (see [above](#files)) or on th
 | `parallel`        | `number`   | No         | `--parallel`              | Run tests in parallel with the given number of worker processes - see [Parallel](./parallel.md)                    | 0       |
 | `plugin`          | `string[]` | Yes        | `--plugin`                | Paths or package names of plugins to load - see [Plugins](./plugins.md)                                            | []      |
 | `pluginOptions`   | `object`   | Yes        | `--plugin-options`        | Options to be provided to plugins - see [Plugins](./plugins.md)                                                    | {}      |
-| `publish`         | `boolean`  | No         | `--publish`               | Publish a report of your test run to <https://reports.cucumber.io/>                                                | false   |
+| `publish`         | `boolean`  | No         | `--publish`               | Publish a report of your test run to Cucumber Reports - see [Publishing](./publishing.md)                          | false   |
 | `require`         | `string[]` | Yes        | `--require`, `-r`         | Paths to where your support code is, for CommonJS - see [below](#finding-your-code)                                | []      |
 | `requireModule`   | `string[]` | Yes        | `--require-module`        | Names of transpilation modules to load, loaded via `require()` - see [Transpiling](./transpiling.md)               | []      |
 | `retry`           | `number`   | No         | `--retry`                 | Retry failing tests up to the given number of times - see [Retry](./retry.md)                                      | 0       |
