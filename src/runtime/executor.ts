@@ -22,9 +22,9 @@ import type { RuntimeOptions } from './types'
  * Runs individual units of work asynchronously
  * @remarks
  * Unaware of the overall test run scope, or whether it's on the main thread,
- * or whether any other workers are in play.
+ * or whether any other executors are in play.
  */
-export class Worker {
+export class Executor {
   constructor(
     private readonly testRunStartedId: string,
     private readonly workerId: string | undefined,
@@ -97,9 +97,14 @@ export class Worker {
     return result.status !== TestStepResultStatus.FAILED
   }
 
-  async runBeforeAllHooks(): Promise<boolean> {
+  async runBeforeAllHooks(
+    predicate: (hookDefinition: TestRunHookDefinition) => boolean = () => true
+  ): Promise<boolean> {
     let success = true
     for (const hookDefinition of this.supportCodeLibrary.beforeTestRunHookDefinitions) {
+      if (!predicate(hookDefinition)) {
+        continue
+      }
       if (!(await this.runTestRunHook(hookDefinition))) {
         success = false
       }
@@ -131,10 +136,15 @@ export class Worker {
     return !shouldCauseFailure(status, this.options)
   }
 
-  async runAfterAllHooks(): Promise<boolean> {
+  async runAfterAllHooks(
+    predicate: (hookDefinition: TestRunHookDefinition) => boolean = () => true
+  ): Promise<boolean> {
     let success = true
     const reversed = [...this.supportCodeLibrary.afterTestRunHookDefinitions].reverse()
     for (const hookDefinition of reversed) {
+      if (!predicate(hookDefinition)) {
+        continue
+      }
       if (!(await this.runTestRunHook(hookDefinition))) {
         success = false
       }

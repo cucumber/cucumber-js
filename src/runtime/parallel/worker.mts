@@ -5,8 +5,9 @@ import { workerData } from 'node:worker_threads'
 import { type Envelope, IdGenerator } from '@cucumber/messages'
 import FormatterBuilder from '../../formatter/builder.js'
 import supportCodeLibraryBuilder from '../../support_code_library_builder/index.js'
+import { HookTarget } from '../../support_code_library_builder/types.js'
 import tryRequire from '../../try_require.js'
-import { Worker } from '../worker.js'
+import { Executor } from '../executor.js'
 import type { WorkerCommand, WorkerData, WorkerEvent } from './types.js'
 
 const {
@@ -45,7 +46,7 @@ eventBroadcaster.on('envelope', (envelope: Envelope) =>
   } satisfies WorkerEvent)
 )
 
-const worker = new Worker(
+const executor = new Executor(
   testRunStartedId,
   process.env.CUCUMBER_WORKER_ID,
   eventBroadcaster,
@@ -58,15 +59,17 @@ const worker = new Worker(
 port.on('message', (command: WorkerCommand) => {
   switch (command.type) {
     case 'BEFOREALL_HOOKS':
-      worker.runBeforeAllHooks().then((success) => {
-        port.postMessage({
-          type: 'FINISHED',
-          success,
-        } satisfies WorkerEvent)
-      })
+      executor
+        .runBeforeAllHooks((hook) => hook.on === HookTarget.WORKER)
+        .then((success) => {
+          port.postMessage({
+            type: 'FINISHED',
+            success,
+          } satisfies WorkerEvent)
+        })
       break
     case 'TEST_CASE':
-      worker.runTestCase(command.assembledTestCase, command.failing).then((success) => {
+      executor.runTestCase(command.assembledTestCase, command.failing).then((success) => {
         port.postMessage({
           type: 'FINISHED',
           success,
@@ -74,12 +77,14 @@ port.on('message', (command: WorkerCommand) => {
       })
       break
     case 'AFTERALL_HOOKS':
-      worker.runAfterAllHooks().then((success) => {
-        port.postMessage({
-          type: 'FINISHED',
-          success,
-        } satisfies WorkerEvent)
-      })
+      executor
+        .runAfterAllHooks((hook) => hook.on === HookTarget.WORKER)
+        .then((success) => {
+          port.postMessage({
+            type: 'FINISHED',
+            success,
+          } satisfies WorkerEvent)
+        })
       break
   }
 })

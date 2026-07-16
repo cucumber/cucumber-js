@@ -11,6 +11,7 @@ import {
   getPickleNamesInOrderOfExecution,
   getPickleStep,
   getTestCaseResult,
+  getTestRunHooksStarted,
   getTestStepAttachmentsForHook,
   getTestStepAttachmentsForStep,
   getTestStepResults,
@@ -184,5 +185,12 @@ Then(
       }
     })
     expect(actualAttachments).to.eql(expectedAttachments)
+  }
+)
+
+Then(
+  'the global hook {string} has {int} executions',
+  function (this: World, hookName: string, count: number) {
+    expect(getTestRunHooksStarted(this.lastRun.envelopes, hookName)).to.have.lengthOf(count)
   }
 )

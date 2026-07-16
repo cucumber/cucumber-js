@@ -7,6 +7,7 @@ import type {
   PickleStep,
   TestCase,
   TestCaseStarted,
+  TestRunHookStarted,
   TestStepResult,
 } from '@cucumber/messages'
 import { Query } from '@cucumber/query'
@@ -113,6 +114,19 @@ export function getTestStepAttachmentsForHook(
   const testStep = testCase.testSteps[testStepIndex]
   const testCaseStarted = getTestCaseStarted(envelopes, testCase.id)
   return getTestStepAttachments(envelopes, testCaseStarted.id, testStep.id)
+}
+
+export function getTestRunHooksStarted(
+  envelopes: Envelope[],
+  hookName: string
+): TestRunHookStarted[] {
+  const query = new Query()
+  for (const envelope of envelopes) {
+    query.update(envelope)
+  }
+  return query
+    .findAllTestRunHookStarted()
+    .filter((testRunHookStarted) => query.findHookBy(testRunHookStarted).name === hookName)
 }
 
 function getAcceptedPickle(envelopes: Envelope[], pickleName: string): Pickle {

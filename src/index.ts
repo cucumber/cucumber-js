@@ -51,6 +51,7 @@ export const When = methods.When
 export { contextProxy as context, worldProxy as world } from './runtime/scope'
 export { IContext } from './support_code_library_builder/context'
 export {
+  HookTarget,
   ITestCaseHookParameter,
   ITestStepHookParameter,
 } from './support_code_library_builder/types'

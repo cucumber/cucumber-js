@@ -1,11 +1,14 @@
 import type { EventEmitter } from 'node:events'
 import path from 'node:path'
-import { MessageChannel, Worker } from 'node:worker_threads'
+import { MessageChannel, Worker as WorkerThread } from 'node:worker_threads'
+import type { IdGenerator } from '@cucumber/messages'
 import type { IRunOptionsRuntime } from '../../api'
 import type { AssembledTestCase } from '../../assemble'
 import type { ILogger, IRunEnvironment } from '../../environment'
 import type { FormatOptions } from '../../formatter'
-import type { SupportCodeLibrary } from '../../support_code_library_builder/types'
+import type StepDefinitionSnippetBuilder from '../../formatter/step_definition_snippet_builder'
+import { HookTarget, type SupportCodeLibrary } from '../../support_code_library_builder/types'
+import { Executor } from '../executor'
 import type { RuntimeAdapter } from '../types'
 import { TestCasesPhase } from './test_cases_phase'
 import { TestRunHooksPhase } from './test_run_hooks_phase'
@@ -27,16 +30,29 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
   private tearingDown = false
   private readonly workers: Set<ManagedWorker> = new Set()
   private readonly running: Map<ManagedWorker, WorkerCommand> = new Map()
+  private readonly executor: Executor
 
   constructor(
     private readonly testRunStartedId: string,
     private readonly environment: IRunEnvironment,
     private readonly logger: ILogger,
     private readonly eventBroadcaster: EventEmitter,
+    newId: IdGenerator.NewId,
     private readonly options: IRunOptionsRuntime,
     private readonly snippetOptions: Pick<FormatOptions, 'snippetInterface' | 'snippetSyntax'>,
-    private readonly supportCodeLibrary: SupportCodeLibrary
-  ) {}
+    private readonly supportCodeLibrary: SupportCodeLibrary,
+    snippetBuilder: StepDefinitionSnippetBuilder
+  ) {
+    this.executor = new Executor(
+      testRunStartedId,
+      undefined,
+      eventBroadcaster,
+      newId,
+      options,
+      supportCodeLibrary,
+      snippetBuilder
+    )
+  }
 
   async setup(): Promise<void> {
     await new Promise<void>((resolve, reject) => {
@@ -46,7 +62,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
         const id = i.toString()
         // spin up a dedicated message channel for coordinator-worker comms
         const { port1, port2 } = new MessageChannel()
-        const workerThread = new Worker(path.resolve(__dirname, 'worker.mjs'), {
+        const workerThread = new WorkerThread(path.resolve(__dirname, 'worker.mjs'), {
           env: {
             ...this.environment.env,
             CUCUMBER_PARALLEL: 'true',
@@ -97,12 +113,15 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
   }
 
   async runBeforeAllHooks(): Promise<boolean> {
-    const success = await new Promise<boolean>((resolve, reject) => {
+    const coordinatorSuccess = await this.executor.runBeforeAllHooks(
+      (hook) => hook.on === HookTarget.COORDINATOR
+    )
+    const workersSuccess = await new Promise<boolean>((resolve, reject) => {
       this.phase = new TestRunHooksPhase(resolve, reject, 'BEFOREALL_HOOKS')
       this.startPhase()
     })
     delete this.phase
-    return success
+    return coordinatorSuccess && workersSuccess
   }
 
   async runTestCases(assembledTestCases: ReadonlyArray<AssembledTestCase>): Promise<boolean> {
@@ -121,12 +140,15 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
   }
 
   async runAfterAllHooks(): Promise<boolean> {
-    const success = await new Promise<boolean>((resolve, reject) => {
+    const workersSuccess = await new Promise<boolean>((resolve, reject) => {
       this.phase = new TestRunHooksPhase(resolve, reject, 'AFTERALL_HOOKS')
       this.startPhase()
     })
     delete this.phase
-    return success
+    const coordinatorSuccess = await this.executor.runAfterAllHooks(
+      (hook) => hook.on === HookTarget.COORDINATOR
+    )
+    return coordinatorSuccess && workersSuccess
   }
 
   async teardown(): Promise<void> {

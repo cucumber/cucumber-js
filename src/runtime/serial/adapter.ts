@@ -3,15 +3,15 @@ import type { IdGenerator } from '@cucumber/messages'
 import type { AssembledTestCase } from '../../assemble'
 import type StepDefinitionSnippetBuilder from '../../formatter/step_definition_snippet_builder'
 import type { SupportCodeLibrary } from '../../support_code_library_builder/types'
+import { Executor } from '../executor'
 import type { RuntimeOptions } from '../index'
 import type { RuntimeAdapter } from '../types'
-import { Worker } from '../worker'
 
 /**
  * A simple adapter that executes all work in serial on the main thread
  */
 export class InProcessAdapter implements RuntimeAdapter {
-  private readonly worker: Worker
+  private readonly executor: Executor
 
   constructor(
     testRunStartedId: string,
@@ -21,7 +21,7 @@ export class InProcessAdapter implements RuntimeAdapter {
     supportCodeLibrary: SupportCodeLibrary,
     snippetBuilder: StepDefinitionSnippetBuilder
   ) {
-    this.worker = new Worker(
+    this.executor = new Executor(
       testRunStartedId,
       undefined,
       eventBroadcaster,
@@ -41,13 +41,13 @@ export class InProcessAdapter implements RuntimeAdapter {
   }
 
   async runBeforeAllHooks() {
-    return await this.worker.runBeforeAllHooks()
+    return await this.executor.runBeforeAllHooks()
   }
 
   async runTestCases(assembledTestCases: ReadonlyArray<AssembledTestCase>) {
     let failing = false
     for (const item of assembledTestCases) {
-      if (!(await this.worker.runTestCase(item, failing))) {
+      if (!(await this.executor.runTestCase(item, failing))) {
         failing = true
       }
     }
@@ -55,6 +55,6 @@ export class InProcessAdapter implements RuntimeAdapter {
   }
 
   async runAfterAllHooks() {
-    return await this.worker.runAfterAllHooks()
+    return await this.executor.runAfterAllHooks()
   }
 }

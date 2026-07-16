@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Add option for where to run global hooks ([#2880](https://github.com/cucumber/cucumber-js/pull/2880))
 
 ## [13.1.1] - 2026-07-16
 ### Fixed

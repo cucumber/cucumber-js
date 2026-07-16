@@ -63,23 +63,25 @@ async function makeAdapter(
   supportCodeLibrary: SupportCodeLibrary,
   newId: () => string
 ) {
-  if (options.parallel > 0) {
-    return new WorkerThreadsAdapter(
-      testRunStartedId,
-      environment,
-      logger,
-      eventBroadcaster,
-      options,
-      snippetOptions,
-      supportCodeLibrary
-    )
-  }
   const snippetBuilder = await FormatterBuilder.getStepDefinitionSnippetBuilder({
     cwd: environment.cwd,
     snippetInterface: snippetOptions.snippetInterface,
     snippetSyntax: snippetOptions.snippetSyntax,
     supportCodeLibrary,
   })
+  if (options.parallel > 0) {
+    return new WorkerThreadsAdapter(
+      testRunStartedId,
+      environment,
+      logger,
+      eventBroadcaster,
+      newId,
+      options,
+      snippetOptions,
+      supportCodeLibrary,
+      snippetBuilder
+    )
+  }
   return new InProcessAdapter(
     testRunStartedId,
     eventBroadcaster,

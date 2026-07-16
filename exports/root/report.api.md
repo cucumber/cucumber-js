@@ -211,6 +211,14 @@ declare namespace GherkinDocumentParser {
 // @public (undocumented)
 export const Given: IDefineStep;
 
+// @public (undocumented)
+export enum HookTarget {
+    // (undocumented)
+    COORDINATOR = "COORDINATOR",
+    // (undocumented)
+    WORKER = "WORKER"
+}
+
 // @public
 export interface IConfiguration {
     backtrace: boolean;

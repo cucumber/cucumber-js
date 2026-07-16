@@ -55,6 +55,7 @@ Defines a hook which is run after all scenarios have completed.
 
 * `options`: An object with the following keys:
   * `name`: An optional name for this hook
+  * `on`: In [parallel mode](../parallel.md), where the hook should run - `HookTarget.WORKER` (the default) to run once per worker, or `HookTarget.COORDINATOR` to run just once on the coordinator. Has no effect in serial mode.
   * `timeout`: A hook-specific timeout, to override the default timeout.
 * `fn`: A function, defined as follows:
   * When using the asynchronous callback interface, have one argument for the callback function.

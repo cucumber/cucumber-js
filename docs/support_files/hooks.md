@@ -139,6 +139,32 @@ BeforeAll(async function () {
 });
 ```
 
+### Running on the coordinator in parallel mode
+
+ℹ️ Added in v13.2.0
+
+In [parallel mode](../parallel.md), `BeforeAll`/`AfterAll` hooks run _once per worker_ by default. This is helpful where each worker needs its own separate setup (e.g. its own browser instance).
+
+Sometimes though, you have setup/teardown that should happen just once, centrally - like starting a shared server or seeding a database. For those, set the `on` option to `HookTarget.COORDINATOR` so the hook runs a single time on the coordinator process instead of on each worker:
+
+```javascript
+const {AfterAll, BeforeAll, HookTarget} = require('@cucumber/cucumber');
+
+BeforeAll({on: HookTarget.COORDINATOR}, async function () {
+  // runs once, before any workers start their scenarios
+  await startSharedServer();
+});
+
+AfterAll({on: HookTarget.COORDINATOR}, async function () {
+  // runs once, after all workers have finished
+  await stopSharedServer();
+});
+```
+
+Coordinator `BeforeAll` hooks run before the workers begin, and coordinator `AfterAll` hooks run after all workers have finished, so they wrap the entire run.
+
+The default is `HookTarget.WORKER`, which you can also specify explicitly. In serial (non-parallel) mode there's a single process, so all `BeforeAll`/`AfterAll` hooks run once regardless of the `on` option.
+
 ## BeforeStep / AfterStep
 
 If you have some code execution that needs to be done before or after all steps, use `BeforeStep` / `AfterStep`. Like the `Before` / `After` hooks, these also have a world instance as 'this', and can be conditionally selected for execution based on the tags of the scenario.
