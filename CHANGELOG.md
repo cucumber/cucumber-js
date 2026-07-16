@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [13.1.1] - 2026-07-16
 ### Fixed
 - Ensure ESM entry point get all exported types ([#2881](https://github.com/cucumber/cucumber-js/pull/2881))
 
@@ -1784,6 +1786,7 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 ## 0.0.1
 
 [Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...HEAD
+[13.1.1]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...v13.1.1
 [13.1.0]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...v13.1.0
 [13.0.0]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...v13.0.0
 [12.9.0]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...v12.9.0
