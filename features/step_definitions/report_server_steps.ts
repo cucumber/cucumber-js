@@ -47,8 +47,8 @@ Then(
   }
 )
 
-Then('the proxy server should have tunnelled to {string}', function (this: World, target: string) {
-  expect(this.proxyServer.tunnelledTargets).to.include(target)
+Then('the proxy server should have proxied to {string}', function (this: World, target: string) {
+  expect(this.proxyServer.proxiedTargets).to.include(target)
 })
 
 Then(

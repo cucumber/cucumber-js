@@ -73,7 +73,7 @@ Feature: Publish reports
     Given a proxy server is running on 'http://localhost:9988'
     When I run cucumber-js with arguments `--publish` and env `HTTP_PROXY=http://localhost:9988 NODE_USE_ENV_PROXY=1`
     Then it passes
-    And the proxy server should have tunnelled to "localhost:9987"
+    And the proxy server should have proxied to "localhost:9987"
     And the server should receive the following message types:
       | meta             |
       | source           |
