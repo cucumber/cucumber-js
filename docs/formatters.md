@@ -2,7 +2,7 @@
 
 In cucumber-js, Formatters ingest data about your test run in real time and then output content, either to the console or a file, in a useful format. (Some frameworks refer to this kind of thing as "reporters".)
 
-cucumber-js provides many built-in Formatters, plus building blocks with which you can [write your own](./custom_formatters.md).
+cucumber-js provides many built-in Formatters, plus building blocks with which you can [write your own](./custom_formatters.md). If you'd rather view and share your results as a hosted report, see [Publishing](./publishing.md).
 
 You can specify one or more formats via the `format` configuration option:
 

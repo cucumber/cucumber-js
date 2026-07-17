@@ -12,6 +12,7 @@ import { setWorldConstructor } from '../../'
 import { type IRunEnvironment, loadConfiguration, runCucumber } from '../../lib/api'
 import { ArgvParser } from '../../lib/configuration'
 import { doesHaveValue } from '../../src/value_checker'
+import type FakeProxyServer from '../../test/fake_proxy_server'
 import type FakeReportServer from '../../test/fake_report_server'
 
 const asyncPipeline = util.promisify(pipeline)
@@ -38,6 +39,7 @@ export class World {
   public verifiedLastRunError: boolean
   public localExecutablePath: string
   public reportServer: FakeReportServer
+  public proxyServer: FakeProxyServer
 
   parseEnvString(str: string): NodeJS.ProcessEnv {
     const result: NodeJS.ProcessEnv = {}

@@ -69,6 +69,25 @@ Feature: Publish reports
       | testRunFinished  |
     And the server should receive an "Authorization" header with value "Bearer f318d9ec-5a3d-4727-adec-bd7b69e2edd3"
 
+  Scenario: Report is published via a proxy when NODE_USE_ENV_PROXY is set
+    Given a proxy server is running on 'http://localhost:9988'
+    When I run cucumber-js with arguments `--publish` and env `HTTP_PROXY=http://localhost:9988 NODE_USE_ENV_PROXY=1`
+    Then it passes
+    And the proxy server should have proxied to "localhost:9987"
+    And the server should receive the following message types:
+      | meta             |
+      | source           |
+      | gherkinDocument  |
+      | pickle           |
+      | stepDefinition   |
+      | testRunStarted   |
+      | testCase         |
+      | testCaseStarted  |
+      | testStepStarted  |
+      | testStepFinished |
+      | testCaseFinished |
+      | testRunFinished  |
+
   Scenario: a banner is displayed after publication
     When I run cucumber-js with arguments `--publish` and env ``
     Then the error output contains the text:

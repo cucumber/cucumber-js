@@ -53,6 +53,10 @@ After(async function (this: World) {
     await this.reportServer.stop()
   }
 
+  if (this.proxyServer?.started) {
+    await this.proxyServer.stop()
+  }
+
   if (
     doesHaveValue(this.lastRun) &&
     doesHaveValue(this.lastRun.error) &&
