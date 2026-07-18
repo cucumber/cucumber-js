@@ -55,15 +55,41 @@ export interface IJsonScenario {
   type: string
 }
 
+export interface IJsonDataTable {
+  rows: Array<{ cells: string[] }>
+}
+
+export interface IJsonDocString {
+  content: string
+  line: number
+}
+
+export type IJsonStepArgument = IJsonDataTable | IJsonDocString
+
+export interface IJsonEmbedding {
+  data: string
+  mime_type: string
+}
+
+export interface IJsonStepMatch {
+  location: string
+}
+
+export interface IJsonStepResult {
+  status: string
+  duration?: number
+  error_message?: string
+}
+
 export interface IJsonStep {
-  arguments?: any // TODO
-  embeddings?: any // TODO
+  arguments?: IJsonStepArgument[]
+  embeddings?: IJsonEmbedding[]
   hidden?: boolean
   keyword?: string // TODO, not optional
   line?: number
-  match?: any // TODO
+  match?: IJsonStepMatch
   name?: string
-  result?: any // TODO
+  result: IJsonStepResult
 }
 
 export interface IJsonTag {
@@ -112,11 +138,11 @@ export default class JsonFormatter extends Formatter {
     })
   }
 
-  convertNameToId(obj: Feature | Pickle): string {
+  convertNameToId(obj: Feature | Rule | Pickle): string {
     return obj.name.replace(/ /g, '-').toLowerCase()
   }
 
-  formatDataTable(dataTable: PickleTable): any {
+  formatDataTable(dataTable: PickleTable): IJsonDataTable {
     return {
       rows: dataTable.rows.map((row) => ({
         cells: row.cells.map((x) => x.value),
@@ -124,19 +150,19 @@ export default class JsonFormatter extends Formatter {
     }
   }
 
-  formatDocString(docString: PickleDocString, gherkinStep: Step): any {
+  formatDocString(docString: PickleDocString, gherkinStep: Step): IJsonDocString {
     return {
       content: docString.content,
       line: gherkinStep.docString.location.line,
     }
   }
 
-  formatStepArgument(stepArgument: PickleStepArgument, gherkinStep: Step): any {
+  formatStepArgument(stepArgument: PickleStepArgument, gherkinStep: Step): IJsonStepArgument[] {
     if (doesNotHaveValue(stepArgument)) {
       return []
     }
     return [
-      parseStepArgument<any>(stepArgument, {
+      parseStepArgument<IJsonStepArgument>(stepArgument, {
         dataTable: (dataTable) => this.formatDataTable(dataTable),
         docString: (docString) => this.formatDocString(docString, gherkinStep),
       }),
@@ -240,7 +266,7 @@ export default class JsonFormatter extends Formatter {
     pickle: Pickle
     gherkinExampleRuleMap: Record<string, Rule>
   }): string {
-    let parts: any[]
+    let parts: Array<Feature | Rule | Pickle>
     const rule = gherkinExampleRuleMap[pickle.astNodeIds[0]]
     if (doesHaveValue(rule)) {
       parts = [feature, rule, pickle]
@@ -258,7 +284,11 @@ export default class JsonFormatter extends Formatter {
     testStepAttachments,
     testStepResult,
   }: IBuildJsonStepOptions): IJsonStep {
-    const data: IJsonStep = {}
+    const data: IJsonStep = {
+      result: {
+        status: TestStepResultStatus[testStepResult.status].toLowerCase(),
+      },
+    }
     if (doesHaveValue(testStep.pickleStepId)) {
       const pickleStep = pickleStepMap[testStep.pickleStepId]
       data.arguments = this.formatStepArgument(
@@ -279,9 +309,6 @@ export default class JsonFormatter extends Formatter {
       data.match = { location: formatLocation(stepDefinition) }
     }
     const { message, status } = testStepResult
-    data.result = {
-      status: TestStepResultStatus[status].toLowerCase(),
-    }
     if (doesHaveValue(testStepResult.duration)) {
       data.result.duration = durationToNanoseconds(testStepResult.duration)
     }

@@ -90,7 +90,8 @@ export class PluginManager {
     const cleanupFn = await plugin.formatter({
       on: (key, handler) => this.registerHandler(key, handler, specifier),
       options: plugin.optionsKey
-        ? ((options as any)[plugin.optionsKey] ?? ({} as OptionsType))
+        ? (((options as Record<string, unknown>)[plugin.optionsKey] as OptionsType) ??
+          ({} as OptionsType))
         : options,
       logger: this.environment.logger,
       stream,
@@ -160,7 +161,8 @@ export class PluginManager {
       ) => this.registerTransformer(event, transformer, specifier),
       options:
         'optionsKey' in plugin && plugin.optionsKey
-          ? ((options as any)[plugin.optionsKey] ?? ({} as OptionsType))
+          ? (((options as Record<string, unknown>)[plugin.optionsKey] as OptionsType) ??
+            ({} as OptionsType))
           : options,
       logger: this.environment.logger,
       environment: {

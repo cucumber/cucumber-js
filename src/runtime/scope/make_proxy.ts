@@ -1,4 +1,4 @@
-export function makeProxy<T>(getThing: () => any): T {
+export function makeProxy<T extends object>(getThing: () => T): T {
   return new Proxy(
     {},
     {
@@ -6,7 +6,7 @@ export function makeProxy<T>(getThing: () => any): T {
         return Reflect.defineProperty(getThing(), property, attributes)
       },
       deleteProperty(_, property) {
-        return Reflect.get(getThing(), property)
+        return Reflect.deleteProperty(getThing(), property)
       },
       get(_, property) {
         return Reflect.get(getThing(), property, getThing())

@@ -46,7 +46,7 @@ const schema = yup.object().shape({
   worldParameters: yup.object(),
 })
 
-export function checkSchema(configuration: any): Partial<IConfiguration> {
+export function checkSchema(configuration: unknown): Partial<IConfiguration> {
   return schema.validateSync(configuration, {
     abortEarly: false,
     strict: true,

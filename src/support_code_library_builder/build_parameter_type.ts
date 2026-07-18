@@ -7,6 +7,7 @@ export function buildParameterType({
   transformer,
   useForSnippets,
   preferForRegexpMatch,
+  // biome-ignore lint/suspicious/noExplicitAny: the transformer returns whatever type the user's parameter type produces
 }: IParameterTypeDefinition<any>): ParameterType<any> {
   if (typeof useForSnippets !== 'boolean') {
     useForSnippets = true

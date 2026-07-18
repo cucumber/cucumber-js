@@ -1,8 +1,8 @@
 import { styleText } from 'node:util'
 import { reindent } from 'reindent-template-literals'
 
-export function warnUserAboutEnablingDeveloperMode(error: any): void {
-  if (!(error?.code === 'EPERM')) {
+export function warnUserAboutEnablingDeveloperMode(error: unknown): void {
+  if (!((error as NodeJS.ErrnoException)?.code === 'EPERM')) {
     throw error
   }
   if (!(process.platform === 'win32')) {

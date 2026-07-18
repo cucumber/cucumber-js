@@ -64,7 +64,7 @@ export default class UsageFormatter extends Formatter {
       if (matches.length > 5) {
         col1.push(`  ${(matches.length - 5).toString()} more`)
       }
-      table.push([col1.join('\n'), col2.join('\n'), col3.join('\n')] as any)
+      table.push([col1.join('\n'), col2.join('\n'), col3.join('\n')])
     })
     this.log(`${table.toString()}\n`)
   }

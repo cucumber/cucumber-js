@@ -4,7 +4,7 @@ import type { IConfiguration } from './types'
 const ADDITIVE_ARRAYS = ['format', 'import', 'loader', 'name', 'paths', 'require', 'requireModule']
 const TAG_EXPRESSIONS = ['tags', 'retryTagFilter']
 
-function mergeArrays(objValue: any[], srcValue: any[]) {
+function mergeArrays(objValue: unknown[], srcValue: unknown[]) {
   if (objValue && srcValue) {
     return [].concat(objValue, srcValue)
   }
@@ -25,12 +25,12 @@ function wrapTagExpression(raw: string) {
   return `(${raw})`
 }
 
-function customizer(objValue: any, srcValue: any, key: string): any {
+function customizer(objValue: unknown, srcValue: unknown, key: string): unknown {
   if (ADDITIVE_ARRAYS.includes(key)) {
-    return mergeArrays(objValue, srcValue)
+    return mergeArrays(objValue as unknown[], srcValue as unknown[])
   }
   if (TAG_EXPRESSIONS.includes(key)) {
-    return mergeTagExpressions(objValue, srcValue)
+    return mergeTagExpressions(objValue as string, srcValue as string)
   }
   return undefined
 }

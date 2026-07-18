@@ -13,12 +13,13 @@ export interface IRunOptions {
   hookParameter: ITestCaseHookParameter
   step: PickleStep
   stepDefinition: IDefinition
+  // biome-ignore lint/suspicious/noExplicitAny: the world is an instance of a user-supplied constructor, so it really can be anything
   world: any
 }
 
 export interface RunStepResult {
   result: TestStepResult
-  error?: any
+  error?: unknown
 }
 
 export async function run({
@@ -30,7 +31,7 @@ export async function run({
   world,
 }: IRunOptions): Promise<RunStepResult> {
   const stopwatch = create().start()
-  let error: any, result: any, invocationData: IGetInvocationDataResponse
+  let error: unknown, result: unknown, invocationData: IGetInvocationDataResponse
 
   try {
     await runInTestCaseScope({ world }, async () => {
@@ -77,7 +78,9 @@ export async function run({
   }
 
   if (doesHaveValue(error)) {
-    details = formatError(error, filterStackTraces)
+    // UserCodeRunner normalises to Error|string, but a value thrown from
+    // getInvocationParameters is unconstrained
+    details = formatError(error as Error | string, filterStackTraces)
   }
 
   return {

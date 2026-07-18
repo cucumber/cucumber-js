@@ -67,7 +67,9 @@ When(
 Then('it passes', () => {})
 
 Then('it fails', function (this: World) {
-  const actualCode: number = doesHaveValue(this.lastRun.error) ? this.lastRun.error.code : 0
+  const actualCode: number | string = doesHaveValue(this.lastRun.error)
+    ? this.lastRun.error.code
+    : 0
 
   expect(actualCode).not.to.eql(0, `Expected non-zero exit status, but got ${actualCode}`)
   this.verifiedLastRunError = true

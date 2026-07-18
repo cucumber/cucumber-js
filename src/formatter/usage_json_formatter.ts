@@ -26,9 +26,9 @@ export default class UsageJsonFormatter extends Formatter {
     this.log(JSON.stringify(usage, this.replacer, 2))
   }
 
-  replacer(key: string, value: any): any {
+  replacer(key: string, value: unknown): unknown {
     if (key === 'seconds') {
-      return parseInt(value, 10)
+      return parseInt(value as string, 10)
     }
     return value
   }

@@ -7,10 +7,10 @@ import type { Writable } from 'node:stream'
  * Matches the interface of Node.js Console, for the methods it has.
  */
 export interface ILogger {
-  debug: (message?: any, ...optionalParams: any[]) => void
-  error: (message?: any, ...optionalParams: any[]) => void
-  warn: (message?: any, ...optionalParams: any[]) => void
-  info: (message?: any, ...optionalParams: any[]) => void
+  debug: (message?: unknown, ...optionalParams: unknown[]) => void
+  error: (message?: unknown, ...optionalParams: unknown[]) => void
+  warn: (message?: unknown, ...optionalParams: unknown[]) => void
+  info: (message?: unknown, ...optionalParams: unknown[]) => void
 }
 
 /**

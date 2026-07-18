@@ -61,7 +61,7 @@ const FormatterBuilder = {
 
     return formatters[type]
       ? formatters[type]
-      : await FormatterBuilder.loadCustomClass('formatter', type, cwd)
+      : await FormatterBuilder.loadCustomClass<typeof Formatter>('formatter', type, cwd)
   },
 
   async getStepDefinitionSnippetBuilder({
@@ -75,7 +75,11 @@ const FormatterBuilder = {
     }
     let Syntax = JavascriptSnippetSyntax
     if (doesHaveValue(snippetSyntax)) {
-      Syntax = await FormatterBuilder.loadCustomClass('syntax', snippetSyntax, cwd)
+      Syntax = await FormatterBuilder.loadCustomClass<typeof JavascriptSnippetSyntax>(
+        'syntax',
+        snippetSyntax,
+        cwd
+      )
     }
     return new StepDefinitionSnippetBuilder({
       snippetSyntax: new Syntax(snippetInterface),
@@ -83,10 +87,14 @@ const FormatterBuilder = {
     })
   },
 
-  async loadCustomClass(type: 'formatter' | 'syntax', descriptor: string, cwd: string) {
+  async loadCustomClass<T extends Function>(
+    type: 'formatter' | 'syntax',
+    descriptor: string,
+    cwd: string
+  ): Promise<T> {
     const CustomClass = FormatterBuilder.resolveConstructor(await importCode(descriptor, cwd))
     if (doesHaveValue(CustomClass)) {
-      return CustomClass
+      return CustomClass as T
     } else {
       throw new Error(`Custom ${type} (${descriptor}) does not export a function/class`)
     }
@@ -96,19 +104,21 @@ const FormatterBuilder = {
     return await import(urlOrName.toString())
   },
 
-  resolveConstructor(ImportedCode: any) {
+  resolveConstructor(ImportedCode: unknown): Function | null {
     if (doesNotHaveValue(ImportedCode)) {
       return null
     }
     if (typeof ImportedCode === 'function') {
       return ImportedCode
-    } else if (typeof ImportedCode === 'object' && typeof ImportedCode.default === 'function') {
-      return ImportedCode.default
+    }
+    const { default: defaultExport } = ImportedCode as { default?: unknown }
+    if (typeof ImportedCode === 'object' && typeof defaultExport === 'function') {
+      return defaultExport
     } else if (
-      typeof ImportedCode.default === 'object' &&
-      typeof ImportedCode.default.default === 'function'
+      typeof defaultExport === 'object' &&
+      typeof (defaultExport as { default?: unknown })?.default === 'function'
     ) {
-      return ImportedCode.default.default
+      return (defaultExport as { default: Function }).default
     }
     return null
   },

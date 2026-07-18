@@ -66,7 +66,7 @@ export async function initializeFormatters({
         cleanup:
           stream === stdout
             ? async () => await Promise.resolve()
-            : promisify<any>(stream.end.bind(stream)),
+            : promisify<void>(stream.end.bind(stream)),
         supportCodeLibrary,
       }
       const formatter = await FormatterBuilder.build(implementation, typeOptions)
@@ -80,7 +80,7 @@ export async function initializeFormatters({
         directory
       )
       if (stream !== stdout) {
-        cleanupFns.push(promisify<any>(stream.end.bind(stream)))
+        cleanupFns.push(promisify<void>(stream.end.bind(stream)))
       }
     }
   }

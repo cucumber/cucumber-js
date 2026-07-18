@@ -1,4 +1,8 @@
-import { CucumberExpression, RegularExpression } from '@cucumber/cucumber-expressions'
+import {
+  CucumberExpression,
+  type Expression,
+  RegularExpression,
+} from '@cucumber/cucumber-expressions'
 import type { IdGenerator, UndefinedParameterType } from '@cucumber/messages'
 import arity from 'util-arity'
 import { formatLocation } from '../formatter/helpers'
@@ -35,7 +39,7 @@ import World from './world'
 interface IStepDefinitionConfig {
   code: Function
   line: number
-  options: any
+  options: IDefineStepOptions
   order: number
   keyword: GherkinStepKeyword
   pattern: string | RegExp
@@ -43,9 +47,9 @@ interface IStepDefinitionConfig {
 }
 
 interface ITestCaseHookDefinitionConfig {
-  code: any
+  code: Function
   line: number
-  options: any
+  options: IDefineTestCaseHookOptions
   order: number
   uri: string
 }
@@ -53,7 +57,7 @@ interface ITestCaseHookDefinitionConfig {
 interface ITestStepHookDefinitionConfig {
   code: Function
   line: number
-  options: any
+  options: IDefineTestStepHookOptions
   order: number
   uri: string
 }
@@ -61,7 +65,7 @@ interface ITestStepHookDefinitionConfig {
 interface ITestRunHookDefinitionConfig {
   code: Function
   line: number
-  options: any
+  options: IDefineTestRunHookOptions
   order: number
   uri: string
 }
@@ -79,11 +83,13 @@ export class SupportCodeLibraryBuilder {
   private beforeTestStepHookDefinitionConfigs: ITestStepHookDefinitionConfig[]
   private cwd: string
   private defaultTimeout: number
+  // biome-ignore lint/suspicious/noExplicitAny: a user-supplied function whose shape we deliberately do not constrain
   private definitionFunctionWrapper: any
   private definitionOrder: number
   private newId: IdGenerator.NewId
   private parameterTypeRegistry: SourcedParameterTypeRegistry
   private stepDefinitionConfigs: IStepDefinitionConfig[]
+  // biome-ignore lint/suspicious/noExplicitAny: the world is a user-supplied constructor, so it really can be anything
   private World: any
   private parallelCanAssign: ParallelAssignmentValidator
   private status: LibraryStatus = 'PENDING'
@@ -129,8 +135,8 @@ export class SupportCodeLibraryBuilder {
       }
     }
     this.methods = new Proxy(methods, {
-      get(target: IDefineSupportCodeMethods, method: keyof IDefineSupportCodeMethods): any {
-        return (...args: any[]) => {
+      get(target: IDefineSupportCodeMethods, method: keyof IDefineSupportCodeMethods): unknown {
+        return (...args: unknown[]) => {
           checkInstall(method)
           // @ts-expect-error difficult to type this correctly
           return target[method](...args)
@@ -139,6 +145,7 @@ export class SupportCodeLibraryBuilder {
     })
   }
 
+  // biome-ignore lint/suspicious/noExplicitAny: the transformer returns whatever type the user's parameter type produces
   defineParameterType(options: IParameterTypeDefinition<any>): void {
     const parameterType = buildParameterType(options)
     const source = getDefinitionLineAndUri(this.cwd)
@@ -268,7 +275,8 @@ export class SupportCodeLibraryBuilder {
     }
   }
 
-  wrapCode({ code, wrapperOptions }: { code: Function; wrapperOptions: any }): Function {
+  // biome-ignore lint/suspicious/noExplicitAny: opaque to us; passed straight through to the user's definition function wrapper
+  wrapCode({ code, wrapperOptions }: { code: Function; wrapperOptions?: any }): Function {
     if (doesHaveValue(this.definitionFunctionWrapper)) {
       const codeLength = code.length
       const wrappedCode = this.definitionFunctionWrapper(code, wrapperOptions)
@@ -285,10 +293,7 @@ export class SupportCodeLibraryBuilder {
     canonicalIds?: string[]
   ): TestCaseHookDefinition[] {
     return configs.map(({ code, line, options, order, uri }, index) => {
-      const wrappedCode = this.wrapCode({
-        code,
-        wrapperOptions: options.wrapperOptions,
-      })
+      const wrappedCode = this.wrapCode({ code })
       return new TestCaseHookDefinition({
         code: wrappedCode,
         id: canonicalIds ? canonicalIds[index] : this.newId(),
@@ -303,10 +308,7 @@ export class SupportCodeLibraryBuilder {
 
   buildTestStepHookDefinitions(configs: ITestStepHookDefinitionConfig[]): TestStepHookDefinition[] {
     return configs.map(({ code, line, options, order, uri }) => {
-      const wrappedCode = this.wrapCode({
-        code,
-        wrapperOptions: options.wrapperOptions,
-      })
+      const wrappedCode = this.wrapCode({ code })
       return new TestStepHookDefinition({
         code: wrappedCode,
         id: this.newId(),
@@ -324,10 +326,7 @@ export class SupportCodeLibraryBuilder {
     canonicalIds?: string[]
   ): TestRunHookDefinition[] {
     return configs.map(({ code, line, options, order, uri }, index) => {
-      const wrappedCode = this.wrapCode({
-        code,
-        wrapperOptions: options.wrapperOptions,
-      })
+      const wrappedCode = this.wrapCode({ code })
       return new TestRunHookDefinition({
         code: wrappedCode,
         id: canonicalIds ? canonicalIds[index] : this.newId(),
@@ -348,7 +347,7 @@ export class SupportCodeLibraryBuilder {
     const undefinedParameterTypes: UndefinedParameterType[] = []
     this.stepDefinitionConfigs.forEach(
       ({ code, line, options, order, keyword, pattern, uri }, index) => {
-        let expression: any
+        let expression: Expression
         if (typeof pattern === 'string') {
           try {
             expression = new CucumberExpression(pattern, this.parameterTypeRegistry)

@@ -157,7 +157,7 @@ export function parseTestCaseAttempt({
 
     isBeforeHook = isBeforeHook && doesHaveValue(testStep.hookId)
 
-    let keyword: any, keywordType: any, pickleStep: any
+    let keyword: string, keywordType: KeywordType, pickleStep: PickleStep
     if (doesHaveValue(testStep.pickleStepId)) {
       pickleStep = pickleStepMap[testStep.pickleStepId]
       keyword = getStepKeyword({ pickleStep, gherkinStepMap })

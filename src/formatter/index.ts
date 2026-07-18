@@ -36,13 +36,14 @@ export interface FormatOptions {
   snippetInterface?: SnippetInterface
   snippetSyntax?: string
   theme?: Theme
+  // biome-ignore lint/suspicious/noExplicitAny: custom formatter options are arbitrary and read directly by formatter code
   [customKey: string]: any
 }
 
 export type FormatterImplementation = typeof Formatter | FormatterPlugin
 export type IFormatterStream = Writable
 export type IFormatterLogFn = (buffer: string | Uint8Array) => void
-export type IFormatterCleanupFn = () => Promise<any>
+export type IFormatterCleanupFn = () => Promise<unknown>
 
 export interface IFormatterOptions {
   colorFns: IColorFns
