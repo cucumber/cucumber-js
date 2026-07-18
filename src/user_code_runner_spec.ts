@@ -150,7 +150,7 @@ describe('UserCodeRunner', () => {
 
           // Assert
           expect(error).to.be.instanceof(Error)
-          expect(error.message).to.eql(
+          expect((error as Error).message).to.eql(
             'function timed out, ensure the callback is executed within 100 milliseconds'
           )
           expect(result).to.eql(undefined)
@@ -224,7 +224,7 @@ describe('UserCodeRunner', () => {
 
           // Assert
           expect(error).to.be.instanceOf(Error)
-          expect(error.message).to.eql('Promise rejected without a reason')
+          expect((error as Error).message).to.eql('Promise rejected without a reason')
           expect(result).to.eql(undefined)
         })
       })
@@ -242,7 +242,7 @@ describe('UserCodeRunner', () => {
 
           // Assert
           expect(error).to.be.instanceof(Error)
-          expect(error.message).to.eql(
+          expect((error as Error).message).to.eql(
             'function timed out, ensure the promise resolves within 100 milliseconds'
           )
           expect(result).to.eql(undefined)
@@ -283,7 +283,7 @@ describe('UserCodeRunner', () => {
 
         // Assert
         expect(error).to.be.instanceof(Error)
-        expect(error.message).to.eql(
+        expect((error as Error).message).to.eql(
           'function uses multiple asynchronous interfaces: callback and promise\n' +
             'to use the callback interface: do not return a promise\n' +
             'to use the promise interface: remove the last argument to the function'

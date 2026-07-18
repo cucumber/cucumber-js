@@ -24,6 +24,7 @@ export interface ITestCaseHookParameter {
   gherkinDocument: GherkinDocument
   pickle: Pickle
   result?: TestStepResult
+  // biome-ignore lint/suspicious/noExplicitAny: a thrown value really can be anything; users can narrow if they prefer
   error?: any
   willBeRetried?: boolean
   testCaseStartedId: string
@@ -34,6 +35,7 @@ export interface ITestStepHookParameter {
   pickle: Pickle
   pickleStep: PickleStep
   result: TestStepResult
+  // biome-ignore lint/suspicious/noExplicitAny: a thrown value really can be anything; users can narrow if they prefer
   error?: any
   testCaseStartedId: string
   testStepId: string
@@ -41,22 +43,27 @@ export interface ITestStepHookParameter {
 
 export type TestRunHookFunction = (this: {
   parameters: JsonObject
+  // biome-ignore lint/suspicious/noExplicitAny: user code can return anything, or a promise of anything; we only look for the skipped/pending sentinels
 }) => any | Promise<any>
 
 export type TestCaseHookFunction<WorldType> = (
   this: WorldType,
   arg: ITestCaseHookParameter
+  // biome-ignore lint/suspicious/noExplicitAny: user code can return anything, or a promise of anything; we only look for the skipped/pending sentinels
 ) => any | Promise<any>
 
 export type TestStepHookFunction<WorldType> = (
   this: WorldType,
   arg: ITestStepHookParameter
+  // biome-ignore lint/suspicious/noExplicitAny: user code can return anything, or a promise of anything; we only look for the skipped/pending sentinels
 ) => any | Promise<any>
 
+// biome-ignore lint/suspicious/noExplicitAny: step arguments are whatever the parameter types produce, and user code can return anything
 export type TestStepFunction<WorldType> = (this: WorldType, ...args: any[]) => any | Promise<any>
 
 export interface IDefineStepOptions {
   timeout?: number
+  // biome-ignore lint/suspicious/noExplicitAny: opaque to us; passed straight through to the user's definition function wrapper
   wrapperOptions?: any
 }
 
@@ -96,11 +103,13 @@ export type IDefineStep = (<WorldType = IWorld>(
   ) => void)
 
 export interface IDefineSupportCodeMethods {
+  // biome-ignore lint/suspicious/noExplicitAny: the transformer returns whatever type the user's parameter type produces
   defineParameterType: (options: IParameterTypeDefinition<any>) => void
   defineStep: IDefineStep
   setDefaultTimeout: (milliseconds: number) => void
   setDefinitionFunctionWrapper: (fn: Function) => void
   setParallelCanAssign: (fn: ParallelAssignmentValidator) => void
+  // biome-ignore lint/suspicious/noExplicitAny: accepts any user-supplied World constructor (a class or a plain function used with new)
   setWorldConstructor: (fn: any) => void
   After: (<WorldType = IWorld>(code: TestCaseHookFunction<WorldType>) => void) &
     (<WorldType = IWorld>(tags: string, code: TestCaseHookFunction<WorldType>) => void) &
@@ -162,6 +171,7 @@ export interface SupportCodeLibrary {
   readonly stepDefinitions: StepDefinition[]
   readonly undefinedParameterTypes: UndefinedParameterType[]
   readonly parameterTypeRegistry: SourcedParameterTypeRegistry
+  // biome-ignore lint/suspicious/noExplicitAny: the world is a user-supplied constructor, so instances really can be anything
   readonly World: any
   readonly parallelCanAssign: ParallelAssignmentValidator
 }

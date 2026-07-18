@@ -8,7 +8,7 @@ import shardingPlugin from '../sharding'
 import { doesNotHaveValue } from '../value_checker'
 import type { IRunConfiguration, ISourcesCoordinates } from './types'
 
-async function importPlugin(specifier: string, cwd: string): Promise<any> {
+async function importPlugin(specifier: string, cwd: string): Promise<unknown> {
   try {
     let normalized: URL | string = specifier
     if (specifier.startsWith('.')) {
@@ -24,20 +24,20 @@ async function importPlugin(specifier: string, cwd: string): Promise<any> {
   }
 }
 
-function findPlugin(imported: any): Plugin | null {
+function findPlugin(imported: unknown): Plugin | null {
   return findPluginRecursive(imported, 3)
 }
 
-function findPluginRecursive(thing: any, depth: number): Plugin | null {
+function findPluginRecursive(thing: unknown, depth: number): Plugin | null {
   if (doesNotHaveValue(thing)) {
     return null
   }
-  if (typeof thing === 'object' && thing.type === 'plugin') {
-    return thing
+  if (typeof thing === 'object' && (thing as Plugin).type === 'plugin') {
+    return thing as Plugin
   }
   depth--
   if (depth > 0) {
-    return findPluginRecursive(thing.default, depth)
+    return findPluginRecursive((thing as { default?: unknown }).default, depth)
   }
   return null
 }

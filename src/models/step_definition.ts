@@ -30,7 +30,7 @@ export default class StepDefinition extends Definition implements IDefinition {
       this.expression.match(step.text).map((arg) => arg.getValue(world))
     )
     if (doesHaveValue(step.argument)) {
-      const argumentParameter = parseStepArgument<any>(step.argument, {
+      const argumentParameter = parseStepArgument<DataTable | string>(step.argument, {
         dataTable: (arg) => new DataTable(arg),
         docString: (arg) => arg.content,
       })

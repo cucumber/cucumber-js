@@ -61,6 +61,7 @@ export default class TestCaseRunner {
   private readonly supportCodeLibrary: SupportCodeLibrary
   private readonly snippetBuilder: StepDefinitionSnippetBuilder
   private testStepResults: TestStepResult[]
+  // biome-ignore lint/suspicious/noExplicitAny: the world is an instance of a user-supplied constructor, so it really can be anything
   private world: any
   private readonly worldParameters: JsonObject
 
@@ -229,7 +230,7 @@ export default class TestCaseRunner {
     this.eventBroadcaster.emit('envelope', testCaseStarted)
     // used to determine whether a hook is a Before or After
     let didWeRunStepsYet = false
-    let error = false
+    let error: unknown = false
     for (const testStep of this.testCase.testSteps) {
       await this.aroundTestStep(testStep.id, async () => {
         if (doesHaveValue(testStep.hookId)) {
@@ -355,8 +356,8 @@ export default class TestCaseRunner {
       }
     }
 
-    let stepResult: any
-    let error: any
+    let stepResult: RunStepResult
+    let error: unknown
     let stepResults = await this.runStepHooks(this.getBeforeStepHookDefinitions(), pickleStep)
     if (getWorstTestStepResult(stepResults).status !== TestStepResultStatus.FAILED) {
       stepResult = await this.invokeStep(pickleStep, stepDefinitions[0])

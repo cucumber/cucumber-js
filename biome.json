@@ -14,8 +14,7 @@
       },
       "suspicious": {
         "noConfusingVoidType": "off",
-        "noConsole": "error",
-        "noExplicitAny": "off"
+        "noConsole": "error"
       }
     }
   },
@@ -31,6 +30,16 @@
         "rules": {
           "style": {
             "noNonNullAssertion": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/*_spec.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "off"
           }
         }
       }

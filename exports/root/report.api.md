@@ -145,9 +145,9 @@ export const FormatterBuilder: {
     build(FormatterConstructor: string | typeof Formatter, options: IBuildOptions): Promise<Formatter>;
     getConstructorByType(type: string, cwd: string): Promise<typeof Formatter>;
     getStepDefinitionSnippetBuilder(input: IGetStepDefinitionSnippetBuilderOptions): Promise<StepDefinitionSnippetBuilder>;
-    loadCustomClass(type: "formatter" | "syntax", descriptor: string, cwd: string): Promise<any>;
+    loadCustomClass<T extends Function>(type: "formatter" | "syntax", descriptor: string, cwd: string): Promise<T>;
     loadFile(urlOrName: URL | string): Promise<any>;
-    resolveConstructor(ImportedCode: any): any;
+    resolveConstructor(ImportedCode: unknown): Function | null;
 };
 
 declare namespace formatterHelpers {
@@ -378,15 +378,15 @@ export interface IWorldOptions<ParametersType = any> {
 export class JsonFormatter extends Formatter {
     constructor(options: IFormatterOptions);
     // (undocumented)
-    convertNameToId(obj: Feature | Pickle): string;
+    convertNameToId(obj: Feature | Rule | Pickle): string;
     // (undocumented)
     static readonly documentation: string;
     // (undocumented)
-    formatDataTable(dataTable: PickleTable): any;
+    formatDataTable(dataTable: PickleTable): IJsonDataTable;
     // (undocumented)
-    formatDocString(docString: PickleDocString, gherkinStep: Step): any;
+    formatDocString(docString: PickleDocString, gherkinStep: Step): IJsonDocString;
     // (undocumented)
-    formatStepArgument(stepArgument: PickleStepArgument, gherkinStep: Step): any;
+    formatStepArgument(stepArgument: PickleStepArgument, gherkinStep: Step): IJsonStepArgument[];
     // (undocumented)
     getFeatureData(input: IBuildJsonFeatureOptions): IJsonFeature;
     // (undocumented)
@@ -532,7 +532,7 @@ export class UsageJsonFormatter extends Formatter {
     // (undocumented)
     logUsage(): void;
     // (undocumented)
-    replacer(key: string, value: any): any;
+    replacer(key: string, value: unknown): unknown;
 }
 
 // @public (undocumented)

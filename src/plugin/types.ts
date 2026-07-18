@@ -137,6 +137,7 @@ export type PluginCleanup = () => PromiseLike<void> | void
  * A plugin that can subscribe to events and register transforms
  * @public
  */
+// biome-ignore lint/suspicious/noExplicitAny: options are defined by the plugin itself and really can be anything; plugins can supply a type argument to narrow
 export type Plugin<OptionsType = any> = {
   type: 'plugin'
   /**
@@ -169,6 +170,7 @@ export type InternalCoordinatorContext<OptionsType> = CoordinatorContext<Options
  * A built-in plugin with the additional ability to emit events
  * @internal
  */
+// biome-ignore lint/suspicious/noExplicitAny: options are defined by the plugin itself and really can be anything; plugins can supply a type argument to narrow
 export type InternalPlugin<OptionsType = any> = {
   type: 'plugin'
   coordinator: (
@@ -223,6 +225,7 @@ export type FormatterPluginContext<OptionsType> = {
  * A plugin that consumes Cucumber Messages and writes formatted output to a stream
  * @public
  */
+// biome-ignore lint/suspicious/noExplicitAny: options are defined by the plugin itself and really can be anything; plugins can supply a type argument to narrow
 export type FormatterPlugin<OptionsType = any> = {
   type: 'formatter'
   /**

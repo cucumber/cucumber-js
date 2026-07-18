@@ -17,15 +17,22 @@ import type FakeReportServer from '../../test/fake_report_server'
 
 const asyncPipeline = util.promisify(pipeline)
 
+/**
+ * An error from a cucumber run, carrying the exit code (or a spawn failure code)
+ */
+export interface RunError extends Error {
+  code?: number | string
+}
+
 interface ILastRun {
-  error: any
+  error?: RunError
   errorOutput: string
   envelopes: Envelope[]
   output: string
 }
 
 interface IRunResult {
-  error: any
+  error?: RunError
   stderr: string
   stdout: string
 }
@@ -81,7 +88,7 @@ export class World {
       const stdout = new PassThrough()
       const stderr = new PassThrough()
       const environment: IRunEnvironment = { cwd, stdout, stderr }
-      let error: any
+      let error: RunError
       for (const key of Object.keys(envOverride)) {
         process.env[key] = envOverride[key]
       }

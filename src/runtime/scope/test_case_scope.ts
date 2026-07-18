@@ -2,6 +2,7 @@ import { AsyncLocalStorage } from 'node:async_hooks'
 import type { IWorld } from '../../support_code_library_builder/world'
 import { makeProxy } from './make_proxy'
 
+// biome-ignore lint/suspicious/noExplicitAny: world parameters come from user config and really can be anything; this internal default mirrors the public IWorld/IContext generic
 interface TestCaseScopeStore<ParametersType = any> {
   world: IWorld<ParametersType>
 }
@@ -15,6 +16,7 @@ export async function runInTestCaseScope<ResponseType>(
   return testCaseScope.run(store, callback)
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: world parameters come from user config and really can be anything; this internal default mirrors the public IWorld/IContext generic
 function getWorld<ParametersType = any>(): IWorld<ParametersType> {
   const store = testCaseScope.getStore()
   if (!store) {

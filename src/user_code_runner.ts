@@ -4,15 +4,15 @@ import UncaughtExceptionManager from './uncaught_exception_manager'
 import { doesHaveValue } from './value_checker'
 
 export interface IRunRequest {
-  argsArray: any[]
-  thisArg: any
+  argsArray: unknown[]
+  thisArg: unknown
   fn: Function
   timeoutInMilliseconds: number
 }
 
 export interface IRunResponse {
-  error?: any
-  result?: any
+  error?: Error | string
+  result?: unknown
 }
 
 const UserCodeRunner = {
@@ -27,7 +27,7 @@ const UserCodeRunner = {
       })
     })
 
-    let fnReturn: any
+    let fnReturn: unknown
     try {
       fnReturn = fn.apply(thisArg, argsArray)
     } catch (e) {
@@ -35,9 +35,10 @@ const UserCodeRunner = {
       return { error }
     }
 
-    const racingPromises = []
+    const racingPromises: PromiseLike<unknown>[] = []
     const callbackInterface = fn.length === argsArray.length
-    const promiseInterface = doesHaveValue(fnReturn) && typeof fnReturn.then === 'function'
+    const promiseInterface =
+      doesHaveValue(fnReturn) && typeof (fnReturn as PromiseLike<unknown>).then === 'function'
 
     if (callbackInterface && promiseInterface) {
       return {
@@ -50,12 +51,12 @@ const UserCodeRunner = {
     } else if (callbackInterface) {
       racingPromises.push(callbackPromise)
     } else if (promiseInterface) {
-      racingPromises.push(fnReturn)
+      racingPromises.push(fnReturn as PromiseLike<unknown>)
     } else {
       return { result: fnReturn }
     }
 
-    let exceptionHandler: any
+    let exceptionHandler: NodeJS.UncaughtExceptionListener
     const uncaughtExceptionPromise = new Promise((_resolve, reject) => {
       exceptionHandler = reject
       UncaughtExceptionManager.registerHandler(exceptionHandler)
@@ -71,7 +72,7 @@ const UserCodeRunner = {
       finalPromise = wrapPromiseWithTimeout(finalPromise, timeoutInMilliseconds, timeoutMessage)
     }
 
-    let error: any, result: any
+    let error: Error | string, result: unknown
     try {
       result = await finalPromise
     } catch (e) {

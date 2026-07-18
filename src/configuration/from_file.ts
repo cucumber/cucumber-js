@@ -60,9 +60,9 @@ export async function fromFile(
 }
 
 async function handleDefaultFunctionDefinition(
-  definitions: Record<string, any>,
+  definitions: Record<string, unknown>,
   defaultDefinition: Function
-): Promise<Record<string, any>> {
+): Promise<Record<string, unknown>> {
   if (Object.keys(definitions).length > 1) {
     throw new Error(
       'Invalid profiles specified: if a default function definition is provided, no other static profiles should be specified'
@@ -77,13 +77,17 @@ async function handleDefaultFunctionDefinition(
   }
 }
 
-async function loadFile(logger: ILogger, cwd: string, file: string): Promise<Record<string, any>> {
+async function loadFile(
+  logger: ILogger,
+  cwd: string,
+  file: string
+): Promise<Record<string, unknown>> {
   const filePath: string = path.join(cwd, file)
   const extension = path.extname(filePath)
   if (!SUPPORTED_EXTENSIONS.includes(extension)) {
     throw new Error(`Unsupported configuration file extension "${extension}"`)
   }
-  let definitions: any
+  let definitions: Record<string, unknown>
   try {
     switch (extension) {
       case '.json':

@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-export async function importCode(specifier: string, cwd: string): Promise<any> {
+export async function importCode(specifier: string, cwd: string): Promise<unknown> {
   try {
     let normalized: URL | string = specifier
     if (specifier.startsWith('.')) {

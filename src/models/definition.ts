@@ -6,17 +6,20 @@ import type { GherkinStepKeyword } from './gherkin_step_keyword'
 export interface IGetInvocationDataRequest {
   hookParameter: ITestCaseHookParameter
   step: PickleStep
+  // biome-ignore lint/suspicious/noExplicitAny: the world is an instance of a user-supplied constructor, so it really can be anything
   world: any
 }
 
 export interface IGetInvocationDataResponse {
   getInvalidCodeLengthMessage: () => string
+  // biome-ignore lint/suspicious/noExplicitAny: step arguments are whatever the parameter types produce
   parameters: any[]
   validCodeLengths: number[]
 }
 
 export interface IDefinitionOptions {
   timeout?: number
+  // biome-ignore lint/suspicious/noExplicitAny: opaque to us; passed straight through to the user's definition function wrapper
   wrapperOptions?: any
 }
 
@@ -93,7 +96,7 @@ export default abstract class Definition {
     )
   }
 
-  baseGetInvalidCodeLengthMessage(parameters: any[]): string {
+  baseGetInvalidCodeLengthMessage(parameters: unknown[]): string {
     return this.buildInvalidCodeLengthMessage(parameters.length, parameters.length + 1)
   }
 }

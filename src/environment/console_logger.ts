@@ -12,21 +12,21 @@ export class ConsoleLogger implements ILogger {
     this.console = new Console(this.stream)
   }
 
-  debug(message?: any, ...optionalParams: any[]): void {
+  debug(message?: unknown, ...optionalParams: unknown[]): void {
     if (this.debugEnabled) {
       this.console.debug(message, ...optionalParams)
     }
   }
 
-  error(message?: any, ...optionalParams: any[]): void {
+  error(message?: unknown, ...optionalParams: unknown[]): void {
     this.console.error(message, ...optionalParams)
   }
 
-  warn(message?: any, ...optionalParams: any[]): void {
+  warn(message?: unknown, ...optionalParams: unknown[]): void {
     this.console.warn(message, ...optionalParams)
   }
 
-  info(message?: any, ...optionalParams: any[]): void {
+  info(message?: unknown, ...optionalParams: unknown[]): void {
     this.console.info(message, ...optionalParams)
   }
 }

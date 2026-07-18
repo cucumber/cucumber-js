@@ -3,7 +3,7 @@ import type { DefineStepPattern, IDefineStepOptions } from './types'
 interface IValidation {
   identifier: string
   expectedType: string
-  predicate: (args: any) => boolean
+  predicate: (args: unknown) => boolean
 }
 
 interface IDefineStepArguments {
