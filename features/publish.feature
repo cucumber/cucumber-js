@@ -1,9 +1,8 @@
-@spawn @flaky
+@spawn @flaky @reports
 Feature: Publish reports
 
   Background:
-    Given a report server is running on 'http://localhost:9987'
-    And my env includes "CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports"
+    Given my env includes "CUCUMBER_PUBLISH_URL=http://localhost:9987/api/reports"
     And a file named "features/a.feature" with:
       """
       Feature: a feature
@@ -70,7 +69,6 @@ Feature: Publish reports
     And the server should receive an "Authorization" header with value "Bearer f318d9ec-5a3d-4727-adec-bd7b69e2edd3"
 
   Scenario: Report is published via a proxy when NODE_USE_ENV_PROXY is set
-    Given a proxy server is running on 'http://localhost:9988'
     When I run cucumber-js with arguments `--publish` and env `HTTP_PROXY=http://localhost:9988 NODE_USE_ENV_PROXY=1`
     Then it passes
     And the proxy server should have proxied to "localhost:9987"

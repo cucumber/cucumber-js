@@ -1,11 +1,20 @@
 import path from 'node:path'
 import fsExtra from 'fs-extra'
-import { After, Before, formatterHelpers, type ITestCaseHookParameter } from '../../'
+import {
+  After,
+  Before,
+  formatterHelpers,
+  type ITestCaseHookParameter,
+  parallelCanAssignHelpers,
+  setParallelCanAssign,
+} from '../../'
 import { doesHaveValue } from '../../src/value_checker'
 import { warnUserAboutEnablingDeveloperMode } from './warn_user_about_enabling_developer_mode'
 import type { World } from './world'
 
 const projectPath = path.join(__dirname, '..', '..')
+
+setParallelCanAssign(parallelCanAssignHelpers.atMostOnePicklePerTag(['@reports']))
 
 Before('@debug', function (this: World) {
   this.debug = true
@@ -49,14 +58,6 @@ Before('@without-require-esm', function (this: World) {
 })
 
 After(async function (this: World) {
-  if (this.reportServer?.started) {
-    await this.reportServer.stop()
-  }
-
-  if (this.proxyServer?.started) {
-    await this.proxyServer.stop()
-  }
-
   if (
     doesHaveValue(this.lastRun) &&
     doesHaveValue(this.lastRun.error) &&
