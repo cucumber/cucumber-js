@@ -10,6 +10,7 @@
       ["junit", "reports/junit.xml"],
       ["html", "reports/html-formatter.html"]
     ],
+    "parallel": 3,
     "retry": 2,
     "retryTagFilter": "@flaky"
   }

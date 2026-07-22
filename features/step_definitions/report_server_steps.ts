@@ -1,22 +1,25 @@
 import assert from 'node:assert'
-import { URL } from 'node:url'
 import { gunzipSync } from 'node:zlib'
 import { expect } from 'chai'
-import { type DataTable, Given, Then } from '../..'
+import { After, Before, type DataTable, Given, Then } from '../..'
 import FakeProxyServer from '../../test/fake_proxy_server'
 import FakeReportServer from '../../test/fake_report_server'
 import type { World } from '../support/world'
 
-Given('a report server is running on {string}', async function (this: World, url: string) {
-  const port = parseInt(new URL(url).port, 10)
-  this.reportServer = new FakeReportServer(port)
+Before('@reports', async function (this: World) {
+  this.reportServer = new FakeReportServer(9987)
   await this.reportServer.start()
+  this.proxyServer = new FakeProxyServer(9988)
+  await this.proxyServer.start()
 })
 
-Given('a proxy server is running on {string}', async function (this: World, url: string) {
-  const port = parseInt(new URL(url).port, 10)
-  this.proxyServer = new FakeProxyServer(port)
-  await this.proxyServer.start()
+After('@reports', async function (this: World) {
+  if (this.reportServer.started) {
+    await this.reportServer.stop()
+  }
+  if (this.proxyServer.started) {
+    await this.proxyServer.stop()
+  }
 })
 
 Given('report publishing is not working', async function (this: World) {
