@@ -1,6 +1,4 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "github>cucumber/renovate-config"
-  ]
+  "extends": ["github>cucumber/renovate-config"]
 }
