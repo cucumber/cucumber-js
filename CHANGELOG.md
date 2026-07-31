@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Fixed
+- Fix hang in parallel runtime when there are no test cases to run ([#2908](https://github.com/cucumber/cucumber-js/pull/2908))
 
 ## [13.2.0] - 2026-07-20
 ### Added
