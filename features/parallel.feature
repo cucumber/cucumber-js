@@ -159,6 +159,18 @@ Feature: Running scenarios in parallel
       "status": "passed"
       """
 
+  Scenario: running in parallel with 0 scenarios does not hang
+    Given a file named "features/a.feature" with:
+      """
+      Feature: excluded
+        @excluded
+        Scenario: a
+          Given a step
+      """
+    When I run cucumber-js with `--parallel 2 --tags "not @excluded"`
+    Then it passes
+    And it runs 0 scenarios
+
   Scenario: environment variables are passed to parallel workers
     Given a file named "features/step_definitions/cucumber_steps.js" with:
       """
