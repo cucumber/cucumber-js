@@ -17,6 +17,11 @@ export class TestCasesPhase implements Phase<RunTestCaseCommand> {
     private readonly canAssign: ParallelAssignmentValidator,
     assembledTestCases: ReadonlyArray<AssembledTestCase>
   ) {
+    // If there's nothing to run, no worker will ever be issued a command, so no FINISHED
+    // event will ever arrive to trigger settlement via `next()` - settle right away instead.
+    if (assembledTestCases.length === 0) {
+      this.resolve(true)
+    }
     this.queue.push(...assembledTestCases)
   }
 
