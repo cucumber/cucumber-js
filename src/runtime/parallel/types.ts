@@ -11,6 +11,7 @@ export type ManagedWorker = {
   workerThread: Worker
   port: MessagePort
   ready: boolean
+  beforeAllHooksFinished: boolean
 }
 
 export type WorkerData = {
