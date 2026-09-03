@@ -1,9 +1,11 @@
 import type { EventEmitter } from 'node:events'
-import type { IdGenerator } from '@cucumber/messages'
+import type { IdGenerator, TestStepResultStatus } from '@cucumber/messages'
 import type { AssembledTestCase } from '../../assemble'
 import type StepDefinitionSnippetBuilder from '../../formatter/step_definition_snippet_builder'
 import type { SupportCodeLibrary } from '../../support_code_library_builder/types'
+import { AttemptManager } from '../attempt_manager'
 import { Executor } from '../executor'
+import { shouldCauseFailure } from '../helpers'
 import type { RuntimeOptions } from '../index'
 import type { RuntimeAdapter } from '../types'
 
@@ -12,12 +14,13 @@ import type { RuntimeAdapter } from '../types'
  */
 export class InProcessAdapter implements RuntimeAdapter {
   private readonly executor: Executor
+  private readonly attemptManager: AttemptManager
 
   constructor(
     testRunStartedId: string,
     eventBroadcaster: EventEmitter,
     newId: IdGenerator.NewId,
-    options: RuntimeOptions,
+    private readonly options: RuntimeOptions,
     supportCodeLibrary: SupportCodeLibrary,
     snippetBuilder: StepDefinitionSnippetBuilder
   ) {
@@ -30,6 +33,7 @@ export class InProcessAdapter implements RuntimeAdapter {
       supportCodeLibrary,
       snippetBuilder
     )
+    this.attemptManager = new AttemptManager(options)
   }
 
   async setup() {
@@ -47,7 +51,14 @@ export class InProcessAdapter implements RuntimeAdapter {
   async runTestCases(assembledTestCases: ReadonlyArray<AssembledTestCase>) {
     let failing = false
     for (const item of assembledTestCases) {
-      if (!(await this.executor.runTestCase(item, failing))) {
+      const skip = this.options.dryRun || (this.options.failFast && failing)
+      const attempts = this.attemptManager.track(item.pickle, skip)
+      let status: TestStepResultStatus
+      do {
+        status = await this.executor.runTestCaseAttempt(item, attempts.next())
+      } while (attempts.finish(status))
+      // only the final attempt's outcome counts towards fail-fast
+      if (shouldCauseFailure(status, this.options)) {
         failing = true
       }
     }

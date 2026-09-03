@@ -27,7 +27,8 @@ async function testRunner(options: {
   workerId?: string
   gherkinDocument: GherkinDocument
   pickle: Pickle
-  retries?: number
+  attempt?: number
+  moreAttemptsRemaining?: boolean
   skip?: boolean
   supportCodeLibrary: SupportCodeLibrary
 }): Promise<{
@@ -65,7 +66,8 @@ async function testRunner(options: {
     newId,
     pickle: options.pickle,
     testCase,
-    retries: valueOrDefault(options.retries, 0),
+    attempt: valueOrDefault(options.attempt, 0),
+    moreAttemptsRemaining: valueOrDefault(options.moreAttemptsRemaining, false),
     filterStackTraces: false,
     skip: valueOrDefault(options.skip, false),
     supportCodeLibrary: options.supportCodeLibrary,
@@ -294,17 +296,12 @@ describe('TestCaseRunner', () => {
       })
     })
 
-    describe('with a flaky step and a positive retries value', () => {
-      it('emits the expected envelopes and returns a passing result', async () => {
+    describe('with a failing step and more attempts remaining', () => {
+      it('emits the expected envelopes and returns a failing result', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          let willPass = false
           Given('a step', () => {
             clock.tick(1)
-            if (willPass) {
-              return
-            }
-            willPass = true
             throw 'Oh no!'
           })
         })
@@ -320,7 +317,8 @@ describe('TestCaseRunner', () => {
         const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
-          retries: 1,
+          attempt: 1,
+          moreAttemptsRemaining: true,
           supportCodeLibrary,
         })
 
@@ -328,7 +326,7 @@ describe('TestCaseRunner', () => {
         const expected: Envelope[] = [
           {
             testCaseStarted: {
-              attempt: 0,
+              attempt: 1,
               id: '3',
               testCaseId: '1',
               timestamp: predictableTimestamp(0),
@@ -365,54 +363,16 @@ describe('TestCaseRunner', () => {
               willBeRetried: true,
             },
           },
-          {
-            testCaseStarted: {
-              attempt: 1,
-              id: '4',
-              testCaseId: '1',
-              timestamp: predictableTimestamp(1),
-            },
-          },
-          {
-            testStepStarted: {
-              testCaseStartedId: '4',
-              testStepId: '2',
-              timestamp: predictableTimestamp(1),
-            },
-          },
-          {
-            testStepFinished: {
-              testCaseStartedId: '4',
-              testStepResult: {
-                duration: TimeConversion.millisecondsToDuration(1),
-                status: TestStepResultStatus.PASSED,
-              },
-              testStepId: '2',
-              timestamp: predictableTimestamp(2),
-            },
-          },
-          {
-            testCaseFinished: {
-              testCaseStartedId: '4',
-              timestamp: predictableTimestamp(2),
-              willBeRetried: false,
-            },
-          },
         ]
         expect(envelopes).to.eql(expected)
-        expect(result).to.eql(TestStepResultStatus.PASSED)
+        expect(result).to.eql(TestStepResultStatus.FAILED)
       })
 
-      it('should provide the correctly willBeRetried value to the hook', async () => {
+      it('provides willBeRetried as true to the After hook', async () => {
         // Arrange
         const hookStub = sinon.stub()
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given, After }) => {
-          let willPass = false
           Given('a step', () => {
-            if (willPass) {
-              return
-            }
-            willPass = true
             throw 'error'
           })
           After(hookStub)
@@ -429,14 +389,45 @@ describe('TestCaseRunner', () => {
         await testRunner({
           gherkinDocument,
           pickle,
-          retries: 1,
+          moreAttemptsRemaining: true,
           supportCodeLibrary,
         })
 
         // Assert
-        expect(hookStub).to.have.been.calledTwice()
+        expect(hookStub).to.have.been.calledOnce()
         expect(hookStub.args[0][0].willBeRetried).to.eq(true)
-        expect(hookStub.args[1][0].willBeRetried).to.eq(false)
+      })
+    })
+
+    describe('with a failing step and no more attempts remaining', () => {
+      it('provides willBeRetried as false to the After hook', async () => {
+        // Arrange
+        const hookStub = sinon.stub()
+        const supportCodeLibrary = buildSupportCodeLibrary(({ Given, After }) => {
+          Given('a step', () => {
+            throw 'error'
+          })
+          After(hookStub)
+        })
+        const {
+          gherkinDocument,
+          pickles: [pickle],
+        } = await parse({
+          data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
+          uri: 'a.feature',
+        })
+
+        // Act
+        await testRunner({
+          gherkinDocument,
+          pickle,
+          moreAttemptsRemaining: false,
+          supportCodeLibrary,
+        })
+
+        // Assert
+        expect(hookStub).to.have.been.calledOnce()
+        expect(hookStub.args[0][0].willBeRetried).to.eq(false)
       })
     })
 

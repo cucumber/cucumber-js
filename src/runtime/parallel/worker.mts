@@ -68,11 +68,11 @@ port.on('message', (command: WorkerCommand) => {
           } satisfies WorkerEvent)
         })
       break
-    case 'TEST_CASE':
-      executor.runTestCase(command.assembledTestCase, command.failing).then((success) => {
+    case 'TEST_CASE_ATTEMPT':
+      executor.runTestCaseAttempt(command.assembledTestCase, command).then((status) => {
         port.postMessage({
-          type: 'FINISHED',
-          success,
+          type: 'TEST_CASE_ATTEMPT_FINISHED',
+          status,
         } satisfies WorkerEvent)
       })
       break

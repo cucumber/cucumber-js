@@ -2,18 +2,26 @@ import type { Pickle } from '@cucumber/messages'
 import type { AssembledTestCase } from '../../assemble'
 import type { ILogger } from '../../environment'
 import type { ParallelAssignmentValidator } from '../../support_code_library_builder/types'
-import type { FinishedEvent, Phase, RunTestCaseCommand } from './types'
+import type { AttemptManager, TestCaseAttempts } from '../attempt_manager'
+import { shouldCauseFailure } from '../helpers'
+import type { RuntimeOptions } from '../types'
+import type { Phase, RunTestCaseAttemptCommand, TestCaseAttemptFinishedEvent } from './types'
 
-export class TestCasesPhase implements Phase<RunTestCaseCommand> {
+export class TestCasesPhase
+  implements Phase<RunTestCaseAttemptCommand, TestCaseAttemptFinishedEvent>
+{
   private failing = false
   private idleInterventions = 0
   private readonly queue: Array<AssembledTestCase> = []
   private readonly running: Set<Pickle> = new Set()
+  private readonly attempts: Map<string, TestCaseAttempts> = new Map()
 
   constructor(
     private readonly resolve: (success: boolean) => void,
     readonly reject: (reason: unknown) => void,
     private readonly logger: ILogger,
+    private readonly options: RuntimeOptions,
+    private readonly attemptManager: AttemptManager,
     private readonly canAssign: ParallelAssignmentValidator,
     assembledTestCases: ReadonlyArray<AssembledTestCase>
   ) {
@@ -25,15 +33,27 @@ export class TestCasesPhase implements Phase<RunTestCaseCommand> {
     this.queue.push(...assembledTestCases)
   }
 
-  fill(): RunTestCaseCommand | undefined {
+  fill(): RunTestCaseAttemptCommand | undefined {
     return this.select()
   }
 
-  next(command: RunTestCaseCommand, event: FinishedEvent): RunTestCaseCommand | undefined {
-    if (!event.success) {
+  next(
+    command: RunTestCaseAttemptCommand,
+    event: TestCaseAttemptFinishedEvent
+  ): RunTestCaseAttemptCommand | undefined {
+    const { pickle } = command.assembledTestCase
+    const attempts = this.attempts.get(pickle.id)
+    if (attempts.finish(event.status)) {
+      // Retry straight away on the same worker. The pickle stays in `running`,
+      // so `canAssign` continues to treat it as in progress throughout.
+      return this.attempt(command.assembledTestCase, attempts)
+    }
+    this.attempts.delete(pickle.id)
+    this.running.delete(pickle)
+    // Only the final attempt's outcome counts towards fail-fast
+    if (shouldCauseFailure(event.status, this.options)) {
       this.failing = true
     }
-    this.running.delete(command.assembledTestCase.pickle)
     if (this.queue.length === 0 && this.running.size === 0) {
       if (this.idleInterventions > 0) {
         this.logger.warn(
@@ -46,7 +66,7 @@ export class TestCasesPhase implements Phase<RunTestCaseCommand> {
     return this.select()
   }
 
-  private select(): RunTestCaseCommand | undefined {
+  private select(): RunTestCaseAttemptCommand | undefined {
     if (this.queue.length === 0) {
       return undefined
     }
@@ -62,13 +82,25 @@ export class TestCasesPhase implements Phase<RunTestCaseCommand> {
     return undefined
   }
 
-  private dequeue(assembledTestCase: AssembledTestCase): RunTestCaseCommand {
+  private dequeue(assembledTestCase: AssembledTestCase): RunTestCaseAttemptCommand {
     this.queue.splice(this.queue.indexOf(assembledTestCase), 1)
-    this.running.add(assembledTestCase.pickle)
+    const { pickle } = assembledTestCase
+    // Skip is decided once per test case, before its first attempt
+    const skip = this.options.dryRun || (this.options.failFast && this.failing)
+    const attempts = this.attemptManager.track(pickle, skip)
+    this.attempts.set(pickle.id, attempts)
+    this.running.add(pickle)
+    return this.attempt(assembledTestCase, attempts)
+  }
+
+  private attempt(
+    assembledTestCase: AssembledTestCase,
+    attempts: TestCaseAttempts
+  ): RunTestCaseAttemptCommand {
     return {
-      type: 'TEST_CASE',
+      type: 'TEST_CASE_ATTEMPT',
       assembledTestCase,
-      failing: this.failing,
+      ...attempts.next(),
     }
   }
 }

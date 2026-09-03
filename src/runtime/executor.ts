@@ -11,8 +11,8 @@ import type TestRunHookDefinition from '../models/test_run_hook_definition'
 import type { SupportCodeLibrary } from '../support_code_library_builder/types'
 import UserCodeRunner from '../user_code_runner'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
+import type { AttemptSpec } from './attempt_manager'
 import { formatError } from './format_error'
-import { retriesForPickle, shouldCauseFailure } from './helpers'
 import { runInTestRunScope } from './scope'
 import { create, timestamp } from './stopwatch'
 import TestCaseRunner from './test_case_runner'
@@ -112,10 +112,10 @@ export class Executor {
     return success
   }
 
-  async runTestCase(
+  async runTestCaseAttempt(
     { gherkinDocument, pickle, testCase }: AssembledTestCase,
-    failing: boolean
-  ): Promise<boolean> {
+    { attempt, moreAttemptsRemaining, skip }: AttemptSpec
+  ): Promise<TestStepResultStatus> {
     const testCaseRunner = new TestCaseRunner({
       workerId: this.workerId,
       eventBroadcaster: this.eventBroadcaster,
@@ -123,17 +123,16 @@ export class Executor {
       gherkinDocument,
       pickle,
       testCase,
-      retries: retriesForPickle(pickle, this.options),
-      skip: this.options.dryRun || (this.options.failFast && failing),
+      attempt,
+      moreAttemptsRemaining,
+      skip,
       filterStackTraces: this.options.filterStacktraces,
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.options.worldParameters,
       snippetBuilder: this.snippetBuilder,
     })
 
-    const status = await testCaseRunner.run()
-
-    return !shouldCauseFailure(status, this.options)
+    return await testCaseRunner.run()
   }
 
   async runAfterAllHooks(

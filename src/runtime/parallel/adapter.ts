@@ -8,6 +8,7 @@ import type { ILogger, IRunEnvironment } from '../../environment'
 import type { FormatOptions } from '../../formatter'
 import type StepDefinitionSnippetBuilder from '../../formatter/step_definition_snippet_builder'
 import { HookTarget, type SupportCodeLibrary } from '../../support_code_library_builder/types'
+import { AttemptManager } from '../attempt_manager'
 import { Executor } from '../executor'
 import type { RuntimeAdapter } from '../types'
 import { TestCasesPhase } from './test_cases_phase'
@@ -31,6 +32,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
   private readonly workers: Set<ManagedWorker> = new Set()
   private readonly running: Map<ManagedWorker, WorkerCommand> = new Map()
   private readonly executor: Executor
+  private readonly attemptManager: AttemptManager
 
   constructor(
     private readonly testRunStartedId: string,
@@ -52,6 +54,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
       supportCodeLibrary,
       snippetBuilder
     )
+    this.attemptManager = new AttemptManager(options)
   }
 
   async setup(): Promise<void> {
@@ -130,6 +133,8 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
         resolve,
         reject,
         this.logger,
+        this.options,
+        this.attemptManager,
         this.supportCodeLibrary.parallelCanAssign,
         assembledTestCases
       )
@@ -185,7 +190,8 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
       case 'ENVELOPE':
         this.eventBroadcaster.emit('envelope', event.envelope)
         break
-      case 'FINISHED': {
+      case 'FINISHED':
+      case 'TEST_CASE_ATTEMPT_FINISHED': {
         const previousCommand = this.running.get(worker)
         this.running.delete(worker)
         const nextCommand = this.phase?.next(previousCommand, event)

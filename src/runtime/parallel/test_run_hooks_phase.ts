@@ -6,7 +6,7 @@ import type {
 } from './types'
 
 export class TestRunHooksPhase
-  implements Phase<RunBeforeAllHooksCommand | RunAfterAllHooksCommand>
+  implements Phase<RunBeforeAllHooksCommand | RunAfterAllHooksCommand, FinishedEvent>
 {
   private failing = false
   private waiting = 0
