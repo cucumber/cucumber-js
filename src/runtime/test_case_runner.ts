@@ -26,7 +26,7 @@ import type {
 import type { IWorldOptions } from '../support_code_library_builder/world'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import AttachmentManager from './attachment_manager'
-import { willBeRetried } from './attempt_manager'
+import type { TestCaseAttemptResult } from './attempt_manager'
 import { makeSuggestion } from './make_suggestion'
 import StepRunner, { type RunStepResult } from './step_runner'
 import { timestamp } from './stopwatch'
@@ -39,7 +39,6 @@ export interface INewTestCaseRunnerOptions {
   pickle: Pickle
   testCase: TestCase
   attempt: number
-  moreAttemptsRemaining: boolean
   skip: boolean
   filterStackTraces: boolean
   supportCodeLibrary: SupportCodeLibrary
@@ -58,7 +57,6 @@ export default class TestCaseRunner {
   private readonly pickle: Pickle
   private readonly testCase: TestCase
   private readonly attempt: number
-  private readonly moreAttemptsRemaining: boolean
   private readonly skip: boolean
   private readonly filterStackTraces: boolean
   private readonly supportCodeLibrary: SupportCodeLibrary
@@ -76,7 +74,6 @@ export default class TestCaseRunner {
     pickle,
     testCase,
     attempt,
-    moreAttemptsRemaining,
     skip,
     filterStackTraces,
     supportCodeLibrary,
@@ -106,7 +103,6 @@ export default class TestCaseRunner {
     this.eventBroadcaster = eventBroadcaster
     this.gherkinDocument = gherkinDocument
     this.attempt = attempt
-    this.moreAttemptsRemaining = moreAttemptsRemaining
     this.newId = newId
     this.pickle = pickle
     this.testCase = testCase
@@ -201,7 +197,7 @@ export default class TestCaseRunner {
     this.eventBroadcaster.emit('envelope', testStepFinished)
   }
 
-  async run(): Promise<TestStepResultStatus> {
+  async run(): Promise<TestCaseAttemptResult> {
     this.currentTestCaseStartedId = this.newId()
     const testCaseStarted: Envelope = {
       testCaseStarted: {
@@ -229,10 +225,6 @@ export default class TestCaseRunner {
           if (didWeRunStepsYet) {
             hookParameter.result = this.getWorstStepResult()
             hookParameter.error = error
-            hookParameter.willBeRetried = willBeRetried(
-              this.getWorstStepResult().status,
-              this.moreAttemptsRemaining
-            )
           }
           return await this.runHook(
             findHookDefinition(testStep.hookId, this.supportCodeLibrary),
@@ -251,16 +243,13 @@ export default class TestCaseRunner {
       })
     }
 
-    const testCaseFinished: Envelope = {
-      testCaseFinished: {
-        testCaseStartedId: this.currentTestCaseStartedId,
-        timestamp: timestamp(),
-        willBeRetried: willBeRetried(this.getWorstStepResult().status, this.moreAttemptsRemaining),
-      },
+    // testCaseFinished is emitted by the coordinator layer, which decides
+    // just in time whether the test case will be retried
+    return {
+      testCaseStartedId: this.currentTestCaseStartedId,
+      status: this.getWorstStepResult().status,
+      timestamp: timestamp(),
     }
-    this.eventBroadcaster.emit('envelope', testCaseFinished)
-
-    return this.getWorstStepResult().status
   }
 
   async runHook(

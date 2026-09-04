@@ -2,7 +2,7 @@ import type { Pickle } from '@cucumber/messages'
 import type { AssembledTestCase } from '../../assemble'
 import type { ILogger } from '../../environment'
 import type { ParallelAssignmentValidator } from '../../support_code_library_builder/types'
-import type { AttemptManager, TestCaseAttempts } from '../attempt_manager'
+import type { AttemptManager, AttemptSpec } from '../attempt_manager'
 import { shouldCauseFailure } from '../helpers'
 import type { RuntimeOptions } from '../types'
 import type { Phase, RunTestCaseAttemptCommand, TestCaseAttemptFinishedEvent } from './types'
@@ -14,7 +14,6 @@ export class TestCasesPhase
   private idleInterventions = 0
   private readonly queue: Array<AssembledTestCase> = []
   private readonly running: Set<Pickle> = new Set()
-  private readonly attempts: Map<string, TestCaseAttempts> = new Map()
 
   constructor(
     private readonly resolve: (success: boolean) => void,
@@ -42,16 +41,15 @@ export class TestCasesPhase
     event: TestCaseAttemptFinishedEvent
   ): RunTestCaseAttemptCommand | undefined {
     const { pickle } = command.assembledTestCase
-    const attempts = this.attempts.get(pickle.id)
-    if (attempts.finish(event.status)) {
+    const nextAttempt = this.attemptManager.finish(pickle, event.result)
+    if (nextAttempt) {
       // Retry straight away on the same worker. The pickle stays in `running`,
       // so `canAssign` continues to treat it as in progress throughout.
-      return this.attempt(command.assembledTestCase, attempts)
+      return this.attempt(command.assembledTestCase, nextAttempt)
     }
-    this.attempts.delete(pickle.id)
     this.running.delete(pickle)
     // Only the final attempt's outcome counts towards fail-fast
-    if (shouldCauseFailure(event.status, this.options)) {
+    if (shouldCauseFailure(event.result.status, this.options)) {
       this.failing = true
     }
     if (this.queue.length === 0 && this.running.size === 0) {
@@ -87,20 +85,19 @@ export class TestCasesPhase
     const { pickle } = assembledTestCase
     // Skip is decided once per test case, before its first attempt
     const skip = this.options.dryRun || (this.options.failFast && this.failing)
-    const attempts = this.attemptManager.track(pickle, skip)
-    this.attempts.set(pickle.id, attempts)
+    const firstAttempt = this.attemptManager.start(pickle, skip)
     this.running.add(pickle)
-    return this.attempt(assembledTestCase, attempts)
+    return this.attempt(assembledTestCase, firstAttempt)
   }
 
   private attempt(
     assembledTestCase: AssembledTestCase,
-    attempts: TestCaseAttempts
+    spec: AttemptSpec
   ): RunTestCaseAttemptCommand {
     return {
       type: 'TEST_CASE_ATTEMPT',
       assembledTestCase,
-      ...attempts.next(),
+      ...spec,
     }
   }
 }

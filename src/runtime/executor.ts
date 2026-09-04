@@ -11,7 +11,7 @@ import type TestRunHookDefinition from '../models/test_run_hook_definition'
 import type { SupportCodeLibrary } from '../support_code_library_builder/types'
 import UserCodeRunner from '../user_code_runner'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
-import type { AttemptSpec } from './attempt_manager'
+import type { AttemptSpec, TestCaseAttemptResult } from './attempt_manager'
 import { formatError } from './format_error'
 import { runInTestRunScope } from './scope'
 import { create, timestamp } from './stopwatch'
@@ -114,8 +114,8 @@ export class Executor {
 
   async runTestCaseAttempt(
     { gherkinDocument, pickle, testCase }: AssembledTestCase,
-    { attempt, moreAttemptsRemaining, skip }: AttemptSpec
-  ): Promise<TestStepResultStatus> {
+    { attempt, skip }: AttemptSpec
+  ): Promise<TestCaseAttemptResult> {
     const testCaseRunner = new TestCaseRunner({
       workerId: this.workerId,
       eventBroadcaster: this.eventBroadcaster,
@@ -124,7 +124,6 @@ export class Executor {
       pickle,
       testCase,
       attempt,
-      moreAttemptsRemaining,
       skip,
       filterStackTraces: this.options.filterStacktraces,
       supportCodeLibrary: this.supportCodeLibrary,

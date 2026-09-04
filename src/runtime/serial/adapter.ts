@@ -33,7 +33,7 @@ export class InProcessAdapter implements RuntimeAdapter {
       supportCodeLibrary,
       snippetBuilder
     )
-    this.attemptManager = new AttemptManager(options)
+    this.attemptManager = new AttemptManager(eventBroadcaster, options)
   }
 
   async setup() {
@@ -52,11 +52,13 @@ export class InProcessAdapter implements RuntimeAdapter {
     let failing = false
     for (const item of assembledTestCases) {
       const skip = this.options.dryRun || (this.options.failFast && failing)
-      const attempts = this.attemptManager.track(item.pickle, skip)
+      let spec = this.attemptManager.start(item.pickle, skip)
       let status: TestStepResultStatus
       do {
-        status = await this.executor.runTestCaseAttempt(item, attempts.next())
-      } while (attempts.finish(status))
+        const result = await this.executor.runTestCaseAttempt(item, spec)
+        status = result.status
+        spec = this.attemptManager.finish(item.pickle, result)
+      } while (spec)
       // only the final attempt's outcome counts towards fail-fast
       if (shouldCauseFailure(status, this.options)) {
         failing = true

@@ -54,7 +54,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
       supportCodeLibrary,
       snippetBuilder
     )
-    this.attemptManager = new AttemptManager(options)
+    this.attemptManager = new AttemptManager(eventBroadcaster, options)
   }
 
   async setup(): Promise<void> {
