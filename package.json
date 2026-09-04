@@ -286,7 +286,7 @@
     "dirty-chai": "3.0.0",
     "express": "^5.0.0",
     "fs-extra": "11.4.0",
-    "mocha": "^11.0.1",
+    "mocha": "^12.0.0",
     "mustache": "4.2.0",
     "nyc": "18.0.0",
     "reindent-template-literals": "1.1.0",
