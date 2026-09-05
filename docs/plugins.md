@@ -122,7 +122,7 @@ Here's an example filtering off some unwanted Pickles:
 export default {
   type: 'plugin',
   coordinator: ({
-    on,
+    transform,
     logger
   }) => {
     transform('pickles:filter', pickles => {
