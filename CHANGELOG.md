@@ -9,6 +9,9 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 
 ## [Unreleased]
 
+### Added
+- Add configurable staggered startup for parallel workers with `--parallel-startup-mode`, `--parallel-ramp-size` and `--parallel-ramp-delay`
+
 ## [13.2.1] - 2026-08-04
 ### Fixed
 - Fix hang in parallel runtime when there are no test cases to run ([#2908](https://github.com/cucumber/cucumber-js/pull/2908))

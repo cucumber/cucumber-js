@@ -57,6 +57,14 @@ const ArgvParser = {
     return numericValue
   },
 
+  validatePositiveCountOption(value: string, optionName: string): number {
+    const numericValue = ArgvParser.validateCountOption(value, optionName)
+    if (numericValue === 0) {
+      throw new Error(`${optionName} must be a positive integer`)
+    }
+    return numericValue
+  },
+
   validateLanguage(value: string): string {
     if (!Object.keys(dialects).includes(value)) {
       throw new Error(`Unsupported ISO 639-1: ${value}`)
@@ -126,6 +134,26 @@ const ArgvParser = {
         '--parallel <NUMBER_OF_WORKERS>',
         'run in parallel with the given number of workers',
         (val) => ArgvParser.validateCountOption(val, '--parallel')
+      )
+      .option(
+        '--parallel-startup-mode <MODE>',
+        'start parallel workers eagerly or staggered',
+        (val) => {
+          if (val !== 'eager' && val !== 'staggered') {
+            throw new Error('--parallel-startup-mode must be either eager or staggered')
+          }
+          return val
+        }
+      )
+      .option(
+        '--parallel-ramp-size <NUMBER_OF_WORKERS>',
+        'number of workers to start initially with staggered startup',
+        (val) => ArgvParser.validatePositiveCountOption(val, '--parallel-ramp-size')
+      )
+      .option(
+        '--parallel-ramp-delay <MILLISECONDS>',
+        'minimum delay between workers started after the initial staggered startup ramp',
+        (val) => ArgvParser.validateCountOption(val, '--parallel-ramp-delay')
       )
       .option('--plugin <SPECIFIER>', 'load a plugin (repeatable)', ArgvParser.collect)
       .option(
