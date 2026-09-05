@@ -1,5 +1,6 @@
 export { default as ArgvParser } from './argv_parser'
 export * from './default_configuration'
+export * from './from_env'
 export * from './from_file'
 export * from './helpers'
 export * from './merge_configurations'
