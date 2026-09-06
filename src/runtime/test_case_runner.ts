@@ -243,12 +243,15 @@ export default class TestCaseRunner {
       })
     }
 
-    // testCaseFinished is emitted by the coordinator layer, which decides
-    // just in time whether the test case will be retried
+    // testCaseFinished is emitted by the coordinator layer, which decides just in
+    // time whether the test case will be retried and decorates it accordingly
     return {
-      testCaseStartedId: this.currentTestCaseStartedId,
+      testCaseStarted: testCaseStarted.testCaseStarted,
+      testCaseFinished: {
+        testCaseStartedId: this.currentTestCaseStartedId,
+        timestamp: timestamp(),
+      },
       worstTestStepResult: this.getWorstStepResult(),
-      timestamp: timestamp(),
     }
   }
 

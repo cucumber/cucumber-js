@@ -178,7 +178,7 @@ Feature: Plugins
         export default {
           type: 'plugin',
           coordinator({ transform }) {
-            transform('testCase:retry', (willBeRetried, { attempt }) => attempt < 1 ? true : undefined)
+            transform('testCase:retry', (willBeRetried, { testCaseStarted }) => testCaseStarted.attempt < 1 ? true : undefined)
           }
         }
         """

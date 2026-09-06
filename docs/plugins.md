@@ -120,7 +120,7 @@ These are the operations for which you can register transforms:
 
 - `pickles:filter` - called when Cucumber has compiled Pickles for all found Scenarios, and now needs to determine which ones should be run as test cases. Return a new array after doing your filtering.
 - `pickles:order` - called after Cucumber has filtered Pickles, so it can sort them. This works the same as the one above.
-- `testCase:retry` - called when an attempt of a test case has failed, to decide whether it will be retried. The value is a boolean (starting as `false`, or `true` if the built-in [retry](./retry.md) behaviour has already granted a retry) and the context describes the attempt: `gherkinDocument`, `pickle`, `testCase`, `testCaseStartedId`, the zero-based `attempt` number, and the worst step `result` of the attempt. Return a boolean to decide, or `undefined` to leave the decision as it stands. This is only ever called for failed attempts.
+- `testCase:retry` - called when an attempt of a test case has failed, to decide whether it will be retried. The value is a boolean (starting as `false`, or `true` if the built-in [retry](./retry.md) behaviour has already granted a retry) and the context describes the attempt: `gherkinDocument`, `pickle`, `testCase`, the `testCaseStarted` message (including the zero-based `attempt` number), and the worst step `result` of the attempt. Return a boolean to decide, or `undefined` to leave the decision as it stands. This is only ever called for failed attempts.
 
 Here's an example filtering off some unwanted Pickles:
 
@@ -133,27 +133,6 @@ export default {
   }) => {
     transform('pickles:filter', pickles => {
       return pickles.filter(({pickle}) => !pickle.name.includes('widgets'))
-    })
-  }
-}
-```
-
-And here's one that stops retrying once too many test cases have failed, so a fundamental problem doesn't cause a storm of retries:
-
-```js
-export default {
-  type: 'plugin',
-  coordinator: ({
-    transform,
-    logger
-  }) => {
-    const failed = new Set()
-    transform('testCase:retry', (willBeRetried, { pickle }) => {
-      failed.add(pickle.id)
-      if (willBeRetried && failed.size > 10) {
-        logger.warn('Too many failures; no longer retrying')
-        return false
-      }
     })
   }
 }

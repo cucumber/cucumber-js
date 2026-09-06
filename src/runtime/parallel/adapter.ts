@@ -197,8 +197,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
         this.running.delete(worker)
         try {
           const nextCommand = await this.phase?.next(previousCommand, event)
-          // the phase may have failed and torn us down while we were waiting
-          if (nextCommand && !this.tearingDown) {
+          if (nextCommand) {
             this.issueCommandToWorker(worker, nextCommand)
           }
         } catch (error) {

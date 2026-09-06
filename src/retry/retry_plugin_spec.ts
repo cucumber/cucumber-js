@@ -10,7 +10,7 @@ import { describe, it } from 'mocha'
 import { FakeLogger } from '../../test/fake_logger'
 import { getPickleWithTags } from '../../test/gherkin_helpers'
 import type { UsableEnvironment } from '../environment'
-import { type IRetryCandidate, PluginManager } from '../plugin'
+import { PluginManager, type RetryCandidate } from '../plugin'
 import { retryPlugin } from './retry_plugin'
 
 const usableEnvironment: UsableEnvironment = {
@@ -29,13 +29,17 @@ async function makeDecider(options: { retry: number; retryTagFilter: string }) {
     pluginManager.transform('testCase:retry', willBeRetried, makeCandidate(pickle, attempt))
 }
 
-function makeCandidate(pickle: Pickle, attempt: number): IRetryCandidate {
+function makeCandidate(pickle: Pickle, attempt: number): RetryCandidate {
   return {
     gherkinDocument: {} as GherkinDocument,
     pickle,
     testCase: { id: 'test-case' } as TestCase,
-    testCaseStartedId: 'test-case-started',
-    attempt,
+    testCaseStarted: {
+      id: 'test-case-started',
+      testCaseId: 'test-case',
+      attempt,
+      timestamp: { seconds: 0, nanos: 0 },
+    },
     result: {
       status: TestStepResultStatus.FAILED,
       duration: TimeConversion.millisecondsToDuration(0),

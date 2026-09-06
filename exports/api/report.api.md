@@ -11,6 +11,7 @@ import type { Location } from '@cucumber/messages';
 import type { Pickle } from '@cucumber/messages';
 import type { ResourceLimits } from 'node:worker_threads';
 import type { TestCase } from '@cucumber/messages';
+import type { TestCaseStarted } from '@cucumber/messages';
 import type { TestStepResult } from '@cucumber/messages';
 import type { Writable } from 'node:stream';
 
@@ -48,7 +49,7 @@ export type CoordinatorEventValues = {
 export type CoordinatorTransformContexts = {
     'pickles:filter': undefined;
     'pickles:order': undefined;
-    'testCase:retry': Readonly<IRetryCandidate>;
+    'testCase:retry': Readonly<RetryCandidate>;
 };
 
 // @public
@@ -193,16 +194,6 @@ export interface IResolvedPaths {
 }
 
 // @public
-export interface IRetryCandidate {
-    attempt: number;
-    gherkinDocument: GherkinDocument;
-    pickle: Pickle;
-    result: TestStepResult;
-    testCase: TestCase;
-    testCaseStartedId: string;
-}
-
-// @public
 export interface IRunConfiguration {
     // (undocumented)
     formats: IRunOptionsFormats;
@@ -337,6 +328,15 @@ export type PluginCleanup = () => PromiseLike<void> | void;
 
 // @public
 export type PluginOperation = 'loadSources' | 'loadSupport' | 'runCucumber';
+
+// @public
+export interface RetryCandidate {
+    gherkinDocument: GherkinDocument;
+    pickle: Pickle;
+    result: TestStepResult;
+    testCase: TestCase;
+    testCaseStarted: TestCaseStarted;
+}
 
 // @public
 export function runCucumber(options: IRunOptions, environment?: IRunEnvironment, onMessage?: (message: Envelope) => void): Promise<IRunResult>;

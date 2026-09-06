@@ -4,6 +4,7 @@ import type {
   GherkinDocument,
   Pickle,
   TestCase,
+  TestCaseStarted,
   TestStepResult,
 } from '@cucumber/messages'
 import type { ILogger } from '../environment'
@@ -76,7 +77,7 @@ export type CoordinatorTransformValues = {
  * A failed test case attempt that is being considered for retry
  * @public
  */
-export interface IRetryCandidate {
+export interface RetryCandidate {
   /**
    * The Gherkin document the test case came from
    */
@@ -90,13 +91,9 @@ export interface IRetryCandidate {
    */
   testCase: TestCase
   /**
-   * Identifies the attempt that just finished, per its `testCaseStarted` message
+   * The message for the attempt that just finished, including its zero-based `attempt` number
    */
-  testCaseStartedId: string
-  /**
-   * Zero-based number of the attempt that just finished
-   */
-  attempt: number
+  testCaseStarted: TestCaseStarted
   /**
    * The worst step result of the attempt; always has a FAILED status
    */
@@ -110,7 +107,7 @@ export interface IRetryCandidate {
 export type CoordinatorTransformContexts = {
   'pickles:filter': undefined
   'pickles:order': undefined
-  'testCase:retry': Readonly<IRetryCandidate>
+  'testCase:retry': Readonly<RetryCandidate>
 }
 
 /**

@@ -2,12 +2,13 @@ import type { EventEmitter } from 'node:events'
 import {
   type Envelope,
   type Pickle,
+  type TestCaseFinished,
+  type TestCaseStarted,
   type TestStepResult,
   TestStepResultStatus,
-  type Timestamp,
 } from '@cucumber/messages'
 import type { AssembledTestCase } from '../assemble'
-import type { IRetryCandidate } from '../plugin'
+import type { RetryCandidate } from '../plugin'
 
 /**
  * Describes a single attempt of a test case, as instructed by the adapter layer
@@ -21,11 +22,11 @@ export interface AttemptSpec {
  * What the runtime reports back after running a single attempt
  */
 export interface TestCaseAttemptResult {
-  testCaseStartedId: string
+  testCaseStarted: TestCaseStarted
+  /** ready to emit once the consumer has decorated it with `willBeRetried` */
+  testCaseFinished: Omit<TestCaseFinished, 'willBeRetried'>
   /** the worst step result of the attempt */
   worstTestStepResult: TestStepResult
-  /** when the runtime finished the attempt */
-  timestamp: Timestamp
 }
 
 /**
@@ -34,12 +35,7 @@ export interface TestCaseAttemptResult {
  * This is how the coordinator layer defers the decision to plugins without
  * the runtime knowing anything about them.
  */
-export type RetryDecider = (candidate: IRetryCandidate) => Promise<boolean>
-
-interface TestCaseAttemptsState {
-  attempt: number
-  skip: boolean
-}
+export type RetryDecider = (candidate: RetryCandidate) => Promise<boolean>
 
 /**
  * The single source of truth for whether a test case will be retried
@@ -50,7 +46,7 @@ interface TestCaseAttemptsState {
  * made here, just in time, once the attempt has actually finished.
  */
 export class AttemptManager {
-  private readonly inProgress: Map<string, TestCaseAttemptsState> = new Map()
+  private readonly inProgress: Map<string, { skip: boolean }> = new Map()
 
   constructor(
     private readonly eventBroadcaster: EventEmitter,
@@ -67,9 +63,8 @@ export class AttemptManager {
     if (this.inProgress.has(pickle.id)) {
       throw new Error(`Test case for pickle ${pickle.id} is already in progress`)
     }
-    const state: TestCaseAttemptsState = { attempt: 0, skip }
-    this.inProgress.set(pickle.id, state)
-    return toSpec(state)
+    this.inProgress.set(pickle.id, { skip })
+    return { attempt: 0, skip }
   }
 
   /**
@@ -86,11 +81,10 @@ export class AttemptManager {
     if (!state) {
       throw new Error(`Test case for pickle ${pickle.id} is not in progress`)
     }
-    const willBeRetried = await this.decide(assembledTestCase, state, result)
+    const willBeRetried = await this.decide(assembledTestCase, state.skip, result)
     this.eventBroadcaster.emit('envelope', {
       testCaseFinished: {
-        testCaseStartedId: result.testCaseStartedId,
-        timestamp: result.timestamp,
+        ...result.testCaseFinished,
         willBeRetried,
       },
     } satisfies Envelope)
@@ -98,31 +92,25 @@ export class AttemptManager {
       this.inProgress.delete(pickle.id)
       return undefined
     }
-    state.attempt++
-    return toSpec(state)
+    return { attempt: result.testCaseStarted.attempt + 1, skip: state.skip }
   }
 
   private async decide(
     { gherkinDocument, pickle, testCase }: AssembledTestCase,
-    state: TestCaseAttemptsState,
-    result: TestCaseAttemptResult
+    skip: boolean,
+    { testCaseStarted, worstTestStepResult }: TestCaseAttemptResult
   ): Promise<boolean> {
     // only failures are ever candidates for retry; plugins aren't consulted otherwise
-    if (state.skip || result.worstTestStepResult.status !== TestStepResultStatus.FAILED) {
+    if (skip || worstTestStepResult.status !== TestStepResultStatus.FAILED) {
       return false
     }
     const answer = await this.shouldRetry({
       gherkinDocument,
       pickle,
       testCase,
-      testCaseStartedId: result.testCaseStartedId,
-      attempt: state.attempt,
-      result: result.worstTestStepResult,
+      testCaseStarted,
+      result: worstTestStepResult,
     })
     return answer === true
   }
-}
-
-function toSpec({ attempt, skip }: TestCaseAttemptsState): AttemptSpec {
-  return { attempt, skip }
 }

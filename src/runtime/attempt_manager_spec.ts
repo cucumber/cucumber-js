@@ -31,15 +31,24 @@ function makeManager(shouldRetry: RetryDecider) {
 
 function makeResult(
   status: TestStepResultStatus,
+  attempt = 0,
   testCaseStartedId = 'started-1'
 ): TestCaseAttemptResult {
   return {
-    testCaseStartedId,
+    testCaseStarted: {
+      id: testCaseStartedId,
+      testCaseId: 'test-case',
+      attempt,
+      timestamp: { seconds: 0, nanos: 0 },
+    },
+    testCaseFinished: {
+      testCaseStartedId,
+      timestamp: { seconds: 1, nanos: 0 },
+    },
     worstTestStepResult: {
       status,
       duration: TimeConversion.millisecondsToDuration(0),
     },
-    timestamp: { seconds: 1, nanos: 0 },
   }
 }
 
@@ -82,8 +91,7 @@ describe('AttemptManager', () => {
 
       expect(shouldRetry).to.have.been.calledOnceWithExactly({
         ...assembledTestCase,
-        testCaseStartedId: 'started-1',
-        attempt: 0,
+        testCaseStarted: result.testCaseStarted,
         result: result.worstTestStepResult,
       })
     })
@@ -95,32 +103,19 @@ describe('AttemptManager', () => {
       manager.start(assembledTestCase.pickle, false)
       const next = await manager.finish(
         assembledTestCase,
-        makeResult(TestStepResultStatus.FAILED, 'started-1')
+        makeResult(TestStepResultStatus.FAILED, 1, 'started-2')
       )
 
-      expect(next).to.eql({ attempt: 1, skip: false })
+      expect(next).to.eql({ attempt: 2, skip: false })
       expect(envelopes).to.eql([
         {
           testCaseFinished: {
-            testCaseStartedId: 'started-1',
+            testCaseStartedId: 'started-2',
             timestamp: { seconds: 1, nanos: 0 },
             willBeRetried: true,
           },
         },
       ])
-    })
-
-    it('increments the attempt number across retries', async () => {
-      const assembledTestCase = await makeAssembledTestCase()
-      const shouldRetry = sinon.fake.resolves(true)
-      const { manager } = makeManager(shouldRetry)
-
-      manager.start(assembledTestCase.pickle, false)
-      await manager.finish(assembledTestCase, makeResult(TestStepResultStatus.FAILED))
-      await manager.finish(assembledTestCase, makeResult(TestStepResultStatus.FAILED))
-
-      expect(shouldRetry.firstCall.args[0].attempt).to.eql(0)
-      expect(shouldRetry.secondCall.args[0].attempt).to.eql(1)
     })
 
     for (const answer of [false, undefined, null]) {
@@ -131,7 +126,7 @@ describe('AttemptManager', () => {
         manager.start(assembledTestCase.pickle, false)
         const next = await manager.finish(
           assembledTestCase,
-          makeResult(TestStepResultStatus.FAILED, 'started-1')
+          makeResult(TestStepResultStatus.FAILED)
         )
 
         expect(next).to.eql(undefined)

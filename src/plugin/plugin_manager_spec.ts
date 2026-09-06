@@ -4,7 +4,7 @@ import { FakeLogger } from '../../test/fake_logger'
 import type { UsableEnvironment } from '../environment'
 import type { IFilterablePickle } from '../filter'
 import { PluginManager } from './plugin_manager'
-import type { InternalPlugin, IRetryCandidate } from './types'
+import type { InternalPlugin, RetryCandidate } from './types'
 
 describe('PluginManager', () => {
   const usableEnvironment: UsableEnvironment = {
@@ -348,7 +348,7 @@ describe('PluginManager', () => {
       const pluginManager = new PluginManager(usableEnvironment)
       const first = sinon.fake.returns(true)
       const second = sinon.fake(
-        (value: boolean, context: IRetryCandidate) => value && context.attempt < 1
+        (value: boolean, context: RetryCandidate) => value && context.testCaseStarted.attempt < 1
       )
       await pluginManager.initCoordinatorExternal(
         'runCucumber',
@@ -361,7 +361,7 @@ describe('PluginManager', () => {
         },
         {}
       )
-      const candidate = { attempt: 0 } as IRetryCandidate
+      const candidate = { testCaseStarted: { attempt: 0 } } as RetryCandidate
 
       const result = await pluginManager.transform('testCase:retry', false, candidate)
 

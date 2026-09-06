@@ -18,11 +18,11 @@ export const retryPlugin: InternalPlugin<Pick<IRunOptionsRuntime, 'retry' | 'ret
     const tagFilter = options.retryTagFilter
       ? new PickleTagFilter(options.retryTagFilter)
       : undefined
-    transform('testCase:retry', (_willBeRetried, { pickle, attempt }) => {
+    transform('testCase:retry', (_willBeRetried, { pickle, testCaseStarted }) => {
       if (tagFilter && !tagFilter.matchesAllTagExpressions(pickle)) {
         return undefined
       }
-      return attempt < options.retry ? true : undefined
+      return testCaseStarted.attempt < options.retry ? true : undefined
     })
   },
 }
