@@ -1,5 +1,11 @@
 import type { Writable } from 'node:stream'
-import type { Envelope } from '@cucumber/messages'
+import type {
+  Envelope,
+  GherkinDocument,
+  Pickle,
+  TestCase,
+  TestStepResult,
+} from '@cucumber/messages'
 import type { ILogger } from '../environment'
 import type { IFilterablePickle } from '../filter'
 import type { IResolvedPaths } from '../paths'
@@ -44,7 +50,7 @@ export type CoordinatorEventKey = 'message' | 'paths:resolve' | 'publish:url'
  * Keys for transforms that plugins can register
  * @public
  */
-export type CoordinatorTransformKey = 'pickles:filter' | 'pickles:order'
+export type CoordinatorTransformKey = 'pickles:filter' | 'pickles:order' | 'testCase:retry'
 
 /**
  * Mapping of event keys to their value types
@@ -63,6 +69,48 @@ export type CoordinatorEventValues = {
 export type CoordinatorTransformValues = {
   'pickles:filter': Readonly<Array<IFilterablePickle>>
   'pickles:order': Readonly<Array<IFilterablePickle>>
+  'testCase:retry': boolean
+}
+
+/**
+ * A failed test case attempt that is being considered for retry
+ * @public
+ */
+export interface IRetryCandidate {
+  /**
+   * The Gherkin document the test case came from
+   */
+  gherkinDocument: GherkinDocument
+  /**
+   * The pickle the test case was assembled from
+   */
+  pickle: Pickle
+  /**
+   * The test case being attempted
+   */
+  testCase: TestCase
+  /**
+   * Identifies the attempt that just finished, per its `testCaseStarted` message
+   */
+  testCaseStartedId: string
+  /**
+   * Zero-based number of the attempt that just finished
+   */
+  attempt: number
+  /**
+   * The worst step result of the attempt; always has a FAILED status
+   */
+  result: TestStepResult
+}
+
+/**
+ * Mapping of transform keys to the context passed as the second argument to transformers
+ * @public
+ */
+export type CoordinatorTransformContexts = {
+  'pickles:filter': undefined
+  'pickles:order': undefined
+  'testCase:retry': Readonly<IRetryCandidate>
 }
 
 /**
@@ -78,12 +126,13 @@ export type CoordinatorEventHandler<K extends CoordinatorEventKey> = (
 /**
  * Transformer function for a coordinator transform
  * @remarks
- * Don't try to modify the original value. Return a transformed value, or
- * `undefined` to pass through unchanged.
+ * Don't try to modify the original value or the context. Return a transformed
+ * value, or `undefined` to pass through unchanged.
  * @public
  */
 export type CoordinatorTransformer<K extends CoordinatorTransformKey> = (
-  value: CoordinatorTransformValues[K]
+  value: CoordinatorTransformValues[K],
+  context: CoordinatorTransformContexts[K]
 ) => PromiseLike<CoordinatorTransformValues[K]> | CoordinatorTransformValues[K]
 
 /**

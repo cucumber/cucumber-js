@@ -36,12 +36,17 @@ export class TestCasesPhase
     return this.select()
   }
 
-  next(
+  async next(
     command: RunTestCaseAttemptCommand,
     event: TestCaseAttemptFinishedEvent
-  ): RunTestCaseAttemptCommand | undefined {
+  ): Promise<RunTestCaseAttemptCommand | undefined> {
     const { pickle } = command.assembledTestCase
-    const nextAttempt = this.attemptManager.finish(pickle, event.result)
+    // The retry decision may defer to plugins, so this is the only await here and it
+    // comes before any change to our state. Everything after it runs synchronously,
+    // so concurrent calls on behalf of other workers can't interleave with it. While
+    // we wait, another worker's `select()` may still see this pickle in `running`,
+    // which the idle intervention path already tolerates.
+    const nextAttempt = await this.attemptManager.finish(command.assembledTestCase, event.result)
     if (nextAttempt) {
       // Retry straight away on the same worker. The pickle stays in `running`,
       // so `canAssign` continues to treat it as in progress throughout.
@@ -49,7 +54,7 @@ export class TestCasesPhase
     }
     this.running.delete(pickle)
     // Only the final attempt's outcome counts towards fail-fast
-    if (shouldCauseFailure(event.result.status, this.options)) {
+    if (shouldCauseFailure(event.result.worstTestStepResult.status, this.options)) {
       this.failing = true
     }
     if (this.queue.length === 0 && this.running.size === 0) {

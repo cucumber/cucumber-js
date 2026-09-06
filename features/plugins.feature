@@ -148,3 +148,79 @@ Feature: Plugins
       | module.exports =  | .cjs      |
       | exports.default = | .cjs      |
 
+
+  Rule: Custom plugins can decide whether a failed test case is retried
+
+    Background: A flaky scenario
+      Given a file named "features/a.feature" with:
+        """
+        Feature: some feature
+          Scenario: some scenario
+            Given a flaky step
+        """
+      And a file named "features/step_definitions/flaky_steps.mjs" with:
+        """
+        import {Given} from '@cucumber/cucumber'
+
+        let willPass = false
+        Given('a flaky step', function() {
+          if (willPass) {
+            return
+          }
+          willPass = true
+          throw new Error('boom')
+        })
+        """
+
+    Scenario: Custom plugin can grant a retry without the retry option being set
+      Given a file named "my_plugin.mjs" with:
+        """
+        export default {
+          type: 'plugin',
+          coordinator({ transform }) {
+            transform('testCase:retry', (willBeRetried, { attempt }) => attempt < 1 ? true : undefined)
+          }
+        }
+        """
+      When I run cucumber-js with `--plugin ./my_plugin.mjs`
+      Then it passes
+      And scenario "some scenario" attempt 0 step "Given a flaky step" has status "failed"
+      And scenario "some scenario" attempt 1 step "Given a flaky step" has status "passed"
+
+    Scenario: Custom plugin can veto a retry granted by the retry option
+      Given a file named "my_plugin.mjs" with:
+        """
+        export default {
+          type: 'plugin',
+          coordinator({ transform }) {
+            transform('testCase:retry', () => false)
+          }
+        }
+        """
+      When I run cucumber-js with `--retry 1 --plugin ./my_plugin.mjs`
+      Then it fails
+      And scenario "some scenario" attempt 0 step "Given a flaky step" has status "failed"
+      And the scenario 'some scenario' retried 0 times
+
+    Scenario: Custom plugin error when deciding a retry causes Cucumber to fail and is reported to user
+      Given a file named "my_plugin.mjs" with:
+        """
+        export default {
+          type: 'plugin',
+          coordinator({ transform }) {
+            transform('testCase:retry', () => {
+              throw new Error('whoops')
+            })
+          }
+        }
+        """
+      When I run cucumber-js with `--retry 1 --plugin ./my_plugin.mjs`
+      Then it fails
+      And the output contains the text:
+        """
+        Plugin "./my_plugin.mjs" errored when trying to do a "testCase:retry" transform
+        """
+      And the output contains the text:
+        """
+        whoops
+        """

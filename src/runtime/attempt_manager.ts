@@ -2,11 +2,12 @@ import type { EventEmitter } from 'node:events'
 import {
   type Envelope,
   type Pickle,
+  type TestStepResult,
   TestStepResultStatus,
   type Timestamp,
 } from '@cucumber/messages'
-import { PickleTagFilter } from '../pickle_filter'
-import type { RuntimeOptions } from './types'
+import type { AssembledTestCase } from '../assemble'
+import type { IRetryCandidate } from '../plugin'
 
 /**
  * Describes a single attempt of a test case, as instructed by the adapter layer
@@ -22,33 +23,21 @@ export interface AttemptSpec {
 export interface TestCaseAttemptResult {
   testCaseStartedId: string
   /** the worst step result of the attempt */
-  status: TestStepResultStatus
+  worstTestStepResult: TestStepResult
   /** when the runtime finished the attempt */
   timestamp: Timestamp
 }
 
-export function retriesForPickle(pickle: Pickle, options: RuntimeOptions): number {
-  if (!options.retry) {
-    return 0
-  }
-  const retries = options.retry
-  if (retries === 0) {
-    return 0
-  }
-  const retryTagFilter = options.retryTagFilter
-  if (!retryTagFilter) {
-    return retries
-  }
-  const pickleTagFilter = new PickleTagFilter(retryTagFilter)
-  if (pickleTagFilter.matchesAllTagExpressions(pickle)) {
-    return retries
-  }
-  return 0
-}
+/**
+ * Decides whether a failed attempt should be retried
+ * @remarks
+ * This is how the coordinator layer defers the decision to plugins without
+ * the runtime knowing anything about them.
+ */
+export type RetryDecider = (candidate: IRetryCandidate) => Promise<boolean>
 
 interface TestCaseAttemptsState {
   attempt: number
-  maxAttempts: number
   skip: boolean
 }
 
@@ -65,7 +54,7 @@ export class AttemptManager {
 
   constructor(
     private readonly eventBroadcaster: EventEmitter,
-    private readonly options: RuntimeOptions
+    private readonly shouldRetry: RetryDecider
   ) {}
 
   /**
@@ -78,11 +67,7 @@ export class AttemptManager {
     if (this.inProgress.has(pickle.id)) {
       throw new Error(`Test case for pickle ${pickle.id} is already in progress`)
     }
-    const state: TestCaseAttemptsState = {
-      attempt: 0,
-      maxAttempts: 1 + (skip ? 0 : retriesForPickle(pickle, this.options)),
-      skip,
-    }
+    const state: TestCaseAttemptsState = { attempt: 0, skip }
     this.inProgress.set(pickle.id, state)
     return toSpec(state)
   }
@@ -92,13 +77,16 @@ export class AttemptManager {
    * whether it will be retried and emitting `testCaseFinished` accordingly
    * @returns the next attempt to run, or `undefined` if the test case is done
    */
-  finish(pickle: Pickle, result: TestCaseAttemptResult): AttemptSpec | undefined {
+  async finish(
+    assembledTestCase: AssembledTestCase,
+    result: TestCaseAttemptResult
+  ): Promise<AttemptSpec | undefined> {
+    const { pickle } = assembledTestCase
     const state = this.inProgress.get(pickle.id)
     if (!state) {
       throw new Error(`Test case for pickle ${pickle.id} is not in progress`)
     }
-    const willBeRetried =
-      result.status === TestStepResultStatus.FAILED && state.attempt + 1 < state.maxAttempts
+    const willBeRetried = await this.decide(assembledTestCase, state, result)
     this.eventBroadcaster.emit('envelope', {
       testCaseFinished: {
         testCaseStartedId: result.testCaseStartedId,
@@ -112,6 +100,26 @@ export class AttemptManager {
     }
     state.attempt++
     return toSpec(state)
+  }
+
+  private async decide(
+    { gherkinDocument, pickle, testCase }: AssembledTestCase,
+    state: TestCaseAttemptsState,
+    result: TestCaseAttemptResult
+  ): Promise<boolean> {
+    // only failures are ever candidates for retry; plugins aren't consulted otherwise
+    if (state.skip || result.worstTestStepResult.status !== TestStepResultStatus.FAILED) {
+      return false
+    }
+    const answer = await this.shouldRetry({
+      gherkinDocument,
+      pickle,
+      testCase,
+      testCaseStartedId: result.testCaseStartedId,
+      attempt: state.attempt,
+      result: result.worstTestStepResult,
+    })
+    return answer === true
   }
 }
 

@@ -70,6 +70,6 @@ export interface Phase<
   E extends WorkerResultEvent = WorkerResultEvent,
 > {
   fill: () => C | undefined
-  next: (command: C, event: E) => C | undefined
+  next: (command: C, event: E) => C | undefined | Promise<C | undefined>
   reject: (reason: unknown) => void
 }

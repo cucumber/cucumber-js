@@ -8,7 +8,7 @@ import type { ILogger, IRunEnvironment } from '../../environment'
 import type { FormatOptions } from '../../formatter'
 import type StepDefinitionSnippetBuilder from '../../formatter/step_definition_snippet_builder'
 import { HookTarget, type SupportCodeLibrary } from '../../support_code_library_builder/types'
-import { AttemptManager } from '../attempt_manager'
+import { AttemptManager, type RetryDecider } from '../attempt_manager'
 import { Executor } from '../executor'
 import type { RuntimeAdapter } from '../types'
 import { TestCasesPhase } from './test_cases_phase'
@@ -41,6 +41,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
     private readonly eventBroadcaster: EventEmitter,
     newId: IdGenerator.NewId,
     private readonly options: IRunOptionsRuntime,
+    shouldRetry: RetryDecider,
     private readonly snippetOptions: Pick<FormatOptions, 'snippetInterface' | 'snippetSyntax'>,
     private readonly supportCodeLibrary: SupportCodeLibrary,
     snippetBuilder: StepDefinitionSnippetBuilder
@@ -54,7 +55,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
       supportCodeLibrary,
       snippetBuilder
     )
-    this.attemptManager = new AttemptManager(eventBroadcaster, options)
+    this.attemptManager = new AttemptManager(eventBroadcaster, shouldRetry)
   }
 
   async setup(): Promise<void> {
@@ -102,7 +103,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
         }
         this.workers.add(worker)
         port1.on('message', (event: WorkerEvent) => {
-          this.handleEventFromWorker(worker, event)
+          void this.handleEventFromWorker(worker, event)
         })
         workerThread.on('error', (error) => {
           this.handleErrorFromWorker(error, worker)
@@ -179,7 +180,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
     worker.port.postMessage(command)
   }
 
-  private handleEventFromWorker(worker: ManagedWorker, event: WorkerEvent) {
+  private async handleEventFromWorker(worker: ManagedWorker, event: WorkerEvent) {
     switch (event.type) {
       case 'READY':
         worker.ready = true
@@ -194,9 +195,14 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
       case 'TEST_CASE_ATTEMPT_FINISHED': {
         const previousCommand = this.running.get(worker)
         this.running.delete(worker)
-        const nextCommand = this.phase?.next(previousCommand, event)
-        if (nextCommand) {
-          this.issueCommandToWorker(worker, nextCommand)
+        try {
+          const nextCommand = await this.phase?.next(previousCommand, event)
+          // the phase may have failed and torn us down while we were waiting
+          if (nextCommand && !this.tearingDown) {
+            this.issueCommandToWorker(worker, nextCommand)
+          }
+        } catch (error) {
+          this.fail(error as Error)
         }
         break
       }

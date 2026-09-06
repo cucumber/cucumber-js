@@ -4,7 +4,7 @@ import { FakeLogger } from '../../test/fake_logger'
 import type { UsableEnvironment } from '../environment'
 import type { IFilterablePickle } from '../filter'
 import { PluginManager } from './plugin_manager'
-import type { InternalPlugin } from './types'
+import type { InternalPlugin, IRetryCandidate } from './types'
 
 describe('PluginManager', () => {
   const usableEnvironment: UsableEnvironment = {
@@ -340,6 +340,34 @@ describe('PluginManager', () => {
         )
         expect(error.cause).to.equal(originalError)
       }
+    })
+  })
+
+  describe('transformers with context', () => {
+    it('passes the context as the second argument and chains the value', async () => {
+      const pluginManager = new PluginManager(usableEnvironment)
+      const first = sinon.fake.returns(true)
+      const second = sinon.fake(
+        (value: boolean, context: IRetryCandidate) => value && context.attempt < 1
+      )
+      await pluginManager.initCoordinatorExternal(
+        'runCucumber',
+        {
+          type: 'plugin',
+          coordinator: ({ transform }) => {
+            transform('testCase:retry', first)
+            transform('testCase:retry', second)
+          },
+        },
+        {}
+      )
+      const candidate = { attempt: 0 } as IRetryCandidate
+
+      const result = await pluginManager.transform('testCase:retry', false, candidate)
+
+      expect(first).to.have.been.calledOnceWithExactly(false, candidate)
+      expect(second).to.have.been.calledOnceWithExactly(true, candidate)
+      expect(result).to.equal(true)
     })
   })
 

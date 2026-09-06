@@ -1,17 +1,31 @@
 import { EventEmitter } from 'node:events'
-import { type Envelope, type Pickle, TestStepResultStatus } from '@cucumber/messages'
+import {
+  type Envelope,
+  type GherkinDocument,
+  type TestCase,
+  TestStepResultStatus,
+  TimeConversion,
+} from '@cucumber/messages'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
+import sinon from 'sinon'
 import { getPickleWithTags } from '../../test/gherkin_helpers'
-import { buildOptions } from '../../test/runtime_helpers'
-import { AttemptManager, type TestCaseAttemptResult } from './attempt_manager'
-import type { RuntimeOptions } from './types'
+import type { AssembledTestCase } from '../assemble'
+import { AttemptManager, type RetryDecider, type TestCaseAttemptResult } from './attempt_manager'
 
-function makeManager(overrides: Partial<RuntimeOptions>) {
+async function makeAssembledTestCase(): Promise<AssembledTestCase> {
+  return {
+    gherkinDocument: {} as GherkinDocument,
+    pickle: await getPickleWithTags([]),
+    testCase: { id: 'test-case' } as TestCase,
+  }
+}
+
+function makeManager(shouldRetry: RetryDecider) {
   const envelopes: Envelope[] = []
   const eventBroadcaster = new EventEmitter()
   eventBroadcaster.on('envelope', (envelope: Envelope) => envelopes.push(envelope))
-  const manager = new AttemptManager(eventBroadcaster, buildOptions(overrides))
+  const manager = new AttemptManager(eventBroadcaster, shouldRetry)
   return { manager, envelopes }
 }
 
@@ -21,121 +35,70 @@ function makeResult(
 ): TestCaseAttemptResult {
   return {
     testCaseStartedId,
-    status,
+    worstTestStepResult: {
+      status,
+      duration: TimeConversion.millisecondsToDuration(0),
+    },
     timestamp: { seconds: 1, nanos: 0 },
   }
 }
 
-/**
- * Drives a test case through attempts that all fail, returning the number of attempts made
- */
-function exhaust(manager: AttemptManager, pickle: Pickle, skip = false): number {
-  let count = 0
-  let spec = manager.start(pickle, skip)
-  while (spec) {
-    count++
-    spec = manager.finish(pickle, makeResult(TestStepResultStatus.FAILED))
-  }
-  return count
-}
-
 describe('AttemptManager', () => {
-  describe('number of attempts', () => {
-    it('allows a single attempt if options.retry is not set', async () => {
-      const pickle = await getPickleWithTags([])
-      const { manager } = makeManager({})
-
-      expect(exhaust(manager, pickle)).to.eql(1)
-    })
-
-    it('allows options.retry extra attempts if set and no options.retryTagFilter is specified', async () => {
-      const pickle = await getPickleWithTags([])
-      const { manager } = makeManager({ retry: 2 })
-
-      expect(exhaust(manager, pickle)).to.eql(3)
-    })
-
-    it('allows options.retry extra attempts if the pickle tags match options.retryTagFilter', async () => {
-      const pickle = await getPickleWithTags(['@retry'])
-      const { manager } = makeManager({ retry: 1, retryTagFilter: '@retry' })
-
-      expect(exhaust(manager, pickle)).to.eql(2)
-    })
-
-    it('allows a single attempt if the pickle tags do not match options.retryTagFilter', async () => {
-      const pickle = await getPickleWithTags([])
-      const { manager } = makeManager({ retry: 1, retryTagFilter: '@retry' })
-
-      expect(exhaust(manager, pickle)).to.eql(1)
-    })
-
-    it('allows a single attempt when skipping, regardless of options.retry', async () => {
-      const pickle = await getPickleWithTags([])
-      const { manager } = makeManager({ retry: 2 })
-
-      expect(exhaust(manager, pickle, true)).to.eql(1)
-    })
-  })
-
-  describe('attempt specs', () => {
-    it('yields sequential attempt numbers', async () => {
-      const pickle = await getPickleWithTags([])
-      const { manager } = makeManager({ retry: 2 })
-
-      expect(manager.start(pickle, false)).to.eql({ attempt: 0, skip: false })
-      expect(manager.finish(pickle, makeResult(TestStepResultStatus.FAILED))).to.eql({
-        attempt: 1,
-        skip: false,
-      })
-      expect(manager.finish(pickle, makeResult(TestStepResultStatus.FAILED))).to.eql({
-        attempt: 2,
-        skip: false,
-      })
-      expect(manager.finish(pickle, makeResult(TestStepResultStatus.FAILED))).to.eql(undefined)
-    })
-
-    it('carries the skip decision on the attempt spec', async () => {
-      const pickle = await getPickleWithTags([])
-      const { manager } = makeManager({ retry: 2 })
+  describe('start', () => {
+    it('yields the first attempt, carrying the skip decision', async () => {
+      const { pickle } = await makeAssembledTestCase()
+      const { manager } = makeManager(sinon.fake.resolves(false))
 
       expect(manager.start(pickle, true)).to.eql({ attempt: 0, skip: true })
+    })
+
+    it('throws if the test case is already in progress', async () => {
+      const { pickle } = await makeAssembledTestCase()
+      const { manager } = makeManager(sinon.fake.resolves(false))
+
+      manager.start(pickle, false)
+      expect(() => manager.start(pickle, false)).to.throw('is already in progress')
+    })
+
+    it('allows a test case to be started again once finished', async () => {
+      const assembledTestCase = await makeAssembledTestCase()
+      const { manager } = makeManager(sinon.fake.resolves(false))
+
+      manager.start(assembledTestCase.pickle, false)
+      await manager.finish(assembledTestCase, makeResult(TestStepResultStatus.PASSED))
+      expect(manager.start(assembledTestCase.pickle, false)).to.eql({ attempt: 0, skip: false })
     })
   })
 
   describe('finish', () => {
-    it('retries a failed attempt only while more attempts remain', async () => {
-      const pickle = await getPickleWithTags([])
-      const { manager } = makeManager({ retry: 1 })
+    it('asks whether to retry a failed attempt, with the details of the attempt', async () => {
+      const assembledTestCase = await makeAssembledTestCase()
+      const shouldRetry = sinon.fake.resolves(true)
+      const { manager } = makeManager(shouldRetry)
 
-      manager.start(pickle, false)
-      expect(manager.finish(pickle, makeResult(TestStepResultStatus.FAILED))).to.not.eql(undefined)
-      expect(manager.finish(pickle, makeResult(TestStepResultStatus.FAILED))).to.eql(undefined)
+      manager.start(assembledTestCase.pickle, false)
+      const result = makeResult(TestStepResultStatus.FAILED)
+      await manager.finish(assembledTestCase, result)
+
+      expect(shouldRetry).to.have.been.calledOnceWithExactly({
+        ...assembledTestCase,
+        testCaseStartedId: 'started-1',
+        attempt: 0,
+        result: result.worstTestStepResult,
+      })
     })
 
-    for (const status of [
-      TestStepResultStatus.PASSED,
-      TestStepResultStatus.SKIPPED,
-      TestStepResultStatus.PENDING,
-      TestStepResultStatus.UNDEFINED,
-      TestStepResultStatus.AMBIGUOUS,
-    ]) {
-      it(`does not retry a ${status} attempt even when more attempts remain`, async () => {
-        const pickle = await getPickleWithTags([])
-        const { manager } = makeManager({ retry: 1 })
+    it('yields the next attempt and emits testCaseFinished when a retry is granted', async () => {
+      const assembledTestCase = await makeAssembledTestCase()
+      const { manager, envelopes } = makeManager(sinon.fake.resolves(true))
 
-        manager.start(pickle, false)
-        expect(manager.finish(pickle, makeResult(status))).to.eql(undefined)
-      })
-    }
+      manager.start(assembledTestCase.pickle, false)
+      const next = await manager.finish(
+        assembledTestCase,
+        makeResult(TestStepResultStatus.FAILED, 'started-1')
+      )
 
-    it('emits testCaseFinished for each attempt with the just-in-time retry decision', async () => {
-      const pickle = await getPickleWithTags([])
-      const { manager, envelopes } = makeManager({ retry: 1 })
-
-      manager.start(pickle, false)
-      manager.finish(pickle, makeResult(TestStepResultStatus.FAILED, 'started-1'))
-      manager.finish(pickle, makeResult(TestStepResultStatus.PASSED, 'started-2'))
-
+      expect(next).to.eql({ attempt: 1, skip: false })
       expect(envelopes).to.eql([
         {
           testCaseFinished: {
@@ -144,42 +107,89 @@ describe('AttemptManager', () => {
             willBeRetried: true,
           },
         },
-        {
-          testCaseFinished: {
-            testCaseStartedId: 'started-2',
-            timestamp: { seconds: 1, nanos: 0 },
-            willBeRetried: false,
-          },
-        },
       ])
     })
 
+    it('increments the attempt number across retries', async () => {
+      const assembledTestCase = await makeAssembledTestCase()
+      const shouldRetry = sinon.fake.resolves(true)
+      const { manager } = makeManager(shouldRetry)
+
+      manager.start(assembledTestCase.pickle, false)
+      await manager.finish(assembledTestCase, makeResult(TestStepResultStatus.FAILED))
+      await manager.finish(assembledTestCase, makeResult(TestStepResultStatus.FAILED))
+
+      expect(shouldRetry.firstCall.args[0].attempt).to.eql(0)
+      expect(shouldRetry.secondCall.args[0].attempt).to.eql(1)
+    })
+
+    for (const answer of [false, undefined, null]) {
+      it(`finishes the test case and emits testCaseFinished when the answer is ${answer}`, async () => {
+        const assembledTestCase = await makeAssembledTestCase()
+        const { manager, envelopes } = makeManager(sinon.fake.resolves(answer))
+
+        manager.start(assembledTestCase.pickle, false)
+        const next = await manager.finish(
+          assembledTestCase,
+          makeResult(TestStepResultStatus.FAILED, 'started-1')
+        )
+
+        expect(next).to.eql(undefined)
+        expect(envelopes).to.eql([
+          {
+            testCaseFinished: {
+              testCaseStartedId: 'started-1',
+              timestamp: { seconds: 1, nanos: 0 },
+              willBeRetried: false,
+            },
+          },
+        ])
+      })
+    }
+
+    for (const status of [
+      TestStepResultStatus.PASSED,
+      TestStepResultStatus.SKIPPED,
+      TestStepResultStatus.PENDING,
+      TestStepResultStatus.UNDEFINED,
+      TestStepResultStatus.AMBIGUOUS,
+    ]) {
+      it(`does not ask about a ${status} attempt`, async () => {
+        const assembledTestCase = await makeAssembledTestCase()
+        const shouldRetry = sinon.fake.resolves(true)
+        const { manager, envelopes } = makeManager(shouldRetry)
+
+        manager.start(assembledTestCase.pickle, false)
+        const next = await manager.finish(assembledTestCase, makeResult(status))
+
+        expect(shouldRetry).not.to.have.been.called()
+        expect(next).to.eql(undefined)
+        expect(envelopes[0].testCaseFinished.willBeRetried).to.eql(false)
+      })
+    }
+
+    it('does not ask about a skipped test case even if the attempt somehow failed', async () => {
+      const assembledTestCase = await makeAssembledTestCase()
+      const shouldRetry = sinon.fake.resolves(true)
+      const { manager } = makeManager(shouldRetry)
+
+      manager.start(assembledTestCase.pickle, true)
+      const next = await manager.finish(assembledTestCase, makeResult(TestStepResultStatus.FAILED))
+
+      expect(shouldRetry).not.to.have.been.called()
+      expect(next).to.eql(undefined)
+    })
+
     it('throws if the test case is not in progress', async () => {
-      const pickle = await getPickleWithTags([])
-      const { manager } = makeManager({})
+      const assembledTestCase = await makeAssembledTestCase()
+      const { manager } = makeManager(sinon.fake.resolves(false))
 
-      expect(() => manager.finish(pickle, makeResult(TestStepResultStatus.PASSED))).to.throw(
-        'is not in progress'
-      )
-    })
-  })
-
-  describe('start', () => {
-    it('throws if the test case is already in progress', async () => {
-      const pickle = await getPickleWithTags([])
-      const { manager } = makeManager({})
-
-      manager.start(pickle, false)
-      expect(() => manager.start(pickle, false)).to.throw('is already in progress')
-    })
-
-    it('allows a test case to be started again once finished', async () => {
-      const pickle = await getPickleWithTags([])
-      const { manager } = makeManager({})
-
-      manager.start(pickle, false)
-      manager.finish(pickle, makeResult(TestStepResultStatus.PASSED))
-      expect(manager.start(pickle, false)).to.eql({ attempt: 0, skip: false })
+      try {
+        await manager.finish(assembledTestCase, makeResult(TestStepResultStatus.PASSED))
+        expect.fail('Expected error to be thrown')
+      } catch (error) {
+        expect(error.message).to.contain('is not in progress')
+      }
     })
   })
 })

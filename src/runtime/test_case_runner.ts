@@ -247,7 +247,7 @@ export default class TestCaseRunner {
     // just in time whether the test case will be retried
     return {
       testCaseStartedId: this.currentTestCaseStartedId,
-      status: this.getWorstStepResult().status,
+      worstTestStepResult: this.getWorstStepResult(),
       timestamp: timestamp(),
     }
   }

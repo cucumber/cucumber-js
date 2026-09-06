@@ -10,6 +10,8 @@ import type { JsonObject } from 'type-fest';
 import type { Location } from '@cucumber/messages';
 import type { Pickle } from '@cucumber/messages';
 import type { ResourceLimits } from 'node:worker_threads';
+import type { TestCase } from '@cucumber/messages';
+import type { TestStepResult } from '@cucumber/messages';
 import type { Writable } from 'node:stream';
 
 // @public
@@ -43,15 +45,23 @@ export type CoordinatorEventValues = {
 };
 
 // @public
-export type CoordinatorTransformer<K extends CoordinatorTransformKey> = (value: CoordinatorTransformValues[K]) => PromiseLike<CoordinatorTransformValues[K]> | CoordinatorTransformValues[K];
+export type CoordinatorTransformContexts = {
+    'pickles:filter': undefined;
+    'pickles:order': undefined;
+    'testCase:retry': Readonly<IRetryCandidate>;
+};
 
 // @public
-export type CoordinatorTransformKey = 'pickles:filter' | 'pickles:order';
+export type CoordinatorTransformer<K extends CoordinatorTransformKey> = (value: CoordinatorTransformValues[K], context: CoordinatorTransformContexts[K]) => PromiseLike<CoordinatorTransformValues[K]> | CoordinatorTransformValues[K];
+
+// @public
+export type CoordinatorTransformKey = 'pickles:filter' | 'pickles:order' | 'testCase:retry';
 
 // @public
 export type CoordinatorTransformValues = {
     'pickles:filter': Readonly<Array<IFilterablePickle>>;
     'pickles:order': Readonly<Array<IFilterablePickle>>;
+    'testCase:retry': boolean;
 };
 
 // @public
@@ -180,6 +190,16 @@ export interface IResolvedPaths {
     sourcePaths: string[];
     // (undocumented)
     unexpandedSourcePaths: string[];
+}
+
+// @public
+export interface IRetryCandidate {
+    attempt: number;
+    gherkinDocument: GherkinDocument;
+    pickle: Pickle;
+    result: TestStepResult;
+    testCase: TestCase;
+    testCaseStartedId: string;
 }
 
 // @public

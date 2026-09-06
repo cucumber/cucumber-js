@@ -3,7 +3,7 @@ import type { IdGenerator, TestStepResultStatus } from '@cucumber/messages'
 import type { AssembledTestCase } from '../../assemble'
 import type StepDefinitionSnippetBuilder from '../../formatter/step_definition_snippet_builder'
 import type { SupportCodeLibrary } from '../../support_code_library_builder/types'
-import { AttemptManager } from '../attempt_manager'
+import { AttemptManager, type RetryDecider } from '../attempt_manager'
 import { Executor } from '../executor'
 import { shouldCauseFailure } from '../helpers'
 import type { RuntimeOptions } from '../index'
@@ -21,6 +21,7 @@ export class InProcessAdapter implements RuntimeAdapter {
     eventBroadcaster: EventEmitter,
     newId: IdGenerator.NewId,
     private readonly options: RuntimeOptions,
+    shouldRetry: RetryDecider,
     supportCodeLibrary: SupportCodeLibrary,
     snippetBuilder: StepDefinitionSnippetBuilder
   ) {
@@ -33,7 +34,7 @@ export class InProcessAdapter implements RuntimeAdapter {
       supportCodeLibrary,
       snippetBuilder
     )
-    this.attemptManager = new AttemptManager(eventBroadcaster, options)
+    this.attemptManager = new AttemptManager(eventBroadcaster, shouldRetry)
   }
 
   async setup() {
@@ -56,8 +57,8 @@ export class InProcessAdapter implements RuntimeAdapter {
       let status: TestStepResultStatus
       do {
         const result = await this.executor.runTestCaseAttempt(item, spec)
-        status = result.status
-        spec = this.attemptManager.finish(item.pickle, result)
+        status = result.worstTestStepResult.status
+        spec = await this.attemptManager.finish(item, result)
       } while (spec)
       // only the final attempt's outcome counts towards fail-fast
       if (shouldCauseFailure(status, this.options)) {

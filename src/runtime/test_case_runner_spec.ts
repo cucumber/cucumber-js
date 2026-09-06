@@ -72,7 +72,9 @@ async function testRunner(options: {
     worldParameters: {},
     snippetBuilder,
   })
-  const { status: result } = await runner.run()
+  const {
+    worstTestStepResult: { status: result },
+  } = await runner.run()
   return { envelopes, result }
 }
 

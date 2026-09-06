@@ -33,6 +33,7 @@ Also, some of Cucumber's built-in functionality is implemented as plugins, which
 
 - [Filtering](../src/filter/filter_plugin.ts)
 - [Publishing](../src/publish/publish_plugin.ts)
+- [Retry](../src/retry/retry_plugin.ts)
 - [Sharding](../src/sharding/sharding_plugin.ts)
 
 A plugin in its simplest form is an object identifying itself as a plugin, with a "coordinator" function to be run. It should be the default export of your plugin package or module. Here's a minimal plugin skeleton:
@@ -109,12 +110,17 @@ export default {
 
 ### Transforms
 
-You can register transforms for some things that happen in Cucumber in order to modify or augment the built-in behaviour. Your transformer function can be async and should treat the input value as immutable, returning a new value that reflects your modifications.
+You can register transforms for some things that happen in Cucumber in order to modify or augment the built-in behaviour. Your transformer function can be async and should treat the input value as immutable, returning a new value that reflects your modifications, or `undefined` to leave it unchanged.
+
+Transforms are chained: if several plugins register for the same transform, each one receives the value returned by the previous one, in the order the plugins were loaded. Cucumber's own built-in plugins go first, so yours can build on or override what they did.
+
+Some transforms also pass a second `context` argument with read-only information about what's being decided. Don't modify it.
 
 These are the operations for which you can register transforms:
 
 - `pickles:filter` - called when Cucumber has compiled Pickles for all found Scenarios, and now needs to determine which ones should be run as test cases. Return a new array after doing your filtering.
 - `pickles:order` - called after Cucumber has filtered Pickles, so it can sort them. This works the same as the one above.
+- `testCase:retry` - called when an attempt of a test case has failed, to decide whether it will be retried. The value is a boolean (starting as `false`, or `true` if the built-in [retry](./retry.md) behaviour has already granted a retry) and the context describes the attempt: `gherkinDocument`, `pickle`, `testCase`, `testCaseStartedId`, the zero-based `attempt` number, and the worst step `result` of the attempt. Return a boolean to decide, or `undefined` to leave the decision as it stands. This is only ever called for failed attempts.
 
 Here's an example filtering off some unwanted Pickles:
 
@@ -122,11 +128,32 @@ Here's an example filtering off some unwanted Pickles:
 export default {
   type: 'plugin',
   coordinator: ({
-    on,
+    transform,
     logger
   }) => {
     transform('pickles:filter', pickles => {
       return pickles.filter(({pickle}) => !pickle.name.includes('widgets'))
+    })
+  }
+}
+```
+
+And here's one that stops retrying once too many test cases have failed, so a fundamental problem doesn't cause a storm of retries:
+
+```js
+export default {
+  type: 'plugin',
+  coordinator: ({
+    transform,
+    logger
+  }) => {
+    const failed = new Set()
+    transform('testCase:retry', (willBeRetried, { pickle }) => {
+      failed.add(pickle.id)
+      if (willBeRetried && failed.size > 10) {
+        logger.warn('Too many failures; no longer retrying')
+        return false
+      }
     })
   }
 }

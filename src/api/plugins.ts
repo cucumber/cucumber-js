@@ -4,6 +4,7 @@ import type { UsableEnvironment } from '../environment'
 import filterPlugin from '../filter'
 import { type Plugin, PluginManager } from '../plugin'
 import publishPlugin from '../publish'
+import retryPlugin from '../retry'
 import shardingPlugin from '../sharding'
 import { doesNotHaveValue } from '../value_checker'
 import type { IRunConfiguration, ISourcesCoordinates } from './types'
@@ -76,6 +77,8 @@ export async function initializeForRunCucumber(
 
   await pluginManager.initCoordinatorInternal('runCucumber', filterPlugin, configuration.sources)
   await pluginManager.initCoordinatorInternal('runCucumber', shardingPlugin, configuration.sources)
+  // goes before external plugins so they can veto or extend the built-in retry behaviour
+  await pluginManager.initCoordinatorInternal('runCucumber', retryPlugin, configuration.runtime)
 
   if (configuration.plugins) {
     for (const specifier of configuration.plugins.specifiers) {
