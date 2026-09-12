@@ -26,7 +26,6 @@ export interface ITestCaseHookParameter {
   result?: TestStepResult
   // biome-ignore lint/suspicious/noExplicitAny: a thrown value really can be anything; users can narrow if they prefer
   error?: any
-  willBeRetried?: boolean
   testCaseStartedId: string
 }
 
