@@ -15,7 +15,7 @@ import type { SupportCodeLibrary } from '../src/support_code_library_builder/typ
 import { doesNotHaveValue } from '../src/value_checker'
 import { FakeLogger } from './fake_logger'
 import { generatePickles } from './gherkin_helpers'
-import { buildOptions, buildSupportCodeLibrary } from './runtime_helpers'
+import { buildOptions, buildShouldRetry, buildSupportCodeLibrary } from './runtime_helpers'
 
 export interface ITestSource {
   data: string
@@ -95,6 +95,7 @@ export async function testFormatter({
       ...buildOptions(runtimeOptions),
       parallel: 0,
     },
+    shouldRetry: await buildShouldRetry(buildOptions(runtimeOptions)),
     snippetOptions: {},
   })
   eventBroadcaster.emit('envelope', {
@@ -166,6 +167,7 @@ export async function getEnvelopesAndEventDataCollector({
       ...buildOptions(runtimeOptions),
       parallel: 0,
     },
+    shouldRetry: await buildShouldRetry(buildOptions(runtimeOptions)),
     snippetOptions: {},
   })
   eventBroadcaster.emit('envelope', {
