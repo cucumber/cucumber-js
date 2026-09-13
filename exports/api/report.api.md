@@ -85,6 +85,9 @@ export interface IConfiguration {
     name: string[];
     order: IPickleOrder;
     parallel: number;
+    parallelRampDelay: number;
+    parallelRampSize: number;
+    parallelStartupMode: 'eager' | 'staggered';
     paths: string[];
     plugin: string[];
     pluginOptions: JsonObject;
@@ -239,6 +242,9 @@ export interface IRunOptionsRuntime {
     failFast: boolean;
     filterStacktraces: boolean;
     parallel: number;
+    parallelRampDelay: number;
+    parallelRampSize: number;
+    parallelStartupMode: 'eager' | 'staggered';
     retry: number;
     retryTagFilter: string;
     strict: boolean;

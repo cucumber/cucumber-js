@@ -199,6 +199,20 @@ export interface IRunOptionsRuntime {
    */
   parallel: number
   /**
+   * Whether parallel workers are created all at once or progressively as each
+   * preceding worker becomes ready.
+   */
+  parallelStartupMode: 'eager' | 'staggered'
+  /**
+   * Number of workers to start initially when using staggered parallel startup
+   */
+  parallelRampSize: number
+  /**
+   * Minimum delay in milliseconds between workers started after the initial
+   * staggered startup ramp
+   */
+  parallelRampDelay: number
+  /**
    * Retry failing tests up to the given number of times
    */
   retry: number
