@@ -119,6 +119,26 @@ export interface IConfiguration {
    */
   parallel: number
   /**
+   * Whether parallel workers are created all at once or progressively as each
+   * preceding worker becomes ready.
+   * @default "eager"
+   * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/parallel.md}
+   */
+  parallelStartupMode: 'eager' | 'staggered'
+  /**
+   * Number of workers to start initially when using staggered parallel startup.
+   * @default 1
+   * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/parallel.md}
+   */
+  parallelRampSize: number
+  /**
+   * Minimum delay in milliseconds between workers started after the initial
+   * staggered startup ramp.
+   * @default 0
+   * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/parallel.md}
+   */
+  parallelRampDelay: number
+  /**
    * Shard tests and execute only the selected shard, format `<index>/<total>`
    * @default ""
    */

@@ -47,5 +47,35 @@ describe('ArgvParser', () => {
         worldParameters: { foo: 2, bar: { stuff: 3, things: 4 } },
       })
     })
+
+    it('should parse the parallel startup mode', () => {
+      const { configuration } = ArgvParser.parse([
+        ...baseArgv,
+        '--parallel-startup-mode',
+        'staggered',
+        '--parallel-ramp-size',
+        '5',
+        '--parallel-ramp-delay',
+        '1000',
+      ])
+
+      expect(configuration).to.deep.eq({
+        parallelStartupMode: 'staggered',
+        parallelRampSize: 5,
+        parallelRampDelay: 1000,
+      })
+    })
+
+    it('should reject an unknown parallel startup mode', () => {
+      expect(() => ArgvParser.parse([...baseArgv, '--parallel-startup-mode', 'gradual'])).to.throw(
+        '--parallel-startup-mode must be either eager or staggered'
+      )
+    })
+
+    it('should reject a zero parallel ramp size', () => {
+      expect(() => ArgvParser.parse([...baseArgv, '--parallel-ramp-size', '0'])).to.throw(
+        '--parallel-ramp-size must be a positive integer'
+      )
+    })
   })
 })

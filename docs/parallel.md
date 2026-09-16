@@ -13,6 +13,20 @@ Each worker receives the following env variables (as well as a copy of `process.
 - `CUCUMBER_TOTAL_WORKERS` - set to the number of workers
 - `CUCUMBER_WORKER_ID` - ID for worker ('0', '1', '2', etc.)
 
+### Staggered startup
+
+By default, Cucumber creates every requested worker at once and waits for all of them to be ready before it begins executing scenarios. For large parallel pools, that can produce a substantial startup spike.
+
+Set `parallelStartupMode` to `staggered` (or pass `--parallel-startup-mode staggered`) to create a small initial group of workers, then create another worker each time a worker becomes ready. Cucumber begins running scenarios as soon as the first worker has completed its worker-level `BeforeAll` hooks; workers that become ready later join the run after their own hooks complete.
+
+Use `parallelRampSize` (or `--parallel-ramp-size`) to choose the initial group size. Use `parallelRampDelay` (or `--parallel-ramp-delay`) to set the minimum delay, in milliseconds, between workers created after that initial group. The defaults are `1` and `0`, respectively.
+
+```shell
+cucumber-js --parallel 50 --parallel-startup-mode staggered --parallel-ramp-size 5 --parallel-ramp-delay 1000
+```
+
+This reduces time to the first scenario at the cost of ramping up to the requested worker count more gradually. The default `eager` mode preserves the existing behaviour.
+
 ### Timing
 
 When using parallel mode, the last line of the summary output differentiates between real time elapsed during the test run and aggregate time spent actually running steps:
