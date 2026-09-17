@@ -4,6 +4,7 @@ import type {
   CoordinatorEventHandler,
   CoordinatorEventKey,
   CoordinatorEventValues,
+  CoordinatorTransformContexts,
   CoordinatorTransformer,
   CoordinatorTransformKey,
   CoordinatorTransformValues,
@@ -37,6 +38,12 @@ type TransformerRegistry = {
   [K in CoordinatorTransformKey]: Array<SourcedTransformer<K>>
 }
 
+type ContextlessTransformKey = {
+  [K in CoordinatorTransformKey]: CoordinatorTransformContexts[K] extends undefined ? K : never
+}[CoordinatorTransformKey]
+
+type ContextfulTransformKey = Exclude<CoordinatorTransformKey, ContextlessTransformKey>
+
 export class PluginManager {
   private readonly handlers: HandlerRegistry = {
     message: [],
@@ -46,6 +53,7 @@ export class PluginManager {
   private readonly transformers: TransformerRegistry = {
     'pickles:filter': [],
     'pickles:order': [],
+    'testCase:retry': [],
   }
   private cleanupFns: SourcedCleanup[] = []
 
@@ -182,14 +190,24 @@ export class PluginManager {
     })
   }
 
-  async transform<K extends CoordinatorTransformKey>(
+  async transform<K extends ContextlessTransformKey>(
     event: K,
     value: CoordinatorTransformValues[K]
+  ): Promise<CoordinatorTransformValues[K]>
+  async transform<K extends ContextfulTransformKey>(
+    event: K,
+    value: CoordinatorTransformValues[K],
+    context: CoordinatorTransformContexts[K]
+  ): Promise<CoordinatorTransformValues[K]>
+  async transform<K extends CoordinatorTransformKey>(
+    event: K,
+    value: CoordinatorTransformValues[K],
+    context?: CoordinatorTransformContexts[K]
   ): Promise<CoordinatorTransformValues[K]> {
     let transformed = value
     for (const { transformer, specifier } of this.transformers[event]) {
       const returned = await wrapErrorAsync(
-        async () => await transformer(transformed),
+        async () => await transformer(transformed, context),
         `${formatCulprit(specifier)} errored when trying to do a "${event}" transform`
       )
       if (typeof returned !== 'undefined') {
