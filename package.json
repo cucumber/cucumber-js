@@ -259,7 +259,7 @@
     "@actions/github": "^9.1.1",
     "@biomejs/biome": "^2.4.16",
     "@cucumber/biome-config": "github:cucumber/biome-config#v0.6.0",
-    "@cucumber/compatibility-kit": "^30.0.0",
+    "@cucumber/compatibility-kit": "^31.0.0",
     "@cucumber/query": "^16.0.0",
     "@microsoft/api-extractor": "7.59.1",
     "@sinonjs/fake-timers": "15.4.0",
