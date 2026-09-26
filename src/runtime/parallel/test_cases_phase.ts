@@ -2,9 +2,14 @@ import type { Pickle } from '@cucumber/messages'
 import type { AssembledTestCase } from '../../assemble'
 import type { ILogger } from '../../environment'
 import type { ParallelAssignmentValidator } from '../../support_code_library_builder/types'
-import type { FinishedEvent, Phase, RunTestCaseCommand } from './types'
+import type { AttemptManager, AttemptSpec } from '../attempt_manager'
+import { shouldCauseFailure } from '../helpers'
+import type { RuntimeOptions } from '../types'
+import type { Phase, RunTestCaseAttemptCommand, TestCaseAttemptFinishedEvent } from './types'
 
-export class TestCasesPhase implements Phase<RunTestCaseCommand> {
+export class TestCasesPhase
+  implements Phase<RunTestCaseAttemptCommand, TestCaseAttemptFinishedEvent>
+{
   private failing = false
   private idleInterventions = 0
   private readonly queue: Array<AssembledTestCase> = []
@@ -14,6 +19,8 @@ export class TestCasesPhase implements Phase<RunTestCaseCommand> {
     private readonly resolve: (success: boolean) => void,
     readonly reject: (reason: unknown) => void,
     private readonly logger: ILogger,
+    private readonly options: RuntimeOptions,
+    private readonly attemptManager: AttemptManager,
     private readonly canAssign: ParallelAssignmentValidator,
     assembledTestCases: ReadonlyArray<AssembledTestCase>
   ) {
@@ -25,15 +32,31 @@ export class TestCasesPhase implements Phase<RunTestCaseCommand> {
     this.queue.push(...assembledTestCases)
   }
 
-  fill(): RunTestCaseCommand | undefined {
+  fill(): RunTestCaseAttemptCommand | undefined {
     return this.select()
   }
 
-  next(command: RunTestCaseCommand, event: FinishedEvent): RunTestCaseCommand | undefined {
-    if (!event.success) {
+  async next(
+    command: RunTestCaseAttemptCommand,
+    event: TestCaseAttemptFinishedEvent
+  ): Promise<RunTestCaseAttemptCommand | undefined> {
+    const { pickle } = command.assembledTestCase
+    // The retry decision may defer to plugins, so this is the only await here and it
+    // comes before any change to our state. Everything after it runs synchronously,
+    // so concurrent calls on behalf of other workers can't interleave with it. While
+    // we wait, another worker's `select()` may still see this pickle in `running`,
+    // which the idle intervention path already tolerates.
+    const nextAttempt = await this.attemptManager.finish(command.assembledTestCase, event.result)
+    if (nextAttempt) {
+      // Retry straight away on the same worker. The pickle stays in `running`,
+      // so `canAssign` continues to treat it as in progress throughout.
+      return this.attempt(command.assembledTestCase, nextAttempt)
+    }
+    this.running.delete(pickle)
+    // Only the final attempt's outcome counts towards fail-fast
+    if (shouldCauseFailure(event.result.worstTestStepResult.status, this.options)) {
       this.failing = true
     }
-    this.running.delete(command.assembledTestCase.pickle)
     if (this.queue.length === 0 && this.running.size === 0) {
       if (this.idleInterventions > 0) {
         this.logger.warn(
@@ -46,7 +69,7 @@ export class TestCasesPhase implements Phase<RunTestCaseCommand> {
     return this.select()
   }
 
-  private select(): RunTestCaseCommand | undefined {
+  private select(): RunTestCaseAttemptCommand | undefined {
     if (this.queue.length === 0) {
       return undefined
     }
@@ -62,13 +85,24 @@ export class TestCasesPhase implements Phase<RunTestCaseCommand> {
     return undefined
   }
 
-  private dequeue(assembledTestCase: AssembledTestCase): RunTestCaseCommand {
+  private dequeue(assembledTestCase: AssembledTestCase): RunTestCaseAttemptCommand {
     this.queue.splice(this.queue.indexOf(assembledTestCase), 1)
-    this.running.add(assembledTestCase.pickle)
+    const { pickle } = assembledTestCase
+    // Skip is decided once per test case, before its first attempt
+    const skip = this.options.dryRun || (this.options.failFast && this.failing)
+    const firstAttempt = this.attemptManager.start(pickle, skip)
+    this.running.add(pickle)
+    return this.attempt(assembledTestCase, firstAttempt)
+  }
+
+  private attempt(
+    assembledTestCase: AssembledTestCase,
+    spec: AttemptSpec
+  ): RunTestCaseAttemptCommand {
     return {
-      type: 'TEST_CASE',
+      type: 'TEST_CASE_ATTEMPT',
       assembledTestCase,
-      failing: this.failing,
+      ...spec,
     }
   }
 }

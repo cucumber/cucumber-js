@@ -17,6 +17,7 @@ export {
   CoordinatorEventHandler,
   CoordinatorEventKey,
   CoordinatorEventValues,
+  CoordinatorTransformContexts,
   CoordinatorTransformer,
   CoordinatorTransformKey,
   CoordinatorTransformValues,
@@ -25,6 +26,7 @@ export {
   Plugin,
   PluginCleanup,
   PluginOperation,
+  RetryCandidate,
 } from '../plugin'
 export { IPublishConfig } from '../publish'
 export * from './load_configuration'

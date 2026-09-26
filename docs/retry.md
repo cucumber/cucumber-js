@@ -23,3 +23,7 @@ Using the `retry` option alone would mean every scenario would be allowed multip
 
 - In a configuration file `{ retry: 1, retryTagFilter: '@flaky' }`
 - On the CLI `cucumber-js --retry 1 --retry-tag-filter @flaky`
+
+## Custom retry logic
+
+If you need something beyond a count and a tag filter, a [plugin](./plugins.md#transforms) can decide whether each failed attempt is retried via the `testCase:retry` transform. The built-in behaviour described above is itself implemented as a plugin, and yours runs after it, so you can veto or extend what it decided.
