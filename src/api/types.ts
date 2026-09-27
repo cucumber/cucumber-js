@@ -2,6 +2,7 @@ import type { JsonObject } from 'type-fest'
 import type { IConfiguration, IWorkerOptions } from '../configuration'
 import type { IPickleOrder } from '../filter'
 import type { IPublishConfig } from '../publish'
+import type { ModuleLoader } from './support'
 
 /**
  * Options for {@link loadConfiguration}
@@ -159,6 +160,16 @@ export interface ISupportCodeCoordinates {
    * Specifiers of loaders to register, via `register()`
    */
   loaders: string[]
+  /**
+   * Custom loader used to load support code specified in `importPaths`
+   * @remarks
+   * Defaults to a plain dynamic `import()`. Provide your own if you're
+   * embedding cucumber-js inside another tool's module graph (e.g. a bundler
+   * plugin) and need support code to load through that same graph, so it
+   * shares module instances with the rest of that tool's code instead of via
+   * a disconnected, plain Node import.
+   */
+  moduleLoader?: ModuleLoader
 }
 
 /**
