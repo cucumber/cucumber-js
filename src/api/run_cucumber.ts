@@ -144,6 +144,7 @@ Running from: ${__dirname}
     newId,
     supportCodeLibrary,
     options: options.runtime,
+    shouldRetry: (candidate) => pluginManager.transform('testCase:retry', false, candidate),
     snippetOptions: options.formats.options,
   })
   eventBroadcaster.emit('envelope', {
