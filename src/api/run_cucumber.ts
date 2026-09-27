@@ -74,6 +74,7 @@ Running from: ${__dirname}
           requireModules: supportCoordinates.requireModules,
           importPaths,
           loaders: supportCoordinates.loaders,
+          moduleLoader: supportCoordinates.moduleLoader,
         })
 
   const eventBroadcaster = new EventEmitter()
