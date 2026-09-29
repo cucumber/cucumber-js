@@ -233,6 +233,9 @@ export interface IConfiguration {
     name: string[];
     order: IPickleOrder;
     parallel: number;
+    parallelRampDelay: number;
+    parallelRampSize: number;
+    parallelStartupMode: 'eager' | 'staggered';
     paths: string[];
     plugin: string[];
     pluginOptions: JsonObject;

@@ -21,6 +21,42 @@ Feature: Running scenarios in parallel
     When I run cucumber-js with `--parallel 2`
     Then it passes
 
+  Scenario: staggered startup begins scenarios before later workers finish their hooks
+    Given a file named "features/step_definitions/cucumber_steps.js" with:
+      """
+      const {BeforeAll, Given} = require('@cucumber/cucumber')
+      const assert = require('assert')
+      const fs = require('fs')
+      const path = require('path')
+
+      const marker = path.join(__dirname, '..', '..', 'worker-1-before-all.txt')
+
+      BeforeAll(async function() {
+        if (process.env.CUCUMBER_WORKER_ID === '1') {
+          await new Promise((resolve) => setTimeout(resolve, 500))
+          fs.writeFileSync(marker, 'complete')
+        }
+      })
+
+      Given('worker 0 begins before worker 1 is ready', function() {
+        assert.strictEqual(process.env.CUCUMBER_WORKER_ID, '0')
+        assert.strictEqual(fs.existsSync(marker), false)
+      })
+
+      Given('a passing step', function() {})
+      """
+    And a file named "features/a.feature" with:
+      """
+      Feature: staggered startup
+        Scenario: first
+          Given worker 0 begins before worker 1 is ready
+
+        Scenario: second
+          Given a passing step
+      """
+    When I run cucumber-js with `--parallel 2 --parallel-startup-mode staggered --parallel-ramp-size 1 --parallel-ramp-delay 10`
+    Then it passes
+
   @spawn
   Scenario: an error in BeforeAll fails the test
     Given a file named "features/step_definitions/cucumber_steps.js" with:
