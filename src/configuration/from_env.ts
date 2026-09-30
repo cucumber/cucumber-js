@@ -1,9 +1,7 @@
 import { DEFAULT_CONFIGURATION } from './default_configuration'
 import type { IConfiguration } from './types'
 
-export function fromEnvironment(
-  env: NodeJS.ProcessEnv
-): Partial<IConfiguration> {
+export function fromEnvironment(env: NodeJS.ProcessEnv): Partial<IConfiguration> {
   const configuration: Partial<IConfiguration> = {}
 
   for (const key of Object.keys(DEFAULT_CONFIGURATION)) {
@@ -19,9 +17,7 @@ export function fromEnvironment(
 }
 
 function toEnvironmentVariableName(key: string): string {
-  return `CUCUMBER_${key
-    .replace(/[A-Z]/g, (letter) => `_${letter}`)
-    .toUpperCase()}`
+  return `CUCUMBER_${key.replace(/[A-Z]/g, (letter) => `_${letter}`).toUpperCase()}`
 }
 
 function parseEnvironmentValue(value: string): unknown {

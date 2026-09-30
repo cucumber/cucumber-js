@@ -1,9 +1,9 @@
+import fs from 'node:fs/promises'
+import path from 'node:path'
 import { expect } from 'chai'
 import type { IRunEnvironment } from '../environment'
 import { loadConfiguration } from './load_configuration'
 import { setupEnvironment, teardownEnvironment } from './test_helpers'
-import fs from 'node:fs/promises'
-import path from 'node:path'
 
 describe('loadConfiguration', function () {
   this.timeout(10_000)
@@ -65,7 +65,8 @@ describe('loadConfiguration', function () {
   })
 
   it('should allow environment variables to override configuration file', async () => {
-    await fs.writeFile(path.join(environment.cwd!, 'cucumber.mjs'),
+    await fs.writeFile(
+      path.join(environment.cwd!, 'cucumber.mjs'),
       `export default {
         paths: ['features/test.feature'],
         requireModule: ['tsx/cjs'],
