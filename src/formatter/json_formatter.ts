@@ -18,7 +18,7 @@ import {
   type TestStepResult,
   TestStepResultStatus,
 } from '@cucumber/messages'
-import { parseStepArgument } from '../step_arguments'
+import { parseStepArguments } from '../step_arguments'
 import { doesHaveValue, doesNotHaveValue } from '../value_checker'
 import Formatter, { type IFormatterOptions } from './'
 import { formatLocation, GherkinDocumentParser, PickleParser } from './helpers'
@@ -158,15 +158,10 @@ export default class JsonFormatter extends Formatter {
   }
 
   formatStepArgument(stepArgument: PickleStepArgument, gherkinStep: Step): IJsonStepArgument[] {
-    if (doesNotHaveValue(stepArgument)) {
-      return []
-    }
-    return [
-      parseStepArgument<IJsonStepArgument>(stepArgument, {
-        dataTable: (dataTable) => this.formatDataTable(dataTable),
-        docString: (docString) => this.formatDocString(docString, gherkinStep),
-      }),
-    ]
+    return parseStepArguments<IJsonStepArgument>(stepArgument, {
+      dataTable: (dataTable) => this.formatDataTable(dataTable),
+      docString: (docString) => this.formatDocString(docString, gherkinStep),
+    })
   }
 
   onTestRunFinished(): void {

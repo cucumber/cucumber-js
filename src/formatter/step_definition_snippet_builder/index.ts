@@ -3,8 +3,7 @@ import {
   type ParameterTypeRegistry,
 } from '@cucumber/cucumber-expressions'
 import type { PickleStep } from '@cucumber/messages'
-import { parseStepArgument } from '../../step_arguments'
-import { doesHaveValue } from '../../value_checker'
+import { parseStepArguments } from '../../step_arguments'
 import { KeywordType } from '../helpers'
 import type { ISnippetSnytax } from './snippet_syntax'
 
@@ -73,13 +72,9 @@ export default class StepDefinitionSnippetBuilder {
   }
 
   getStepParameterNames(step: PickleStep): string[] {
-    if (doesHaveValue(step.argument)) {
-      const argumentName = parseStepArgument(step.argument, {
-        dataTable: () => 'dataTable',
-        docString: () => 'docString',
-      })
-      return [argumentName]
-    }
-    return []
+    return parseStepArguments(step.argument, {
+      dataTable: () => 'dataTable',
+      docString: () => 'docString',
+    })
   }
 }

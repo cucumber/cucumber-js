@@ -236,6 +236,43 @@ describe('IssueHelpers', () => {
       })
     })
 
+    describe('step with doc string and data table', () => {
+      it('returns the formatted scenario with both in the order they were declared', async () => {
+        // Arrange
+        const sourceData = reindent(`
+          Feature: my feature
+            Scenario: my scenario
+              Given a passing step
+              When a pending step
+              Then a passing step
+                """
+                this is a doc string
+                """
+                |aaa|b|
+          `)
+
+        // Act
+        const output = await testFormatIssue(sourceData)
+
+        // Assert
+        expect(output).to.eql(
+          reindent(`
+            1) Scenario: my scenario # a.feature:2
+               ${figures.tick} Given a passing step # steps.ts:29
+               ? When a pending step # steps.ts:16
+                   Pending
+               - Then a passing step # steps.ts:29
+                   """
+                   this is a doc string
+                   """
+                   | aaa | b |
+
+
+            `)
+        )
+      })
+    })
+
     describe('step with attachment text', () => {
       it('prints the scenario', async () => {
         // Arrange

@@ -435,6 +435,47 @@ describe('JsonFormatter', () => {
       })
     })
 
+    describe('with a doc string and a data table', () => {
+      it('outputs both as step arguments in the order they were declared', async () => {
+        // Arrange
+        const sources = [
+          {
+            data: [
+              'Feature: my feature',
+              '  Scenario: my scenario',
+              '    Given a step',
+              '      """',
+              '      This is a DocString',
+              '      """',
+              '      |aaa|b|',
+            ].join('\n'),
+            uri: 'a.feature',
+          },
+        ]
+
+        const supportCodeLibrary = getJsonFormatterSupportCodeLibrary(clock)
+
+        // Act
+        const output = await testFormatter({
+          sources,
+          supportCodeLibrary,
+          type: 'json',
+        })
+
+        // Assert
+        const stepArguments = JSON.parse(output)[0].elements[0].steps[0].arguments
+        expect(stepArguments).to.eql([
+          {
+            content: 'This is a DocString',
+            line: 4,
+          },
+          {
+            rows: [{ cells: ['aaa', 'b'] }],
+          },
+        ])
+      })
+    })
+
     describe(' with tagged examples', () => {
       it('outputs the examples', async () => {
         // Arrange

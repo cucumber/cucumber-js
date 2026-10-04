@@ -119,7 +119,7 @@ Aliases: `defineStep` (deprecated and will be removed in a future release; use t
   - `wrapperOptions`: Step-specific options that are passed to the definition function wrapper.
 * `fn`: A function, which should be defined as follows:
   - Should have one argument for each capture in the regular expression.
-  - May have an additional argument if the gherkin step has a docstring or data table.
+  - May have additional arguments if the gherkin step has a docstring and/or data table, in the order they appear in the step.
   - When using the asynchronous callback interface, have one final argument for the callback function.
 
 ---

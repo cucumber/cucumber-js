@@ -1,20 +1,26 @@
-import util from 'node:util'
 import type { PickleDocString, PickleStepArgument, PickleTable } from '@cucumber/messages'
-import { doesHaveValue } from './value_checker'
 
 export interface IPickleStepArgumentFunctionMap<T> {
   dataTable: (arg: PickleTable) => T
   docString: (arg: PickleDocString) => T
 }
 
-export function parseStepArgument<T>(
-  arg: PickleStepArgument,
+/**
+ * Map the data table and/or doc string of a step, in the order they appear in the source
+ * @remarks
+ * Where the argument index is not present, the data table comes first
+ */
+export function parseStepArguments<T>(
+  arg: PickleStepArgument | undefined,
   mapping: IPickleStepArgumentFunctionMap<T>
-): T {
-  if (doesHaveValue(arg.dataTable)) {
-    return mapping.dataTable(arg.dataTable)
-  } else if (doesHaveValue(arg.docString)) {
-    return mapping.docString(arg.docString)
-  }
-  throw new Error(`Unknown step argument: ${util.inspect(arg)}`)
+): T[] {
+  return [arg?.dataTable, arg?.docString]
+    .filter((stepArgument): stepArgument is PickleTable | PickleDocString => !!stepArgument)
+    .sort(
+      (a, b) =>
+        (a.argumentIndex ?? Number.MAX_SAFE_INTEGER) - (b.argumentIndex ?? Number.MAX_SAFE_INTEGER)
+    )
+    .map((stepArgument) =>
+      'rows' in stepArgument ? mapping.dataTable(stepArgument) : mapping.docString(stepArgument)
+    )
 }
