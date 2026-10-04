@@ -26,6 +26,9 @@ export interface ITestCaseHookParameter {
   result?: TestStepResult
   // biome-ignore lint/suspicious/noExplicitAny: a thrown value really can be anything; users can narrow if they prefer
   error?: any
+  /**
+   * @deprecated will be removed in a future major version; see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md
+   */
   willBeRetried?: boolean
   testCaseStartedId: string
 }

@@ -14,6 +14,14 @@ In some cases, we might wait longer than `N+2.0.0` before removing functionality
 
 ## Current deprecations
 
+### `willBeRetried` in `After` hook parameter
+
+Deprecated in `13.3.0`, will be removed in `14.0.0` or later.
+
+The object passed to your `After` hook functions includes a `willBeRetried` property, indicating whether the scenario failed and will be retried. This is being removed because the retry decision is being moved up the stack, after all steps and hooks have been run.
+
+If you need to know whether an attempt will be retried, use the `willBeRetried` property of the `testCaseFinished` message instead, which is available to formatters and plugins.
+
 ### Paths in configuration and CLI
 
 Announced in `12.7.0`, will change in `14.0.0` or later.
