@@ -6,6 +6,7 @@ import type { ILogger, IRunEnvironment } from '../environment'
 import type { FormatOptions } from '../formatter'
 import FormatterBuilder from '../formatter/builder'
 import type { SupportCodeLibrary } from '../support_code_library_builder/types'
+import type { RetryDecider } from './attempt_manager'
 import { Coordinator } from './coordinator'
 import { WorkerThreadsAdapter } from './parallel/adapter'
 import { InProcessAdapter } from './serial/adapter'
@@ -20,6 +21,7 @@ export async function makeRuntime({
   newId,
   supportCodeLibrary,
   options,
+  shouldRetry,
   snippetOptions,
 }: {
   testRunStartedId: string
@@ -30,10 +32,12 @@ export async function makeRuntime({
   sourcedPickles: ReadonlyArray<SourcedPickle>
   supportCodeLibrary: SupportCodeLibrary
   options: IRunOptionsRuntime
+  shouldRetry: RetryDecider
   snippetOptions: Pick<FormatOptions, 'snippetInterface' | 'snippetSyntax'>
 }): Promise<Runtime> {
   const adapter = await makeAdapter(
     options,
+    shouldRetry,
     snippetOptions,
     testRunStartedId,
     environment,
@@ -55,6 +59,7 @@ export async function makeRuntime({
 
 async function makeAdapter(
   options: IRunOptionsRuntime,
+  shouldRetry: RetryDecider,
   snippetOptions: Pick<FormatOptions, 'snippetInterface' | 'snippetSyntax'>,
   testRunStartedId: string,
   environment: IRunEnvironment,
@@ -77,6 +82,7 @@ async function makeAdapter(
       eventBroadcaster,
       newId,
       options,
+      shouldRetry,
       snippetOptions,
       supportCodeLibrary,
       snippetBuilder
@@ -87,6 +93,7 @@ async function makeAdapter(
     eventBroadcaster,
     newId,
     options,
+    shouldRetry,
     supportCodeLibrary,
     snippetBuilder
   )

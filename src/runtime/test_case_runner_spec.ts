@@ -27,7 +27,7 @@ async function testRunner(options: {
   workerId?: string
   gherkinDocument: GherkinDocument
   pickle: Pickle
-  retries?: number
+  attempt?: number
   skip?: boolean
   supportCodeLibrary: SupportCodeLibrary
 }): Promise<{
@@ -65,14 +65,16 @@ async function testRunner(options: {
     newId,
     pickle: options.pickle,
     testCase,
-    retries: valueOrDefault(options.retries, 0),
+    attempt: valueOrDefault(options.attempt, 0),
     filterStackTraces: false,
     skip: valueOrDefault(options.skip, false),
     supportCodeLibrary: options.supportCodeLibrary,
     worldParameters: {},
     snippetBuilder,
   })
-  const result = await runner.run()
+  const {
+    worstTestStepResult: { status: result },
+  } = await runner.run()
   return { envelopes, result }
 }
 
@@ -96,7 +98,7 @@ describe('TestCaseRunner', () => {
 
   describe('run()', () => {
     describe('with a passing step', () => {
-      it('emits testCase / testCaseStarted / testStepStarted / testStepFinished / testCaseFinished envelopes and returns the result', async () => {
+      it('emits testCase / testCaseStarted / testStepStarted / testStepFinished envelopes and returns the result', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
           Given('a step', () => {
@@ -147,13 +149,6 @@ describe('TestCaseRunner', () => {
               timestamp: predictableTimestamp(1),
             },
           },
-          {
-            testCaseFinished: {
-              testCaseStartedId: '3',
-              timestamp: predictableTimestamp(1),
-              willBeRetried: false,
-            },
-          },
         ]
         expect(envelopes).to.eql(expectedEnvelopes)
         expect(result).to.eql(TestStepResultStatus.PASSED)
@@ -194,7 +189,7 @@ describe('TestCaseRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(4)
+        expect(envelopes).to.have.lengthOf(3)
         expect(envelopes[2].testStepFinished.testStepResult).to.eql(failingTestResult)
         expect(result).to.eql(TestStepResultStatus.FAILED)
       })
@@ -254,7 +249,7 @@ describe('TestCaseRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(4)
+        expect(envelopes).to.have.lengthOf(3)
         const expected: TestStepResult = {
           status: TestStepResultStatus.AMBIGUOUS,
           duration: TimeConversion.millisecondsToDuration(0),
@@ -284,7 +279,7 @@ describe('TestCaseRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(5)
+        expect(envelopes).to.have.lengthOf(4)
         expect(envelopes[2].suggestion.snippets).to.have.lengthOf(1)
         expect(envelopes[3].testStepFinished.testStepResult).to.eql({
           status: TestStepResultStatus.UNDEFINED,
@@ -294,19 +289,11 @@ describe('TestCaseRunner', () => {
       })
     })
 
-    describe('with a flaky step and a positive retries value', () => {
-      it('emits the expected envelopes and returns a passing result', async () => {
+    describe('with a later attempt', () => {
+      it('emits testCaseStarted with the given attempt number and leaves testCaseFinished to the caller', async () => {
         // Arrange
         const supportCodeLibrary = buildSupportCodeLibrary(({ Given }) => {
-          let willPass = false
-          Given('a step', () => {
-            clock.tick(1)
-            if (willPass) {
-              return
-            }
-            willPass = true
-            throw 'Oh no!'
-          })
+          Given('a step', () => {})
         })
         const {
           gherkinDocument,
@@ -320,123 +307,18 @@ describe('TestCaseRunner', () => {
         const { envelopes, result } = await testRunner({
           gherkinDocument,
           pickle,
-          retries: 1,
+          attempt: 1,
           supportCodeLibrary,
         })
 
         // Assert
-        const expected: Envelope[] = [
-          {
-            testCaseStarted: {
-              attempt: 0,
-              id: '3',
-              testCaseId: '1',
-              timestamp: predictableTimestamp(0),
-            },
-          },
-          {
-            testStepStarted: {
-              testCaseStartedId: '3',
-              testStepId: '2',
-              timestamp: predictableTimestamp(0),
-            },
-          },
-          {
-            testStepFinished: {
-              testCaseStartedId: '3',
-              testStepResult: {
-                duration: TimeConversion.millisecondsToDuration(1),
-                message: 'Error: Oh no!',
-                exception: {
-                  type: 'Error',
-                  message: 'Oh no!',
-                  stackTrace: 'Error: Oh no!',
-                },
-                status: TestStepResultStatus.FAILED,
-              },
-              testStepId: '2',
-              timestamp: predictableTimestamp(1),
-            },
-          },
-          {
-            testCaseFinished: {
-              testCaseStartedId: '3',
-              timestamp: predictableTimestamp(1),
-              willBeRetried: true,
-            },
-          },
-          {
-            testCaseStarted: {
-              attempt: 1,
-              id: '4',
-              testCaseId: '1',
-              timestamp: predictableTimestamp(1),
-            },
-          },
-          {
-            testStepStarted: {
-              testCaseStartedId: '4',
-              testStepId: '2',
-              timestamp: predictableTimestamp(1),
-            },
-          },
-          {
-            testStepFinished: {
-              testCaseStartedId: '4',
-              testStepResult: {
-                duration: TimeConversion.millisecondsToDuration(1),
-                status: TestStepResultStatus.PASSED,
-              },
-              testStepId: '2',
-              timestamp: predictableTimestamp(2),
-            },
-          },
-          {
-            testCaseFinished: {
-              testCaseStartedId: '4',
-              timestamp: predictableTimestamp(2),
-              willBeRetried: false,
-            },
-          },
-        ]
-        expect(envelopes).to.eql(expected)
+        expect(envelopes.map((envelope) => Object.keys(envelope)[0])).to.eql([
+          'testCaseStarted',
+          'testStepStarted',
+          'testStepFinished',
+        ])
+        expect(envelopes[0].testCaseStarted.attempt).to.eql(1)
         expect(result).to.eql(TestStepResultStatus.PASSED)
-      })
-
-      it('should provide the correctly willBeRetried value to the hook', async () => {
-        // Arrange
-        const hookStub = sinon.stub()
-        const supportCodeLibrary = buildSupportCodeLibrary(({ Given, After }) => {
-          let willPass = false
-          Given('a step', () => {
-            if (willPass) {
-              return
-            }
-            willPass = true
-            throw 'error'
-          })
-          After(hookStub)
-        })
-        const {
-          gherkinDocument,
-          pickles: [pickle],
-        } = await parse({
-          data: ['Feature: a', 'Scenario: b', 'Given a step'].join('\n'),
-          uri: 'a.feature',
-        })
-
-        // Act
-        await testRunner({
-          gherkinDocument,
-          pickle,
-          retries: 1,
-          supportCodeLibrary,
-        })
-
-        // Assert
-        expect(hookStub).to.have.been.calledTwice()
-        expect(hookStub.args[0][0].willBeRetried).to.eq(true)
-        expect(hookStub.args[1][0].willBeRetried).to.eq(false)
       })
     })
 
@@ -465,7 +347,7 @@ describe('TestCaseRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(4)
+        expect(envelopes).to.have.lengthOf(3)
         const expected: TestStepResult = {
           status: TestStepResultStatus.SKIPPED,
           duration: TimeConversion.millisecondsToDuration(0),
@@ -501,7 +383,7 @@ describe('TestCaseRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(8)
+        expect(envelopes).to.have.lengthOf(7)
         expect(result).to.eql(envelopes[6].testStepFinished.testStepResult.status)
       })
     })
@@ -535,7 +417,7 @@ describe('TestCaseRunner', () => {
         })
 
         // Assert
-        expect(envelopes).to.have.lengthOf(4)
+        expect(envelopes).to.have.lengthOf(3)
         expect(result).to.eql(envelopes[2].testStepFinished.testStepResult.status)
         expect(beforeStep).to.have.been.calledOnceWith({
           gherkinDocument,
