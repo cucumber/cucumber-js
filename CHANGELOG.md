@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Support steps with both a data table and a doc string ([#2967](https://github.com/cucumber/cucumber-js/pull/2967))
 
 ## [13.2.1] - 2026-08-04
 ### Fixed
