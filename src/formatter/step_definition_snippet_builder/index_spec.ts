@@ -197,5 +197,45 @@ describe('StepDefinitionSnippetBuilder', () => {
         expect(arg.stepParameterNames).to.eql(['docString'])
       })
     })
+
+    describe('step has both a data table and a doc string argument', () => {
+      it('passes both step parameter names when the data table is first', async () => {
+        // Arrange
+        const pickleStep = await getPickleStepWithText(`
+          Given abc
+            | a |
+            """
+            a
+            """`)
+
+        // Act
+        const arg = testStepDefinitionBuilder({
+          keywordType: KeywordType.Precondition,
+          pickleStep,
+        })
+
+        // Assert
+        expect(arg.stepParameterNames).to.eql(['dataTable', 'docString'])
+      })
+
+      it('passes both step parameter names when the doc string is first', async () => {
+        // Arrange
+        const pickleStep = await getPickleStepWithText(`
+          Given abc
+            """
+            a
+            """
+            | a |`)
+
+        // Act
+        const arg = testStepDefinitionBuilder({
+          keywordType: KeywordType.Precondition,
+          pickleStep,
+        })
+
+        // Assert
+        expect(arg.stepParameterNames).to.eql(['docString', 'dataTable'])
+      })
+    })
   })
 })

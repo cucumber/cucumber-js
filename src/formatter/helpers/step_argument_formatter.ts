@@ -1,6 +1,6 @@
 import type { PickleDocString, PickleStepArgument, PickleTable } from '@cucumber/messages'
 import Table from 'cli-table3'
-import { parseStepArgument } from '../../step_arguments'
+import { parseStepArguments } from '../../step_arguments'
 
 function formatDataTable(dataTable: PickleTable): string {
   const table = new Table({
@@ -39,8 +39,8 @@ function formatDocString(docString: PickleDocString): string {
 }
 
 export function formatStepArgument(arg: PickleStepArgument): string {
-  return parseStepArgument(arg, {
+  return parseStepArguments(arg, {
     dataTable: formatDataTable,
     docString: formatDocString,
-  })
+  }).join('\n')
 }

@@ -1,5 +1,5 @@
 import type { Expression } from '@cucumber/cucumber-expressions'
-import { parseStepArgument } from '../step_arguments'
+import { parseStepArguments } from '../step_arguments'
 import { doesHaveValue } from '../value_checker'
 import DataTable from './data_table'
 import Definition, {
@@ -29,13 +29,12 @@ export default class StepDefinition extends Definition implements IDefinition {
     const parameters = await Promise.all(
       this.expression.match(step.text).map((arg) => arg.getValue(world))
     )
-    if (doesHaveValue(step.argument)) {
-      const argumentParameter = parseStepArgument<DataTable | string>(step.argument, {
+    parameters.push(
+      ...parseStepArguments<DataTable | string>(step.argument, {
         dataTable: (arg) => new DataTable(arg),
         docString: (arg) => arg.content,
       })
-      parameters.push(argumentParameter)
-    }
+    )
     return {
       getInvalidCodeLengthMessage: () => this.baseGetInvalidCodeLengthMessage(parameters),
       parameters,
