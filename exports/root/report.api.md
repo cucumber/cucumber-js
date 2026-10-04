@@ -326,7 +326,7 @@ export interface ITestCaseHookParameter {
     result?: TestStepResult;
     // (undocumented)
     testCaseStartedId: string;
-    // (undocumented)
+    // @deprecated (undocumented)
     willBeRetried?: boolean;
 }
 
