@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+
+## [13.3.0] - 2026-10-05
 ### Added
 - Support steps with both a data table and a doc string ([#2967](https://github.com/cucumber/cucumber-js/pull/2967))
 
@@ -1799,6 +1801,7 @@ this.Given(), this.When(), this.Then() and this.defineStep() ([#2](https://githu
 ## 0.0.1
 
 [Unreleased]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...HEAD
+[13.3.0]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...v13.3.0
 [13.2.1]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...v13.2.1
 [13.2.0]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...v13.2.0
 [13.1.1]: https://github.com/cucumber/cucumber-js/compare/v12.8.3...v13.1.1
