@@ -11,6 +11,9 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber
 ### Added
 - Support steps with both a data table and a doc string ([#2967](https://github.com/cucumber/cucumber-js/pull/2967))
 
+### Changed
+- Deprecate willBeRetried in After hook ([#2968](https://github.com/cucumber/cucumber-js/pull/2968))
+
 ## [13.2.1] - 2026-08-04
 ### Fixed
 - Fix hang in parallel runtime when there are no test cases to run ([#2908](https://github.com/cucumber/cucumber-js/pull/2908))
