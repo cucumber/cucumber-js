@@ -280,7 +280,7 @@
     "@types/sinon-chai": "4.0.0",
     "@types/stream-buffers": "3.0.8",
     "@types/tmp": "0.2.6",
-    "chai": "6.2.2",
+    "chai": "6.3.0",
     "chai-exclude": "3.0.1",
     "coffeescript": "2.7.0",
     "dirty-chai": "3.0.0",
