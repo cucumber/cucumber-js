@@ -1,19 +1,32 @@
+import FakeTimers, { type InstalledClock } from '@sinonjs/fake-timers'
 import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { wrapPromiseWithTimeout } from './time'
+import { afterEach, beforeEach, describe, it } from 'mocha'
+import timeMethods, { wrapPromiseWithTimeout } from './time'
 
 describe('wrapPromiseWithTimeout()', () => {
+  let clock: InstalledClock
+
+  beforeEach(() => {
+    clock = FakeTimers.withGlobal(timeMethods).install()
+  })
+
+  afterEach(() => {
+    clock.uninstall()
+  })
+
   describe('promise times out (default timeout message)', () => {
     it('rejects the promise', async () => {
       // Arrange
       const promise = new Promise((resolve) => {
-        setTimeout(resolve, 50)
+        timeMethods.setTimeout(resolve, 50)
       })
 
       // Act
+      const wrapped = wrapPromiseWithTimeout(promise, 25)
+      clock.tick(25)
       let error: Error = null
       try {
-        await wrapPromiseWithTimeout(promise, 25)
+        await wrapped
       } catch (e) {
         error = e
       }
@@ -28,13 +41,15 @@ describe('wrapPromiseWithTimeout()', () => {
     it('rejects the promise', async () => {
       // Arrange
       const promise = new Promise((resolve) => {
-        setTimeout(resolve, 50)
+        timeMethods.setTimeout(resolve, 50)
       })
 
       // Act
+      const wrapped = wrapPromiseWithTimeout(promise, 25, 'custom timeout message')
+      clock.tick(25)
       let error: Error = null
       try {
-        await wrapPromiseWithTimeout(promise, 25, 'custom timeout message')
+        await wrapped
       } catch (e) {
         error = e
       }
@@ -49,11 +64,13 @@ describe('wrapPromiseWithTimeout()', () => {
     it('resolves the promise', async () => {
       // Arrange
       const promise = new Promise<string>((resolve) => {
-        setTimeout(() => resolve('value'), 10)
+        timeMethods.setTimeout(() => resolve('value'), 10)
       })
 
       // Act
-      const result = await wrapPromiseWithTimeout(promise, 25)
+      const wrapped = wrapPromiseWithTimeout(promise, 25)
+      clock.tick(10)
+      const result = await wrapped
 
       // Assert
       expect(result).to.eql('value')
