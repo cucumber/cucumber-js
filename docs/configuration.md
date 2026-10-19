@@ -89,8 +89,10 @@ export default {
 You can also set configuration options via environment variables. For each option, take its key, convert it to uppercase-with-underscores, and prefix it with `CUCUMBER_`. For example, `retryTagFilter` becomes `CUCUMBER_RETRY_TAG_FILTER`:
 
 ```shell
-CUCUMBER_PARALLEL=2 CUCUMBER_RETRY_TAG_FILTER='@flaky' cucumber-js
+CUCUMBER_RETRY=2 CUCUMBER_RETRY_TAG_FILTER='@flaky' cucumber-js
 ```
+
+The exception is `parallel`, because `CUCUMBER_PARALLEL` is already set in [parallel workers](./parallel.md).
 
 Environment variables take precedence over the configuration file and defaults, but not over the CLI, which always wins because it's passed directly in the command. Each option keeps its usual merge-vs-overwrite behaviour, so for example tag expressions from the environment and the CLI are combined rather than replaced. Profile-level options aren't supported via environment variables.
 

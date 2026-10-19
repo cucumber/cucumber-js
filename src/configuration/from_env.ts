@@ -14,6 +14,10 @@ export function fromEnv(
 ): Partial<IConfiguration> {
   const raw: Record<string, unknown> = {}
   for (const option of Object.keys(DEFAULT_CONFIGURATION)) {
+    // CUCUMBER_PARALLEL is already set to 'true' in parallel workers
+    if (option === 'parallel') {
+      continue
+    }
     const value = env[`CUCUMBER_${option.replace(/([A-Z])/g, '_$1').toUpperCase()}`]
     if (value !== undefined) {
       raw[option] = parseValue(value)

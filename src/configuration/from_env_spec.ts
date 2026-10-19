@@ -17,6 +17,13 @@ describe('fromEnv', () => {
     expect(result).to.deep.eq({})
   })
 
+  it('should ignore CUCUMBER_PARALLEL, which parallel workers set', () => {
+    const result = fromEnv(new FakeLogger(), {
+      CUCUMBER_PARALLEL: 'true',
+    })
+    expect(result).to.deep.eq({})
+  })
+
   it('should map an env var back to its camelCase configuration key', () => {
     const result = fromEnv(new FakeLogger(), {
       CUCUMBER_RETRY_TAG_FILTER: '@flaky',
@@ -34,10 +41,9 @@ describe('fromEnv', () => {
 
   it('should parse numeric values', () => {
     const result = fromEnv(new FakeLogger(), {
-      CUCUMBER_PARALLEL: '2',
       CUCUMBER_RETRY: '3',
     })
-    expect(result).to.deep.eq({ parallel: 2, retry: 3 })
+    expect(result).to.deep.eq({ retry: 3 })
   })
 
   it('should keep plain string values as strings', () => {
@@ -69,7 +75,7 @@ describe('fromEnv', () => {
   it('should fail validation for a value of the wrong type', () => {
     expect(() =>
       fromEnv(new FakeLogger(), {
-        CUCUMBER_PARALLEL: 'not-a-number',
+        CUCUMBER_RETRY: 'not-a-number',
       })
     ).to.throw(/failed schema validation/)
   })
