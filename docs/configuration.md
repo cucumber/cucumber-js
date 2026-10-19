@@ -86,25 +86,10 @@ export default {
 
 ## Environment variables
 
-You can also set configuration options via environment variables. For each option, take its key, convert it to uppercase-with-underscores, and prefix it with `CUCUMBER_OPTION_`. For example, `retryTagFilter` becomes `CUCUMBER_OPTION_RETRY_TAG_FILTER`:
+You can also set configuration options via environment variables. For each option, take its key, convert it to uppercase-with-underscores, and prefix it with `CUCUMBER_`. For example, `retryTagFilter` becomes `CUCUMBER_RETRY_TAG_FILTER`:
 
 ```shell
-CUCUMBER_OPTION_PARALLEL=2 CUCUMBER_OPTION_RETRY_TAG_FILTER='@flaky' cucumber-js
-```
-
-Values are parsed as JSON where possible, so booleans, numbers, arrays and objects can be expressed, while anything that isn't valid JSON (like a tag expression) is kept as a plain string:
-
-```shell
-# boolean
-CUCUMBER_OPTION_DRY_RUN=true
-# number
-CUCUMBER_OPTION_PARALLEL=2
-# string
-CUCUMBER_OPTION_TAGS='@foo and @bar'
-# array
-CUCUMBER_OPTION_FORMAT='["html:cucumber-report.html"]'
-# object
-CUCUMBER_OPTION_WORLD_PARAMETERS='{"baseUrl":"https://example.com"}'
+CUCUMBER_PARALLEL=2 CUCUMBER_RETRY_TAG_FILTER='@flaky' cucumber-js
 ```
 
 Environment variables take precedence over the configuration file and defaults, but not over the CLI, which always wins because it's passed directly in the command. Each option keeps its usual merge-vs-overwrite behaviour, so for example tag expressions from the environment and the CLI are combined rather than replaced. Profile-level options aren't supported via environment variables.

@@ -8,49 +8,50 @@ describe('fromEnv', () => {
     expect(result).to.deep.eq({})
   })
 
-  it('should ignore env vars without the CUCUMBER_OPTION_ prefix', () => {
+  it('should ignore env vars that do not map to a known option', () => {
     const result = fromEnv(new FakeLogger(), {
       TAGS: '@foo',
       CUCUMBER_PUBLISH_ENABLED: 'true',
+      CUCUMBER_NOT_A_REAL_OPTION: 'whatever',
     })
     expect(result).to.deep.eq({})
   })
 
   it('should map an env var back to its camelCase configuration key', () => {
     const result = fromEnv(new FakeLogger(), {
-      CUCUMBER_OPTION_RETRY_TAG_FILTER: '@flaky',
+      CUCUMBER_RETRY_TAG_FILTER: '@flaky',
     })
     expect(result).to.deep.eq({ retryTagFilter: '@flaky' })
   })
 
   it('should parse boolean values', () => {
     const result = fromEnv(new FakeLogger(), {
-      CUCUMBER_OPTION_DRY_RUN: 'true',
-      CUCUMBER_OPTION_STRICT: 'false',
+      CUCUMBER_DRY_RUN: 'true',
+      CUCUMBER_STRICT: 'false',
     })
     expect(result).to.deep.eq({ dryRun: true, strict: false })
   })
 
   it('should parse numeric values', () => {
     const result = fromEnv(new FakeLogger(), {
-      CUCUMBER_OPTION_PARALLEL: '2',
-      CUCUMBER_OPTION_RETRY: '3',
+      CUCUMBER_PARALLEL: '2',
+      CUCUMBER_RETRY: '3',
     })
     expect(result).to.deep.eq({ parallel: 2, retry: 3 })
   })
 
   it('should keep plain string values as strings', () => {
     const result = fromEnv(new FakeLogger(), {
-      CUCUMBER_OPTION_TAGS: '@foo and @bar',
-      CUCUMBER_OPTION_LANGUAGE: 'en',
+      CUCUMBER_TAGS: '@foo and @bar',
+      CUCUMBER_LANGUAGE: 'en',
     })
     expect(result).to.deep.eq({ tags: '@foo and @bar', language: 'en' })
   })
 
   it('should parse array values as JSON', () => {
     const result = fromEnv(new FakeLogger(), {
-      CUCUMBER_OPTION_PATHS: '["features/**/*.feature"]',
-      CUCUMBER_OPTION_FORMAT: '["html:report.html"]',
+      CUCUMBER_PATHS: '["features/**/*.feature"]',
+      CUCUMBER_FORMAT: '["html:report.html"]',
     })
     expect(result).to.deep.eq({
       paths: ['features/**/*.feature'],
@@ -60,22 +61,15 @@ describe('fromEnv', () => {
 
   it('should parse object values as JSON', () => {
     const result = fromEnv(new FakeLogger(), {
-      CUCUMBER_OPTION_WORLD_PARAMETERS: '{"foo":"bar"}',
+      CUCUMBER_WORLD_PARAMETERS: '{"foo":"bar"}',
     })
     expect(result).to.deep.eq({ worldParameters: { foo: 'bar' } })
-  })
-
-  it('should ignore CUCUMBER_OPTION_ vars that do not map to a known option', () => {
-    const result = fromEnv(new FakeLogger(), {
-      CUCUMBER_OPTION_NOT_A_REAL_OPTION: 'whatever',
-    })
-    expect(result).to.deep.eq({})
   })
 
   it('should fail validation for a value of the wrong type', () => {
     expect(() =>
       fromEnv(new FakeLogger(), {
-        CUCUMBER_OPTION_PARALLEL: 'not-a-number',
+        CUCUMBER_PARALLEL: 'not-a-number',
       })
     ).to.throw(/failed schema validation/)
   })

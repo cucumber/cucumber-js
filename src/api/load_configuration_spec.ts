@@ -40,10 +40,10 @@ describe('loadConfiguration', function () {
   })
 
   describe('environment variables', () => {
-    it('should source configuration from CUCUMBER_OPTION_ environment variables', async () => {
+    it('should source configuration from environment variables', async () => {
       const { useConfiguration } = await loadConfiguration(
         { file: false },
-        { ...environment, env: { CUCUMBER_OPTION_DRY_RUN: 'true' } }
+        { ...environment, env: { CUCUMBER_DRY_RUN: 'true' } }
       )
 
       expect(useConfiguration.dryRun).to.eq(true)
@@ -52,7 +52,7 @@ describe('loadConfiguration', function () {
     it('should take precedence over the configuration file', async () => {
       const { useConfiguration } = await loadConfiguration(
         {},
-        { ...environment, env: { CUCUMBER_OPTION_DRY_RUN: 'true' } }
+        { ...environment, env: { CUCUMBER_DRY_RUN: 'true' } }
       )
 
       // the config file (cucumber.mjs) does not set dryRun, so env wins over default
@@ -62,17 +62,17 @@ describe('loadConfiguration', function () {
     it('should be overridden by directly provided (CLI) configuration', async () => {
       const { useConfiguration } = await loadConfiguration(
         { file: false, provided: ['--no-strict'] },
-        { ...environment, env: { CUCUMBER_OPTION_STRICT: 'true' } }
+        { ...environment, env: { CUCUMBER_STRICT: 'true' } }
       )
 
-      // CLI --no-strict wins over CUCUMBER_OPTION_STRICT=true
+      // CLI --no-strict wins over CUCUMBER_STRICT=true
       expect(useConfiguration.strict).to.eq(false)
     })
 
     it('should merge with directly provided (CLI) values for additive options', async () => {
       const { useConfiguration } = await loadConfiguration(
         { file: false, provided: ['--tags', '@bar or @baz'] },
-        { ...environment, env: { CUCUMBER_OPTION_TAGS: '@foo' } }
+        { ...environment, env: { CUCUMBER_TAGS: '@foo' } }
       )
 
       expect(useConfiguration.tags).to.eq('(@foo) and (@bar or @baz)')
