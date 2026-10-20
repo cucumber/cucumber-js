@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import Mustache from 'mustache'
-import stringArgv from 'string-argv'
 import { type DataTable, Then, When } from '../../'
+import { splitArgv } from '../../src/configuration/split_argv'
 import { doesHaveValue, doesNotHaveValue, valueOrDefault } from '../../src/value_checker'
 import { version } from '../../src/version'
 import { normalizeText } from '../support/helpers'
@@ -17,7 +17,7 @@ When('I run cucumber-js', { timeout: 10000 }, async function (this: World) {
 
 When('I run cucumber-js with `{}`', { timeout: 10000 }, async function (this: World, args: string) {
   const renderedArgs = Mustache.render(valueOrDefault(args, ''), this)
-  const stringArgs = stringArgv(renderedArgs)
+  const stringArgs = splitArgv(renderedArgs)
   return await this.run(this.localExecutablePath, stringArgs)
 })
 
@@ -26,7 +26,7 @@ When(
   { timeout: 10000 },
   async function (this: World, args: string, envString: string) {
     const renderedArgs = Mustache.render(valueOrDefault(args, ''), this)
-    const stringArgs = stringArgv(renderedArgs)
+    const stringArgs = splitArgv(renderedArgs)
     const env = this.parseEnvString(envString)
     return await this.run(this.localExecutablePath, stringArgs, env)
   }
@@ -44,7 +44,7 @@ When(
 When('I run cucumber-js with all formatters', { timeout: 10000 }, async function (this: World) {
   const args = '--format html:html.out --format json:json.out'
   const renderedArgs = Mustache.render(args, this)
-  const stringArgs = stringArgv(renderedArgs)
+  const stringArgs = splitArgv(renderedArgs)
   return await this.run(this.localExecutablePath, stringArgs)
 })
 
@@ -59,7 +59,7 @@ When(
     const formats = ['html:html.out', 'json:json.out']
     args += ` ${formats.map((f) => `--format ${f}`).join(' ')}`
     const renderedArgs = Mustache.render(args, this)
-    const stringArgs = stringArgv(renderedArgs)
+    const stringArgs = splitArgv(renderedArgs)
     return await this.run(this.localExecutablePath, stringArgs)
   }
 )
