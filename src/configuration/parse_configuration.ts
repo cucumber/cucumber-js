@@ -1,7 +1,7 @@
-import stringArgv from 'string-argv'
 import type { ILogger } from '../environment'
 import ArgvParser from './argv_parser'
 import { checkSchema } from './check_schema'
+import { splitArgv } from './split_argv'
 import type { IConfiguration } from './types'
 
 export function parseConfiguration(
@@ -19,7 +19,7 @@ export function parseConfiguration(
   }
   if (typeof definition === 'string') {
     logger.debug(`${source} configuration value is a string; parsing as argv`)
-    const { configuration } = ArgvParser.parse(['node', 'cucumber-js', ...stringArgv(definition)])
+    const { configuration } = ArgvParser.parse(['node', 'cucumber-js', ...splitArgv(definition)])
     return configuration
   }
   try {

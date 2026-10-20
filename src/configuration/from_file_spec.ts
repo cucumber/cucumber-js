@@ -73,6 +73,23 @@ describe('fromFile', () => {
     })
   })
 
+  it('should parse a string profile like a command line', async () => {
+    const { logger, cwd } = await setup(
+      'cucumber.json',
+      JSON.stringify({
+        p1: `features/**/*.feature C:\\features\\other.feature --tags "@foo and not @bar" --name '^Some thing$' --format html:reports/$name.html`,
+      })
+    )
+
+    const result = await fromFile(logger, cwd, 'cucumber.json', ['p1'])
+    expect(result).to.deep.eq({
+      paths: ['features/**/*.feature', 'C:\\features\\other.feature'],
+      tags: '(@foo and not @bar)',
+      name: ['^Some thing$'],
+      format: ['html:reports/$name.html'],
+    })
+  })
+
   it('should throw when an object doesnt conform to the schema', async () => {
     const { logger, cwd } = await setup(
       'cucumber.json',
