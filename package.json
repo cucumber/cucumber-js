@@ -281,7 +281,7 @@
     "@types/tmp": "0.2.6",
     "chai": "6.3.0",
     "chai-exclude": "3.0.1",
-    "coffeescript": "2.7.0",
+    "coffeescript": "2.7.1",
     "dirty-chai": "3.0.0",
     "express": "^5.0.0",
     "fs-extra": "11.4.1",
