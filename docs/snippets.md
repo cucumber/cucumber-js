@@ -18,14 +18,15 @@ The last step about removing todos isn't implemented yet - we just wrote that in
 ```js
 Then('I remove the todo {string}', function (string) {
   // Write code here that turns the phrase above into concrete actions
-  return 'pending';
-});
+  return 'pending'
+})
 ```
 
 By default, the snippet uses the "synchronous" style. You can use the `snippetInterface` [format option](./formatters.md#options) to specify one of the styles that supports asynchronous steps:
 
 - "async-await" - Outputs an async function where you can use `await` - probably the best choice if you aren't sure.
   Running with `--format-options '{"snippetInterface":"async-await"}'` yields:
+
   ```js
   Then('I remove the todo {string}', async function (string) {
     // Write code here that turns the phrase above into concrete actions
@@ -34,6 +35,7 @@ By default, the snippet uses the "synchronous" style. You can use the `snippetIn
   ```
 - "callback" - Outputs a plain function with a callback function as the final argument.
   Running with `--format-options '{"snippetInterface":"callback"}'` yields:
+
   ```js
   Then('I remove the todo {string}', function (string, callback) {
     // Write code here that turns the phrase above into concrete actions
@@ -42,6 +44,7 @@ By default, the snippet uses the "synchronous" style. You can use the `snippetIn
   ```
 - "promise" - Outputs a plain function from which you should return a `Promise`.
   Running with `--format-options '{"snippetInterface":"promise"}'` yields:
+
   ```js
   Then('I remove the todo {string}', function (string) {
     // Write code here that turns the phrase above into concrete actions
@@ -56,5 +59,3 @@ These [format options](./formatters.md#options) influence how the snippets are r
 
 - `snippetInterface` - set to one of 'async-await', 'callback', 'promise', or 'synchronous' to alter the style of generated snippets for undefined steps
 - `snippetSyntax` - module name of path of the [custom snippet syntax](./custom_snippet_syntaxes.md) to be used
-
-

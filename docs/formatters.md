@@ -11,19 +11,19 @@ You can specify one or more formats via the `format` configuration option:
 
 For each format you specify, you have to provide one or two values. The first (required) is to identify the formatter. It can take a few forms:
 
-* The name of one of the built-in formatters (below) e.g. `progress-bar`
-* A module/package name e.g. `@cucumber/pretty-formatter`
-* A relative path to a local formatter implementation e.g. `./my-custom-formatter.js`
-* An absolute path to a local formatter implementation in the form of a `file://` URL
+- The name of one of the built-in formatters (below) e.g. `progress-bar`
+- A module/package name e.g. `@cucumber/pretty-formatter`
+- A relative path to a local formatter implementation e.g. `./my-custom-formatter.js`
+- An absolute path to a local formatter implementation in the form of a `file://` URL
 
 Without a second value, the formatter will print to `stdout`. The second value, if present, is a path to where the formatter output should be written. If the path includes directories that don't exist yet, they'll be created automatically.
 
-On the CLI, when specifying both a name and path, you'll need to use `:` as a delimiter and wrap each side of it with double quotes. In a configuration file you can do this too, but you can also provide an array with the two values as separate strings, which is recommended. 
+On the CLI, when specifying both a name and path, you'll need to use `:` as a delimiter and wrap each side of it with double quotes. In a configuration file you can do this too, but you can also provide an array with the two values as separate strings, which is recommended.
 
 Some notes on specifying Formatters:
 
-* If multiple formatters are specified with the same output, only the last is used.
-* If no formatter for `stdout` is specified, we default to the `progress` formatter.
+- If multiple formatters are specified with the same output, only the last is used.
+- If no formatter for `stdout` is specified, we default to the `progress` formatter.
 
 ## Options
 
@@ -55,50 +55,50 @@ Every key is optional; provide only the ones you want to override.
 {
   "formatOptions": {
     "theme": {
-      "affix": ["dim"],                          // prefixes and suffixes for titles etc
-      "attachment": ["cyan"],                    // text representations of attachments
+      "affix": ["dim"], // prefixes and suffixes for titles etc
+      "attachment": ["cyan"], // text representations of attachments
       "dataTable": {
-        "all": [],                               // styles applied to the entire data table
-        "border": ["dim"],                       // the border characters
-        "content": []                            // the cell content
+        "all": [], // styles applied to the entire data table
+        "border": ["dim"], // the border characters
+        "content": [] // the cell content
       },
       "docString": {
-        "all": [],                               // styles applied to the entire doc string
-        "content": [],                           // the content
-        "delimiter": ["dim"],                    // the `"""` delimiters
-        "mediaType": ["dim"]                     // the optional media type
+        "all": [], // styles applied to the entire doc string
+        "content": [], // the content
+        "delimiter": ["dim"], // the `"""` delimiters
+        "mediaType": ["dim"] // the optional media type
       },
       "feature": {
-        "all": [],                               // styles applied to the entire feature line
-        "keyword": ["bold"],                     // the `Feature:` keyword
-        "name": []                               // the feature name
+        "all": [], // styles applied to the entire feature line
+        "keyword": ["bold"], // the `Feature:` keyword
+        "name": [] // the feature name
       },
-      "location": ["dim"],                       // source locations printed alongside scenario and step lines
+      "location": ["dim"], // source locations printed alongside scenario and step lines
       "rule": {
-        "all": [],                               // styles applied to the entire rule line
-        "keyword": ["bold"],                     // the `Rule:` keyword
-        "name": []                               // the rule name
+        "all": [], // styles applied to the entire rule line
+        "keyword": ["bold"], // the `Rule:` keyword
+        "name": [] // the rule name
       },
       "scenario": {
-        "all": [],                               // styles applied to the entire scenario line
-        "keyword": ["bold"],                     // the `Scenario:` (or other) keyword
-        "name": []                               // the scenario name
+        "all": [], // styles applied to the entire scenario line
+        "keyword": ["bold"], // the `Scenario:` (or other) keyword
+        "name": [] // the scenario name
       },
       "status": {
         // each of these is a map keyed by status (PASSED, FAILED, SKIPPED, PENDING, UNDEFINED, AMBIGUOUS)
-        "all":      { "PASSED": ["green"], "FAILED": ["red"] /* …etc */ },  // styles applied to step lines per status
-        "icon":     { "PASSED": "✔", "FAILED": "✘" /* …etc */ },             // icon characters used by `pretty`
-        "progress": { "PASSED": ".", "FAILED": "F" /* …etc */ }              // characters used by `progress`
+        "all": { "PASSED": ["green"], "FAILED": ["red"] /* …etc */ }, // styles applied to step lines per status
+        "icon": { "PASSED": "✔", "FAILED": "✘" /* …etc */ }, // icon characters used by `pretty`
+        "progress": { "PASSED": ".", "FAILED": "F" /* …etc */ } // characters used by `progress`
       },
       "step": {
-        "argument": [],                          // data tables and doc strings attached to steps
-        "keyword": ["bold"],                     // the step keyword (`Given`, `When`, etc.)
-        "text": []                               // the step text
+        "argument": [], // data tables and doc strings attached to steps
+        "keyword": ["bold"], // the step keyword (`Given`, `When`, etc.)
+        "text": [] // the step text
       },
       "symbol": {
-        "bullet": "•"                            // the bullet character used in summaries
+        "bullet": "•" // the bullet character used in summaries
       },
-      "tag": ["cyan"]                            // tags on features, rules and scenarios
+      "tag": ["cyan"] // tags on features, rules and scenarios
     }
   }
 }
@@ -208,7 +208,7 @@ Outputs all the [Cucumber Messages](https://github.com/cucumber/messages) for th
 
 Outputs details of the test run in the legacy JSON format.
 
-*Note: this formatter is in maintenance mode and won't have new features added to it. Where you need a structured data representation of your test run, it's best to use the `message` formatter. Tools that rely on this formatter will continue to work, but are encouraged to migrate to consume the `message` output instead.*
+_Note: this formatter is in maintenance mode and won't have new features added to it. Where you need a structured data representation of your test run, it's best to use the `message` formatter. Tools that rely on this formatter will continue to work, but are encouraged to migrate to consume the `message` output instead._
 
 ### `junit`
 
@@ -255,4 +255,3 @@ The Usage Formatter lists your step definitions and tells you about usages in yo
 ### `usage-json`
 
 Does what the Usage Formatter does, but outputs JSON, which can be output to a file and then consumed by other tools.
-

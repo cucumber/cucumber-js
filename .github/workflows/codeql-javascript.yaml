@@ -10,7 +10,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '58 5 * * 1'
+    - cron: "58 5 * * 1"
 
 concurrency:
   # Cancels in-progress runs only for pull requests
@@ -20,7 +20,7 @@ concurrency:
 jobs:
   analyze:
     name: Analyze JavaScript
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
     permissions:
       security-events: write
     steps:
@@ -33,4 +33,4 @@ jobs:
           build-mode: none
       - uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         with:
-          category: '/language:javascript-typescript'
+          category: "/language:javascript-typescript"

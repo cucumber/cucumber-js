@@ -7,6 +7,7 @@ I want to run Cucumber on the command line
 ## Scenario: run feature with non-default step definitions file location specified (-r option)
 
 - Given a file named "features/a.feature" with:
+
   ```gherkin
   Feature: some feature
     Scenario:
@@ -49,6 +50,7 @@ I want to run Cucumber on the command line
 ## Scenario: run feature with step definitions in required directory (-r option)
 
 - Given a file named "features/a.feature" with:
+
   ```gherkin
   Feature: some feature
     Scenario:

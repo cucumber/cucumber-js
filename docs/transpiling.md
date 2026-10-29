@@ -17,7 +17,7 @@ The first thing you need to establish is the JavaScript module format you are co
 - **CommonJS** produces `require` and `module.exports` in compiled output for `import`s and `export`s respectively in the source. If you aren't sure, there's a good chance it's this one.
 - [**ESM**](./esm.md) produces `import` and `export` in compiled output which should more closely match your source. This is newer than CommonJS but gaining adoption quickly as the industry transitions.
 
-Your `package.json` will have the answer in the `type` field - either `module` (for ESM) or `commonjs` (for CommonJS), or CommonJS if omitted. 
+Your `package.json` will have the answer in the `type` field - either `module` (for ESM) or `commonjs` (for CommonJS), or CommonJS if omitted.
 
 ## CommonJS
 

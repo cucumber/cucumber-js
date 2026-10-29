@@ -53,7 +53,7 @@ class Greeter {
 }
 
 module.exports = {
-  Greeter
+  Greeter,
 }
 ```
 
@@ -99,34 +99,34 @@ If you learn best by example, we have [a repo with several example projects](htt
 
 The following documentation is for `main`, which might contain some unreleased features. See [documentation for older versions](./docs/older_versions.md) if you need it.
 
-* [Installation](./docs/installation.md)
-* [CLI](./docs/cli.md)
-* [Configuration](./docs/configuration.md)
-* Support Code
-  * [API Reference](./docs/support_files/api_reference.md)
-  * [Attachments](./docs/support_files/attachments.md)
-  * [Data Tables](./docs/support_files/data_table_interface.md)
-  * [Hooks](./docs/support_files/hooks.md)
-  * [Step Definitions](./docs/support_files/step_definitions.md)
-  * [Timeouts](./docs/support_files/timeouts.md)
-  * [World](./docs/support_files/world.md)
-* Guides
-  * [Debugging](./docs/debugging.md)
-  * [Dry run](./docs/dry_run.md)
-  * [ES Modules](./docs/esm.md)
-  * [Failing fast](./docs/fail_fast.md)
-  * [Filtering which scenarios run](./docs/filtering.md)
-  * [Formatters for feedback and reporting](./docs/formatters.md)
-  * [Parallel running for speed](./docs/parallel.md)
-  * [Plugins for extending functionality](./docs/plugins.md)
-  * [Profiles for composable configuration](./docs/profiles.md)
-  * [Rerunning just failures](./docs/rerun.md)
-  * [Retrying flaky scenarios](./docs/retry.md)
-  * [Sharding to split tests across machines](./docs/sharding.md)
-  * [JavaScript API for running programmatically](./docs/javascript_api.md)
-  * [Snippets for undefined steps](./docs/snippets.md)
-  * [Transpiling (from TypeScript etc)](./docs/transpiling.md)
-* [FAQ](./docs/faq.md)
+- [Installation](./docs/installation.md)
+- [CLI](./docs/cli.md)
+- [Configuration](./docs/configuration.md)
+- Support Code
+  - [API Reference](./docs/support_files/api_reference.md)
+  - [Attachments](./docs/support_files/attachments.md)
+  - [Data Tables](./docs/support_files/data_table_interface.md)
+  - [Hooks](./docs/support_files/hooks.md)
+  - [Step Definitions](./docs/support_files/step_definitions.md)
+  - [Timeouts](./docs/support_files/timeouts.md)
+  - [World](./docs/support_files/world.md)
+- Guides
+  - [Debugging](./docs/debugging.md)
+  - [Dry run](./docs/dry_run.md)
+  - [ES Modules](./docs/esm.md)
+  - [Failing fast](./docs/fail_fast.md)
+  - [Filtering which scenarios run](./docs/filtering.md)
+  - [Formatters for feedback and reporting](./docs/formatters.md)
+  - [Parallel running for speed](./docs/parallel.md)
+  - [Plugins for extending functionality](./docs/plugins.md)
+  - [Profiles for composable configuration](./docs/profiles.md)
+  - [Rerunning just failures](./docs/rerun.md)
+  - [Retrying flaky scenarios](./docs/retry.md)
+  - [Sharding to split tests across machines](./docs/sharding.md)
+  - [JavaScript API for running programmatically](./docs/javascript_api.md)
+  - [Snippets for undefined steps](./docs/snippets.md)
+  - [Transpiling (from TypeScript etc)](./docs/transpiling.md)
+- [FAQ](./docs/faq.md)
 
 ## Support
 

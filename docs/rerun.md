@@ -1,6 +1,6 @@
 # Rerun
 
-*Note: if you want a mechanism to retry flaky scenarios when they fail in CI, take a look at [Retry](./retry.md) instead.*
+_Note: if you want a mechanism to retry flaky scenarios when they fail in CI, take a look at [Retry](./retry.md) instead._
 
 If you're doing TDD, you might sometimes work like this:
 
@@ -18,7 +18,7 @@ First, enable the `rerun` formatter every time you run cucumber-js:
 
 You can do this via the CLI, or more likely via a [default profile](./profiles.md).
 
-The output file doesn't have to be named `@rerun.txt`, but its name _does_ have to start with `@` - this is how cucumber-js will later distinguish it from feature files. Either way, you should add this file to your `.gitignore` so you don't accidentally commit it. 
+The output file doesn't have to be named `@rerun.txt`, but its name _does_ have to start with `@` - this is how cucumber-js will later distinguish it from feature files. Either way, you should add this file to your `.gitignore` so you don't accidentally commit it.
 
 Let's say we run cucumber-js for a Todo app we've made, and a few scenarios fail. Our rerun file's contents would look something like this:
 

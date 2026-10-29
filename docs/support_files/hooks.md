@@ -1,36 +1,36 @@
 # Hooks
 
-Hooks are used for setup and teardown the environment before and after each scenario. See the [API reference](./api_reference.md) for the specification of the first argument passed to hooks. Multiple *Before* hooks are executed in the order that they were defined. Multiple *After* hooks are executed in the **reverse** order that they were defined.
+Hooks are used for setup and teardown the environment before and after each scenario. See the [API reference](./api_reference.md) for the specification of the first argument passed to hooks. Multiple _Before_ hooks are executed in the order that they were defined. Multiple _After_ hooks are executed in the **reverse** order that they were defined.
 
 Note that your hook functions cannot reference the [world](./world.md) as `this` if you use
 arrow functions. See [FAQ](../faq.md) for details.
 
 ```javascript
-const {After, Before} = require('@cucumber/cucumber');
+const { After, Before } = require('@cucumber/cucumber')
 
 // Synchronous
 Before(function () {
-  this.count = 0;
-});
+  this.count = 0
+})
 
 // Asynchronous Callback
 Before(function (testCase, callback) {
-  var world = this;
-  tmp.dir({unsafeCleanup: true}, function(error, dir) {
+  var world = this
+  tmp.dir({ unsafeCleanup: true }, function (error, dir) {
     if (error) {
-      callback(error);
+      callback(error)
     } else {
-      world.tmpDir = dir;
-      callback();
+      world.tmpDir = dir
+      callback()
     }
-  });
-});
+  })
+})
 
 // Asynchronous Promise
 After(function () {
   // Assuming this.driver is a selenium webdriver
-  return this.driver.quit();
-});
+  return this.driver.quit()
+})
 ```
 
 ## Named hooks
@@ -40,11 +40,11 @@ After(function () {
 Hooks can optionally be named:
 
 ```javascript
-const {Before} = require('@cucumber/cucumber');
+const { Before } = require('@cucumber/cucumber')
 
-Before({name: "Set up some test state"}, function () {
-// do stuff here
-});
+Before({ name: 'Set up some test state' }, function () {
+  // do stuff here
+})
 ```
 
 Such hooks will then be referenced by name in [formatter](../formatters.md) output, which can be useful to help you understand what's happening with your tests.
@@ -54,28 +54,28 @@ Such hooks will then be referenced by name in [formatter](../formatters.md) outp
 Hooks can be conditionally selected for execution based on the tags of the scenario.
 
 ```javascript
-const {After, Before} = require('@cucumber/cucumber');
+const { After, Before } = require('@cucumber/cucumber')
 
 Before(function () {
   // This hook will be executed before all scenarios
-});
+})
 
-Before({tags: "@foo"}, function () {
+Before({ tags: '@foo' }, function () {
   // This hook will be executed before scenarios tagged with @foo
-});
+})
 
-Before({tags: "@foo and @bar"}, function () {
+Before({ tags: '@foo and @bar' }, function () {
   // This hook will be executed before scenarios tagged with @foo and @bar
-});
+})
 
-Before({tags: "@foo or @bar"}, function () {
+Before({ tags: '@foo or @bar' }, function () {
   // This hook will be executed before scenarios tagged with @foo or @bar
-});
+})
 
 // You can use the following shorthand when only specifying tags
-Before("@foo", function () {
+Before('@foo', function () {
   // This hook will be executed before scenarios tagged with @foo
-});
+})
 ```
 
 See more documentation on [tag expressions](https://docs.cucumber.io/cucumber/api/#tag-expressions)
@@ -88,10 +88,10 @@ This includes using: a synchronous return, an asynchronous callback, or an async
 
 ```javascript
 // Synchronous
-Before(function() {
+Before(function () {
   // perform some runtime check to decide whether to skip the proceeding scenario
   return 'skipped'
-});
+})
 ```
 
 ## BeforeAll / AfterAll
@@ -99,25 +99,24 @@ Before(function() {
 If you have some setup / teardown that needs to be done before or after all scenarios, use `BeforeAll` / `AfterAll`. Like hooks and steps, these can be synchronous, accept a callback, or return a promise.
 
 ```javascript
-const {AfterAll, BeforeAll} = require('@cucumber/cucumber');
+const { AfterAll, BeforeAll } = require('@cucumber/cucumber')
 
 // Synchronous
 BeforeAll(function () {
   // perform some shared setup
-});
+})
 
 // Asynchronous Callback
 BeforeAll(function (callback) {
   // perform some shared setup
-
   // execute the callback (optionally passing an error when done)
-});
+})
 
 // Asynchronous Promise
 AfterAll(function () {
   // perform some shared teardown
   return Promise.resolve()
-});
+})
 ```
 
 ### World parameters in BeforeAll/AfterAll
@@ -132,11 +131,11 @@ AfterAll(function () {
 Here's a fictional example of obtaining an auth token that can then be used by all tests:
 
 ```javascript
-const {AfterAll, BeforeAll} = require('@cucumber/cucumber');
+const { AfterAll, BeforeAll } = require('@cucumber/cucumber')
 
 BeforeAll(async function () {
-  this.parameters.accessToken = await getAccessToken(this.parameters.oauth) 
-});
+  this.parameters.accessToken = await getAccessToken(this.parameters.oauth)
+})
 ```
 
 ### Running on the coordinator in parallel mode
@@ -148,17 +147,17 @@ In [parallel mode](../parallel.md), `BeforeAll`/`AfterAll` hooks run _once per w
 Sometimes though, you have setup/teardown that should happen just once, centrally - like starting a shared server or seeding a database. For those, set the `on` option to `HookTarget.COORDINATOR` so the hook runs a single time on the coordinator process instead of on each worker:
 
 ```javascript
-const {AfterAll, BeforeAll, HookTarget} = require('@cucumber/cucumber');
+const { AfterAll, BeforeAll, HookTarget } = require('@cucumber/cucumber')
 
-BeforeAll({on: HookTarget.COORDINATOR}, async function () {
+BeforeAll({ on: HookTarget.COORDINATOR }, async function () {
   // runs once, before any workers start their scenarios
-  await startSharedServer();
-});
+  await startSharedServer()
+})
 
-AfterAll({on: HookTarget.COORDINATOR}, async function () {
+AfterAll({ on: HookTarget.COORDINATOR }, async function () {
   // runs once, after all workers have finished
-  await stopSharedServer();
-});
+  await stopSharedServer()
+})
 ```
 
 Coordinator `BeforeAll` hooks run before the workers begin, and coordinator `AfterAll` hooks run after all workers have finished, so they wrap the entire run.
@@ -170,16 +169,16 @@ The default is `HookTarget.WORKER`, which you can also specify explicitly. In se
 If you have some code execution that needs to be done before or after all steps, use `BeforeStep` / `AfterStep`. Like the `Before` / `After` hooks, these also have a world instance as 'this', and can be conditionally selected for execution based on the tags of the scenario.
 
 ```javascript
-const {AfterStep, BeforeStep} = require('@cucumber/cucumber');
+const { AfterStep, BeforeStep } = require('@cucumber/cucumber')
 
-BeforeStep({tags: "@foo"}, function () {
+BeforeStep({ tags: '@foo' }, function () {
   // This hook will be executed before all steps in a scenario with tag @foo
-});
+})
 
-AfterStep( function ({result}) {
+AfterStep(function ({ result }) {
   // This hook will be executed after all steps, and take a screenshot on step failure
   if (result.status === Status.FAILED) {
-    this.driver.takeScreenshot();
+    this.driver.takeScreenshot()
   }
-});
+})
 ```

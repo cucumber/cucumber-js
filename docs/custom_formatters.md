@@ -13,7 +13,7 @@ export default {
   type: 'formatter',
   formatter: (context) => {
     // do stuff here
-  }
+  },
 }
 ```
 
@@ -44,16 +44,13 @@ Here's a minimal example that prints the overall result when the test run finish
 ```js
 export default {
   type: 'formatter',
-  formatter: ({
-    on,
-    write
-  }) => {
-    on('message', envelope => {
+  formatter: ({ on, write }) => {
+    on('message', (envelope) => {
       if (envelope.testRunFinished) {
         write(envelope.testRunFinished.success ? 'Success' : 'Failure')
       }
     })
-  }
+  },
 }
 ```
 
@@ -77,7 +74,7 @@ export default {
       }
     })
   },
-  optionsKey: 'foo'
+  optionsKey: 'foo',
 }
 ```
 

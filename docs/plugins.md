@@ -11,7 +11,7 @@ You can specify one or more plugins via the `plugin` configuration option:
 - In a configuration file `{ plugin: ['@my-org/some-plugin', '@my-org/other-plugin'] }`
 - On the CLI `cucumber-js --plugin @my-org/some-plugin --plugin @my-org/other-plugin"`
 
-The above examples make sense if you're using a plugin installed from a package registry like npm. If you have a custom plugin (see below) that's local to your project, the specifier might be something like `./my-plugin.js`. 
+The above examples make sense if you're using a plugin installed from a package registry like npm. If you have a custom plugin (see below) that's local to your project, the specifier might be something like `./my-plugin.js`.
 
 You can also specify options as JSON, if a plugin needs them:
 
@@ -42,7 +42,7 @@ export default {
   type: 'plugin',
   coordinator: (context) => {
     // do stuff here
-  }
+  },
 }
 ```
 
@@ -66,7 +66,7 @@ export default {
       // this runs at the end
       await doSomeAsyncTeardown()
     }
-  }
+  },
 }
 ```
 
@@ -94,16 +94,13 @@ Here's an example emitting a log when the test run finishes:
 ```js
 export default {
   type: 'plugin',
-  coordinator: ({
-    on,
-    logger
-  }) => {
-    on('message', envelope => {
+  coordinator: ({ on, logger }) => {
+    on('message', (envelope) => {
       if (envelope.testRunFinished) {
         logger.info('Test run finished!')
       }
     })
-  }
+  },
 }
 ```
 
@@ -121,14 +118,11 @@ Here's an example filtering off some unwanted Pickles:
 ```js
 export default {
   type: 'plugin',
-  coordinator: ({
-    transform,
-    logger
-  }) => {
-    transform('pickles:filter', pickles => {
-      return pickles.filter(({pickle}) => !pickle.name.includes('widgets'))
+  coordinator: ({ transform, logger }) => {
+    transform('pickles:filter', (pickles) => {
+      return pickles.filter(({ pickle }) => !pickle.name.includes('widgets'))
     })
-  }
+  },
 }
 ```
 
@@ -146,7 +140,7 @@ export default {
       }
     })
   },
-  optionsKey: 'foo'
+  optionsKey: 'foo',
 }
 ```
 

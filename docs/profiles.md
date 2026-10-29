@@ -1,6 +1,6 @@
 # Profiles
 
-If you have several permutations of running Cucumber with different options in your project, it might be a bit cumbersome to manage. *Profiles* enable you to declare bundles of configuration and reference them with a single CLI option. You can use multiple profiles at once and you can still supply options directly on the CLI when using profiles.
+If you have several permutations of running Cucumber with different options in your project, it might be a bit cumbersome to manage. _Profiles_ enable you to declare bundles of configuration and reference them with a single CLI option. You can use multiple profiles at once and you can still supply options directly on the CLI when using profiles.
 
 Profiles are invoked from the command line using the `--profile` CLI option.
 
@@ -25,9 +25,9 @@ module.exports = {
     requireModule: ['tsx/cjs'],
     require: ['support/**/*.ts'],
     worldParameters: {
-      appUrl: 'http://localhost:3000/'
-    }
-  }
+      appUrl: 'http://localhost:3000/',
+    },
+  },
 }
 ```
 
@@ -44,8 +44,8 @@ const common = {
   requireModule: ['ts-node/register'],
   require: ['support/**/*.ts'],
   worldParameters: {
-    appUrl: process.env.MY_APP_URL || 'http://localhost:3000/'
-  }
+    appUrl: process.env.MY_APP_URL || 'http://localhost:3000/',
+  },
 }
 
 module.exports = {
@@ -56,12 +56,12 @@ module.exports = {
   ci: {
     ...common,
     format: ['html:cucumber-report.html'],
-    publish: true
-  }
+    publish: true,
+  },
 }
 ```
 
-Now, if we just run `cucumber-js` with no arguments, it will pick up our profiles and use the `default` one.  To run the CI profile we will use this command:
+Now, if we just run `cucumber-js` with no arguments, it will pick up our profiles and use the `default` one. To run the CI profile we will use this command:
 
 ```shell
 cucumber-js -p ci
@@ -76,8 +76,8 @@ const common = {
   requireModule: ['ts-node/register'],
   require: ['support/**/*.ts'],
   worldParameters: {
-    appUrl: process.env.MY_APP_URL || 'http://localhost:3000/'
-  }
+    appUrl: process.env.MY_APP_URL || 'http://localhost:3000/',
+  },
 }
 
 export default {
@@ -88,7 +88,7 @@ export default {
 export const ci = {
   ...common,
   format: ['html:cucumber-report.html'],
-  publish: true
+  publish: true,
 }
 ```
 
@@ -97,13 +97,13 @@ export const ci = {
 If you need to define your profiles dynamically (including asynchronously), you can use the `default` profile key/export to provide an async function that resolves to your profiles. This can be particularly useful in an ESM context where the profiles are static exports. Here's an example:
 
 ```javascript
-export default function() {
+export default function () {
   const common = {
     requireModule: ['tsx/cjs'],
     require: ['support/**/*.ts'],
     worldParameters: {
-      appUrl: process.env.MY_APP_URL || 'http://localhost:3000/'
-    }
+      appUrl: process.env.MY_APP_URL || 'http://localhost:3000/',
+    },
   }
 
   return {
@@ -114,8 +114,8 @@ export default function() {
     ci: {
       ...common,
       format: ['html:cucumber-report.html'],
-      publish: true
-    }
+      publish: true,
+    },
   }
 }
 ```
@@ -136,14 +136,14 @@ The intended method for passing arguments to tests is the `worldParameters` conf
 
 Consider the following profile configuration file:
 
-```javascript 
+```javascript
 module.exports = {
   desktop: `--world-parameters '{"device": {"type":"desktop","height":720,"width":1280}}'`,
   phone: `--world-parameters '{"device": {"type":"phone","height":568,"width":320}}'`,
   tablet: `--world-parameters '{"device": {"type":"tablet","height":1024,"width":768}}'`,
   chromium: `--world-parameters '{"browser": "chromium"}'`,
   firefox: `--world-parameters '{"browser": "firefox"}'`,
-  webkit: `--world-parameters '{"browser": "webkit"}'`
+  webkit: `--world-parameters '{"browser": "webkit"}'`,
 }
 ```
 With it in place we can invoke a test of the iPhone with this command:
@@ -155,6 +155,7 @@ cucumber-js -p webkit -p phone
 The world parameter arguments from the two profile calls will be merged. If you pass profiles that try to set the same parameter, the last one passed in the chain will win out.
 
 ## Summary
+
 - Profiles are used to group common cli arguments together for easy reuse.
 - They can also be used to create world-parameter options rather than trying to use a JSON literal on the command line.
 - The `--profile` or `-p` CLI option is repeatable, so you can apply multiple profiles at once.

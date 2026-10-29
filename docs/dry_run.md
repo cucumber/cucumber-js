@@ -16,4 +16,3 @@ A few examples where this is useful:
 - Finding unused step definitions with the [usage formatter](./formatters.md#usage)
 - Generating [snippets](./snippets.md) for all undefined steps with the [snippets formatter](./formatters.md#snippets)
 - Checking if your path, tag expression etc matches the scenarios you expect it to
-

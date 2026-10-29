@@ -24,15 +24,15 @@ make it looks like the following:
 ```typescript
 // src/formatter/helpers/issue_helpers_spec.ts
 
-    describe('step with attachment text', () => {
-      it('prints the scenario', async () => {
-        // here's the content of the "prints the scenario" test
-      })
+describe('step with attachment text', () => {
+  it('prints the scenario', async () => {
+    // here's the content of the "prints the scenario" test
+  })
 
-      describe('when it is requested to not print attachments', () => {
-        it('does not output attachment', async () => {
-          // Arrange
-          const sourceData = reindent(`
+  describe('when it is requested to not print attachments', () => {
+    it('does not output attachment', async () => {
+      // Arrange
+      const sourceData = reindent(`
             Feature: my feature
               Scenario: my scenario
                 Given attachment step1
@@ -40,12 +40,12 @@ make it looks like the following:
                 Then a passing step
           `)
 
-          // Act
-          const output = await testFormatIssue(sourceData)
+      // Act
+      const output = await testFormatIssue(sourceData)
 
-          // Assert
-          expect(output).to.eql(
-            reindent(`
+      // Assert
+      expect(output).to.eql(
+        reindent(`
               1) Scenario: my scenario # a.feature:2
                  ${figures.tick} Given attachment step1 # steps.ts:35
                  ${figures.cross} When attachment step2 # steps.ts:41
@@ -54,10 +54,10 @@ make it looks like the following:
 
 
             `)
-          )
-        })
-      })
+      )
     })
+  })
+})
 ```
 
 We notice here that `it('does not output attachment')` looks a lot like
@@ -85,9 +85,9 @@ set to `false`:
 ```typescript
 // src/formatter/helpers/issue_helpers_spec.ts
 
-        it('does not output attachment', async () => {
-          // Arrange
-          const sourceData = reindent(`
+it('does not output attachment', async () => {
+  // Arrange
+  const sourceData = reindent(`
             Feature: my feature
               Scenario: my scenario
                 Given attachment step1
@@ -95,12 +95,12 @@ set to `false`:
                 Then a passing step
           `)
 
-          // Act
-          const output = await testFormatIssue(sourceData, false)
+  // Act
+  const output = await testFormatIssue(sourceData, false)
 
-          // Assert
-          expect(output).to.eql(
-            reindent(`
+  // Assert
+  expect(output).to.eql(
+    reindent(`
               1) Scenario: my scenario # a.feature:2
                  ${figures.tick} Given attachment step1 # steps.ts:35
                  ${figures.cross} When attachment step2 # steps.ts:41
@@ -109,8 +109,8 @@ set to `false`:
 
 
             `)
-          )
-        })
+  )
+})
 ```
 
 Our test is still failing - that is expected - but we have some tests now.
@@ -151,12 +151,12 @@ explicitly false:
 ```typescript
 // src/formatter/helpers/test_case_attempt_formatter.ts#formatStep
 
-  if (valueOrDefault(printAttachments, true)) {
-    attachments.forEach(({ body, mediaType }) => {
-      const message = mediaType === 'text/plain' ? `: ${body}` : ''
-      text += indentString(`Attachment (${mediaType})${message}\n`, 4)
-    })
-  }
+if (valueOrDefault(printAttachments, true)) {
+  attachments.forEach(({ body, mediaType }) => {
+    const message = mediaType === 'text/plain' ? `: ${body}` : ''
+    text += indentString(`Attachment (${mediaType})${message}\n`, 4)
+  })
+}
 ```
 
 Now we have to make sure that the value we pass to `testFormatIssue` is
@@ -329,17 +329,17 @@ and in `summary_formatter.ts`. Let's update those two files:
 
 // Locate the call to formatIssue
 
-      this.progressBar.interrupt(
-        formatIssue({
-          colorFns: this.colorFns,
-          cwd: this.cwd,
-          number: this.issueCount,
-          snippetBuilder: this.snippetBuilder,
-          supportCodeLibrary: this.supportCodeLibrary,
-          testCaseAttempt,
-          printAttachments: this.printAttachments,
-        })
-      )
+this.progressBar.interrupt(
+  formatIssue({
+    colorFns: this.colorFns,
+    cwd: this.cwd,
+    number: this.issueCount,
+    snippetBuilder: this.snippetBuilder,
+    supportCodeLibrary: this.supportCodeLibrary,
+    testCaseAttempt,
+    printAttachments: this.printAttachments,
+  })
+)
 ```
 
 ```typescript
@@ -383,26 +383,22 @@ We also need to add some documentation in `docs/cli.md`. Add the following betwe
 the `## Parallel` and the `## Profiles` sections:
 
 ```markdown
-
 ## Printing Attachments Details
 
 Printing attachments details can be disabled with
 `--fomat-options '{"printAttachmants": false}'`.
 
 This option applies to the progress formatter and the summary formatter.
-
 ```
 
 Now we should add an entry in the CHANGELOG.md. Open it, locate the `### Added` section
 for the unreleased changes, and add something about the changes we just did:
 
 ```markdown
-
-* Add a new option to `--format-option`: `printAttachments`.
+- Add a new option to `--format-option`: `printAttachments`.
   See [./docs/cli.md#printing-attachments-details](https://github.com/cucumber/cucumber-js/blob/main/docs/cli.md#printing-attachments-details) for more info.
   ([#1136](https://github.com/cucumber/cucumber-js/issues/1136)
   [#1721](https://github.com/cucumber/cucumber-js/pull/1721))
-
 ```
 
 That's it! You can now set your PR as ready for review!

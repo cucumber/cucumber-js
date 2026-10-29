@@ -2,7 +2,7 @@
 
 Cucumber includes an executable file to run your scenarios. After installing the `@cucumber/cucumber` package, you can run it directly:
 
-``` shell
+```shell
 ./node_modules/.bin/cucumber-js
 ```
 
@@ -18,7 +18,7 @@ Or via a [`package.json` script](https://docs.npmjs.com/cli/v8/using-npm/scripts
 
 Or via [npx](https://docs.npmjs.com/cli/v8/commands/npx):
 
-``` shell
+```shell
 npx cucumber-js
 ```
 
@@ -29,7 +29,7 @@ All the [standard configuration options](./configuration.md#options) can be prov
 Additionally, there are a few options that are specific to the CLI:
 
 | Option             | Type       | Repeatable | Description                                                                             |
-|--------------------|------------|------------|-----------------------------------------------------------------------------------------|
+| ------------------ | ---------- | ---------- | --------------------------------------------------------------------------------------- |
 | `--config`, `-c`   | `string`   | No         | Path to your configuration file - see [Files](./configuration.md#files)                 |
 | `--profile`, `-p`  | `string[]` | Yes        | Profiles from which to include configuration - see [Profiles](./profiles.md)            |
 | `--version`, `-v`  | `boolean`  | No         | Print the currently installed version of Cucumber, then exit immediately                |
@@ -50,7 +50,7 @@ By default, cucumber exits when the event loop drains. Use the `forceExit` confi
 - On the CLI `cucumber-js --force-exit`
 
 This is discouraged, as fixing the issues that causes the hang is a better long term solution. Some potential resources for that are:
-* [Node.js guide to debugging](https://nodejs.org/en/docs/inspector/)
-* NPM package [why-is-node-running](https://www.npmjs.com/package/why-is-node-running)
-* [Node.js Async Hooks](https://nodejs.org/dist/latest-v8.x/docs/api/async_hooks.html)
-* Isolating what scenario or scenarios causes the hang
+- [Node.js guide to debugging](https://nodejs.org/en/docs/inspector/)
+- NPM package [why-is-node-running](https://www.npmjs.com/package/why-is-node-running)
+- [Node.js Async Hooks](https://nodejs.org/dist/latest-v8.x/docs/api/async_hooks.html)
+- Isolating what scenario or scenarios causes the hang
