@@ -197,7 +197,7 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
     }
   }
 
-  private handleErrorFromWorker(error: Error, worker: ManagedWorker) {
+  private handleErrorFromWorker(error: unknown, worker: ManagedWorker) {
     this.fail(new Error(`Error on worker ${worker.id}`, { cause: error }))
   }
 
