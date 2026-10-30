@@ -43,10 +43,7 @@ cucumber-js features/auth.feature
 The resolved "paths" option will be:
 
 ```json
-[
-  "features/**/*.feature",
-  "features/auth.feature"
-]
+["features/**/*.feature", "features/auth.feature"]
 ```
 
 Meaning everything will be run. This probably isn't what you want.
@@ -54,9 +51,7 @@ Meaning everything will be run. This probably isn't what you want.
 In a future release, we'll change it so that the command line argument(s) _override_ the configuration rather than merge with it. So going back to our example, the resolved "paths" option will then be:
 
 ```json
-[
-  "features/auth.feature"
-]
+["features/auth.feature"]
 ```
 
 This will be unlike all other configuration options - no others are changing. However, in the case of paths we think this makes the most sense.
@@ -71,9 +66,9 @@ In `13.0.0`, the option's behaviour changed to set the `FORCE_COLOR` environment
 
 To adapt:
 
-| Before | After |
-|--------|-------|
-| `--format-options '{"colorsEnabled":true}'` | `FORCE_COLOR=1` |
+| Before                                       | After           |
+| -------------------------------------------- | --------------- |
+| `--format-options '{"colorsEnabled":true}'`  | `FORCE_COLOR=1` |
 | `--format-options '{"colorsEnabled":false}'` | `FORCE_COLOR=0` |
 
 ### `printAttachments` format option
@@ -84,8 +79,8 @@ The `printAttachments` format option has been renamed to `includeAttachments`. T
 
 To adapt:
 
-| Before | After |
-|--------|-------|
+| Before                                          | After                                             |
+| ----------------------------------------------- | ------------------------------------------------- |
 | `--format-options '{"printAttachments":false}'` | `--format-options '{"includeAttachments":false}'` |
 
 ### `SummaryFormatter` and `ProgressFormatter` classes

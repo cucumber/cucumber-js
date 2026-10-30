@@ -6,5 +6,5 @@ full-trace: true
 forbid-only: true
 recursive: true
 reporter: dot
-require: 'tsx/cjs'
+require: "tsx/cjs"
 timeout: 3000

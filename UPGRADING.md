@@ -13,7 +13,7 @@ The `Cli` class is no longer exported from the package. It was used internally t
 When parsing a format specified via the CLI, where the formatter and the destination are delimited by a colon, Cucumber no longer tries to handle additional colons in paths on a best-effort basis. To adapt, use double quotes on both sides of the delimiter so there's no ambiguity:
 
 | Before                                       | After                                            |
-|----------------------------------------------|--------------------------------------------------|
+| -------------------------------------------- | ------------------------------------------------ |
 | `html:file://hostname/formatter/report.html` | `"html":"file://hostname/formatter/report.html"` |
 | `file://C:\custom\formatter`                 | `"file://C:\custom\formatter"`                   |
 
@@ -88,8 +88,8 @@ anymore in case you use a generator without wrapping it properly.
 
 ```javascript
 const isGenerator = require('is-generator')
-const {coroutine} = require('bluebird')
-const {setDefinitionFunctionWrapper} = require('@cucumber/cucumber')
+const { coroutine } = require('bluebird')
+const { setDefinitionFunctionWrapper } = require('@cucumber/cucumber')
 
 setDefinitionFunctionWrapper(function (fn) {
   if (isGenerator.fn(fn)) {
@@ -211,12 +211,12 @@ This does mean that if you want to point to a local formatter implementation (i.
 
 The parallel mode previously used problematic "master"/"slave" naming that we've dropped in favour of "coordinator" and "worker". This is mostly an internal detail, but is also reflected in the names of some environment variables you might be using:
 
-* `CUCUMBER_TOTAL_SLAVES` is now `CUCUMBER_TOTAL_WORKERS`
-* `CUCUMBER_SLAVE_ID` is now `CUCUMBER_WORKER_ID`
+- `CUCUMBER_TOTAL_SLAVES` is now `CUCUMBER_TOTAL_WORKERS`
+- `CUCUMBER_SLAVE_ID` is now `CUCUMBER_WORKER_ID`
 
 ### TypeScript
 
-*(You can skip this part if you don't use TypeScript in your projects.)*
+_(You can skip this part if you don't use TypeScript in your projects.)_
 
 Where before we relied on the community-authored `@types/cucumber` package, Cucumber is now built with TypeScript and as such includes its own typings, so you can drop your dependency on the separate package:
 

@@ -14,10 +14,10 @@ Reports are anonymous and self-destruct after 24 hours unless claimed.
 
 If you have an private/internal service that follows the Cucumber Reports API, you can point to that with environment variables:
 
-| Variable                   | Description                                                                                    |
-|----------------------------|------------------------------------------------------------------------------------------------|
-| `CUCUMBER_PUBLISH_URL`     | Base URL of the reports service to publish to                                                  |
-| `CUCUMBER_PUBLISH_TOKEN`   | Authentication token, will be added as a Bearer token in the `Authorizaton` header if supplied |
+| Variable                 | Description                                                                                    |
+| ------------------------ | ---------------------------------------------------------------------------------------------- |
+| `CUCUMBER_PUBLISH_URL`   | Base URL of the reports service to publish to                                                  |
+| `CUCUMBER_PUBLISH_TOKEN` | Authentication token, will be added as a Bearer token in the `Authorizaton` header if supplied |
 
 ## Publishing behind a proxy
 

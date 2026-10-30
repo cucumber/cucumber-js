@@ -29,7 +29,7 @@ jobs:
   test:
     strategy:
       matrix:
-        shard: [1, 2, 3]
+        shard: [ 1, 2, 3 ]
     steps:
       - uses: actions/checkout@v4
       - run: npm ci

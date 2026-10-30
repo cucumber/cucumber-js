@@ -1,6 +1,6 @@
 # Retrospective notes
 
-From time to time, we run a mobbing/ensemble session on this codebase. At the end of each session., we 
+From time to time, we run a mobbing/ensemble session on this codebase. At the end of each session., we
 run a brief [retrospective] conversation in an effort to "turn up the good" – Woody Zuill.
 
 Each retro we run is recorded in this folder as a dated Markdown file.

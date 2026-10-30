@@ -1,10 +1,10 @@
-name: 'Close stale issues'
+name: "Close stale issues"
 
 permissions: {}
 
 on:
   schedule:
-    - cron: '30 1 * * *'
+    - cron: "30 1 * * *"
 
 jobs:
   incomplete-issues:
@@ -15,10 +15,10 @@ jobs:
     steps:
       - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93 # v11
         with:
-          stale-issue-label: ':hourglass: stale'
-          stale-issue-message: 'This issue is stale because it has been open for 3 weeks with no activity. Remove the stale label or comment or this will be closed in another 5 days.'
-          close-issue-message: 'This issue was closed because it has been stalled for 5 days with no activity.'
-          only-issue-labels: ':baby_bottle: incomplete'
+          stale-issue-label: ":hourglass: stale"
+          stale-issue-message: "This issue is stale because it has been open for 3 weeks with no activity. Remove the stale label or comment or this will be closed in another 5 days."
+          close-issue-message: "This issue was closed because it has been stalled for 5 days with no activity."
+          only-issue-labels: ":baby_bottle: incomplete"
           days-before-stale: 21
           days-before-close: 5
           days-before-pr-stale: -1
@@ -32,9 +32,9 @@ jobs:
     steps:
       - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93 # v11
         with:
-          only-pr-labels: ':car: driveby'
-          stale-pr-message: 'This pull request is stale because its description is still incomplete. It will be closed in two days if the description is not completed following the template.'
-          close-pr-message: 'This pull request was closed because its description was still incomplete a week after an update was requested.'
+          only-pr-labels: ":car: driveby"
+          stale-pr-message: "This pull request is stale because its description is still incomplete. It will be closed in two days if the description is not completed following the template."
+          close-pr-message: "This pull request was closed because its description was still incomplete a week after an update was requested."
           days-before-pr-stale: 5
           days-before-pr-close: 2
           days-before-issue-stale: -1

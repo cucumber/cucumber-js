@@ -62,10 +62,7 @@ setParallelCanAssign(function (pickleInQuestion, picklesInProgress) {
 For convenience, the following helpers exist to build a `canAssignFn`:
 
 ```javascript
-import {
-  setParallelCanAssign,
-  parallelCanAssignHelpers,
-} from '@cucumber/cucumber'
+import { setParallelCanAssign, parallelCanAssignHelpers } from '@cucumber/cucumber'
 
 const { atMostOnePicklePerTag } = parallelCanAssignHelpers
 const myTagRule = atMostOnePicklePerTag(['@tag1', '@tag2'])

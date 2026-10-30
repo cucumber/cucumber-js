@@ -1,6 +1,6 @@
 _**You are reading the documentation in the `main` development branch, which might contain some unreleased features. See documentation for [older versions](https://github.com/cucumber/cucumber-js/blob/main/docs/older_versions.md) if you need it.**_
 
-----
+---
 
 # Configuration
 
@@ -46,7 +46,7 @@ And the same in JavaScript (ESM) format:
 ```js
 export default {
   parallel: 2,
-  format: ['html:cucumber-report.html']
+  format: ['html:cucumber-report.html'],
 }
 ```
 
@@ -56,8 +56,8 @@ And the same in JavaScript (CommonJS) format:
 module.exports = {
   default: {
     parallel: 2,
-    format: ['html:cucumber-report.html']
-  }
+    format: ['html:cucumber-report.html'],
+  },
 }
 ```
 
@@ -65,7 +65,7 @@ Cucumber also supports the configuration being a string of options in the style 
 
 ```js
 module.exports = {
-  default: '--parallel 2 --format html:cucumber-report.html'
+  default: '--parallel 2 --format html:cucumber-report.html',
 }
 ```
 
@@ -80,7 +80,7 @@ import type { IConfiguration } from '@cucumber/cucumber'
 
 export default {
   parallel: 2,
-  format: ['html:cucumber-report.html']
+  format: ['html:cucumber-report.html'],
 } satisfies Partial<IConfiguration>
 ```
 
@@ -92,10 +92,10 @@ These options can be used in a configuration file (see [above](#files)) or on th
 - Where options aren't repeatable, the CLI takes precedence over a configuration file.
 
 | Name              | Type       | Repeatable | CLI Option                | Description                                                                                                        | Default |
-|-------------------|------------|------------|---------------------------|--------------------------------------------------------------------------------------------------------------------|---------|
+| ----------------- | ---------- | ---------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------- |
 | `paths`           | `string[]` | Yes        | (as arguments)            | Paths to where your feature files are - see [below](#finding-your-features)                                        | []      |
 | `backtrace`       | `boolean`  | No         | `--backtrace`, `-b`       | Show the full backtrace for errors                                                                                 | false   |
-| `dryRun`          | `boolean`  | No         | `--dry-run`, `-d`         | Prepare a test run but don't run it - see [Dry Run](./dry_run.md)                                                  | false   |    
+| `dryRun`          | `boolean`  | No         | `--dry-run`, `-d`         | Prepare a test run but don't run it - see [Dry Run](./dry_run.md)                                                  | false   |
 | `forceExit`       | `boolean`  | No         | `--exit`, `--force-exit`  | Explicitly call `process.exit()` after the test run (when run via CLI) - see [CLI](./cli.md)                       | false   |
 | `failFast`        | `boolean`  | No         | `--fail-fast`             | Stop running tests when a test fails - see [Fail Fast](./fail_fast.md)                                             | false   |
 | `format`          | `string[]` | Yes        | `--format`, `-f`          | Name/path and (optionally) output file path of each formatter to use - see [Formatters](./formatters.md)           | []      |
@@ -139,15 +139,15 @@ For more granular options to control _which scenarios_ from your features should
 
 By default, Cucumber finds support code files with this logic:
 
-* If the features live in a `features` directory (at any level)
-  * `features/**/*.@(js|cjs|mjs)`
-* Otherwise
-  * `<DIR>/**/*.@(js|cjs|mjs)` for each directory containing the selected features
+- If the features live in a `features` directory (at any level)
+  - `features/**/*.@(js|cjs|mjs)`
+- Otherwise
+  - `<DIR>/**/*.@(js|cjs|mjs)` for each directory containing the selected features
 
 If your files are somewhere else, you can override this by proving your own [glob](https://github.com/isaacs/node-glob), directory or file path to the `import` configuration option:
 
 - In a configuration file `{ import: ['somewhere-else/support/*.js'] }`
-- On the CLI `cucumber-js --import somewhere-else/support/*.js` 
+- On the CLI `cucumber-js --import somewhere-else/support/*.js`
 
 Once you specify any `import` options, the defaults described above are no longer applied. The option is repeatable, so you can provide several values and they'll be combined, meaning you can load files from multiple locations.
 

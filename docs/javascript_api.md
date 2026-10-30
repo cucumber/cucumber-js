@@ -31,7 +31,7 @@ console.log(success)
 - `env`
 - `debug`
 
-These influence a lot of core behaviour, like where we start looking for files and where output is written. Often, though, the default values (from `process`) are going to be fine. As such, you can omit any of these values, or the entire object, and Cucumber will just fill the gaps with the defaults. 
+These influence a lot of core behaviour, like where we start looking for files and where output is written. Often, though, the default values (from `process`) are going to be fine. As such, you can omit any of these values, or the entire object, and Cucumber will just fill the gaps with the defaults.
 
 ### Configuration
 
@@ -47,10 +47,7 @@ A simple, flat format. This is how configuration is expressed by users in config
   "dryRun": false,
   "forceExit": false,
   "failFast": true,
-  "format": [
-    "progress-bar",
-    ["html", "./reports/cucumber.html"]
-  ],
+  "format": ["progress-bar", ["html", "./reports/cucumber.html"]],
   "formatOptions": {},
   "import": ["features/support/**/*.js"],
   "language": "en",
@@ -77,17 +74,13 @@ A more structured format with several distinct blocks. You might notice it conta
 {
   "sources": {
     "defaultDialect": "en",
-    "paths": [
-      "features/**/*.feature"
-    ],
+    "paths": ["features/**/*.feature"],
     "name": [],
     "tagExpression": "@interesting",
     "order": "defined"
   },
   "support": {
-    "importPaths": [
-      "features/support/**/*.js"
-    ],
+    "importPaths": ["features/support/**/*.js"],
     "requireModules": [],
     "requirePaths": []
   },
@@ -152,7 +145,7 @@ const result2 = await runCucumber({ ...runConfiguration, support })
 const result3 = await runCucumber({ ...runConfiguration, support })
 ```
 
-Similarly, each result from `runCucumber` includes the support code library that was used, so you can just grab that from your first run and reuse it in subsequent runs, if that suits your flow better: 
+Similarly, each result from `runCucumber` includes the support code library that was used, so you can just grab that from your first run and reuse it in subsequent runs, if that suits your flow better:
 
 ```javascript
 import { loadConfiguration, loadSupport, runCucumber } from '@cucumber/cucumber/api'
