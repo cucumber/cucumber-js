@@ -40,6 +40,6 @@ export default function getColorFns(stream: Writable): IColorFns {
     diffAdded: fn('green'),
     diffRemoved: fn('red'),
     errorMessage: fn('red'),
-    errorStack: fn('grey'),
+    errorStack: fn('gray'),
   }
 }
