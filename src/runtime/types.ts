@@ -5,6 +5,7 @@ import type { AssembledTestCase } from '../assemble'
 export interface RuntimeOptions {
   dryRun: boolean
   failFast: boolean
+  maxFailures: number
   filterStacktraces: boolean
   retry: number
   retryTagFilter: string

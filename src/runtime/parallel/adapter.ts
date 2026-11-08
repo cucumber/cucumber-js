@@ -131,7 +131,8 @@ export class WorkerThreadsAdapter implements RuntimeAdapter {
         reject,
         this.logger,
         this.supportCodeLibrary.parallelCanAssign,
-        assembledTestCases
+        assembledTestCases,
+        this.options
       )
       this.startPhase()
     })

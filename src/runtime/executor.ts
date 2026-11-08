@@ -124,7 +124,8 @@ export class Executor {
       pickle,
       testCase,
       retries: retriesForPickle(pickle, this.options),
-      skip: this.options.dryRun || (this.options.failFast && failing),
+      skip:
+        this.options.dryRun || ((this.options.failFast || this.options.maxFailures > 0) && failing),
       filterStackTraces: this.options.filterStacktraces,
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.options.worldParameters,

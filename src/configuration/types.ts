@@ -40,6 +40,11 @@ export interface IConfiguration {
    */
   failFast: boolean
   /**
+   * Stop running tests after the specified number of failures
+   * @default 0
+   */
+  maxFailures: number
+  /**
    * Name/path and (optionally) output file path of each formatter to use
    *
    * @example

@@ -230,6 +230,7 @@ export interface IConfiguration {
     import: string[];
     language: string;
     loader: string[];
+    maxFailures: number;
     name: string[];
     order: IPickleOrder;
     parallel: number;

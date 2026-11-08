@@ -2,10 +2,11 @@ import type { Pickle } from '@cucumber/messages'
 import type { AssembledTestCase } from '../../assemble'
 import type { ILogger } from '../../environment'
 import type { ParallelAssignmentValidator } from '../../support_code_library_builder/types'
+import type { RuntimeOptions } from '../types'
 import type { FinishedEvent, Phase, RunTestCaseCommand } from './types'
 
 export class TestCasesPhase implements Phase<RunTestCaseCommand> {
-  private failing = false
+  private failureCount = 0
   private idleInterventions = 0
   private readonly queue: Array<AssembledTestCase> = []
   private readonly running: Set<Pickle> = new Set()
@@ -15,7 +16,8 @@ export class TestCasesPhase implements Phase<RunTestCaseCommand> {
     readonly reject: (reason: unknown) => void,
     private readonly logger: ILogger,
     private readonly canAssign: ParallelAssignmentValidator,
-    assembledTestCases: ReadonlyArray<AssembledTestCase>
+    assembledTestCases: ReadonlyArray<AssembledTestCase>,
+    private readonly options?: Pick<RuntimeOptions, 'failFast' | 'maxFailures'>
   ) {
     // If there's nothing to run, no worker will ever be issued a command, so no FINISHED
     // event will ever arrive to trigger settlement via `next()` - settle right away instead.
@@ -31,7 +33,7 @@ export class TestCasesPhase implements Phase<RunTestCaseCommand> {
 
   next(command: RunTestCaseCommand, event: FinishedEvent): RunTestCaseCommand | undefined {
     if (!event.success) {
-      this.failing = true
+      this.failureCount++
     }
     this.running.delete(command.assembledTestCase.pickle)
     if (this.queue.length === 0 && this.running.size === 0) {
@@ -40,7 +42,7 @@ export class TestCasesPhase implements Phase<RunTestCaseCommand> {
           `WARNING: All workers went idle ${this.idleInterventions} time(s). Consider revising handler passed to setParallelCanAssign.`
         )
       }
-      this.resolve(!this.failing)
+      this.resolve(this.failureCount === 0)
       return undefined
     }
     return this.select()
@@ -62,13 +64,26 @@ export class TestCasesPhase implements Phase<RunTestCaseCommand> {
     return undefined
   }
 
+  private isFailing(): boolean {
+    if (!this.options) {
+      return this.failureCount > 0
+    }
+    if (this.options.failFast && this.failureCount > 0) {
+      return true
+    }
+    if (this.options.maxFailures > 0 && this.failureCount >= this.options.maxFailures) {
+      return true
+    }
+    return false
+  }
+
   private dequeue(assembledTestCase: AssembledTestCase): RunTestCaseCommand {
     this.queue.splice(this.queue.indexOf(assembledTestCase), 1)
     this.running.add(assembledTestCase.pickle)
     return {
       type: 'TEST_CASE',
       assembledTestCase,
-      failing: this.failing,
+      failing: this.isFailing(),
     }
   }
 }

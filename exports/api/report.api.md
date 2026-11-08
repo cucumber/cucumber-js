@@ -82,6 +82,7 @@ export interface IConfiguration {
     import: string[];
     language: string;
     loader: string[];
+    maxFailures: number;
     name: string[];
     order: IPickleOrder;
     parallel: number;
@@ -238,6 +239,7 @@ export interface IRunOptionsRuntime {
     dryRun: boolean;
     failFast: boolean;
     filterStacktraces: boolean;
+    maxFailures: number;
     parallel: number;
     retry: number;
     retryTagFilter: string;

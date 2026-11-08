@@ -47,5 +47,12 @@ describe('ArgvParser', () => {
         worldParameters: { foo: 2, bar: { stuff: 3, things: 4 } },
       })
     })
+
+    it('should handle --max-failures argument', () => {
+      const { configuration } = ArgvParser.parse([...baseArgv, '--max-failures', '5'])
+      expect(configuration).to.deep.eq({
+        maxFailures: 5,
+      })
+    })
   })
 })

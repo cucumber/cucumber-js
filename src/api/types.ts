@@ -191,6 +191,10 @@ export interface IRunOptionsRuntime {
    */
   failFast: boolean
   /**
+   * Stop running tests after the specified number of failures
+   */
+  maxFailures: number
+  /**
    * Filter out stack frames from Cucumber's code when formatting stack traces
    */
   filterStacktraces: boolean

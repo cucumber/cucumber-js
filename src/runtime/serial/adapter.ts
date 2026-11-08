@@ -17,7 +17,7 @@ export class InProcessAdapter implements RuntimeAdapter {
     testRunStartedId: string,
     eventBroadcaster: EventEmitter,
     newId: IdGenerator.NewId,
-    options: RuntimeOptions,
+    private readonly options: RuntimeOptions,
     supportCodeLibrary: SupportCodeLibrary,
     snippetBuilder: StepDefinitionSnippetBuilder
   ) {
@@ -45,13 +45,24 @@ export class InProcessAdapter implements RuntimeAdapter {
   }
 
   async runTestCases(assembledTestCases: ReadonlyArray<AssembledTestCase>) {
-    let failing = false
+    let failureCount = 0
     for (const item of assembledTestCases) {
+      const failing = this.isFailing(failureCount)
       if (!(await this.executor.runTestCase(item, failing))) {
-        failing = true
+        failureCount++
       }
     }
-    return !failing
+    return failureCount === 0
+  }
+
+  private isFailing(failureCount: number): boolean {
+    if (this.options.failFast && failureCount > 0) {
+      return true
+    }
+    if (this.options.maxFailures > 0 && failureCount >= this.options.maxFailures) {
+      return true
+    }
+    return false
   }
 
   async runAfterAllHooks() {

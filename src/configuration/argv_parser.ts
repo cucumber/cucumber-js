@@ -81,6 +81,11 @@ const ArgvParser = {
       )
       .option('--fail-fast', 'abort the run on first failure')
       .option(
+        '--max-failures <NUMBER_OF_FAILURES>',
+        'abort the run after the specified number of failures',
+        (val) => ArgvParser.validateCountOption(val, '--max-failures')
+      )
+      .option(
         '-f, --format <TYPE[:PATH]>',
         'specify the output format, optionally supply PATH to redirect formatter output (repeatable).  Available formats:\n' +
           Object.entries(documentation).reduce(
