@@ -1,4 +1,12 @@
-import type { ICreateAttachment, ICreateLink, ICreateLog } from '../runtime/attachment_manager'
+import type {
+  ICreateAttachment,
+  ICreateLink,
+  ICreateLog,
+  ILink,
+  ILinkItem,
+} from '../runtime/attachment_manager'
+
+export type { ICreateAttachment, ICreateLink, ICreateLog, ILink, ILinkItem }
 
 // biome-ignore lint/suspicious/noExplicitAny: world parameters come from user config and really can be anything; users can supply a type argument to narrow
 export interface IWorldOptions<ParametersType = any> {

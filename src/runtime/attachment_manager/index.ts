@@ -41,7 +41,15 @@ export type ICreateAttachment = ICreateStringAttachment &
   ICreateStreamAttachment &
   ICreateStreamAttachmentWithCallback
 export type ICreateLog = (text: string) => void
-export type ICreateLink = (text: string) => void
+
+export interface ILink {
+  title?: string
+  url: string
+}
+
+export type ILinkItem = string | ILink
+
+export type ICreateLink = (...links: ILinkItem[]) => void
 
 export default class AttachmentManager {
   private readonly onAttachment: IAttachFunction
@@ -54,8 +62,21 @@ export default class AttachmentManager {
     return this.create(text, 'text/x.cucumber.log+plain')
   }
 
-  link(...url: string[]): void | Promise<void> {
-    return this.create(url.join('\n'), 'text/uri-list')
+  link(...links: ILinkItem[]): void | Promise<void> {
+    const hasObject = links.some((l) => typeof l === 'object')
+    if (!hasObject) {
+      return this.create((links as string[]).join('\n'), 'text/uri-list')
+    }
+    for (const item of links) {
+      if (typeof item === 'string') {
+        this.create(item, 'text/uri-list')
+      } else {
+        this.create(item.url, {
+          mediaType: 'text/uri-list',
+          ...(item.title ? { fileName: item.title } : {}),
+        })
+      }
+    }
   }
 
   create(

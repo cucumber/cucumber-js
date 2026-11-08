@@ -420,6 +420,125 @@ describe('AttachmentManager', () => {
           },
         ])
       })
+
+      it('adds an object link with title as fileName', () => {
+        // Arrange
+        const attachments: IAttachment[] = []
+        const attachmentManager = new AttachmentManager((x) => attachments.push(x))
+
+        // Act
+        const result = attachmentManager.link({
+          title: 'Cucumber-js',
+          url: 'https://github.com/cucumber/cucumber-js',
+        })
+
+        // Assert
+        expect(result).to.eql(undefined)
+        expect(attachments).to.eql([
+          {
+            data: 'https://github.com/cucumber/cucumber-js',
+            fileName: 'Cucumber-js',
+            media: {
+              contentType: 'text/uri-list',
+              encoding: 'IDENTITY',
+            },
+          },
+        ])
+      })
+
+      it('adds an object link without title', () => {
+        // Arrange
+        const attachments: IAttachment[] = []
+        const attachmentManager = new AttachmentManager((x) => attachments.push(x))
+
+        // Act
+        const result = attachmentManager.link({
+          url: 'https://github.com/cucumber/cucumber-js',
+        })
+
+        // Assert
+        expect(result).to.eql(undefined)
+        expect(attachments).to.eql([
+          {
+            data: 'https://github.com/cucumber/cucumber-js',
+            media: {
+              contentType: 'text/uri-list',
+              encoding: 'IDENTITY',
+            },
+          },
+        ])
+      })
+
+      it('adds multiple object links as individual attachments', () => {
+        // Arrange
+        const attachments: IAttachment[] = []
+        const attachmentManager = new AttachmentManager((x) => attachments.push(x))
+
+        // Act
+        const result = attachmentManager.link(
+          {
+            title: 'Cucumber-js',
+            url: 'https://github.com/cucumber/cucumber-js',
+          },
+          {
+            title: 'Cucumber-jvm',
+            url: 'https://github.com/cucumber/cucumber-jvm',
+          }
+        )
+
+        // Assert
+        expect(result).to.eql(undefined)
+        expect(attachments).to.eql([
+          {
+            data: 'https://github.com/cucumber/cucumber-js',
+            fileName: 'Cucumber-js',
+            media: {
+              contentType: 'text/uri-list',
+              encoding: 'IDENTITY',
+            },
+          },
+          {
+            data: 'https://github.com/cucumber/cucumber-jvm',
+            fileName: 'Cucumber-jvm',
+            media: {
+              contentType: 'text/uri-list',
+              encoding: 'IDENTITY',
+            },
+          },
+        ])
+      })
+
+      it('handles mixed strings and object links', () => {
+        // Arrange
+        const attachments: IAttachment[] = []
+        const attachmentManager = new AttachmentManager((x) => attachments.push(x))
+
+        // Act
+        const result = attachmentManager.link('https://cucumber.io', {
+          title: 'Cucumber-js',
+          url: 'https://github.com/cucumber/cucumber-js',
+        })
+
+        // Assert
+        expect(result).to.eql(undefined)
+        expect(attachments).to.eql([
+          {
+            data: 'https://cucumber.io',
+            media: {
+              contentType: 'text/uri-list',
+              encoding: 'IDENTITY',
+            },
+          },
+          {
+            data: 'https://github.com/cucumber/cucumber-js',
+            fileName: 'Cucumber-js',
+            media: {
+              contentType: 'text/uri-list',
+              encoding: 'IDENTITY',
+            },
+          },
+        ])
+      })
     })
 
     describe('unsupported data type', () => {

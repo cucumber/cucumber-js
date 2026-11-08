@@ -147,4 +147,19 @@ After(function () {
 })
 ```
 
-Links will be attached as a string with a MIME type of `text/uri-list`
+Links will be attached as a string with a MIME type of `text/uri-list`.
+
+You can also specify titles for links by passing objects with `title` and `url`:
+
+```javascript
+Before(function () {
+  this.link({ title: 'Cucumber Documentation', url: 'https://cucumber.io' })
+})
+
+After(function () {
+  this.link(
+    { title: 'Cucumber-js', url: 'https://github.com/cucumber/cucumber-js' },
+    { title: 'Cucumber-jvm', url: 'https://github.com/cucumber/cucumber-jvm' }
+  )
+})
+```

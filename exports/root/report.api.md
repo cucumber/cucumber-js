@@ -255,6 +255,15 @@ export interface IContext<ParametersType = any> {
 }
 
 // @public (undocumented)
+export type ICreateAttachment = ICreateStringAttachment & ICreateBufferAttachment & ICreateStreamAttachment & ICreateStreamAttachmentWithCallback;
+
+// @public (undocumented)
+export type ICreateLink = (...links: ILinkItem[]) => void;
+
+// @public (undocumented)
+export type ICreateLog = (text: string) => void;
+
+// @public (undocumented)
 export interface IFormatterOptions {
     // (undocumented)
     cleanup: IFormatterCleanupFn;
@@ -301,6 +310,17 @@ interface IGetStepKeywordRequest {
     // (undocumented)
     pickleStep: PickleStep;
 }
+
+// @public (undocumented)
+export interface ILink {
+    // (undocumented)
+    title?: string;
+    // (undocumented)
+    url: string;
+}
+
+// @public (undocumented)
+export type ILinkItem = string | ILink;
 
 // @public
 export type IProfiles = Record<string, Partial<IConfiguration>>;

@@ -57,6 +57,11 @@ export {
 } from './support_code_library_builder/types'
 export {
   default as World,
+  ICreateAttachment,
+  ICreateLink,
+  ICreateLog,
+  ILink,
+  ILinkItem,
   IWorld,
   IWorldOptions,
 } from './support_code_library_builder/world'
