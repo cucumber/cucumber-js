@@ -12,11 +12,13 @@ Cucumber supports two types of expressions:
 [Full docs.](https://github.com/cucumber/cucumber-expressions#readme)
 
 Gherkin:
+
 ```gherkin
 Given I have 42 cucumbers in my belly
 ```
 
 JS:
+
 ```js
 import { Given } from '@cucumber/cucumber'
 
@@ -68,7 +70,6 @@ When(/^I view my profile$/, function () {
 })
 ```
 
-
 ## Definition function wrapper
 
 If you would like to wrap step or hook definitions in with some additional logic you can use `setDefinitionFunctionWrapper(fn)`. The definitions will be wrapped after they have all been loaded but before the tests begin to run. One example usage is wrapping generator functions to return promises. Cucumber will do an additional stage of wrapping to ensure the function retains its original length.
@@ -101,6 +102,7 @@ setDefinitionFunctionWrapper(function (fn) {
 ## Pending steps
 
 Each interface has its own way of marking a step as pending
+
 - synchronous - return `'pending'`
 - asynchronous callback - execute the callback with `error|null, 'pending'`
 - asynchronous promise - promise resolves to `'pending'`
@@ -112,6 +114,7 @@ Marking a step as skipped will also mark the proceeding steps of the same scenar
 This can be used to mark a scenario as skipped based on a runtime condition.
 
 Each interface has its own way of marking a step as skipped
+
 - synchronous - return `'skipped'`
 - asynchronous callback - execute the callback with `error|null, 'skipped'`
 - asynchronous promise - promise resolves to `'skipped'`

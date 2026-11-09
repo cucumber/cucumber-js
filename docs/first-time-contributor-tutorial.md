@@ -161,6 +161,7 @@ if (valueOrDefault(printAttachments, true)) {
 
 Now we have to make sure that the value we pass to `testFormatIssue` is
 transmitted to `formatStep`. That means updating `formatTestCaseAttempt`:
+
 ```typescript
 // src/formatter/helpers/test_case_attempt_formatter.ts
 
@@ -226,6 +227,7 @@ export function formatIssue({
 ```
 
 And, finally, in `issue_helpers_spec.ts`, within `testFormatIssue`:
+
 ```typescript
 // src/formatter/helpers/issue_helpers_spec.ts
 

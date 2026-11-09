@@ -50,6 +50,7 @@ By default, cucumber exits when the event loop drains. Use the `forceExit` confi
 - On the CLI `cucumber-js --force-exit`
 
 This is discouraged, as fixing the issues that causes the hang is a better long term solution. Some potential resources for that are:
+
 - [Node.js guide to debugging](https://nodejs.org/en/docs/inspector/)
 - NPM package [why-is-node-running](https://www.npmjs.com/package/why-is-node-running)
 - [Node.js Async Hooks](https://nodejs.org/dist/latest-v8.x/docs/api/async_hooks.html)
