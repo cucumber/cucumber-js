@@ -21,6 +21,7 @@ Define a new parameter type and optionally convert an output parameter into some
 - `preferForRegexpMatch`: Defaults to `false`. Set to `true` if you use regular expressions and you want this parameter type's `regexp` to take precedence over others during a match.
 
 The built in parameter types are:
+
 - `int`
 - `float`
 - `string`

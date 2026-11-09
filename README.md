@@ -42,7 +42,6 @@ npm install @cucumber/cucumber
 
 Let's take this example of something to test:
 
-
 First, write your main code in `src/index.js`:
 
 ```js
