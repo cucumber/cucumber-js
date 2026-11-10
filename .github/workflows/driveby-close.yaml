@@ -18,8 +18,8 @@ jobs:
           only-pr-labels: ":car: driveby"
           stale-pr-label: ":car: driveby"
           remove-pr-stale-when-updated: false
-          close-pr-message: "This pull request was closed because its description was still incomplete 3 days after an update was requested."
+          close-pr-message: "This pull request was closed because its description was still incomplete 2 days after an update was requested."
           days-before-pr-stale: -1
-          days-before-pr-close: 3
+          days-before-pr-close: 2
           days-before-issue-stale: -1
           days-before-issue-close: -1
