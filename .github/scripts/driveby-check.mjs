@@ -2,7 +2,13 @@
 
 import { readFile } from 'node:fs/promises'
 
-const templateMarkers = ["what's changed", 'checklist', '[x] i agree to respect and uphold the']
+const templateMarkers = [
+  "what's changed",
+  "what's your motivation",
+  'what kind of change is this',
+  'checklist',
+  '[x] i agree to respect and uphold the',
+]
 
 const exemptAuthors = ['renovate[bot]', 'dependabot[bot]']
 
