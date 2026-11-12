@@ -4,7 +4,8 @@ permissions: {}
 
 on:
   push:
-    branches: [ release/* ]
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   create-github-release:
