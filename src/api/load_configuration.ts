@@ -1,5 +1,6 @@
 import {
   DEFAULT_CONFIGURATION,
+  fromEnvironment,
   fromFile,
   mergeConfigurations,
   parseConfiguration,
@@ -46,9 +47,11 @@ export async function loadConfiguration(
         `  Future result:      ${cliPaths.join(', ')}`
     )
   }
+  const environmentConfiguration = fromEnvironment(env)
   const original = mergeConfigurations(
     DEFAULT_CONFIGURATION,
     profileConfiguration,
+    environmentConfiguration,
     providedConfiguration
   )
   logger.debug('Resolved configuration:', original)
