@@ -18,7 +18,7 @@ Before({ timeout: 60 * 1000 }, function () {
   // Does some slow browser/filesystem/network actions
 })
 
-Given(/^a slow step$/, { timeout: 60 * 1000 }, function () {
+Given('a slow step', { timeout: 60 * 1000 }, function () {
   // Does some slow browser/filesystem/network actions
 })
 ```

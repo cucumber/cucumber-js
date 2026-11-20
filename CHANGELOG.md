@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Changed
+- Use Cucumber Expressions instead of regular expressions in the step definition wrapper and timeout examples in the docs ([#1871](https://github.com/cucumber/cucumber-js/issues/1871))
 
 ## [13.3.0] - 2026-10-05
 ### Added
