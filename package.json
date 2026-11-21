@@ -249,7 +249,7 @@
     "read-package-up": "^12.0.0",
     "semver": "7.8.6",
     "supports-color": "^11.0.0",
-    "type-fest": "^5.0.0",
+    "type-fest": "^6.0.0",
     "util-arity": "^1.1.0",
     "yaml": "^2.2.2",
     "yup": "1.7.1"
