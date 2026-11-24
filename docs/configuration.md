@@ -103,6 +103,7 @@ These options can be used in a configuration file (see [above](#files)) or on th
 | `import`          | `string[]` | Yes        | `--import`, `-i`          | Paths to where your support code is                                                                                | []      |
 | `language`        | `string`   | No         | `--language`              | Default language for your feature files                                                                            | en      |
 | `loader`          | `string[]` | Yes        | `--loader`, `-l`          | Module specifiers for loaders to be registered ahead of loading support code - see [Transpiling](./transpiling.md) | []      |
+| `maxFailures`     | `number`   | No         | `--max-failures`          | Stop running tests once the given number of tests have failed - see [Fail Fast](./fail_fast.md#maximum-failures)   | 0       |
 | `name`            | `string`   | No         | `--name`                  | Regular expressions of which scenario names should match one of to be run - see [Filtering](./filtering.md#names)  | []      |
 | `order`           | `string`   | No         | `--order`                 | Run in the order defined, or in a random order - see [Filtering and Ordering](./filtering.md#order)                | defined |
 | `parallel`        | `number`   | No         | `--parallel`              | Run tests in parallel with the given number of worker processes - see [Parallel](./parallel.md)                    | 0       |

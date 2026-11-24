@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { getPickleWithTags } from '../../test/gherkin_helpers'
 import { buildOptions } from '../../test/runtime_helpers'
-import { retriesForPickle } from './helpers'
+import { failureLimit, retriesForPickle } from './helpers'
 
 describe('Helpers', () => {
   describe('retriesForPickle', () => {
@@ -58,6 +58,24 @@ describe('Helpers', () => {
 
       // Assert
       expect(result).to.eql(0)
+    })
+  })
+
+  describe('failureLimit', () => {
+    it('returns 0 (no limit) by default', () => {
+      expect(failureLimit(buildOptions({}))).to.eql(0)
+    })
+
+    it('returns 1 if options.failFast is set', () => {
+      expect(failureLimit(buildOptions({ failFast: true }))).to.eql(1)
+    })
+
+    it('returns options.maxFailures if set', () => {
+      expect(failureLimit(buildOptions({ maxFailures: 3 }))).to.eql(3)
+    })
+
+    it('returns 1 if both options.failFast and options.maxFailures are set', () => {
+      expect(failureLimit(buildOptions({ failFast: true, maxFailures: 3 }))).to.eql(1)
     })
   })
 })

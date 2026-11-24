@@ -5,7 +5,7 @@ import type { ParallelAssignmentValidator } from '../../support_code_library_bui
 import type { FinishedEvent, Phase, RunTestCaseCommand } from './types'
 
 export class TestCasesPhase implements Phase<RunTestCaseCommand> {
-  private failing = false
+  private failures = 0
   private idleInterventions = 0
   private readonly queue: Array<AssembledTestCase> = []
   private readonly running: Set<Pickle> = new Set()
@@ -31,7 +31,7 @@ export class TestCasesPhase implements Phase<RunTestCaseCommand> {
 
   next(command: RunTestCaseCommand, event: FinishedEvent): RunTestCaseCommand | undefined {
     if (!event.success) {
-      this.failing = true
+      this.failures++
     }
     this.running.delete(command.assembledTestCase.pickle)
     if (this.queue.length === 0 && this.running.size === 0) {
@@ -40,7 +40,7 @@ export class TestCasesPhase implements Phase<RunTestCaseCommand> {
           `WARNING: All workers went idle ${this.idleInterventions} time(s). Consider revising handler passed to setParallelCanAssign.`
         )
       }
-      this.resolve(!this.failing)
+      this.resolve(this.failures === 0)
       return undefined
     }
     return this.select()
@@ -68,7 +68,7 @@ export class TestCasesPhase implements Phase<RunTestCaseCommand> {
     return {
       type: 'TEST_CASE',
       assembledTestCase,
-      failing: this.failing,
+      failures: this.failures,
     }
   }
 }

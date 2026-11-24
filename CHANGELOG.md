@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) on how to contribute to Cucumber.
 
 ## [Unreleased]
+### Added
+- Add `maxFailures` option to stop the run after a given number of failures ([#3021](https://github.com/cucumber/cucumber-js/pull/3021))
 
 ## [13.3.0] - 2026-10-05
 ### Added
