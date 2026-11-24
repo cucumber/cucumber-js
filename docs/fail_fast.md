@@ -16,4 +16,4 @@ A note on using in conjunction with [Retry](./retry.md): we consider a test case
 
 Once the limit is reached, test cases that are already running (when running in [parallel](./parallel.md)) will finish, and the rest will be reported as skipped. Failures are counted the same way as for `failFast`, so a test case that passes on a retry doesn't count towards the limit.
 
-The default of `0` means no limit. `failFast` is equivalent to `maxFailures: 1`. If both are set, for example `maxFailures` in a profile and `--fail-fast` on the CLI, `maxFailures` takes precedence and a warning is logged; use `--max-failures 1` to override it instead.
+The default of `0` means no limit. `failFast` is equivalent to `maxFailures: 1`. If both are set, for example `maxFailures` in a profile and `--fail-fast` on the CLI, `maxFailures` takes precedence, and a warning is logged if that means `failFast` has no effect; use `--max-failures 1` to override it instead. A `maxFailures` of `0` counts as not set, so `failFast` still applies.

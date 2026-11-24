@@ -76,6 +76,16 @@ Feature: Max failures
       """
     And it fails
 
+  Scenario: no warning when combined with --fail-fast and the same limit
+    When I run cucumber-js with `--fail-fast --max-failures 1`
+    Then scenario "Failing 1" has status "failed"
+    And scenario "Passing 1" has status "skipped"
+    And the error output does not contain the text:
+      """
+      Both `failFast` and `maxFailures` are set
+      """
+    And it fails
+
   Scenario: a scenario that passes on retry does not count towards the limit
     Given a file named "features/a.feature" with:
       """
