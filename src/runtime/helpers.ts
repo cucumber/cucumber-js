@@ -62,13 +62,13 @@ export function retriesForPickle(pickle: Pickle, options: RuntimeOptions): numbe
 /**
  * Number of failed test cases after which remaining test cases are skipped,
  * or 0 for no limit. `failFast` is equivalent to a limit of 1; if both are set,
- * the lower limit applies.
+ * `maxFailures` takes precedence.
  */
 export function failureLimit(options: RuntimeOptions): number {
-  if (options.failFast) {
-    return 1
+  if (options.maxFailures) {
+    return options.maxFailures
   }
-  return options.maxFailures ?? 0
+  return options.failFast ? 1 : 0
 }
 
 export function shouldCauseFailure(status: TestStepResultStatus, options: RuntimeOptions): boolean {

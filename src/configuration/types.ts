@@ -44,8 +44,8 @@ export interface IConfiguration {
    * @default 0
    * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/fail_fast.md#maximum-failures}
    * @remarks
-   * A value of 0 means no limit. If `failFast` is also set, the lower limit
-   * applies.
+   * A value of 0 means no limit. If `failFast` is also set, `maxFailures`
+   * takes precedence.
    */
   maxFailures: number
   /**

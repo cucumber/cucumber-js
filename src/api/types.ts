@@ -192,6 +192,8 @@ export interface IRunOptionsRuntime {
   failFast: boolean
   /**
    * Stop running tests once the given number of tests have failed (0 means no limit)
+   * @remarks
+   * Takes precedence over `failFast` when both are set.
    */
   maxFailures?: number
   /**

@@ -74,8 +74,12 @@ describe('Helpers', () => {
       expect(failureLimit(buildOptions({ maxFailures: 3 }))).to.eql(3)
     })
 
-    it('returns 1 if both options.failFast and options.maxFailures are set', () => {
-      expect(failureLimit(buildOptions({ failFast: true, maxFailures: 3 }))).to.eql(1)
+    it('returns options.maxFailures if both options.failFast and options.maxFailures are set', () => {
+      expect(failureLimit(buildOptions({ failFast: true, maxFailures: 3 }))).to.eql(3)
+    })
+
+    it('returns 1 if options.failFast is set and options.maxFailures is 0', () => {
+      expect(failureLimit(buildOptions({ failFast: true, maxFailures: 0 }))).to.eql(1)
     })
   })
 })

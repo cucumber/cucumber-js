@@ -64,11 +64,16 @@ Feature: Max failures
     And scenario "Passing 2" has status "passed"
     And it fails
 
-  Scenario: the lower limit applies when combined with --fail-fast
+  Scenario: takes precedence over --fail-fast
     When I run cucumber-js with `--fail-fast --max-failures 2`
     Then scenario "Failing 1" has status "failed"
-    And scenario "Passing 1" has status "skipped"
-    And scenario "Failing 2" has status "skipped"
+    And scenario "Passing 1" has status "passed"
+    And scenario "Failing 2" has status "failed"
+    And scenario "Failing 3" has status "skipped"
+    And the error output contains the text:
+      """
+      Both `failFast` and `maxFailures` are set; `maxFailures` takes precedence, so the run will stop after 2 failure(s).
+      """
     And it fails
 
   Scenario: a scenario that passes on retry does not count towards the limit
