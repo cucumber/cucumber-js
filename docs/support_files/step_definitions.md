@@ -23,9 +23,11 @@ JS:
 import { Given } from '@cucumber/cucumber'
 
 Given('I have {int} cucumbers in my belly', function (cucumberCount) {
-  assert.equal(this.responseStatus, cucumberCount)
+  this.cucumberCount = cucumberCount
 })
 ```
+
+The `{int}` parameter type turns the matched text into a number, so `cucumberCount` is `42` rather than `'42'`.
 
 Note that your step definition functions cannot reference the [world](./world.md) as `this` if you use
 arrow functions. See [FAQ](../faq.md) for details.
@@ -80,8 +82,8 @@ const { Then } = require('@cucumber/cucumber')
 const assert = require('assert')
 const mzFs = require('mz/fs')
 
-Then(/^the file named (.*) is empty$/, function* (fileName) {
-  contents = yield mzFs.readFile(fileName, 'utf8')
+Then('the file named {string} is empty', function* (fileName) {
+  const contents = yield mzFs.readFile(fileName, 'utf8')
   assert.equal(contents, '')
 })
 
