@@ -108,6 +108,11 @@ const ArgvParser = {
       )
       .option('--language <ISO 639-1>', 'provide the default language for feature files')
       .option(
+        '--max-failures <NUMBER_OF_FAILURES>',
+        'abort the run once the given number of test cases have failed (default: 0, no limit)',
+        (val) => ArgvParser.validateCountOption(val, '--max-failures')
+      )
+      .option(
         '--name <REGEXP>',
         'only execute the scenarios with name matching the expression (repeatable)',
         ArgvParser.collect

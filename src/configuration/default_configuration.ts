@@ -5,6 +5,7 @@ export const DEFAULT_CONFIGURATION: IConfiguration = {
   dryRun: false,
   forceExit: false,
   failFast: false,
+  maxFailures: 0,
   format: [],
   formatOptions: {},
   plugin: [],

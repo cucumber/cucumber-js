@@ -30,7 +30,7 @@ export type RunBeforeAllHooksCommand = {
 export type RunTestCaseCommand = {
   type: 'TEST_CASE'
   assembledTestCase: AssembledTestCase
-  failing: boolean
+  failures: number
 }
 
 export type RunAfterAllHooksCommand = {

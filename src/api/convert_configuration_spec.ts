@@ -22,6 +22,7 @@ describe('convertConfiguration', () => {
       runtime: {
         dryRun: false,
         failFast: false,
+        maxFailures: 0,
         filterStacktraces: true,
         parallel: 0,
         retry: 0,

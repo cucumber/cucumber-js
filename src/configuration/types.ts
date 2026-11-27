@@ -40,6 +40,15 @@ export interface IConfiguration {
    */
   failFast: boolean
   /**
+   * Stop running tests once the given number of tests have failed
+   * @default 0
+   * @see {@link https://github.com/cucumber/cucumber-js/blob/main/docs/fail_fast.md#maximum-failures}
+   * @remarks
+   * A value of 0 means no limit. If `failFast` is also set, `maxFailures`
+   * takes precedence.
+   */
+  maxFailures: number
+  /**
    * Name/path and (optionally) output file path of each formatter to use
    *
    * @example

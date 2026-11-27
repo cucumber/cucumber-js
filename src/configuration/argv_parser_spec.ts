@@ -47,5 +47,18 @@ describe('ArgvParser', () => {
         worldParameters: { foo: 2, bar: { stuff: 3, things: 4 } },
       })
     })
+
+    it('should handle a max failures count', () => {
+      const { configuration } = ArgvParser.parse([...baseArgv, '--max-failures', '10'])
+      expect(configuration).to.deep.eq({
+        maxFailures: 10,
+      })
+    })
+
+    it('should reject an invalid max failures count', () => {
+      expect(() => ArgvParser.parse([...baseArgv, '--max-failures', '-1'])).to.throw(
+        '--max-failures must be a non negative integer'
+      )
+    })
   })
 })

@@ -24,6 +24,7 @@ export async function convertConfiguration(
     runtime: {
       dryRun: flatConfiguration.dryRun,
       failFast: flatConfiguration.failFast,
+      maxFailures: flatConfiguration.maxFailures,
       filterStacktraces: !flatConfiguration.backtrace,
       parallel: flatConfiguration.parallel,
       retry: flatConfiguration.retry,

@@ -12,7 +12,7 @@ import type { SupportCodeLibrary } from '../support_code_library_builder/types'
 import UserCodeRunner from '../user_code_runner'
 import { doesHaveValue, valueOrDefault } from '../value_checker'
 import { formatError } from './format_error'
-import { retriesForPickle, shouldCauseFailure } from './helpers'
+import { failureLimit, retriesForPickle, shouldCauseFailure } from './helpers'
 import { runInTestRunScope } from './scope'
 import { create, timestamp } from './stopwatch'
 import TestCaseRunner from './test_case_runner'
@@ -114,8 +114,9 @@ export class Executor {
 
   async runTestCase(
     { gherkinDocument, pickle, testCase }: AssembledTestCase,
-    failing: boolean
+    failures: number
   ): Promise<boolean> {
+    const limit = failureLimit(this.options)
     const testCaseRunner = new TestCaseRunner({
       workerId: this.workerId,
       eventBroadcaster: this.eventBroadcaster,
@@ -124,7 +125,7 @@ export class Executor {
       pickle,
       testCase,
       retries: retriesForPickle(pickle, this.options),
-      skip: this.options.dryRun || (this.options.failFast && failing),
+      skip: this.options.dryRun || (limit > 0 && failures >= limit),
       filterStackTraces: this.options.filterStacktraces,
       supportCodeLibrary: this.supportCodeLibrary,
       worldParameters: this.options.worldParameters,

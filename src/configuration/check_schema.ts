@@ -7,6 +7,7 @@ const schema = yup.object().shape({
   dryRun: yup.boolean(),
   exit: yup.boolean(),
   failFast: yup.boolean(),
+  maxFailures: yup.number().integer().min(0),
   format: yup
     .array()
     .of(

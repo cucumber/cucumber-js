@@ -21,6 +21,11 @@ export function validateConfiguration(configuration: IConfiguration, logger: ILo
         `see https://github.com/cucumber/cucumber-js/blob/main/docs/deprecations.md`
     )
   }
+  if (configuration.failFast && configuration.maxFailures > 1) {
+    logger.warn(
+      `Both \`failFast\` and \`maxFailures\` are set; \`maxFailures\` takes precedence, so the run will stop after ${configuration.maxFailures} failure(s).`
+    )
+  }
   if (configuration.retryTagFilter && !configuration.retry) {
     throw new Error('a positive `retry` count must be specified when setting `retryTagFilter`')
   }

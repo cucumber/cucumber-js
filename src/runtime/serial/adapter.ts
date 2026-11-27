@@ -45,13 +45,13 @@ export class InProcessAdapter implements RuntimeAdapter {
   }
 
   async runTestCases(assembledTestCases: ReadonlyArray<AssembledTestCase>) {
-    let failing = false
+    let failures = 0
     for (const item of assembledTestCases) {
-      if (!(await this.executor.runTestCase(item, failing))) {
-        failing = true
+      if (!(await this.executor.runTestCase(item, failures))) {
+        failures++
       }
     }
-    return !failing
+    return failures === 0
   }
 
   async runAfterAllHooks() {
